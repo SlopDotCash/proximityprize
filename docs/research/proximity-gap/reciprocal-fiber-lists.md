@@ -10,6 +10,8 @@ At length $n=2^{30}$ the following error counts already produce more than $B=\lf
 | Second | $2^{31}$ | $1/4$ | 64 | 2,789 | 771,749,148 |
 | First | $2^{30}$ | $1/8$ | 128 | 262,144 | 922,484,737 |
 | Second | $2^{31}$ | $1/8$ | 128 | 135,300 | 922,611,581 |
+| First | $2^{30}$ | $1/16$ | 128 | 4 | 989,855,741 |
+| Second | $2^{31}$ | $1/16$ | 128 | 1 | 989,855,744 |
 
 The first prime is $365375409332725729550921208179070755120141565953$. The second is $730750818665451459101842416358141509841924915201$. The construction works on any multiplicative coset of the same order in a field with the indicated budget. Precomposing a polynomial with multiplication by the coset representative or its inverse preserves its degree and transports agreements bijectively. [First field certificate](../../../ArkLib/Research/ProximityGap/Frontier/_PrizeShapePrimeP30.lean) · [Second field certificate](../../../ArkLib/Research/ProximityGap/Frontier/_PrizeShapePrimeP30Second.lean)
 
@@ -64,4 +66,21 @@ Take $K$ different vectors of one parity with a total of $S$ subsets of size $b+
 
 The verifier takes the largest coefficients of each parity from explicitly bounded families of integer vectors. At half rate it varies at most two entries of the constant vectors 4, 5 or 6 by one. At quarter rate it varies at most three entries of the constant vector 3 by one. At eighth rate it varies at most one entry of the constant vectors 1, 2 or 3 by one. The script independently enumerates all quotient subsets on three small boards, compares their counts with the recurrence and evaluates the constructed polynomials at every site. [Reproducible verifier](../../../scripts/probes/probe_reciprocal_fiber_lists.py)
 
-Lean verifies the squared locator identity, the norm doubling identity and the allocation of a common received word on a spare fiber. The full numerical bounds above use the written construction and the executable recurrence. [Lean lemmas](../../../ArkLib/Research/ProximityGap/Frontier/ReciprocalFiberLists.lean)
+Lean verifies the squared locator and norm doubling identities, the lifted polynomial’s degree and exact agreements with the original center, and the allocation of a common received word on a spare fiber. The full numerical bounds above use the written construction and the executable recurrence. [Lean lemmas](../../../ArkLib/Research/ProximityGap/Frontier/ReciprocalFiberLists.lean)
+
+## Seven spare fibers at rate one sixteenth
+
+Here $M=128$, $b=8$ and $h=2^{23}$. Take all nine quotient roots of each $T$ outside the order-eight subgroup $S$ of $\mu_{128}$. Reserve the $h-1$ roots of $H$ over 1. The seven other elements of $S$ can now supply extra agreements to disjoint collections of candidates. The same specified locator constant and original center work across all seven collections.
+
+For $T$ define $W(T)=\sum_{u^j\in T}\gcd(j,16)$. Because $16\nmid j$, each summand equals $2^{v_2(j)}$, the number of leaves below the node for $u^{\pm j}$. Consequently $W(T)$ is the sum of the entries of its leaf vector. Rotating $T$ by an element of $S$ changes exponents by a multiple of 16 and preserves $W$. Fix a parity $p_0$ and assign every $T$ with $W(T)\equiv p_0+2i\pmod{14}$ to the $i$th spare node $y_i$ for $0\le i<7$. The choice of enumeration of the seven nodes is arbitrary. The sets assigned to different nodes are disjoint.
+
+At $y_i$ compute the leaf vector of $T/y_i$. Its sum has the same residue as $W(T)$. For a desired gain $g$ retain the $\lfloor h/(2g)\rfloor$ most numerous vectors in this residue class, or all of them if fewer exist. Their populations can be computed at 1 because rotation by $y_i$ permutes $\mu_{128}\setminus S$. Every retained subset has root product with exponent of parity $p_0$. If the total population across the seven nodes is $A$, one root product occurs for at least $\lceil A/64\rceil$ subsets. In that common product class, the product of the roots of $T/y_i$ is fixed on each node. The squared-locator identity bounds the number of values of $L_T(y_i)=y_i^9 L_{T/y_i}(1)$ by twice the number of retained vectors for $y_i$.
+
+Assign $g$ sites over $y_i$ to each such locator value $v$. At those sites put $w(x)=H(x)(y_i^9+c-v)/y_i$. All earlier agreements over the nine ordinary quotient roots and the $h-1$ reserved roots survive. Each candidate gains at least $g$ additional sites at its assigned node.
+
+| Budget | $p_0$ | $g$ | Retained subsets $A$ | Guaranteed distinct codewords |
+|---:|---:|---:|---:|---:|
+| $2^{30}$ | 1 | 4 | 73,013,231,360 | 1,140,831,740 |
+| $2^{31}$ | 0 | 1 | 198,924,785,832 | 3,108,199,779 |
+
+Removing the forbidden nodes leaves four binary trees of eight leaves each. The verifier enumerates possible leaf vectors in one tree through degree nine up to swaps of children. Each unequal pair of child shapes gives two orderings. Multiplying the resulting orbit sizes recovers every labelled vector. For each residue and coefficient polynomial it stores the number of such vectors. It multiplies the four trees' polynomials, adding residues modulo 14, to obtain the number of vectors with each possible population of nine-subsets. The total mass across all vectors equals $\binom{120}9$. Ranking by the degree-nine coefficient in each residue gives the table. Independent small tests compare complete histograms to exhaustive subset enumeration and build one received word with candidates assigned to multiple fibers. Lean proves that subgroup rotations preserve the sum of the gcd weights and that all local fiber assignments can be combined into one received word. The production arithmetic uses the executable census. [Verifier](../../../scripts/probes/probe_multifiber_sixteenth_lists.py) · [Lean allocation](../../../ArkLib/Research/ProximityGap/Frontier/ReciprocalFiberLists.lean)

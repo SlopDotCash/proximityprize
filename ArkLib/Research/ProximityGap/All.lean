@@ -267,6 +267,7 @@ import ArkLib.Research.ProximityGap.Frontier.DistinctPeriodMomentLaw
 import ArkLib.Research.ProximityGap.Frontier.DistinctPeriodSecondMoment
 import ArkLib.Research.ProximityGap.Frontier.DividedDifferenceDeflation
 import ArkLib.Research.ProximityGap.Frontier.DyadicGeomeanPrizeVsSqrtN
+import ArkLib.Research.ProximityGap.Frontier.DyadicParityLemma
 import ArkLib.Research.ProximityGap.Frontier.DyadicPeriodCeiling
 import ArkLib.Research.ProximityGap.Frontier.DyadicSidonTriple
 import ArkLib.Research.ProximityGap.Frontier.E2GenuineQuadStrictExcess
@@ -304,6 +305,7 @@ import ArkLib.Research.ProximityGap.Frontier.FirstInteriorLevelDirectionBlind
 import ArkLib.Research.ProximityGap.Frontier.FirstOrderChargeFloor
 import ArkLib.Research.ProximityGap.Frontier.FirstOrderDegreeOneBoundary
 import ArkLib.Research.ProximityGap.Frontier.FirstOrderZeroCapJohnson
+import ArkLib.Research.ProximityGap.Frontier.FirstPrimeQuarterSuccessor
 import ArkLib.Research.ProximityGap.Frontier.FirstPrimeSepticCores
 import ArkLib.Research.ProximityGap.Frontier.FisherLevelLocked
 import ArkLib.Research.ProximityGap.Frontier.FisherRSListCap
@@ -631,6 +633,7 @@ import ArkLib.Research.ProximityGap.Frontier.SplitPrimeSixthDensity
 import ArkLib.Research.ProximityGap.Frontier.SpurBadPrimeCeiling
 import ArkLib.Research.ProximityGap.Frontier.SpurBadPrimeChebotarev
 import ArkLib.Research.ProximityGap.Frontier.SpurSuccessiveMinimaCount
+import ArkLib.Research.ProximityGap.Frontier.SquareSpecialization
 import ArkLib.Research.ProximityGap.Frontier.SquarefreeRetentionFloor
 import ArkLib.Research.ProximityGap.Frontier.StackMaximizerDomination
 import ArkLib.Research.ProximityGap.Frontier.StepanovStructuredVacuous
