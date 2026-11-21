@@ -547,6 +547,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeConditionedThreshold
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeDegreeSevenDimension
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeIntrinsicArithmetic
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeLinearFactor
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeParametricQuadratic
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimePrimitiveSurface
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeQuarticInterpolation
 import ArkLib.Research.ProximityGap.Frontier.SelfConsistencyCeiling
