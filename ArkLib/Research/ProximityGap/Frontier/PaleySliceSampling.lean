@@ -190,7 +190,8 @@ private theorem sum_sample (f : α → ℝ) (T : Finset α) {m : ℕ} (hm : 1 �
     simp
   rw [sum_congr rfl hpart, sum_comm, sum_congr rfl hrow, mul_sum]
 
-private theorem abs_sum_mul_card_sample (f : α → ℝ) (T : Finset α) {m : ℕ} (hm : 1 ≤ m)
+/-- A bound on every fixed-size sample controls the absolute signed sum on the full set. -/
+theorem abs_sum_mul_card_sample (f : α → ℝ) (T : Finset α) {m : ℕ} (hm : 1 ≤ m)
     (hmT : m ≤ T.card) {b : ℝ} (hbound : ∀ S ∈ T.powersetCard m, |∑ x ∈ S, f x| ≤ b) :
     |∑ x ∈ T, f x| * m ≤ T.card * b := by
   let c : ℝ := (T.card - 1).choose (m - 1)
