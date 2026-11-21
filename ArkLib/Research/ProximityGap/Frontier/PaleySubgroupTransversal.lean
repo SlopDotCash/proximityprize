@@ -353,6 +353,20 @@ theorem named_prime_sizes {q : ℕ}
     (2^30)^4 ≤ q ∧ 3251 ≤ q ∧ 176*q ≤ 2^77*(2^30)^3 ∧ (2^77)^2 < q := by
   rcases hp with rfl | rfl <;> decide
 
+/-- Actual prescribed rectangles at the two production moduli have at most half their
+trivial discrepancy for any transversal of size at least `2^77`. -/
+theorem named_prime_half (hF : ringChar F ≠ 2)
+    (hp : Fintype.card F = 365375409332725729550921208179070755120141565953 ∨
+          Fintype.card F = 730750818665451459101842416358141509841924915201)
+    (A H : Finset F) (hH : IsMulSubgroup H) (hh : H.card = 2^30)
+    (hA : (0 : F) ∉ A) (ha : 2^77 ≤ A.card)
+    (htrans : ∀ x : F, (A ∩ coset H x).card ≤ 1) :
+    2 * |∑ a ∈ A, ∑ b ∈ H, quadraticChar F (a-b)| ≤ (A.card : ℤ)*H.card := by
+  obtain ⟨hr, hq, hc, _⟩ := named_prime_sizes hp
+  apply transversal_half_bound hF A H hH hA htrans (by rwa [hh]) hq
+  rw [hh]
+  exact hc.trans (Nat.mul_le_mul_right _ ha)
+
 end ArkLib.ProximityGap.Frontier.PaleySubgroupTransversal
 
 #print axioms ArkLib.ProximityGap.Frontier.PaleySubgroupTransversal.stabilized_sum_sq_le
@@ -367,3 +381,5 @@ end ArkLib.ProximityGap.Frontier.PaleySubgroupTransversal
 
 #print axioms ArkLib.ProximityGap.Frontier.PaleySubgroupTransversal.transversal_half_bound
 #print axioms ArkLib.ProximityGap.Frontier.PaleySubgroupTransversal.named_prime_sizes
+
+#print axioms ArkLib.ProximityGap.Frontier.PaleySubgroupTransversal.named_prime_half

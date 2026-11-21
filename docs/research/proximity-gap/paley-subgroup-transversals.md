@@ -26,3 +26,7 @@ $$
  |S|^4 r^2\ \le\ C(q)K(ah)^3 q.
 $$
 With $r=\lfloor q^{1/4}\rfloor$ we have $q^{1/4}\le2r$. Thus $(|S|/(ah))^4\le4C(q)K\sqrt q/(ah)$ whenever $a>0$ and $h\ge q^{1/4}$. Substitution of the two size hypotheses proves the stated power saving. For $h^4\le q$, choosing $r=h$ instead gives $(|S|/(ah))^4\le C(q)Kq/(ah^3)$. [Unconditional fourth moment](../../../ArkLib/Research/ProximityGap/Frontier/_R23ParameterChoice.lean)
+
+## The two production fields
+
+Take $H$ to be the order-$2^{30}$ subgroup used as the smooth evaluation domain at either named production prime $p$. Every partial transversal $A$ of size at least $2^{77}$ satisfies $2|S|\le |A||H|$. Indeed, $|H|^4\le p$ and $176p\le 2^{77}|H|^3$, so the fourth-moment inequality with $r=|H|$ and $K=1$ gives the result. At $|A|=2^{77}$ both sides have size below $\sqrt p$ and the field has more than $2^{77}$ distinct nonzero $H$-cosets from which to choose representatives. Lean checks the two numerical comparisons and the rectangle theorem. [First modulus](../../../ArkLib/Research/ProximityGap/Frontier/_PrizeShapePrimeP30.lean) · [Second modulus](../../../ArkLib/Research/ProximityGap/Frontier/_PrizeShapePrimeP30Second.lean) · [Production rectangle bound](../../../ArkLib/Research/ProximityGap/Frontier/PaleySubgroupTransversal.lean)
