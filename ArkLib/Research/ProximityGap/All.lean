@@ -422,6 +422,7 @@ import ArkLib.Research.ProximityGap.Frontier.PinnedBandReaching
 import ArkLib.Research.ProximityGap.Frontier.PinnedScalarMultDivision
 import ArkLib.Research.ProximityGap.Frontier.PinnedScalarRatioImage
 import ArkLib.Research.ProximityGap.Frontier.PoissonAveragedMGF
+import ArkLib.Research.ProximityGap.Frontier.PolynomialSectionJacobian
 import ArkLib.Research.ProximityGap.Frontier.PositiveCharacteristicHeightDescent
 import ArkLib.Research.ProximityGap.Frontier.PowMapFiberCard
 import ArkLib.Research.ProximityGap.Frontier.PowerFiberEndpoint
@@ -599,6 +600,7 @@ import ArkLib.Research.ProximityGap.Frontier.TerminalCubicBudget
 import ArkLib.Research.ProximityGap.Frontier.ThornerZamanInstance
 import ArkLib.Research.ProximityGap.Frontier.ThornerZamanS128
 import ArkLib.Research.ProximityGap.Frontier.ThreeGapPositionalRigidity
+import ArkLib.Research.ProximityGap.Frontier.ThreeHeadDeterminantCover
 import ArkLib.Research.ProximityGap.Frontier.TwistedLineCollisionParseval
 import ArkLib.Research.ProximityGap.Frontier.TwoDAnnihilatorLineParseval
 import ArkLib.Research.ProximityGap.Frontier.UncertaintyCapacitySidePrime
