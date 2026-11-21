@@ -1798,6 +1798,7 @@ import ArkLib.Research.ProximityGap.Frontier._IncidenceCanonicalWeighted
 import ArkLib.Research.ProximityGap.Frontier._IncidenceConstantLineCap
 import ArkLib.Research.ProximityGap.Frontier._IncidenceDependencyArithmetic
 import ArkLib.Research.ProximityGap.Frontier._IncidenceExteriorLineCap
+import ArkLib.Research.ProximityGap.Frontier._IncidenceFourthMomentDirectBound
 import ArkLib.Research.ProximityGap.Frontier._IncidenceFullScaleCores
 import ArkLib.Research.ProximityGap.Frontier._IncidenceOffsetMomentRatioSandwich
 import ArkLib.Research.ProximityGap.Frontier._IncidenceSmoothingDeconvolutionBarrier

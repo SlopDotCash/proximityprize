@@ -157,6 +157,29 @@ The lattice transfer proves `IncidenceCanonicalConstant.firstPrime_constant_floo
 at `221512373/1073741824`. The next integer fails this particular cube budget,
 not the full canonical assumptions.
 
+## Direct fourth-moment check
+
+`Frontier/_IncidenceFourthMomentDirectBound.lean` checks one proposed direct
+fourth-moment replacement for the current constant-line cube-moment proof.
+At `n=2^30`, `m=n+1`, and `d=2^29`, its lower mass charges `d+1` to
+four-distinct tuples using line occupancy at most three, and `d+1-t` to
+tuples with at least two distinct indices using the pair-union distance
+bound. The upper mass is the fourth-power complement bound from error sets
+of size at most `t`.
+
+The exact scalar inequalities cross between `t=170836173` and
+`t=170836174`; if they are consistent, then `t>170836173`. At the existing
+floor budget `t=221512373`, the upper mass already exceeds this direct lower
+mass. Thus this particular fourth-moment replacement does not improve the
+proved `221512374/2^30` floor. This is an arithmetic no-go for the stated
+direct budget only: it is not a counterexample to canonical witnesses, and
+it does not rule out stronger four-witness geometry or other moment bounds.
+The Lean file proves the integer inequalities; the geometric implications
+remain the previously proved line-cap and pair-union lemmas.
+
+Reproduce with
+`./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_IncidenceFourthMomentDirectBound.lean`.
+
 ## Independent arithmetic check
 
 Run `python3 scripts/probes/probe_sponsor_finite_audit.py` to reproduce the
