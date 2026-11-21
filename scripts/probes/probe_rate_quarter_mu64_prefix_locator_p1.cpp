@@ -14,6 +14,7 @@
 //
 // A 15-fold collision is equivalent to a monic affine pencil member that
 // splits at those fifteen roots.  B is not required to be structured.
+// The maximum ratio multiplicity also gives the sharp partial third fiber.
 //
 // Only exponent translations are quotiented: they come from scaling X and
 // are symmetries over the fixed prize field.  Odd exponent multiplication is
@@ -354,8 +355,10 @@ int main(int argc, char** argv) {
   std::atomic<uint64_t> hits{0};
   std::mutex output_mutex;
   std::vector<std::thread> threads;
+  std::vector<unsigned> maxima(workers, 1);
   for (int worker = 0; worker < workers; ++worker) {
-    threads.emplace_back([&] {
+    threads.emplace_back([&, worker] {
+      unsigned max_count = 1;
       std::array<HashSlot, 128> slots{};
       uint32_t generation = 0;
       while (true) {
@@ -406,7 +409,9 @@ int main(int argc, char** argv) {
               slot.count = 1;
             } else {
               slot.roots |= uint64_t{1} << point;
-              if (++slot.count == DEGREE) {
+              ++slot.count;
+              max_count = std::max(max_count, static_cast<unsigned>(slot.count));
+              if (slot.count == DEGREE) {
                 // P_A/P_C=1 at fifteen points would make P_A-P_C, of degree
                 // at most fourteen, vanish identically.  The endpoints are
                 // distinct, so this cannot occur; keep the assertion as an
@@ -438,6 +443,7 @@ int main(int argc, char** argv) {
                     << " hits=" << hits.load() << "\n";
         }
       }
+      maxima[worker] = max_count;
     });
   }
   for (auto& thread : threads) thread.join();
@@ -445,6 +451,8 @@ int main(int argc, char** argv) {
   std::cout << "DONE structured_sets=" << sets.size()
             << " translation_orbits=" << representatives.size()
             << " disjoint_structured_pairs_tested=" << tested.load()
+            << " max_ratio_multiplicity="
+            << *std::max_element(maxima.begin(), maxima.end())
             << " p1_hits=" << hits.load() << "\n";
   return 0;
 }
