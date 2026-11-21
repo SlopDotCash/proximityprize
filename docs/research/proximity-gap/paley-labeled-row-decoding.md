@@ -59,3 +59,15 @@ $$
   p^{-1}\sum_b \exp\!\left(S(A,\{b\})^2/(Ca)\right)\ge p^{-1}\exp(a/C).
 $$
 This is unbounded when $a/\log p\to\infty$. List decoding bounds the **number** of exceptional labels. Even one such label can dominate that exponential average.
+
+## Ordinary lists on the two production subgroups
+
+Let $H$ be the prescribed order-$2^{30}$ subgroup at either production prime, and let $U\subseteq H$, $u=|U|$. Restrict the allowed shift labels to $b\in H$. For any binary center $y$ on $U$ and any integer Hamming radius $r$ with $t=u-2r>1$, the list contains at most
+$$
+ \min\!\left\{|H|,\left\lfloor\frac{\Lambda^2 u}{(t-1)^2}\right\rfloor\right\}
+$$
+**shift labels**, so the bound also counts distinct binary codewords even when a puncturing identifies some labels. Here $\Lambda$ is the certified norm of the quadratic difference matrix on $H$. The sum convention causes only a permutation of labels since $-H=H$.
+
+To see this, extend $y$ by zero to $H$ and let $z_b=\sum_{x\in U}y_x\chi(x+b)$. The norm bound gives $\sum_{b\in H}z_b^2\le\Lambda^2u$. A labeled word within distance $r$ has binary inner product at least $t$, so $z_b\ge t-1$ after undoing the zero completion. This also applies with any prescribed subset of the subgroup labels.
+
+At $u=2^{30}$ take $r=\lfloor12u/25\rfloor=515{,}396{,}075$, so $t=42{,}949{,}674$. The respective integer norm upper bounds $197{,}063$ and $146{,}018$ give worst-center list sizes **at most 22,604 and 12,410**. These counts apply to the $2^{30}$ shifts inside the specified subgroup. The equivalence above requires lists over all $p$ field shifts and every puncturing. [Certified production spectra](paley-production-spectrum.md)
