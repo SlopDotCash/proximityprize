@@ -319,7 +319,7 @@ The [actual cubic incidence theorem](../../../ArkLib/Research/ProximityGap/Front
 
 For each retained section, remove agreements where its value derivative vanishes. The derivative on the section has coordinate degree at most $290805098-67108863=223696235$, leaving at least $134217708$ agreements. At each noncore site the received line meets the cubic at no more than 34 scalars. Every remaining pair is an ordinary incidence as defined above. In particular, a counterexample would produce at least $1431655572$ retained sections and at least **192,153,493,012,046,960** ordinary incidence pairs.
 
-The named threshold now follows in Lean from a strict upper bound of **192,153,493,012,046,960** on those pairs. The surface-intersection and ramification estimates in Lemmas 1–4 are the remaining geometric inputs for this route.
+The named threshold now follows in Lean from a strict upper bound of **192,153,493,012,046,960** on those pairs. At the actual cubic weight, Theorem A would give at most **48,366,704,065,680** ordinary incidences. The surface-intersection and ramification estimates in Lemmas 1–4 are the remaining geometric inputs for this route.
 
 ## Scope and what remains
 

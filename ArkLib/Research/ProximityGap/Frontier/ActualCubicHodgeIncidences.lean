@@ -11,7 +11,7 @@ import ArkLib.Research.ProximityGap.Frontier.HodgeSectionIncidence
 open Finset Polynomial Code
 open ArkLib.ProximityGap.Frontier
 open HalfPredecessorLineCoreGeometry HalfPredecessorBadEventRichPointBridge SecondPrimeActualPopulations SecondPrimeCoordinateWeight
-open scoped NNReal
+open scoped NNReal ENNReal
 
 namespace ProximityGap.ActualCubicHodgeIncidences
 
@@ -115,6 +115,7 @@ private theorem agreement_arithmetic {M J B : ℕ}
   rw [show 357913943 = 134217708 + 223696235 by decide,Nat.mul_add] at h
   exact (Nat.le_of_add_le_add_right h).trans (Nat.add_le_add_left hb _)
 
+omit [Nonempty I] [Fintype F] in
 /-- Every simple subpopulation on the actual cubic forces ordinary incidences,
 after paying at most its coordinate derivative degree per section and the
 scalar degree per domain site. -/
@@ -244,6 +245,7 @@ open Classical in
 noncomputable def regularSections (fam : Family dom δ u) (φ : F →+* K) (f : Factor K) :
     Finset F := (population fam φ f).filter fun z => (cubicResultant f).eval (C (φ z)) ≠ 0
 
+omit [Nonempty I] [DecidableEq I] [Fintype F] in
 /-- At most 161 selected labels are lost, and every retained selected section is simple. -/
 theorem regular_sections (fam : Family dom δ u) (φ : F →+* K) (f : Factor K)
     (hi : Irreducible f) (hd : f.natDegree = 3) (hchar : (3 : K) ≠ 0)
