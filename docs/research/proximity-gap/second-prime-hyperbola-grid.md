@@ -1,0 +1,13 @@
+# A six-head half-rate MCA witness on the second prime
+
+At length $n=2^{30}$ and dimension $k=2^{29}$ the second named subgroup has a received pair with **2,415,919,114 distinct bad scalars at 402,653,185 errors**. Its budget is 2,147,483,648. The same probability lower bound holds at every positive interleaving width and at every dimension from 536,870,912 through 671,088,638. This lowers the previous half-rate ceiling by 26,843,545 errors. The exact first failing count remains open. [Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeHyperbolaGrid.lean) · [Independent finite-field check](../../../scripts/probes/probe_second_prime_hyperbola_grid.py)
+
+Write $s=n/16$, let $w=g^s$, and put $t=x^s$ at an evaluation point $x$. The six heads have coordinate pairs $(a,t/a)$ for $a\in\{1,w,w^2\}$ and $(t/b,b)$ for $b\in\{1,w^3,w^6\}$. Each pair lies on $uv=t$. One head from each family agrees when $t=ab$. The nine products are the distinct powers $w^0$ through $w^8$, each with exactly $s$ preimages. Distinct points of this hyperbola have distinct second coordinates. A line meets it in at most two points, so different points determine different slopes through a given owner. [Quotient and fiber checks](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeSixteenFiber.lean)
+
+Choose a common locator $J$ with $7s-2$ distinct roots outside the nine pair fibers. On each pair fiber, use the value of its coincident heads for the received pair. Assign the two leftover nonroot sites to the first head. Write each head as $(U_i,V_i)$ in the original coordinate $x$. For field parameters $c,d$ use the two polynomials $cJU_i+dXJV_i$ and $JV_i$. Their degrees are at most $8s-1$, inside the half-rate code. Five heads have $10s-2$ defining agreements and the first has $10s$. A foreign site adds one agreement for its folded scalar. Any joint explanation would already be fixed by the core and would contradict the second-row discrepancy at the foreign site.
+
+For a foreign head $i$ at a site owned by $h$, that scalar is
+$$
+c\frac{U_h(x)-U_i(x)}{V_i(x)-V_h(x)}-d x .
+$$
+The coefficient of $d$ distinguishes sites. The coefficient of $c$ distinguishes foreign heads at one site. Each collision forbids one proper line in the $(c,d)$ plane, and the field order exceeds the number of pairs of proposed labels. There is consequently one choice of parameters giving every label at once. Each pair fiber supplies four labels per site, and each of the two leftover sites supplies five. The count is $36s+10$. The minimum number of agreements is $10s-1$, giving $6s+1$ errors. [Simultaneous label theorem](../../../ArkLib/Research/ProximityGap/Frontier/PlanarQuartetMass.lean)

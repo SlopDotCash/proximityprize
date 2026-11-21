@@ -768,6 +768,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeExceptionalHeadCeilings
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeFourHeadEndpoints
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeHeadDescent
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeHessianTransport
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeHyperbolaGrid
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeIntrinsicArithmetic
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeJetMultiplication
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeJetSpecialization
@@ -798,6 +799,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeScalarChart
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSectionResultant
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSelectedSectionChart
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSeparableDifferential
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSixteenFiber
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSmallCubic
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSmoothSeed
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSylvesterFiberMass
@@ -3807,6 +3809,7 @@ import ArkLib.Research.ProximityGap.JohnsonBoundRealLower
 import ArkLib.Research.ProximityGap.JohnsonCommonCenterRefutation
 import ArkLib.Research.ProximityGap.JohnsonInvariant
 import ArkLib.Research.ProximityGap.JointAdjacentFieldReview
+import ArkLib.Research.ProximityGap.JointDyadicCeilings
 import ArkLib.Research.ProximityGap.JointLargeFieldCriterion
 import ArkLib.Research.ProximityGap.JointLargeFieldReview
 import ArkLib.Research.ProximityGap.KKH26DimGeneralSharpInterleavedPin
