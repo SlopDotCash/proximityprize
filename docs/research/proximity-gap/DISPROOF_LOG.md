@@ -49270,3 +49270,23 @@ Run `python3 -O scripts/probes/probe_paley_minimal_valuation_witness.py`
 to reproduce the checks using integer and rational arithmetic. Bounds with
 an unspecified absolute Paley constant or a $K^r$ moment factor remain
 open, as do the estimates for the designated production primes.
+
+## 2026-11-21 · Testing direct Paley transfers on the joint coding-prize instance
+
+At $p=65\cdot2^{239}+1$ both canonical prize predicates hold on $H=\mu_{128}$.
+The generalized Cayley graph with connection set $H$ nevertheless has a nonprincipal
+additive period of magnitude greater than $64>2\sqrt{128}$. The 64 antipodal pairs
+permit a six-bin simultaneous alignment because $6^{64}<p$. The logarithmic bound
+with constant one follows independently from $128\le\log_2(p/128)$.
+[Joint Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/PrizeInstancePaleySpectrum.lean)
+
+For classical Paley discrepancy, punctured Legendre translates on $n\le(p-1)/2$
+coordinates have full affine hull even after omitting the shifts on those coordinates.
+Euler's criterion turns an affine check on more than $(p-1)/2$ shifts into a polynomial
+identity. Its first $n$ coefficient constraints form an invertible Vandermonde system.
+A different encoding uses degree-one words $x+b$ and a common input list of all nonzero
+squares at each coordinate. Both rows $X,1$ already belong to the Reed–Solomon code,
+so its MCA bad-scalar event is empty. The outstanding classical input is an exceptional-shift
+bound for these fixed arithmetic symbol lists over arbitrary sparse coordinate sets.
+[Affine-hull proof](../../../ArkLib/Research/ProximityGap/Frontier/PaleyTranslateInterpolation.lean) ·
+[Exact shift-list reduction](../../../ArkLib/Research/ProximityGap/Frontier/PaleyShiftListRecovery.lean)
