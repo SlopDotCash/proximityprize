@@ -1479,6 +1479,125 @@ Split it into two equal parts to obtain a sparse pair on which these local matri
 bounds alone give no cancellation. This counting argument concerns the coverage
 of the proof method and makes no claim about the sign of that pair's discrepancy.
 
+## Exact four-rate thresholds at budget two and length sixteen
+
+Let $D$ be any smooth domain of length 16 over a finite field of order $q$
+with $\lfloor q/2^{128}\rfloor=2$. The following are the first failing closed-ball
+error counts. At every positive interleaving width, the security predicate holds
+exactly at real radii strictly below the indicated count divided by 16.
+
+| Rate | First MCA failure | First list failure |
+|---|---:|---:|
+| $1/2$ | 2 | 5 |
+| $1/4$ | 2 | 8 |
+| $1/8$ | 2 | 10 |
+| $1/16$ | 2 | 11 |
+
+For MCA the same first failure holds for every injective length-$n$ domain
+and dimension $k$ with $k+3\le n$ at budget two. For lists, take three distinct words
+at agreement $t$. Two words contribute at most $n+k-1$ agreements with the
+center in total. Three contribute at most $n+3(k-1)$, since every agreement at
+a site after the first uses an agreeing pair. At the first three rates, three
+explicit polynomials attain the next grid point. Their pairwise agreements occur
+on three fibers of the power map of degree $4,2,1$, respectively, together with
+common locator roots. Three constants suffice at the last rate. Lean verifies the
+two answer functions against the full operational review contract for every
+such input field, ordering of the domain, eligible dimension and positive width.
+[Joint theorem](../../../ArkLib/Research/ProximityGap/Frontier/BudgetTwoSixteenReview.lean) ·
+[Uniform witnesses](../../../ArkLib/Research/ProximityGap/Frontier/SixteenCosetListLower.lean) ·
+[MCA theorem](../../../ArkLib/Research/ProximityGap/Frontier/BudgetTwoMcaBoundary.lean)
+
+On the order-16 subgroup of the prime field
+$p=680564733906249808969588989158290882561$, the largest absolute nonprincipal
+additive period belongs to exactly one multiplicative coset. Its least positive
+frequency is $340274770462278292654815367542743271468$, its sign is negative,
+and its magnitude lies in
+$[15.999999991006943333,\;15.999999991006943336]$.
+The degree is 16. On the same code Lean proves a positive period above $16-10^{-8}$
+at a different frequency, together with both coding thresholds.
+[Joint formal statement](../../../ArkLib/Research/ProximityGap/Frontier/BudgetTwoSixteenReview.lean)
+
+The global maximum has an exact-arithmetic certificate outside Lean.
+With $g$ of order 16, eight antipodal pairs determine each period. Signed
+residues for a positive candidate, and the odd residues $2(bg^i\bmod p)-p$
+for a negative candidate, belong to an integer lattice of index $p^7$.
+Eight signed rotations of a short vector give a basis with determinant
+of absolute value $p^7$. The cosine chord bound limits the squared norm
+of any lift capable of winning. Exact inverse-basis bounds and parity leave
+560 positive and 416 negative candidate frequencies after the norm test.
+Rational Taylor bounds separate the two winning cosets from all competitors.
+Run the standard-library Python probe with optimization enabled to reproduce
+the full enumeration and the interval.
+[Extremal-period certificate](../../../scripts/probes/probe_budget_two_sixteen_period.py)
+
+There is also a uniform statement as the prime varies. If a nonempty domain
+$D\subseteq\mathbb F_p$ is covered by $d$ signed representatives, Lean produces
+a nonzero frequency with $|D|-\operatorname{Re}\eta_b<8\pi^2|D|p^{-2/d}$.
+Partition the phases of the representatives into $K$ equal intervals each.
+For $K^d<p$, two frequencies have the same interval in every coordinate.
+At their difference, $1-\cos\theta\le\theta^2/2$ gives a deficit strictly
+below $2\pi^2|D|/K^2$. For a subgroup $H$ of fixed dyadic order $n=2d$,
+one representative of each antipodal pair suffices. Together with the
+dyadic determinant bound earlier in this ledger, this gives
+$$
+\frac{8n}{d}(2p)^{-2/d}\ \le\
+n-\max_{b\ne0}|\eta_b(H)|\ <\ 8\pi^2 n\,p^{-2/d}.
+$$
+In particular the deficit has order $p^{-1/4}$ for order 16 as $p$ ranges
+over primes congruent to one modulo 16. The proof of the right inequality
+is kernel-checked. The left uses the written cyclotomic determinant argument.
+The sparse prime-field upper bound with growing subgroup order remains open.
+[Signed-cover bounds](../../../ArkLib/Research/ProximityGap/Frontier/PrimeFieldPeriodAlignment.lean) ·
+[Dyadic determinant check](../../../scripts/probes/probe_paley_dyadic_period_ceiling.py)
+
+For fixed dyadic $n=2d$, this also bounds the number of candidate vectors in
+the exact search independently of $p$. In the phase lattice of the first $d$
+powers of a generator, every nonzero vector $v$ and its signed rotations form
+a matrix of nonzero determinant divisible by $p^{d-1}$. Nonvanishing follows
+from irreducibility of $X^d+1$ over $\mathbb Q$, and divisibility follows
+because the columns span at most one dimension modulo $p$. Hadamard's
+inequality gives $\|v\|_2\ge p^{1-1/d}$. For a maximizing frequency take
+centered lifts with denominator $m=p$ for its positive sign or odd lifts
+with $m=2p$ for the negative sign. The chord bound gives
+$16\|v\|_2^2/m^2\le n-|\eta_b|$, so $\|v\|_2<2\pi\sqrt d\,p^{1-1/d}$.
+Disjoint balls of radius $\tfrac12 p^{1-1/d}$ around these lattice points
+fit in a ball with that radius added to the search radius. Their volume ratio
+bounds the count by $(1+4\pi\sqrt d)^d$. The order-16 certificate above
+computes a much smaller search region from its explicit basis.
+
+## Production list bounds at the Johnson threshold and one step beyond
+
+For $n=2^{30}$ the following closed balls have list size at most $n$ on
+**every** injective evaluation domain, for every finite interleaving width.
+At rates $1/2,1/4,1/8,1/16$ the certified error counts are respectively
+$314491699,536870913,694116762,805306370$. These are safe at both named
+prime fields' 128-bit budgets. Choose exactly $t=n-e$ agreement sites for
+each word. Distinct resulting sets meet in at most $k-1$ sites. When
+$t^2>n(k-1)$ their centered indicator vectors have strictly negative pairwise
+inner products, giving at most $n$ vectors in their $(n-1)$-dimensional
+span. [Four-rate Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/InterleavedListJohnsonRank.lean)
+
+At rate $1/8$ the **second** named prime is safe one more step, through
+$694116763$ errors. Here $t=379625061$ and $t^2<n(k-1)$, while
+$t^2>(n-1)(k-1)$. For each coordinate, the agreement sets omitting it have
+at most $n-1$ members by the previous argument on the other coordinates.
+Each set is counted $n-t$ times. Thus the list has at most
+$\lfloor n(n-1)/(n-t)\rfloor=1660990722$ members, below the exact
+budget $2147483648$. This argument bounds every center at every width.
+An over-budget center at the subsequent error count is still unknown.
+[Puncturing proof](../../../ArkLib/Research/ProximityGap/Frontier/InterleavedListJohnsonPuncture.lean)
+
+An independent quadratic estimate at this same grid point gives $1931589824$.
+Write $V=t(n-t)$ and $U=n(k-1)-t^2$. In the centered Gram matrix
+$G_{ij}=n|S_i\cap S_j|-t^2$, the diagonal is $V$ and every off-diagonal
+entry is in $[-t^2,U]$. Summing $(G_{ij}-U)(G_{ij}+t^2)$ over all entries
+and using $\sum G_{ij}\ge0$ and $n\sum G_{ij}^2\ge L^2V^2$ gives
+$L(V^2-nUt^2)\le n(V-U)(V+t^2)$ when $U\le t^2$. Lean checks the
+inequality over arbitrary finite set families and its specialization to the
+canonical list size at the second prime.
+[Quadratic inequality](../../../ArkLib/Research/ProximityGap/Frontier/AgreementQuadratic.lean) ·
+[Production specialization](../../../ArkLib/Research/ProximityGap/Frontier/InterleavedListJohnsonQuadratic.lean)
+
 ## 2026-11-21 · The optimized-power apolar bound and the exact lower-rate error curves
 
 The reciprocal interpolation proof now applies to every positive integral power $m$. If $d=n-k-1$, $2e\le n-k$ and $n<m(d+2-e)+e$, then every genuine Reed–Solomon bad-scalar family on every injective length-$n$ evaluation domain satisfies
@@ -1663,6 +1782,22 @@ Lean now verifies that the nonzero polynomial determinant bounds the excess core
 ### Exact rate-eighth list threshold at length 32 and budget three
 
 Four distinct degree-below-four codewords on $\mu_{32}$ can each agree with one center on 12 sites. Thirteen agreements each are impossible even on an arbitrary 32-site domain, since the six cubic pair differences supply at most 18 extra agreements. The construction verifies sixteen specified pair coincidences in $\mathbb Z[z]/(z^{16}+1)$ and allocates the other sixteen sites to the four words. It applies in every field with an element of order 32 and to every positive interleaving width. At the concrete 130-bit budget-three prime, the first bad counts are now 10 at rate one half, 20 at rate one eighth, and 23 at rate one sixteenth. [Construction and proof](mu32-list-threshold-large-characteristic.md#dimension-four-at-the-same-length) · [Integral arithmetic](../../../scripts/probes/probe_mu32_four_cubics.py)
+
+### Scalar Hessian, finite cubic algebra and Laurent-branch proofs in Lean
+
+For a primitive irreducible scalar-value equation of value degree 2, 3, or 4 and scalar height $m$, divisibility by the actual scalar Hessian gives **at most one distinct scalar** with a value in the fixed coordinate field if the characteristic exceeds $8m+4$ and the value degree. Lean constructs the characteristic-$p$ derivation on the function field, proves every geometric root affine in the scalar, and specializes the same affine function at all rational points. This handles the zero-Hessian alternative in both terminal eliminations. [Reverse Hessian theorem](../../../ArkLib/Research/ProximityGap/Frontier/ReverseHessianAffineSection.lean) · [Site specialization](../../../ArkLib/Research/ProximityGap/Frontier/AlgebraicSectionSpecialization.lean)
+
+For the other cubic case Lean checks the monic binary chart over a finite coordinate quotient, the homogeneous column presentation, and the bound on the dimension of the quotient by products of the two partial derivatives in terms of the local first-polar lengths. Lean identifies the codimension of the bounded polynomial window with the dimension of this actual quotient and gives bounded representatives and homogeneous multipliers. [Polynomial window theorem](../../../ArkLib/Research/ProximityGap/Frontier/RawJacobianWindow.lean)
+
+On a tame Laurent expansion $X=\alpha+t^e$, Lean also proves the coefficient formula and the product rule for differentiation holding $X$ fixed. It verifies the improved order bound for the second derivative at a tangent branch, and proves that at a fixed received line of contact order $s$ the cleared second implicit derivative vanishes to order at least $3j+s$ when the value partial vanishes to order $j$. The comparison between the full curve intersection and the sum of these local quantities is still required for end-to-end verification. [Binary column presentation](../../../ArkLib/Research/ProximityGap/Frontier/MonicRawPolynomialQuotient.lean) · [Finite algebra](../../../ArkLib/Research/ProximityGap/Frontier/JacobianPowerFiniteAlgebra.lean) · [Laurent calculation](../../../ArkLib/Research/ProximityGap/Frontier/TameBranchDerivative.lean)
+
+For the constructive side, distinct normalized two-coordinate evaluation functionals give distinct scalars for a common choice of received rows when their number of unordered pairs is at most the field size. Lean verifies the resulting lower bound for the literal MCA event, including joint nonagreement on each witnessing support. [Witness assembly](../../../ArkLib/Research/ProximityGap/Frontier/LinearPencilFreshLabels.lean)
+
+Lean also identifies the local polar colength with the sum of the branch orders given a finite-defect branch inclusion. For the proper quartic intersection, the padded Sylvester determinant proves the product-of-orders lower bound at each translated site and sums those lower bounds over distinct sites. [Polar colength](../../../ArkLib/Research/ProximityGap/Frontier/FiniteNormalizationColength.lean) · [Local determinant](../../../ArkLib/Research/ProximityGap/Frontier/SylvesterLocalMultiplicity.lean)
+
+### Exact two-head error curves at three sponsor rates
+
+For all $16\mid n$, $n\ge2^{30}$, $n/16\le k\le n/4$, finite fields of characteristic greater than $2n$, and all injective evaluation domains, the exact numerator is $2(e+1)$ from $E=\lceil(n-k)/2\rceil$ through $U=n-\lfloor(n+3(k-1)+4)/3\rfloor-1$. The first failing count is $\lfloor B/2\rfloor$ for every integer budget $2E\le B\le2(U+1)+1$. At production length the upper budget endpoints are **894784855, 1163220311, and 1297438039** for rates $1/4,1/8,1/16$. The proof uses a possibly large scalar-degree, value-quadratic first interpolant and an independent degree-16, value-quartic double interpolant. Noncommon factors are bounded by a nonzero scalar resultant, and the common factors have both value degree at most two and scalar degree at most sixteen. Two large heads must account for every alleged violation, giving cores so large that they cover every witness. This extends the previously reported rate-eighth interval through one half by 44,739,242 errors and the earlier rate-sixteenth upper budget endpoint 1295252617 by 2185422 budgets. The proof is written, with a uniform exact-arithmetic certificate. [Proof](three-rates-two-head-window.md) · [Arithmetic](../../../scripts/probes/probe_three_rates_two_head_window.py)
 
 Lean now proves this threshold for every smooth 32-site evaluation embedding, including arbitrary nonzero coset representatives and coordinate orderings. The cubic scale factors simplify to $s=z+z^3+z^4-z^8-z^9-z^{11}$ and $z^4s$. The integral identities reduce to the single equation $z^{16}=-1$. The real-radius theorem proves that the closed interleaved list has size at most three exactly when $\delta<5/8$. At a 128-bit integer budget of three, the canonical `GrandListResolution` verifies the safe grid index 19 and the first unsafe index 20 for every positive width. Seven exported conclusions passed the independent con-leche checker with 27,841 declarations. [Lean proof and prize resolution](../../../ArkLib/Research/ProximityGap/Frontier/Mu32CubicList.lean)
 
