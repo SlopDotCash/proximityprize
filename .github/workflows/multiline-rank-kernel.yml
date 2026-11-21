@@ -83,6 +83,7 @@ jobs:
               'active_error_rank_incidence_budget',
               'affine_heads_and_agreement_of_small_error_incidence',
               'le_union_card_of_distinct_code_pencils',
+              'three_circuit_incidence',
           }
           assert {name.rsplit('.',1)[1] for name,_,_ in matches} == expected
           assert len(matches) == len(expected)
