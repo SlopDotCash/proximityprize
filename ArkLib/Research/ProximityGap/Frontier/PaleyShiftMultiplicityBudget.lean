@@ -169,7 +169,8 @@ theorem eq_leadingCoeff_mul_prod_of_local_dvd {K : Type*} [Field K]
   let Q : K[X] := ∏ b ∈ S, (X - C b) ^ m b
   have hm : Q.Monic := monic_prod_of_monic _ _ (fun b _ => (monic_X_sub_C b).pow _)
   have hdeg : Q.natDegree = P.natDegree := by
-    rw [hdegree, show Q = _ from rfl, natDegree_prod_of_monic _ _ (fun b _ => (monic_X_sub_C b).pow _)]
+    rw [hdegree, show Q = _ from rfl,
+      natDegree_prod_of_monic _ _ (fun b _ => (monic_X_sub_C b).pow _)]
     simp
   have hdiv : Q ∣ P := by
     apply Finset.prod_dvd_of_coprime
