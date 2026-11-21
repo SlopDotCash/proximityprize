@@ -2,6 +2,7 @@
 """Enumerate the small occupancy signatures left by a four-head successor failure."""
 
 from itertools import combinations, combinations_with_replacement
+from math import prod
 
 
 def require(condition, message):
@@ -39,7 +40,27 @@ def examples(h):
     return found
 
 
+def sharp_four_fiber_example():
+    prime = 17
+    domain = [pow(2, j, prime) for j in range(8)]
+    representatives = domain[:4]
+    labels = {x * x % prime: i for i, x in enumerate(representatives)}
+    require(len(set(domain)) == 8 and len(labels) == 4, "four distinct square fibers")
+
+    def evaluate(i, x):
+        return (x**3 - prod(x - y for j, y in enumerate(representatives) if j != i)) % prime
+
+    aligned = []
+    for x in domain:
+        label = labels[x * x % prime]
+        if all(evaluate(i, x) == x**3 % prime for i in range(4) if i != label):
+            aligned.append(x)
+    require(aligned == representatives, "four-fiber alignment attains degree bound")
+    print(f"Four-fiber sharp example over F_{prime}: aligned sites {aligned}.")
+
+
 def main():
+    sharp_four_fiber_example()
     h = 2**28
     fits = examples(h)
     require({key: data[-1] for key, data in fits.items()} ==
