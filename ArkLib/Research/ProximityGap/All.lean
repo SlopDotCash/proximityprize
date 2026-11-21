@@ -801,6 +801,7 @@ import ArkLib.Research.ProximityGap.Frontier.UncertaintyTwoPowerSparseFloor
 import ArkLib.Research.ProximityGap.Frontier.UncertaintyTwoPowerTrinomialFloor
 import ArkLib.Research.ProximityGap.Frontier.UnconditionalCubicPopulation
 import ArkLib.Research.ProximityGap.Frontier.UnifyBDemandSupplyNormConsolidation
+import ArkLib.Research.ProximityGap.Frontier.UniversalCubicBudgetWindow
 import ArkLib.Research.ProximityGap.Frontier.UniversalCubicThreshold
 import ArkLib.Research.ProximityGap.Frontier.UniversalObstructionOmegaBudget
 import ArkLib.Research.ProximityGap.Frontier.WF407W2_D2gspec
