@@ -50,11 +50,14 @@ import ArkLib.Research.ProximityGap.Frontier.AlignableLePinnedMaxMult
 import ArkLib.Research.ProximityGap.Frontier.AlignedAmalgamation
 import ArkLib.Research.ProximityGap.Frontier.AntipodalSigmaUnique
 import ArkLib.Research.ProximityGap.Frontier.AntipodalVanishingCountLower
+import ArkLib.Research.ProximityGap.Frontier.ApolarAffineKernelSpan
 import ArkLib.Research.ProximityGap.Frontier.ApolarAntipodalFiber
+import ArkLib.Research.ProximityGap.Frontier.ApolarBorderCoordinates
 import ArkLib.Research.ProximityGap.Frontier.ApolarBorderDescent
 import ArkLib.Research.ProximityGap.Frontier.ApolarChartCancellation
 import ArkLib.Research.ProximityGap.Frontier.ApolarChartDescent
 import ArkLib.Research.ProximityGap.Frontier.ApolarChartNormalization
+import ArkLib.Research.ProximityGap.Frontier.ApolarCoefficientSpan
 import ArkLib.Research.ProximityGap.Frontier.ApolarCoordinateEquations
 import ArkLib.Research.ProximityGap.Frontier.ApolarCoordinateTransport
 import ArkLib.Research.ProximityGap.Frontier.ApolarCubicObstruction
@@ -411,6 +414,7 @@ import ArkLib.Research.ProximityGap.Frontier.PowerSumRatioMonotone
 import ArkLib.Research.ProximityGap.Frontier.PrescribedProductList
 import ArkLib.Research.ProximityGap.Frontier.PrescribedProductThreshold
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldCapacityGap
+import ArkLib.Research.ProximityGap.Frontier.PrimeFieldCapacityWindow
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldDoublingChain
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldMultiplierHeight
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldPeriodAlignment
