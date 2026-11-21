@@ -58,12 +58,15 @@ theorem secondPrime_ceiling {k : ℕ} (hk : 2 ≤ k) (hkr : k ≤ 357913941) :
 
 /-- At rate one sixteenth both endpoints refer to the same field, code and error target. -/
 theorem secondPrime_rateSixteenth_bracket :
-    let δ := mcaDeltaStar (F := ZMod P) (A := ZMod P) (evalCode PrizeShapePrimeP30Second.g (2 ^ 30) (2 ^ 26 - 1))
+    let δ := mcaDeltaStar (F := ZMod P) (A := ZMod P)
+        (evalCode PrizeShapePrimeP30Second.g (2 ^ 30) (2 ^ 26 - 1))
         (ProximityGap.epsStar : ℝ≥0∞)
     (647626308 / 1073741824 : ℝ≥0) ≤ δ ∧ δ ≤ (715827882 / 1073741824 : ℝ≥0) :=
-  ⟨TwoCorePackingThreshold.secondPrime_rateSixteenth_floor, secondPrime_ceiling (by decide) (by decide)⟩
+  ⟨TwoCorePackingThreshold.secondPrime_rateSixteenth_floor,
+    secondPrime_ceiling (by decide) (by decide)⟩
 
 end ArkLib.ProximityGap.Frontier.ThreeCoreSecondPrimeBracket
 
 #print axioms ArkLib.ProximityGap.Frontier.ThreeCoreSecondPrimeBracket.secondPrime_ceiling
-#print axioms ArkLib.ProximityGap.Frontier.ThreeCoreSecondPrimeBracket.secondPrime_rateSixteenth_bracket
+#print axioms
+  ArkLib.ProximityGap.Frontier.ThreeCoreSecondPrimeBracket.secondPrime_rateSixteenth_bracket

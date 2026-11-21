@@ -109,23 +109,23 @@ private lemma ordinary_pow (hn : n = 3 * r + 1) (dom : Fin n ↪ ZMod p)
 private lemma event (hn : n = 3 * r + 1) (dom : Fin n ↪ ZMod p)
     (hk : 2 ≤ k) (hkr : k ≤ r) (i : Fin 3) (z : Fin n) (γ : ZMod p)
     (hz : z ∉ core hn i)
-    (hfold : (i.val : ZMod p)^2 * dom z + γ * i.val = stack dom 0 z + γ * stack dom 1 z)
+    (hfold : (i.val : ZMod p) ^ 2 * dom z + γ * i.val = stack dom 0 z + γ * stack dom 1 z)
     (hdir : (i.val : ZMod p) ≠ stack dom 1 z) :
     mcaEvent (F := ZMod p) (ReedSolomon.code dom k : Set (Fin n → ZMod p))
-      (((2*r : ℕ) : ℝ≥0) / n) (stack dom 0) (stack dom 1) γ := by
+      (((2 * r : ℕ) : ℝ≥0) / n) (stack dom 0) (stack dom 1) γ := by
   have h1 : (1 : WithBot ℕ) < (k : ℕ) := by exact_mod_cast (by omega : 1 < k)
   have hconst : ∀ a : ZMod p, (C a).degree < (k : ℕ) := fun a =>
     degree_C_le.trans_lt (lt_trans (by decide : (0 : WithBot ℕ) < 1) h1)
-  have ha := (degree_C_mul_X_le ((i.val : ZMod p)^2)).trans_lt h1
+  have ha := (degree_C_mul_X_le ((i.val : ZMod p) ^ 2)).trans_lt h1
   apply HalfPredecessorCoreFreshDecode.mcaEvent_of_affine_core_fresh dom k _ (stack dom)
-    γ (core hn i) z (C ((i.val : ZMod p)^2) * X) (C (i.val : ZMod p)) hz ha (hconst _)
+    γ (core hn i) z (C ((i.val : ZMod p) ^ 2) * X) (C (i.val : ZMod p)) hz ha (hconst _)
   · rw [← C_mul]
     exact (degree_add_le _ _).trans_lt (max_lt ha (hconst _))
   · simpa only [card_core] using hkr
   · have hn0 : (n : ℝ≥0) ≠ 0 := by exact_mod_cast NeZero.ne n
     rw [Fintype.card_fin, card_core, tsub_mul, one_mul, div_mul_cancel₀ _ hn0]
     rw [← Nat.cast_tsub]
-    exact_mod_cast (by omega : n - 2*r ≤ r+1)
+    exact_mod_cast (by omega : n - 2 * r ≤ r + 1)
   · intro x hx
     obtain ⟨q, rfl⟩ := mem_core.mp hx
     simpa only [eval_mul, eval_C, eval_X] using
@@ -138,7 +138,7 @@ private lemma event (hn : n = 3 * r + 1) (dom : Fin n ↪ ZMod p)
 private lemma ordinary_event (hn : n = 3 * r + 1) (dom : Fin n ↪ ZMod p)
     (hp : 3 < p) (hk : 2 ≤ k) (hkr : k ≤ r) (s : Fin 6) (q : Fin r) :
     mcaEvent (F := ZMod p) (ReedSolomon.code dom k : Set (Fin n → ZMod p))
-      (((2*r : ℕ) : ℝ≥0) / n) (stack dom 0) (stack dom 1) (ordinary hn dom s q) := by
+      (((2 * r : ℕ) : ℝ≥0) / n) (stack dom 0) (stack dom 1) (ordinary hn dom s q) := by
   let z := slot hn (owner s) q
   have hs := stack_slot dom hn (owner s) q
   apply event hn dom hk hkr (source s) z
@@ -160,7 +160,7 @@ private lemma ordinary_event (hn : n = 3 * r + 1) (dom : Fin n ↪ ZMod p)
 private lemma exceptional_event (hn : n = 3 * r + 1) (dom : Fin n ↪ ZMod p)
     (hp : 3 < p) (hk : 2 ≤ k) (hkr : k ≤ r) (hzero : dom 0 = 1) (i : Fin 3) :
     mcaEvent (F := ZMod p) (ReedSolomon.code dom k : Set (Fin n → ZMod p))
-      (((2*r : ℕ) : ℝ≥0) / n) (stack dom 0) (stack dom 1) (exceptional p i) := by
+      (((2 * r : ℕ) : ℝ≥0) / n) (stack dom 0) (stack dom 1) (exceptional p i) := by
   have hne : (i.val : ZMod p) ≠ 3 := by
     intro h
     have h' := cast_eq (a := i.val) (b := 3) (by omega) hp (by simpa using h)
@@ -218,14 +218,14 @@ theorem epsMCA_lower_bound (dom : Fin n ↪ ZMod p) (hn : n = 3 * r + 1)
     (hOrd : Function.Injective (fun c : Fin 3 => ordScale p c ^ n))
     (hExc : Function.Injective (exceptional p))
     (hSep : ∀ c i : Fin 3, ordScale p c ^ n ≠ exceptional p i ^ n) :
-    ((6*r+3 : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) ≤
+    ((6 * r + 3 : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞) ≤
       epsMCA (F := ZMod p) (A := ZMod p) (ReedSolomon.code dom k : Set (Fin n → ZMod p))
-        (((2*r : ℕ) : ℝ≥0) / n) := by
+        (((2 * r : ℕ) : ℝ≥0) / n) := by
   classical
   let e : (Fin 6 × Fin r) ⊕ Fin 3 ↪ ZMod p :=
     ⟨label hn dom, label_injective hn dom hp hroot hOrd hExc hSep⟩
   have h := MCAWitnessSpread.epsMCA_ge_card_div_of_mcaEvent_set
-    (ReedSolomon.code dom k : Set (Fin n → ZMod p)) (((2*r : ℕ) : ℝ≥0) / n)
+    (ReedSolomon.code dom k : Set (Fin n → ZMod p)) (((2 * r : ℕ) : ℝ≥0) / n)
     (stack dom) (Finset.univ.map e) ?_
   · simpa only [Finset.card_map, Finset.card_univ, Fintype.card_sum,
       Fintype.card_prod, Fintype.card_fin, ZMod.card] using h

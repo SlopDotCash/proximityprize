@@ -30,7 +30,7 @@ namespace ArkLib.ProximityGap.Frontier.TwoCoreMomentApplication
 private theorem line_card_le_of_small_core {e t z L : ℕ} (hz : z < t - 1626881)
     (hp : L * max 1 (t - z) + z ≤ e + t) : L ≤ 1 + e / 1626882 := by
   have hwidth : 1626882 ≤ t - z := by omega
-  rw [max_eq_right (by omega : 1 ≤ t-z)] at hp
+  rw [max_eq_right (by omega : 1 ≤ t - z)] at hp
   cases L with
   | zero => omega
   | succ m =>
@@ -50,13 +50,13 @@ theorem production_family_card_le (fam : BadScalarRichPointFamily dom k δ u)
     (htlo : 426115517 ≤ t) (hthi : t ≤ 570425344) :
     fam.G.card ≤ 2 * e + 2 := by
   classical
-  apply TwoLargeCoreCount.card_le_two_mul_add_two fam (zmin := t-1626881)
+  apply TwoLargeCoreCount.card_le_two_mul_add_two fam (zmin := t - 1626881)
     hk (by omega) (by omega) ht (by omega)
   intro H hH hsize
   by_contra hnone
   let D (l : LineParameter F) := jointCore dom (u 0) (u 1) l.1 l.2
   have hsmall {a b : F} (ha : a ∈ H) (hb : b ∈ H) (hab : a ≠ b) :
-      (D (secantParameter fam a b)).card < t-1626881 := by
+      (D (secantParameter fam a b)).card < t - 1626881 := by
     by_contra! h
     exact hnone ⟨a, ha, b, hb, hab, h⟩
   let B := 1 + e / 1626882

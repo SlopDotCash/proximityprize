@@ -73,9 +73,9 @@ theorem epsMCA_eq_bisimplex {p e : ℕ} [Fact p.Prime] {g : ZMod p}
   apply le_antisymm
   · exact TwoCorePackingThreshold.epsMCA_le_twoCore_count hg
       (by decide) (by decide) (by dsimp [domainLength]; omega) (by dsimp [domainLength]; omega)
-  · have h := PackingEnvelope.provedPacking_le_epsMCA (d := K-1) (t := domainLength-e) hg
-    have hshoulder : (K-1) + 2 ≤ domainLength-e ∧ domainLength+2 ≤ 2*(domainLength-e) ∧
-        2*(domainLength-e) ≤ domainLength + (K-1) + 1 := by dsimp [K, domainLength]; omega
+  · have h := PackingEnvelope.provedPacking_le_epsMCA (d := K - 1) (t := domainLength - e) hg
+    have hshoulder : (K - 1) + 2 ≤ domainLength - e ∧ domainLength + 2 ≤ 2 * (domainLength - e) ∧
+        2 * (domainLength - e) ≤ domainLength + (K - 1) + 1 := by dsimp [K, domainLength]; omega
     rw [PackingEnvelope.provedPackingCount, ite_eq_left hshoulder,
       show domainLength - (domainLength - e) = e by omega] at h
     have hn : (domainLength : ℝ≥0) ≠ 0 := by norm_num [domainLength]
@@ -104,14 +104,15 @@ theorem uniqueDecoding_plateau {p Q : ℕ} [Fact p.Prime] {g : ZMod p}
       (Q : ℝ≥0∞)⁻¹ = (15 / 32 : ℝ≥0) := by
   have good := epsMCA_eq_spike (e := 503316479) hg (by decide)
   have bad := epsMCA_eq_bisimplex (e := 503316480) hg (by decide) (by decide)
-  have hratio : ((503316480 : ℕ) : ℝ≥0) / domainLength = (15 / 32 : ℝ≥0) := by norm_num [domainLength]
+  have hratio : ((503316480 : ℕ) : ℝ≥0) / domainLength = (15 / 32 : ℝ≥0) := by
+    norm_num [domainLength]
   rw [← hratio]
   apply le_antisymm
   · apply mcaDeltaStar_le_of_bad
     rw [bad]
     exact inv_lt_count hQ (Fact.out (p := p.Prime)).pos (by omega)
   · apply latticeBoundary_le_mcaDeltaStar_of_predecessor_good (by decide) (by decide)
-    change epsMCA (F := ZMod p) (A := ZMod p) (evalCode g domainLength (K-1))
+    change epsMCA (F := ZMod p) (A := ZMod p) (evalCode g domainLength (K - 1))
       (((503316479 : ℕ) : ℝ≥0) / domainLength) ≤ (Q : ℝ≥0∞)⁻¹
     rw [good]
     apply natCast_div_le_inv_of_mul_le hQ (Fact.out (p := p.Prime)).pos
@@ -125,12 +126,12 @@ theorem uniqueDecoding_plateau {p Q : ℕ} [Fact p.Prime] {g : ZMod p}
 opposite sides of the field-normalized budget. -/
 private theorem adjacent_counts {p j Q a b : ℕ} [Fact p.Prime] {g : ZMod p}
     (hj : 1 ≤ j) (hjn : j ≤ domainLength) (hQ : 0 < Q)
-    (hprev : epsMCA (F := ZMod p) (A := ZMod p) (evalCode g domainLength (K-1))
-      (((j-1 : ℕ) : ℝ≥0) / domainLength) = (a : ℝ≥0∞) / (p : ℝ≥0∞))
-    (hnext : epsMCA (F := ZMod p) (A := ZMod p) (evalCode g domainLength (K-1))
+    (hprev : epsMCA (F := ZMod p) (A := ZMod p) (evalCode g domainLength (K - 1))
+      (((j - 1 : ℕ) : ℝ≥0) / domainLength) = (a : ℝ≥0∞) / (p : ℝ≥0∞))
+    (hnext : epsMCA (F := ZMod p) (A := ZMod p) (evalCode g domainLength (K - 1))
       ((j : ℝ≥0) / domainLength) = (b : ℝ≥0∞) / (p : ℝ≥0∞))
     (ha : a ≤ p / Q) (hb : p / Q < b) :
-    mcaDeltaStar (F := ZMod p) (A := ZMod p) (evalCode g domainLength (K-1))
+    mcaDeltaStar (F := ZMod p) (A := ZMod p) (evalCode g domainLength (K - 1))
       (Q : ℝ≥0∞)⁻¹ = (j : ℝ≥0) / domainLength := by
   apply le_antisymm
   · apply mcaDeltaStar_le_of_bad
@@ -146,14 +147,14 @@ private theorem adjacent_counts {p j Q a b : ℕ} [Fact p.Prime] {g : ZMod p}
 theorem rateSixteenth_threshold_curve {p B : ℕ} [Fact p.Prime] {g : ZMod p}
     (hg : orderOf g = domainLength) (hB : B = p / 2 ^ 128)
     (hpos : 1 ≤ B) (hmax : B ≤ 1295252617) :
-    mcaDeltaStar (F := ZMod p) (A := ZMod p) (evalCode g domainLength (K-1))
+    mcaDeltaStar (F := ZMod p) (A := ZMod p) (evalCode g domainLength (K - 1))
       (ProximityGap.epsStar : ℝ≥0∞) =
         ((min B (max 503316480 (B / 2)) : ℕ) : ℝ≥0) / domainLength := by
   by_cases hlow : B ≤ 503316479
   · rw [max_eq_left (by omega : B/2 ≤ 503316480), min_eq_left (by omega : B ≤ 503316480),
       epsStar_coe_eq_natCast_inv]
     exact adjacent_counts hpos (by dsimp [domainLength]; omega) (by norm_num)
-      (epsMCA_eq_spike (e := B-1) hg (by omega))
+      (epsMCA_eq_spike (e := B - 1) hg (by omega))
       (epsMCA_eq_spike (e := B) hg hlow)
       (by omega) (by omega)
   by_cases hmid : B ≤ 1006632961
@@ -178,7 +179,7 @@ already exceeds the budget. -/
 theorem rateSixteenth_good_iff {p B : ℕ} [Fact p.Prime] {g : ZMod p}
     (hg : orderOf g = domainLength) (hB : B = p / 2 ^ 128)
     (hpos : 1 ≤ B) (hmax : B ≤ 1295252617) (δ : ℝ≥0) :
-    epsMCA (F := ZMod p) (A := ZMod p) (evalCode g domainLength (K-1)) δ ≤
+    epsMCA (F := ZMod p) (A := ZMod p) (evalCode g domainLength (K - 1)) δ ≤
       (ProximityGap.epsStar : ℝ≥0∞) ↔
       δ < ((min B (max 503316480 (B / 2)) : ℕ) : ℝ≥0) / domainLength := by
   have hcurve := rateSixteenth_threshold_curve hg hB hpos hmax
@@ -186,7 +187,7 @@ theorem rateSixteenth_good_iff {p B : ℕ} [Fact p.Prime] {g : ZMod p}
     dsimp [domainLength]
     omega
   have hlt : mcaDeltaStar (F := ZMod p) (A := ZMod p)
-      (evalCode g domainLength (K-1)) (ProximityGap.epsStar : ℝ≥0∞) < 1 := by
+      (evalCode g domainLength (K - 1)) (ProximityGap.epsStar : ℝ≥0∞) < 1 := by
     rw [hcurve, div_lt_one (by norm_num [domainLength])]
     exact_mod_cast hindex
   rw [← hcurve]
@@ -204,7 +205,7 @@ theorem rateSixteenth_interleaved_good_iff {p B : ℕ} [Fact p.Prime] {g : ZMod 
     (hg : orderOf g = domainLength) (hB : B = p / 2 ^ 128)
     (hpos : 1 ≤ B) (hmax : B ≤ 1295252617) (width : ℕ) [NeZero width] (δ : ℝ≥0) :
     epsMCA (F := ZMod p) (A := Fin width → ZMod p)
-      ((evalCode g domainLength (K-1)) ^⋈ (Fin width)) δ ≤ (ProximityGap.epsStar : ℝ≥0∞) ↔
+      ((evalCode g domainLength (K - 1)) ^⋈ (Fin width)) δ ≤ (ProximityGap.epsStar : ℝ≥0∞) ↔
       δ < ((min B (max 503316480 (B / 2)) : ℕ) : ℝ≥0) / domainLength := by
   have hcode := Ownership.evalCode_pred_eq_rsCode hg (by decide : 0 < K)
   rw [hcode, epsMCA_interleaved_eq, ← hcode]
@@ -215,7 +216,7 @@ theorem rateSixteenth_interleaved_threshold_curve {p B : ℕ} [Fact p.Prime] {g 
     (hg : orderOf g = domainLength) (hB : B = p / 2 ^ 128)
     (hpos : 1 ≤ B) (hmax : B ≤ 1295252617) (width : ℕ) [NeZero width] :
     mcaDeltaStar (F := ZMod p) (A := Fin width → ZMod p)
-      ((evalCode g domainLength (K-1)) ^⋈ (Fin width)) (ProximityGap.epsStar : ℝ≥0∞) =
+      ((evalCode g domainLength (K - 1)) ^⋈ (Fin width)) (ProximityGap.epsStar : ℝ≥0∞) =
       ((min B (max 503316480 (B / 2)) : ℕ) : ℝ≥0) / domainLength := by
   have hcode := Ownership.evalCode_pred_eq_rsCode hg (by decide : 0 < K)
   rw [hcode, mcaDeltaStar_interleaved_eq, ← hcode]

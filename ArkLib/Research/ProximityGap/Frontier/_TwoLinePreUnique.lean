@@ -144,7 +144,8 @@ theorem production_family_card_le (fam : BadScalarRichPointFamily dom k δ u)
         rw [selectedAgreements, selectedAgreements, (mem_pointsOn_iff fam l a).mp hal |>.2,
           (mem_pointsOn_iff fam l b).mp hbl |>.2]
         exact fullAgreement_inter_eq_jointCore dom (u 0) (u 1) l.1 l.2 hab
-      have hc := Finset.card_inter_add_card_union (selectedAgreements fam a) (selectedAgreements fam b)
+      have hc := Finset.card_inter_add_card_union
+        (selectedAgreements fam a) (selectedAgreements fam b)
       rw [hcore] at hc
       have hu := Finset.card_le_univ (selectedAgreements fam a ∪ selectedAgreements fam b)
       rw [hn] at hu

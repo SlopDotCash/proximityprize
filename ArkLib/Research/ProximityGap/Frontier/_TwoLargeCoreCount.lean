@@ -90,13 +90,13 @@ theorem card_le_two_mul_add_two (fam : BadScalarRichPointFamily dom k δ u)
   have h₂ : zmin ≤ D₂.card := hz₂
   have hi : (D₁ ∩ D₂).card ≤ k - 1 := jointCore_inter_card_le_degree_pred fam hk hl₁ hl₂ hne
   have hu := Finset.card_union_add_card_inter D₁ D₂
-  have hmiss : (Finset.univ \ (D₁ ∪ D₂)).card + 2 * (k-1) < t := by
+  have hmiss : (Finset.univ \ (D₁ ∪ D₂)).card + 2 * (k - 1) < t := by
     rw [Finset.card_sdiff_of_subset (Finset.subset_univ _), Finset.card_univ]
     have := Finset.card_le_univ (D₁ ∪ D₂)
     omega
   have hts : t - 1 + 1 = t := by omega
   have hcover := G_subset_two_lines_of_small_core_complement fam hk
-    (h := t-1) (by omega) l₁ l₂ hl₁ hl₂
+    (h := t - 1) (by omega) l₁ l₂ hl₁ hl₂
     (by rw [hts]; exact hmiss)
   have hcounts := Finset.card_le_card hcover
   have hunion := Finset.card_union_le (pointsOn fam l₁) (pointsOn fam l₂)

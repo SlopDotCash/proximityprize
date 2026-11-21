@@ -29,7 +29,8 @@ abbrev domainLength : ℕ := 1073741824
 
 /-- Exact agreement ceiling for an integer error count on the production domain. -/
 theorem agreement_ceiling (e : ℕ) (_he : e ≤ domainLength) :
-    ⌈(1 - (e : ℝ≥0) / (domainLength : ℝ≥0)) * (Fintype.card (Fin domainLength) : ℝ≥0)⌉₊ = domainLength - e := by
+    ⌈(1 - (e : ℝ≥0) / (domainLength : ℝ≥0)) * (Fintype.card (Fin domainLength) : ℝ≥0)⌉₊ =
+      domainLength - e := by
   rw [Fintype.card_fin, tsub_mul, one_mul, div_mul_cancel₀ _ (by norm_num [domainLength])]
   have h : (domainLength : ℝ≥0) - (e : ℝ≥0) = ((domainLength - e : ℕ) : ℝ≥0) := by
     rw [Nat.cast_tsub]
@@ -46,14 +47,15 @@ theorem epsMCA_le_twoCore_count {p k e : ℕ} [Fact p.Prime] {g : ZMod p}
   have he : e ≤ domainLength := by omega
   have hg0 := KKH26RegimeSplit.ne_zero_of_orderOf_eq hg
   let dom := KKH26RegimeSplit.powDomain g hg hg0
-  have hcode : evalCode g domainLength (k - 1) = (ReedSolomon.code dom k : Set (Fin domainLength → ZMod p)) := by
+  have hcode : evalCode g domainLength (k - 1) =
+      (ReedSolomon.code dom k : Set (Fin domainLength → ZMod p)) := by
     simpa only [dom, show k - 1 + 1 = k by omega] using
       KKH26RegimeSplit.evalCode_eq_reedSolomon g hg hg0 (k - 1)
   rw [hcode]
   refine (epsMCA_le_of_badCount_le _ _ (2 * e + 2) ?_).trans (by rw [ZMod.card])
   intro u
   have hf := TwoCoreMomentApplication.production_family_card_le
-    (canonicalBadScalarRichPointFamily dom (k := k) δ u hk) (e := e) (t := domainLength-e)
+    (canonicalBadScalarRichPointFamily dom (k := k) δ u hk) (e := e) (t := domainLength - e)
     (Fintype.card_fin _) (by change e + (domainLength - e) = domainLength; omega)
     hk hkmax (agreement_ceiling e he) hlo hhi
   simpa only [canonicalBadScalarRichPointFamily, badScalars, δ] using hf
@@ -130,12 +132,14 @@ theorem rateSixteenth_window {p : ℕ} [Fact p.Prime] {g : ZMod p}
       apply (div_le_one (by norm_num [domainLength])).2
       exact_mod_cast Nat.sub_le domainLength e
     have hsum : e + (domainLength - e) = domainLength := by omega
-    have hr : (1 : ℝ≥0) - ((domainLength - e : ℕ) : ℝ≥0) / (domainLength : ℝ≥0) = (e : ℝ≥0) / domainLength := by
+    have hr : (1 : ℝ≥0) - ((domainLength - e : ℕ) : ℝ≥0) / (domainLength : ℝ≥0) =
+        (e : ℝ≥0) / domainLength := by
       rw [tsub_eq_iff_eq_add_of_le hfrac, ← add_div, ← Nat.cast_add, hsum,
         div_self (by norm_num [domainLength])]
     rwa [hr] at hus
   · have h := threshold_lower_of_twoCore_count (e := e - 1) (k := 2 ^ 26) (Q := 2 ^ 128)
-      hg (by norm_num) (by norm_num) (by dsimp [domainLength]; omega) (by dsimp [domainLength]; omega)
+      hg (by norm_num) (by norm_num) (by dsimp [domainLength]; omega)
+      (by dsimp [domainLength]; omega)
       (by norm_num) hbudget
     simpa only [show e - 1 + 1 = e by omega] using h
 
