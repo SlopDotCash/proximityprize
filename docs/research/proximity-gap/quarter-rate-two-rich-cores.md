@@ -8,6 +8,8 @@ A single interpolant of value degree two and scalar-value total degree 34 suffic
 
 On every injective length-$2^{30}$ domain in characteristic above 1263225672 this upper bound agrees with an explicit two-head construction at every integer error count $402653184\le e\le442128987$. For each prime-field budget $805306370\le B=\lfloor p/2^{128}\rfloor\le884257977$, this gives first failure at $\lfloor B/2\rfloor$ and safe radii exactly below $\lfloor B/2\rfloor/2^{30}$ at every positive width. The first designated prime has a larger budget. The resulting checked first-failure bracket there is **[442128988, 480946859]**. [Exact probability, budget interval and named bracket](../../../ArkLib/Research/ProximityGap/Frontier/QuarterRateQuadraticSafety.lean)
 
+Lean now constructs both interpolants on the actual witness family and proves that their value resultant, taken at the actual degrees, vanishes for any family exceeding the budget. It also proves that two distinct secants with at least 223696215 labels each already preclude an over-budget family. The step from the common factors to two such secants remains to be formalized. [Interpolants and the secant bound](../../../ArkLib/Research/ProximityGap/Frontier/QuarterRateRichSecants.lean) · [Resultant theorem](../../../ArkLib/Research/ProximityGap/Frontier/QuarterRateSharedResultant.lean)
+
 ## Two interpolants
 
 Suppose $n+1$ distinct genuinely bad labels have been selected, each with a degree-at-most-$d$ folded witness $q_z(X)$ and a nonjoint support of at least $t$ sites. Write $T$ for the scalar indeterminate and $Y$ for the folded value. Use coordinate weights $(1,0,d)$ on $(X,T,Y)$. Here $\Delta=3t-3d-n=2$.
