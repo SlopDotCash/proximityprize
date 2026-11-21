@@ -1,6 +1,6 @@
 # At most three rate-half codewords one step past unique decoding on dyadic roots of unity (characteristic zero)
 
-**Status.** Written proof for $n\ge64$; the case $n=32$ additionally uses one finite census (reproducible, exact). Lean checks the Fourier step of Lemma 2 (`ProximityGap.DyadicParity.dyadic_eq_zero_of_three_centers`, standard axioms only); the rest is not formalized. The statement is about fields of **characteristic zero**. It does not cover the prize prime fields; the last section explains why the argument cannot be transferred at production length.
+**Status.** Written proof for $n\ge64$; the case $n=32$ additionally uses one finite census (reproducible, exact). Lean checks three internal steps with standard axioms only: the Fourier step of Lemma 2 (`ProximityGap.DyadicParity.dyadic_eq_zero_of_three_centers`), the class count of Theorem A (`ProximityGap.DyadicOddPencil.three_odd_sets_one_class`) and the 4-cycle contradiction of Section 4 (`ProximityGap.DyadicFourCycle.four_cycle_false`). Not formalized: the overlap-pattern classification of Section 1, the passage from vanisher ratios to the reflection equations (cyclotomic units), and the glue between these statements.
 
 ## Statement
 
