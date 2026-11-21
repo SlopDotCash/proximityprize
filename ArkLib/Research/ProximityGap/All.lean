@@ -9,6 +9,7 @@ import ArkLib.Research.ProximityGap.BCIKS20.StrictCoeffPolysShareOr
 import ArkLib.Research.ProximityGap.BCIKS20.ThresholdInterface
 import ArkLib.Research.ProximityGap.BandExactness
 import ArkLib.Research.ProximityGap.BandFloor
+import ArkLib.Research.ProximityGap.BoundedChoose
 import ArkLib.Research.ProximityGap.BruteForce
 import ArkLib.Research.ProximityGap.BruteForceRefutations
 import ArkLib.Research.ProximityGap.BruteForceSearch
@@ -295,6 +296,7 @@ import ArkLib.Research.ProximityGap.Frontier.DyadicCharacterCirculant
 import ArkLib.Research.ProximityGap.Frontier.DyadicFrobeniusNorm
 import ArkLib.Research.ProximityGap.Frontier.DyadicGeomeanPrizeVsSqrtN
 import ArkLib.Research.ProximityGap.Frontier.DyadicLogWitness237
+import ArkLib.Research.ProximityGap.Frontier.DyadicOddPencilCount
 import ArkLib.Research.ProximityGap.Frontier.DyadicParityLemma
 import ArkLib.Research.ProximityGap.Frontier.DyadicPeriodCeiling
 import ArkLib.Research.ProximityGap.Frontier.DyadicSidonTriple
@@ -393,6 +395,7 @@ import ArkLib.Research.ProximityGap.Frontier.GenericSuperDiagonalLower
 import ArkLib.Research.ProximityGap.Frontier.GeometricIncompleteSumNoGo
 import ArkLib.Research.ProximityGap.Frontier.GeometricWordLocator
 import ArkLib.Research.ProximityGap.Frontier.GradedAntipodalVanishingLower
+import ArkLib.Research.ProximityGap.Frontier.HalfListSplitDifferences
 import ArkLib.Research.ProximityGap.Frontier.HalfRadiusListMcaSeparation
 import ArkLib.Research.ProximityGap.Frontier.HalfRateIntrinsicPopulation
 import ArkLib.Research.ProximityGap.Frontier.HalfRateJetCapacity
@@ -493,6 +496,7 @@ import ArkLib.Research.ProximityGap.Frontier.ManyLineGridPhase
 import ArkLib.Research.ProximityGap.Frontier.MixedTopFitBudgetIncompatibility
 import ArkLib.Research.ProximityGap.Frontier.MobiusSeamCoordinateSupply
 import ArkLib.Research.ProximityGap.Frontier.MobiusStepanov
+import ArkLib.Research.ProximityGap.Frontier.MobiusSubgroupBound
 import ArkLib.Research.ProximityGap.Frontier.MomentFullEnergyDeepNoGo
 import ArkLib.Research.ProximityGap.Frontier.MomentMethodPrizeDepthNoGo
 import ArkLib.Research.ProximityGap.Frontier.MonicRawPolynomialQuotient
@@ -792,6 +796,7 @@ import ArkLib.Research.ProximityGap.Frontier.SectionNumeratorCharts
 import ArkLib.Research.ProximityGap.Frontier.SelfConsistencyCeiling
 import ArkLib.Research.ProximityGap.Frontier.SeparableScalarDifferential
 import ArkLib.Research.ProximityGap.Frontier.ShallowDiagonalRouteNonReach
+import ArkLib.Research.ProximityGap.Frontier.SharedSiteListBound
 import ArkLib.Research.ProximityGap.Frontier.SharpApolarMCA
 import ArkLib.Research.ProximityGap.Frontier.ShawFlatnessSubfieldCounterexample
 import ArkLib.Research.ProximityGap.Frontier.ShawValueBracketCenter

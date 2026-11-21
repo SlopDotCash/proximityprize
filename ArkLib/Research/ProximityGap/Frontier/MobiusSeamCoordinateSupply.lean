@@ -135,24 +135,22 @@ private theorem card_polesAndValues (u : Mobius F) (hu : u.det ≠ 0) (H T : Fin
     · intro x hx y hy hxy
       exact u.injective_on_finite hu (mem_filter.mp hx).2.1 (mem_filter.mp hy).2.1 hxy
 
-/-- At least the required number of ordinary coordinates survives for the three maps. -/
-theorem ordinary_card {p : ℕ} [CharP F p] (hp : p.Prime) (hbig : 2^37 < p)
-    (m : Fin 3 → Mobius F) (H Y T : Finset F) (hH : H.card = 2^30)
-    (hpow : ∀ x ∈ H, x^(2^30 : ℕ) = 1) (hY : Y.card ≤ 6) (hT : T.card ≤ 6)
-    (hdet : ∀ i, (m i).det ≠ 0)
-    (hrel : ∀ i j, i ≠ j → let M := (m i).relative (m j); M.a ≠ 0 ∧ M.b ≠ 0 ∧ M.c ≠ 0) :
-    677380063 ≤ (ordinary m H Y T).card := by
+/-- A bound on each of the six ordered cross-map intersections leaves this many
+ordinary sites after excluding the six marked coordinates and their scalar values. -/
+theorem ordinary_card_of_pair_cap {L : ℕ} (m : Fin 3 → Mobius F) (H Y T : Finset F)
+    (hpow : ∀ x ∈ H, x^(2^30 : ℕ)=1) (hY : Y.card ≤ 6) (hT : T.card ≤ 6)
+    (hdet : ∀ i, (m i).det ≠ 0) (hpair : ∀ i j, i ≠ j →
+      (univ.filter fun x : F => x^(2^30 : ℕ)=1 ∧
+        (((m i).relative (m j)).value x)^(2^30 : ℕ)=1).card ≤ L) :
+    H.card-(6*L+27) ≤ (ordinary m H Y T).card := by
   have hpairs : edgePairs.card = 6 := by decide
-  have hcross : (collisions m H).card ≤ 6*66060289 := by
+  have hcross : (collisions m H).card ≤ 6*L := by
     apply card_biUnion_le.trans
     calc
-      _ ≤ ∑ _ ∈ edgePairs, 66060289 := by
+      _ ≤ ∑ _ ∈ edgePairs, L := by
         apply sum_le_sum
         intro ij hij
-        let M := (m ij.1).relative (m ij.2)
-        have hh := hrel ij.1 ij.2 (mem_filter.mp hij).2
-        have hdet' : M.det ≠ 0 := by rw [Mobius.det_relative]; exact mul_ne_zero (hdet _) (hdet _)
-        apply le_trans _ (M.subgroup_intersection_le hp hbig hh.1 hh.2.1 hh.2.2 hdet')
+        apply le_trans _ (hpair ij.1 ij.2 (mem_filter.mp hij).2)
         apply card_le_card
         intro x hx
         obtain ⟨hxH,hxp⟩ := mem_filter.mp hx
@@ -165,13 +163,28 @@ theorem ordinary_card {p : ℕ} [CharP F p] (hp : p.Prime) (hbig : 2^37 < p)
       _ ≤ ∑ _ : Fin 3, 7 := sum_le_sum (fun i _ => (card_polesAndValues _ (hdet i) H T).trans (by omega))
       _ = _ := by decide
   let B := collisions m H ∪ Y ∪ E
-  have hB : B.card ≤ 6*66060289+6+3*7 := by
+  have hB : B.card ≤ 6*L+6+3*7 := by
     apply (card_union_le _ _).trans
     exact Nat.add_le_add ((card_union_le _ _).trans (Nat.add_le_add hcross hY)) he
   have hmass := card_sdiff_add_card H B
   have hle : H.card ≤ (H ∪ B).card := card_le_card subset_union_left
-  change 677380063 ≤ (H \ B).card
+  change (H.card-(6*L+27)) ≤ (H \ B).card
   omega
+
+/-- At least the required number of ordinary coordinates survives for the three maps. -/
+theorem ordinary_card {p : ℕ} [CharP F p] (hp : p.Prime) (hbig : 2^37 < p)
+    (m : Fin 3 → Mobius F) (H Y T : Finset F) (hH : H.card = 2^30)
+    (hpow : ∀ x ∈ H, x^(2^30 : ℕ) = 1) (hY : Y.card ≤ 6) (hT : T.card ≤ 6)
+    (hdet : ∀ i, (m i).det ≠ 0)
+    (hrel : ∀ i j, i ≠ j → let M := (m i).relative (m j); M.a ≠ 0 ∧ M.b ≠ 0 ∧ M.c ≠ 0) :
+    677380063 ≤ (ordinary m H Y T).card := by
+  have h := ordinary_card_of_pair_cap (L:=66060289) m H Y T hpow hY hT hdet (by
+    intro i j hij
+    obtain ⟨ha,hb,hc⟩ := hrel i j hij
+    exact Mobius.subgroup_intersection_le hp hbig _ ha hb hc (by
+      rw [Mobius.det_relative]
+      exact mul_ne_zero (hdet _) (hdet _)))
+  rwa [hH] at h
 
 omit [Fintype F] in
 /-- Every ordinary coordinate avoids all poles and prescribed labels. Equal scalar values at

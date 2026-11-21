@@ -11,43 +11,6 @@ The numerical length-128 proof and the support-rank proof predict the same bound
 Uniqueness lets us compare the predictions without executing the large finite enumeration.
 -/
 
-namespace FullPrizeReview
-open scoped NNReal
-
-/-- The safe radii through one uniquely determine the boundary of a positive-length code. -/
-theorem correctBoundary_unique {n : ℕ} (hn : 0 < n) {a b : Boundary n} {safe : ℝ≥0 → Prop}
-    (ha : correctBoundary n a safe) (hb : correctBoundary n b safe) : a = b := by
-  have hpos : 0 < (n : ℝ≥0) := by exact_mod_cast hn
-  have hgrid (e : Fin (n + 1)) : (e.val : ℝ≥0) / n ≤ 1 :=
-    div_le_one_of_le₀ (by exact_mod_cast Nat.le_of_lt_succ e.isLt) (by positivity)
-  cases a with
-  | none =>
-    cases b with
-    | none => rfl
-    | some j =>
-      have hs := (ha _ (hgrid j)).mpr trivial
-      exact False.elim ((lt_irrefl _) ((hb _ (hgrid j)).mp hs))
-  | some i =>
-    cases b with
-    | none =>
-      have hs := (hb _ (hgrid i)).mpr trivial
-      exact False.elim ((lt_irrefl _) ((ha _ (hgrid i)).mp hs))
-    | some j =>
-      congr 1
-      apply le_antisymm
-      · by_contra! h
-        have hlt : (j.val : ℝ≥0) / n < (i.val : ℝ≥0) / n :=
-          (div_lt_div_iff_of_pos_right hpos).mpr (by exact_mod_cast h)
-        have hs := (ha _ (hgrid j)).mpr hlt
-        exact (lt_irrefl _) ((hb _ (hgrid j)).mp hs)
-      · by_contra! h
-        have hlt : (i.val : ℝ≥0) / n < (j.val : ℝ≥0) / n :=
-          (div_lt_div_iff_of_pos_right hpos).mpr (by exact_mod_cast h)
-        have hs := (hb _ (hgrid i)).mpr hlt
-        exact (lt_irrefl _) ((ha _ (hgrid i)).mp hs)
-
-end FullPrizeReview
-
 namespace ProximityPrize.RankKnownDomain
 open ProximityGap ProximityGap.GrandChallenges FourRateListPrime246 FullPrizeReview
 open scoped NNReal
