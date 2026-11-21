@@ -62,6 +62,14 @@ At $x=\lfloor a/2\rfloor$, the square $(a-z_t-2x)^2$ is zero for even $W_w(t)$ a
 \]
 This includes degree zero and the endpoint $p=3,a=2,x=1$.
 
+The original pair reconstruction persists with the site signs. For $u\ne v$ let $Q_{uv}$ be the monic normalization of $w_u(X+u)^d-w_v(X+v)^d$. Its roots are exactly the shifts giving equal nonzero signed symbols at $u,v$, all simple. Indeed $(X+u)/(X+v)$ bijects the affine line minus $-v$ with the affine line minus $1$, and the roots of $Y^d=w_v/w_u$ are nonzero and simple. There are $d-1$ such finite shifts for equal signs and $d$ for opposite signs, exactly the degree in each case. At a fixed shift with $j$ positive and $k$ negative signed symbols, the product over pairs therefore has order $\binom j2+\binom k2$. Subtracting $\lfloor(j-k)^2/4\rfloor$ leaves $c_{j+k}=\lfloor(j+k)/2\rfloor\lfloor(j+k-1)/2\rfloor$. This gives the monic identity
+\[
+ \prod_{\{u,v\}\subset A}Q_{uv}(X)
+   =\frac{\det J}{\operatorname{lc}(\det J)}
+     \prod_{t\in\mathbb F_p}(X-t)^{c_{a-z_t}}
+ \qquad (x=\lfloor a/2\rfloor).
+\]
+
 ## What the four-site count gives in each prime class
 
 Let $3\le n=|X|\le d+2$. For each $t\in X$ use source $A=X\setminus\{t\}$ and signs $w_u=\chi(u-t)$. On the reflected targets $-b$ for $b\in X$, the resulting rows are exactly $G(t,b)=\sum_{u\in X}\chi(u-t)\chi(u-b)$. Among the $n$ targets, $n-1$ have a zero source entry and one has none. Dropping the minority correction in $D_x$ and summing (1) gives the explicit ceiling
@@ -77,8 +85,8 @@ The diagonal terms give $E\ge L=n(n-1)^2$. Write $R=n(n-1)(2n-3)$, $C=\binom n4$
 | $p\equiv1\pmod4$ | $\lceil C/4+(L-R)/32\rceil$ | $\lfloor C/4+(U_x-R)/32\rfloor$ |
 | $p\equiv3\pmod4$ | $\lceil C/4-(U_x-R)/32\rceil$ | $\lfloor C/4-(L-R)/32\rfloor$ |
 
-If $n\sim\sqrt p$, take $x/n\to1/4$ to obtain $E/n^4\le3/4+o(1)$. For $p\equiv1\pmod4$ this gives $N_4/C\le13/16+o(1)$. For $p\equiv3\pmod4$, the lower estimate at this scale is weaker than $N_4\ge0$, and the upper estimate is $1/4+O(1/n)$. More generally at $n^2/p\to\beta>1/2$ the normalized energy ceiling is $g(\beta)=1/\beta-1/(4\beta^2)$. In the latter prime class it yields a positive asymptotic lower density $(1-3g(\beta))/4$ when $\beta>(3+\sqrt6)/2$. As a finite check, at $p=3,n=3,x=1$ the upper bound for $E$ is $18$, the actual energy.
+If $n\sim\sqrt p$, take $x/n\to1/4$ to obtain $E/n^4\le3/4+o(1)$. For $p\equiv1\pmod4$ this gives $N_4/C\le13/16+o(1)$. For $p\equiv3\pmod4$, the lower estimate at this scale is weaker than $N_4\ge0$, and the upper estimate is $1/4+O(1/n)$. More generally at $n^2/p\to\beta>1/2$ the normalized energy ceiling is $g(\beta)=1/\beta-1/(4\beta^2)$. In the latter prime class it yields a positive asymptotic lower density $(1-3g(\beta))/4$ when $\beta>(3+\sqrt6)/2$. As a finite check, at $p=3,n=3,x=1$ the upper bound for $E$ is $18$, the actual energy. At $p=65537$, every 256-site set satisfies $E\le3{,}196{,}058{,}880$ with $x=63$, so at most 142,536,640 of its 174,792,640 four-subsets are singular. For any two prescribed 256-site sets and any vertex signs, $x=64$ gives an absolute discrepancy of at most 56,829 out of 65,536.
 
 ## Reproduction
 
-Run `python3 -B scripts/probes/probe_paley_signed_square_root.py`. At $p=3,5,7,11,13$ the program checks all signed source subsets of the admissible sizes up to simultaneous sign reversal, all widths $x$, and the worst target set through the positive part in (1). It checks 614,126 row budgets, computes 1,300 polynomial determinants and their local orders directly, and compares 8,863 principal Gram energies with integer determinants of the four-site minors. The signed Wronskian argument and its consequences are proved above and checked by this finite probe. [Exact verifier](../../../scripts/probes/probe_paley_signed_square_root.py)
+Run `python3 -B scripts/probes/probe_paley_signed_square_root.py`. At $p=3,5,7,11,13$ the program checks all signed source subsets of the admissible sizes up to simultaneous sign reversal, all widths $x$, and the worst target set through the positive part in (1). It checks 614,126 row budgets, computes 1,300 polynomial determinants and their local orders directly, verifies 716 signed pair-product identities, and compares 8,863 principal Gram energies with integer determinants of the four-site minors. The signed Wronskian argument and its consequences are proved above and checked by this finite probe. [Exact verifier](../../../scripts/probes/probe_paley_signed_square_root.py)
