@@ -75,6 +75,7 @@ bool compatible_fiber(Mask t, Mask a, Mask b) {
   for (int k = 1; k < 16; k += 2) {
     Mask u = action(t, k, 0), v = action(a, k, 0), w = action(b, k, 0);
     int i = first_index(u), l = vanisher_value(i, v), r = vanisher_value(i, w);
+    // Six protected points suffice to exclude two full septic edges.
     if (degree == 7) {
       int matches = 5;
       for (Mask m = ~(u | v | w); m; m &= m - 1) {
@@ -83,7 +84,7 @@ bool compatible_fiber(Mask t, Mask a, Mask b) {
             U64(r) * vanisher_value(x, v) % prime)
           ++matches;
       }
-      if (matches < 7)
+      if (matches < 6)
         return false;
     }
     for (u &= u - 1; u; u &= u - 1) {
