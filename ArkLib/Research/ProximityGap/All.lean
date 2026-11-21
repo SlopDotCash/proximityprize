@@ -708,7 +708,17 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterRateToleranceCurve
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor
 import ArkLib.Research.ProximityGap.Frontier.QuarterSlopePowerBarrier
 import ArkLib.Research.ProximityGap.Frontier.QuarterSlopeReconstruction
+import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorCoreGeometry
+import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorFirstFailures
+import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorMovingObstruction
+import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorNonlinearPopulation
+import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorOneHole
+import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorQuadraticObstruction
+import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorSiteBudget
+import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorSplitConverse
+import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorSplitCriterion
 import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorSplitPencil
+import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorThreeHeads
 import ArkLib.Research.ProximityGap.Frontier.QuarticFieldProductionThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarticIntrinsicAuxiliary
 import ArkLib.Research.ProximityGap.Frontier.QuotientAnchorAllocation
@@ -772,6 +782,7 @@ import ArkLib.Research.ProximityGap.Frontier.RepetitionSecondPrimeThreshold
 import ArkLib.Research.ProximityGap.Frontier.ReservedFiberList
 import ArkLib.Research.ProximityGap.Frontier.ResolveFieldIndependent
 import ArkLib.Research.ProximityGap.Frontier.ReverseHessianAffineSection
+import ArkLib.Research.ProximityGap.Frontier.RobustSplitListCliques
 import ArkLib.Research.ProximityGap.Frontier.RootsOfUnityApproximateSubgroup
 import ArkLib.Research.ProximityGap.Frontier.SalemZygmundChaining
 import ArkLib.Research.ProximityGap.Frontier.SalemZygmundMomentAssemblyA3
