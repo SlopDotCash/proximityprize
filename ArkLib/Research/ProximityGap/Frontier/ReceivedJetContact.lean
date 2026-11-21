@@ -27,19 +27,20 @@ variable {K : Type} [Field K]
 through the center produces a polynomial divisible by X^r. -/
 theorem direction_dvd (H : K[X][X]) (r : ℕ)
     (h : ∀ i j, i+j<r → (H.coeff i).coeff j=0) (c : K) :
-    (X : K[X])^r ∣ H.eval (C c*X) := by
+    (Polynomial.X : K[X])^r ∣ H.eval (C c*Polynomial.X) := by
   rw [eval_eq_sum, Polynomial.sum]
   apply Finset.dvd_sum
   intro i _
   rw [mul_pow]
   by_cases hi : r ≤ i
   · exact (pow_dvd_pow _ hi).trans (dvd_mul_of_dvd_right (dvd_mul_left _ _) _)
-  · have hdiv : (X : K[X])^(r-i) ∣ H.coeff i := by
+  · have hdiv : (Polynomial.X : K[X])^(r-i) ∣ H.coeff i := by
       rw [Polynomial.X_pow_dvd_iff]
       exact fun k hk => h i k (by omega)
     obtain ⟨w,hw⟩ := hdiv
     refine ⟨w*(C c)^i, ?_⟩
-    rw [hw, ← Nat.sub_add_cancel (show i ≤ r by omega), pow_add]
+    rw [hw]
+    conv_rhs => lhs; rw [← Nat.sub_add_cancel (show i ≤ r by omega), pow_add]
     ring
 
 /-- Plane polynomial translated in the coordinate X and the received value Y. -/
@@ -55,16 +56,16 @@ theorem leader_order (F : K[X][X]) (α l c : K) (r j : ℕ)
   let φ := Polynomial.coeToPowerSeries.ringHom (R := K)
   have hd := direction_dvd (shifted F α l) r (fun i k hik => hr.lower i k (Or.inl hik)) c
   obtain ⟨w,hw⟩ := hd
-  have heq : φ ((shifted F α l).eval (C c*X)) =
+  have heq : φ ((shifted F α l).eval (C c*Polynomial.X)) =
       (F.map (PolynomialLocalOrder.atPoint α)).eval (PowerSeries.C l+c • PowerSeries.X) := by
     dsimp [shifted]
     rw [Polynomial.taylor_apply, Polynomial.eval_comp, Polynomial.eval_add, Polynomial.eval_X,
       Polynomial.eval_C, ← Polynomial.eval₂_hom, ← Polynomial.eval_map, Polynomial.map_map]
     congr 1
-    change ((C c*X+C l : K[X]) : K⟦X⟧) = _
+    change ((C c*Polynomial.X+C l : K[X]) : K⟦X⟧) = _
     simp [PowerSeries.smul_eq_C_mul, add_comm]
   rw [← heq, hw, map_mul, map_pow]
-  change (r : ℕ∞) ≤ ((PowerSeries.X : K⟦X⟧)^r * φ w).order
+  rw [show φ Polynomial.X = PowerSeries.X from Polynomial.coe_X]
   rw [PowerSeries.order_mul, PowerSeries.order_X_pow]
   exact le_self_add
 
@@ -75,7 +76,7 @@ theorem leader_le_projective_contacts [Infinite K] {ι : Type} [Fintype ι]
     {n : ℕ} (hn : n ≠ 0) (a b : ι → K⟦X⟧)
     (ha : ∀ i, a i ≠ 0) (hab : ∀ i, IsCoprime (b i) (a i)) (u : K⟦X⟧) (hu : IsUnit u)
     (hF : (F.map (PolynomialLocalOrder.atPoint α)).map (PowerSeries.expand n hn (R := K)).toRingHom =
-      C u*∏ i, (C (a i)*X-C (b i))) :
+      C u*∏ i, (C (a i)*Polynomial.X-C (b i))) :
     n • (r : ℕ∞) ≤ ∑ i, min (PowerSeries.C l*a i-b i).order (n : ℕ∞) := by
   obtain ⟨c,hc⟩ := TameResultantOrders.generic_projective_line_contact
     (F.map (PolynomialLocalOrder.atPoint α)) hn a b ha hab u hu hF (PowerSeries.C l)

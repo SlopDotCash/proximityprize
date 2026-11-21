@@ -362,6 +362,7 @@ import ArkLib.Research.ProximityGap.Frontier.InterleavedListJohnsonPuncture
 import ArkLib.Research.ProximityGap.Frontier.InterleavedListJohnsonQuadratic
 import ArkLib.Research.ProximityGap.Frontier.InterleavedListJohnsonRank
 import ArkLib.Research.ProximityGap.Frontier.InterleavedListProjection
+import ArkLib.Research.ProximityGap.Frontier.IntrinsicQuarticSectionCap
 import ArkLib.Research.ProximityGap.Frontier.IntrinsicReceivedSections
 import ArkLib.Research.ProximityGap.Frontier.InverseTaylorFlat
 import ArkLib.Research.ProximityGap.Frontier.InverseTaylorNumeratorHeight
