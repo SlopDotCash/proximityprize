@@ -4,6 +4,9 @@
 # All names verified against source namespaces — a rename or deletion here is a
 # hard CI failure, not a skip (update this list in the same PR as the rename).
 
+# Scalar reduction for every interleaving at the prize lengths and field sizes
+ArkLib.Research.ProximityGap.Frontier.InterleavedListProjection ProximityGap.InterleavedListProjection.list_budget_iff_of_length_le
+
 # ── BCIKS20 correlated agreement keystone (curves + lines) ─────────────
 ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves ProximityGap.correlatedAgreement_affine_curves
 ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.Main ProximityGap.RS_correlatedAgreement_affineLines

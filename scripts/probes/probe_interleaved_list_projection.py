@@ -66,7 +66,9 @@ def main():
                 )
                 if inter * (prime**2 - base) > rhs:
                     raise ArithmeticError("rank-one direction bound failed")
-            for budget in budgets:
+            # The disagreement tests can certify budgets outside the pair bound.
+            support_budgets = [b for b in range(prime) if b * errors <= prime]
+            for budget in set(budgets).union(support_budgets):
                 if (base <= budget) != (inter <= budget):
                     raise ArithmeticError(f"list-budget equivalence failed at {budget=}")
         print(
