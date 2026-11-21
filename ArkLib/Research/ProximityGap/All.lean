@@ -992,6 +992,8 @@ import ArkLib.Research.ProximityGap.Frontier.TruncatedJetMultipliers
 import ArkLib.Research.ProximityGap.Frontier.TwistedLineCollisionParseval
 import ArkLib.Research.ProximityGap.Frontier.TwoAnchorListWitness
 import ArkLib.Research.ProximityGap.Frontier.TwoDAnnihilatorLineParseval
+import ArkLib.Research.ProximityGap.Frontier.TwoHeadExtraCoset
+import ArkLib.Research.ProximityGap.Frontier.TwoHeadExtraWitness
 import ArkLib.Research.ProximityGap.Frontier.TwoHeadLinearBudget
 import ArkLib.Research.ProximityGap.Frontier.TwoParityMca
 import ArkLib.Research.ProximityGap.Frontier.TwoParityPrize
