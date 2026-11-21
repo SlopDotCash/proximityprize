@@ -119,7 +119,8 @@ theorem surface_eval (c : Monomials s v d t → F) (g : F) (q : F[X]) :
   intro a _
   rw [← C_pow, monomial_mul_C]
 
-private theorem specialize_degree (c : Monomials s v d t → F) (g : F) (q : F[X])
+/-- A section through a polynomial of coordinate degree at most `d` preserves the strict weight bound. -/
+theorem specialize_degree (c : Monomials s v d t → F) (g : F) (q : F[X])
     (hq : q.natDegree ≤ d) (ht : 0 < t) : (specialize c g q).natDegree < t := by
   apply Nat.lt_of_le_pred ht
   rw [Nat.pred_eq_sub_one]
