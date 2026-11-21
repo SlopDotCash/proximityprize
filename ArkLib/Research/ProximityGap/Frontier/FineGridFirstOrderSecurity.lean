@@ -10,21 +10,29 @@ import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.FirstOrder.ListBo
 import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.Capacity.CodewordBound
 
 /-!
-# First-order certificates on the 4096 agreement grid
+# First-order line-MCA certificates with a closed rank profile
 
-`ScaledFirstOrderSecurity` certifies line MCA beyond the Johnson radius from slot
-inequalities at reference length 128. The same first-order interpolation system has
-strict surpluses at larger radii when the reference length is 4096 and the
-interpolation parameters are larger. This file states the transfer for an arbitrary
-reference length and an explicit exceptional-count constant, and instantiates it twice.
+`ScaledFirstOrderSecurity` certifies line MCA beyond the Johnson radius from four slot
+inequalities at reference length 128, each evaluated term by term. Here the rank profile
+of the first-order interpolation system is summed in closed form. A slot inequality then
+costs one kernel evaluation of `μ + 1` terms, so multiplicities in the hundreds are
+cheap, and reference length 4096 resolves the radii they certify.
 
-* `four_rates` keeps the field-size hypothesis `2^165 n² ≤ p` of the earlier theorem and
-  raises the closed radii to `1260/4096`, `2164/4096`, `2778/4096`, `3194/4096`.
-* `four_rates_wide` assumes `2^171 n² ≤ p` and reaches `1265/4096`, `2170/4096`,
-  `2783/4096`, `3197/4096`.
+## Main statements
 
-Both hold on every injective evaluation domain of length `4096 b` in a prime field.
-The matching scalar and interleaved list bounds need no field-size hypothesis.
+* `rank_sum`: the rank profile at total jet degree `t` equals a capped tent sum.
+* `security_of_slots`: one slot inequality at reference length `N` gives 128-bit line-MCA
+  security at every length `b N`, with an explicit constant for the exceptional count.
+* `four_rates`: under the field-size hypothesis `2^165 n² ≤ p` of the earlier theorem, the
+  closed radii are `1262/4096`, `2166/4096`, `2780/4096` and `3195/4096`.
+* `four_rates_wide`: under `2^180 n² ≤ p` they are `1269/4096`, `2174/4096`, `2788/4096`
+  and `3201/4096`.
+* `four_list_bounds`, `four_interleaved_list_bounds`: linear list bounds at the radii of
+  `four_rates`, with no field-size hypothesis. `FineGridWideLists` has the bounds at the
+  radii of `four_rates_wide`.
+
+Both MCA statements hold on every injective evaluation domain of length `4096 b` in a
+prime field.
 
 ## References
 
@@ -35,14 +43,93 @@ namespace ProximityGap.FineGridFirstOrderSecurity
 
 open ReedSolomon ReedSolomon.HiddenDerivative CoreDefinitions Finset
 
+/-! ### The rank profile in closed form -/
+
+/-- Sum of a tent of base `L` capped at height `w`. -/
+def cappedTent (L w : ℕ) : ℕ := if 2*w ≤ L+1 then w*(L+1-w) else (L+1)^2/4
+
+private theorem tent_peel (L w : ℕ) :
+    ∑ u ∈ range (L+2), min (L+2-u) (min (u+1) (w+1)) =
+      (L+2) + ∑ u ∈ range L, min (L-u) (min (u+1) w) := by
+  rw [Finset.sum_range_succ, Finset.sum_range_succ']
+  have hmid : ∀ v ∈ range L,
+      min (L+2-(v+1)) (min (v+1+1) (w+1)) = min (L-v) (min (v+1) w) + 1 := by
+    intro v hv
+    have := Finset.mem_range.mp hv
+    omega
+  rw [Finset.sum_congr rfl hmid, Finset.sum_add_distrib, Finset.sum_const, Finset.card_range,
+    smul_eq_mul, mul_one]
+  have h0 : min (L+2-0) (min (0+1) (w+1)) = 1 := by omega
+  have hL : min (L+2-(L+1)) (min (L+1+1) (w+1)) = 1 := by omega
+  rw [h0, hL]
+  omega
+
+/-- A tent of base `L` capped at height `w` sums to `cappedTent L w`. -/
+theorem tent_sum (w : ℕ) :
+    ∀ L, ∑ u ∈ range L, min (L-u) (min (u+1) w) = cappedTent L w := by
+  induction w with
+  | zero =>
+    intro L
+    simp [cappedTent]
+  | succ w ih =>
+    intro L
+    match L with
+    | 0 => simp [cappedTent]
+    | 1 =>
+      unfold cappedTent
+      split_ifs with h
+      · have hw : w = 0 := by omega
+        subst hw
+        simp
+      · simp
+    | L+2 =>
+      rw [tent_peel, ih L]
+      unfold cappedTent
+      by_cases h : 2*w ≤ L+1
+      · rw [ite_eq_left h, ite_eq_left (by omega)]
+        obtain ⟨c, hc⟩ := Nat.exists_eq_add_of_le (show w ≤ L+1 by omega)
+        have e₁ : L+1-w = c := by omega
+        have e₂ : L+2+1-(w+1) = c+1 := by omega
+        rw [e₁, e₂]
+        nlinarith
+      · rw [ite_eq_right h, ite_eq_right (by omega)]
+        have e : (L+2+1)^2 = (L+1)^2 + 4*(L+2) := by ring
+        rw [e, Nat.add_mul_div_left _ _ (by norm_num)]
+        omega
+
+/-- The first-order rank profile at total jet degree `t`: the sources of each `T`-degree
+`s < m` are capped by the `m - s` low-contact targets, and the sum is a capped tent. -/
+theorem rank_sum (m M t : ℕ) :
+    ∑ s ∈ range m, min (m-s) (min t s + 1 - (t-M)) = cappedTent (m-(t-M)) (min t M+1) := by
+  rw [← tent_sum]
+  rcases le_total (t-M) m with h | h
+  · obtain ⟨L, rfl⟩ := Nat.exists_eq_add_of_le h
+    rw [Nat.add_sub_cancel_left, Finset.sum_range_add]
+    have hzero : ∑ s ∈ range (t-M), min (t-M+L-s) (min t s + 1 - (t-M)) = 0 := by
+      apply Finset.sum_eq_zero
+      intro s hs
+      have := Finset.mem_range.mp hs
+      omega
+    rw [hzero, zero_add]
+    apply Finset.sum_congr rfl
+    intro u hu
+    have := Finset.mem_range.mp hu
+    omega
+  · rw [Nat.sub_eq_zero_of_le h, Finset.range_zero, Finset.sum_empty]
+    apply Finset.sum_eq_zero
+    intro s hs
+    have := Finset.mem_range.mp hs
+    omega
+
+/-! ### Slot counts at a reference length -/
+
 /-- Row slots of the shifted first-order interpolation system at reference length `n`. -/
 def rowSlots (n m M μ h : ℕ) : ℕ :=
-  ∑ t ∈ range (μ+1), n * (∑ s ∈ range m,
-    min (m-s) (min t s + 1 - (t-M))) * (h+1-t)
+  ∑ t ∈ range (μ+1), n * cappedTent (m-(t-M)) (min t M+1) * (h+1-t)
 
 /-- Column slots at reference dimension `k` and agreement count `A`. -/
 def columnSlots (k A m M μ h : ℕ) : ℕ :=
-  ∑ t ∈ range (μ+1), ∑ _b ∈ range (min t M+1), (m*A-k*t)*(h+1-t)
+  ∑ t ∈ range (μ+1), (min t M+1) * ((m*A-k*t) * (h+1-t))
 
 private theorem row_le (b n D A m M μ h : ℕ) :
     firstOrderCurveShiftedRowSlotBound D A m M μ (b*n) 1 h ≤ b * rowSlots n m M μ h := by
@@ -52,6 +139,7 @@ private theorem row_le (b n D A m M μ h : ℕ) :
   intro t _
   rw [one_mul, ← mul_assoc b, ← mul_assoc b]
   gcongr
+  rw [← rank_sum]
   unfold firstOrderGradedRankBound
   apply sum_le_sum
   intro s _
@@ -61,7 +149,13 @@ private theorem row_le (b n D A m M μ h : ℕ) :
 private theorem column_le (b k A m M μ h : ℕ) :
     b * columnSlots k A m M μ h ≤
       firstOrderCurveShiftedHeightSlotCount (b*k-1) (b*A) m M μ 1 h := by
-  unfold firstOrderCurveShiftedHeightSlotCount columnSlots
+  have hcol : columnSlots k A m M μ h =
+      ∑ t ∈ range (μ+1), ∑ _j ∈ range (min t M+1), (m*A-k*t)*(h+1-t) := by
+    unfold columnSlots
+    refine Finset.sum_congr rfl fun t _ ↦ ?_
+    rw [Finset.sum_const, Finset.card_range, smul_eq_mul]
+  rw [hcol]
+  unfold firstOrderCurveShiftedHeightSlotCount
   rw [Finset.mul_sum]
   apply sum_le_sum
   intro t _
@@ -80,6 +174,8 @@ theorem scaled_slots {b n k A m M μ h : ℕ} (hb : 0 < b)
     firstOrderCurveShiftedRowSlotBound (b*k-1) (b*A) m M μ (b*n) 1 h <
       firstOrderCurveShiftedHeightSlotCount (b*k-1) (b*A) m M μ 1 h :=
   (row_le ..).trans_lt ((Nat.mul_lt_mul_of_pos_left hcert hb).trans_le (column_le ..))
+
+/-! ### From a slot inequality to line-MCA security -/
 
 /-- The closed first-order exception constant is at most an explicit multiple of `n²`
 once the agreement-incidence ratio, the relative degree and the staircase are bounded. -/
@@ -188,137 +284,107 @@ theorem security_of_slots {p N b k A m M μ h K : ℕ} {Θ ρ T : ℝ} [Fact p.P
   refine (mcaError_affineLine_le_of_exactAgreement dom B hline r hth).trans ?_
   rw [ZMod.card]
   apply ENNReal.ofReal_le_ofReal
-  apply (div_le_div_iff₀ (by exact_mod_cast (Fact.out : p.Prime).pos) (by norm_num : (0:ℝ)<2^128)).mpr
+  have hp0 : (0 : ℝ) < p := by exact_mod_cast (Fact.out : p.Prime).pos
+  apply (div_le_div_iff₀ hp0 (by norm_num : (0:ℝ) < 2^128)).mpr
   have h : (2:ℝ)^128 * K * ((b*N:ℕ):ℝ)^2 ≤ p := by exact_mod_cast hp
   dsimp [B]
   linarith
 
-/-! Each slot inequality is a separate kernel evaluation, so the eight checks elaborate
-independently. -/
+/-! ### Certificates at reference length 4096 -/
 
-private theorem slots_half :
-    rowSlots 4096 86 24 215 17200 < columnSlots 2048 2836 86 24 215 17200 := by
-  decide +kernel
-
-private theorem slots_quarter :
-    rowSlots 4096 86 39 172 13760 < columnSlots 1024 1932 86 39 172 13760 := by
-  decide +kernel
-
-private theorem slots_eighth :
-    rowSlots 4096 86 47 215 17200 < columnSlots 512 1318 86 47 215 17200 := by
-  decide +kernel
-
-private theorem slots_sixteenth :
-    rowSlots 4096 86 60 387 30960 < columnSlots 256 902 86 60 387 30960 := by
-  decide +kernel
-
-private theorem wide_slots_half :
-    rowSlots 4096 170 54 612 48960 < columnSlots 2048 2831 170 54 612 48960 := by
-  decide +kernel
-
-private theorem wide_slots_quarter :
-    rowSlots 4096 170 76 935 74800 < columnSlots 1024 1926 170 76 935 74800 := by
-  decide +kernel
-
-private theorem wide_slots_eighth :
-    rowSlots 4096 170 94 510 40800 < columnSlots 512 1313 170 94 510 40800 := by
-  decide +kernel
-
-private theorem wide_slots_sixteenth :
-    rowSlots 4096 170 102 612 48960 < columnSlots 256 899 170 102 612 48960 := by
-  decide +kernel
-
-/-- The four slot inequalities at reference length 4096 whose exception constants stay
-below `2^37 n²`. -/
+/-- The four slot inequalities whose normalized exception constants are below `2^37`. -/
 theorem slot_certificates :
-    rowSlots 4096 86 24 215 17200 < columnSlots 2048 2836 86 24 215 17200 ∧
-    rowSlots 4096 86 39 172 13760 < columnSlots 1024 1932 86 39 172 13760 ∧
-    rowSlots 4096 86 47 215 17200 < columnSlots 512 1318 86 47 215 17200 ∧
-    rowSlots 4096 86 60 387 30960 < columnSlots 256 902 86 60 387 30960 :=
-  ⟨slots_half, slots_quarter, slots_eighth, slots_sixteenth⟩
+    rowSlots 4096 116 35 160 10333 < columnSlots 2048 2834 116 35 160 10333 ∧
+    rowSlots 4096 112 50 210 13205 < columnSlots 1024 1930 112 50 210 13205 ∧
+    rowSlots 4096 108 59 277 16613 < columnSlots 512 1316 108 59 277 16613 ∧
+    rowSlots 4096 104 67 365 22123 < columnSlots 256 901 104 67 365 22123 := by
+  refine ⟨?_, ?_, ?_, ?_⟩ <;> decide +kernel
 
-/-- The four slot inequalities at reference length 4096 whose exception constants stay
-below `2^43 n²`. -/
+/-- The four slot inequalities whose normalized exception constants are below `2^52`. -/
 theorem wide_slot_certificates :
-    rowSlots 4096 170 54 612 48960 < columnSlots 2048 2831 170 54 612 48960 ∧
-    rowSlots 4096 170 76 935 74800 < columnSlots 1024 1926 170 76 935 74800 ∧
-    rowSlots 4096 170 94 510 40800 < columnSlots 512 1313 170 94 510 40800 ∧
-    rowSlots 4096 170 102 612 48960 < columnSlots 256 899 170 102 612 48960 :=
-  ⟨wide_slots_half, wide_slots_quarter, wide_slots_eighth, wide_slots_sixteenth⟩
+    rowSlots 4096 824 254 1137 471498 < columnSlots 2048 2827 824 254 1137 471498 ∧
+    rowSlots 4096 612 278 1148 360879 < columnSlots 1024 1922 612 278 1148 360879 ∧
+    rowSlots 4096 876 483 2237 1058306 < columnSlots 512 1308 876 483 2237 1058306 ∧
+    rowSlots 4096 488 321 1705 470485 < columnSlots 256 895 488 321 1705 470485 := by
+  refine ⟨?_, ?_, ?_, ?_⟩ <;> decide +kernel
 
 /-- At every length `4096 b` and every prescribed prime-field domain, the four listed
-radii give 128-bit line MCA security when `p ≥ 2^165 n²`. The field-size hypothesis is
+radii give 128-bit line-MCA security when `p ≥ 2^165 n²`. The field-size hypothesis is
 the one of `ScaledFirstOrderSecurity.four_rates`; the radii are larger. -/
 theorem four_rates {b p : ℕ} [Fact p.Prime] [SampleableType (ZMod p)] (hb : 0 < b)
     (hp : 2^165*(b*4096)^2 ≤ p) (dom : Fin (b*4096) ↪ ZMod p) :
     let good := fun (k : ℕ) (r : ℝ) => mcaError (AffineLineGenerator (ZMod p))
       (code dom (b*k)) r ≤ ENNReal.ofReal (1/(2:ℝ)^128)
-    good 2048 (1260/4096) ∧ good 1024 (2164/4096) ∧ good 512 (2778/4096) ∧
-      good 256 (3194/4096) := by
+    good 2048 (1262/4096) ∧ good 1024 (2166/4096) ∧ good 512 (2780/4096) ∧
+      good 256 (3195/4096) := by
   obtain ⟨h₁,h₂,h₃,h₄⟩ := slot_certificates
   have hp' : 2^128 * 2^37 * (b*4096)^2 ≤ p := by
     rw [← pow_add]
     exact hp
   refine ⟨?_,?_,?_,?_⟩
-  · exact security_of_slots (K := 2^37) (Θ := 13/5) (ρ := 1/2) (T := 119500) hb
+  · exact security_of_slots (K := 2^37) (Θ := 1024/393) (ρ := 1/2) (T := 172410) hb
       (by decide) (by decide) (by decide) (by decide) (by decide) (by norm_num) (by norm_num)
       (by norm_num) (by norm_num) (by norm_num [stageStaircase]) (by decide) (by norm_num)
       h₁ hp' dom (by norm_num)
-  · exact security_of_slots (K := 2^37) (Θ := 17/5) (ρ := 1/4) (T := 228020) hb
+  · exact security_of_slots (K := 2^37) (Θ := 512/151) (ρ := 1/4) (T := 450925) hb
       (by decide) (by decide) (by decide) (by decide) (by decide) (by norm_num) (by norm_num)
       (by norm_num) (by norm_num) (by norm_num [stageStaircase]) (by decide) (by norm_num)
       h₂ hp' dom (by norm_num)
-  · exact security_of_slots (K := 2^37) (Θ := 9/2) (ρ := 1/8) (T := 414728) hb
+  · exact security_of_slots (K := 2^37) (Θ := 896/201) (ρ := 1/8) (T := 841930) hb
       (by decide) (by decide) (by decide) (by decide) (by decide) (by norm_num) (by norm_num)
       (by norm_num) (by norm_num) (by norm_num [stageStaircase]) (by decide) (by norm_num)
       h₃ hp' dom (by norm_num)
-  · exact security_of_slots (K := 2^37) (Θ := 6) (ρ := 1/16) (T := 1270630) hb
+  · exact security_of_slots (K := 2^37) (Θ := 256/43) (ρ := 1/16) (T := 1460198) hb
       (by decide) (by decide) (by decide) (by decide) (by decide) (by norm_num) (by norm_num)
       (by norm_num) (by norm_num) (by norm_num [stageStaircase]) (by decide) (by norm_num)
       h₄ hp' dom (by norm_num)
 
-/-- With the larger field-size hypothesis `p ≥ 2^171 n²` the four closed radii rise to
-`1265/4096`, `2170/4096`, `2783/4096` and `3197/4096`. At length `2^30` the hypothesis
-reads `p ≥ 2^231`. -/
+/-- With the field-size hypothesis `p ≥ 2^180 n²` the four closed radii rise to
+`1269/4096`, `2174/4096`, `2788/4096` and `3201/4096`. At length `2^30` the hypothesis
+reads `p ≥ 2^240`. -/
 theorem four_rates_wide {b p : ℕ} [Fact p.Prime] [SampleableType (ZMod p)] (hb : 0 < b)
-    (hp : 2^171*(b*4096)^2 ≤ p) (dom : Fin (b*4096) ↪ ZMod p) :
+    (hp : 2^180*(b*4096)^2 ≤ p) (dom : Fin (b*4096) ↪ ZMod p) :
     let good := fun (k : ℕ) (r : ℝ) => mcaError (AffineLineGenerator (ZMod p))
       (code dom (b*k)) r ≤ ENNReal.ofReal (1/(2:ℝ)^128)
-    good 2048 (1265/4096) ∧ good 1024 (2170/4096) ∧ good 512 (2783/4096) ∧
-      good 256 (3197/4096) := by
+    good 2048 (1269/4096) ∧ good 1024 (2174/4096) ∧ good 512 (2788/4096) ∧
+      good 256 (3201/4096) := by
   obtain ⟨h₁,h₂,h₃,h₄⟩ := wide_slot_certificates
-  have hp' : 2^128 * 2^43 * (b*4096)^2 ≤ p := by
+  have hp' : 2^128 * 2^52 * (b*4096)^2 ≤ p := by
     rw [← pow_add]
     exact hp
   refine ⟨?_,?_,?_,?_⟩
-  · exact security_of_slots (K := 2^43) (Θ := 21/8) (ρ := 1/2) (T := 1711215) hb
+  · exact security_of_slots (K := 2^52) (Θ := 2048/779) (ρ := 1/2) (T := 62686565) hb
       (by decide) (by decide) (by decide) (by decide) (by decide) (by norm_num) (by norm_num)
       (by norm_num) (by norm_num) (by norm_num [stageStaircase]) (by decide) (by norm_num)
       h₁ hp' dom (by norm_num)
-  · exact security_of_slots (K := 2^43) (Θ := 7/2) (ρ := 1/4) (T := 5176094) hb
+  · exact security_of_slots (K := 2^52) (Θ := 1536/449) (ρ := 1/4) (T := 74679279) hb
       (by decide) (by decide) (by decide) (by decide) (by decide) (by norm_num) (by norm_num)
       (by norm_num) (by norm_num) (by norm_num [stageStaircase]) (by decide) (by norm_num)
       h₂ hp' dom (by norm_num)
-  · exact security_of_slots (K := 2^43) (Θ := 9/2) (ρ := 1/8) (T := 3996175) hb
+  · exact security_of_slots (K := 2^52) (Θ := 896/199) (ρ := 1/8) (T := 447712342) hb
       (by decide) (by decide) (by decide) (by decide) (by decide) (by norm_num) (by norm_num)
       (by norm_num) (by norm_num) (by norm_num [stageStaircase]) (by decide) (by norm_num)
       h₃ hp' dom (by norm_num)
-  · exact security_of_slots (K := 2^43) (Θ := 6) (ρ := 1/16) (T := 5717015) hb
+  · exact security_of_slots (K := 2^52) (Θ := 1280/213) (ρ := 1/16) (T := 154129969) hb
       (by decide) (by decide) (by decide) (by decide) (by decide) (by norm_num) (by norm_num)
       (by norm_num) (by norm_num) (by norm_num [stageStaircase]) (by decide) (by norm_num)
       h₄ hp' dom (by norm_num)
 
-/-- The agreement counts of `four_rates` lie strictly below the finite-length Johnson
-threshold `√(n(k−1))` at all four dimensions and every multiple. The counts of
-`four_rates_wide` are smaller still. -/
+/-- The agreement counts of `four_rates_wide` lie strictly below the finite-length Johnson
+threshold `√(n(k−1))` at all four dimensions and every multiple. So do the larger counts of
+`four_rates`. -/
 theorem below_finite_johnson {b : ℕ} (hb : 0 < b) :
-    (b*2836)^2 < (b*4096)*(b*2048-1) ∧ (b*1932)^2 < (b*4096)*(b*1024-1) ∧
-    (b*1318)^2 < (b*4096)*(b*512-1) ∧ (b*902)^2 < (b*4096)*(b*256-1) := by
+    ((b*2827)^2 < (b*4096)*(b*2048-1) ∧ (b*1922)^2 < (b*4096)*(b*1024-1) ∧
+      (b*1308)^2 < (b*4096)*(b*512-1) ∧ (b*895)^2 < (b*4096)*(b*256-1)) ∧
+    ((b*2834)^2 < (b*4096)*(b*2048-1) ∧ (b*1930)^2 < (b*4096)*(b*1024-1) ∧
+      (b*1316)^2 < (b*4096)*(b*512-1) ∧ (b*901)^2 < (b*4096)*(b*256-1)) := by
   have hpos : (0:ℤ) ≤ b-1 := by omega
   have hb2 : (b:ℤ) ≤ (b:ℤ)^2 := by nlinarith [mul_nonneg hpos (Int.natCast_nonneg b)]
-  refine ⟨?_,?_,?_,?_⟩
+  refine ⟨⟨?_,?_,?_,?_⟩,?_,?_,?_,?_⟩
   all_goals zify [show 1 ≤ b*2048 by omega, show 1 ≤ b*1024 by omega,
     show 1 ≤ b*512 by omega, show 1 ≤ b*256 by omega]; nlinarith
+
+/-! ### List bounds -/
 
 private theorem weight_le_scaled {b : ℕ} (hb : 0 < b) (k μ M : ℕ) :
     firstOrderListWeight (b*k) μ M ≤ b * firstOrderListWeight k μ M := by
@@ -413,21 +479,21 @@ theorem four_field_list_bounds {F : Type*} [Field F] {b : ℕ} (hb : 0 < b)
     (dom : Fin (b*4096) ↪ F) :
     let bounded := fun (k : ℕ) (r : ℝ) (C : ℕ) =>
       Code.Lambda (code dom (b*k) : Set (Fin (b*4096) → F)) r ≤ ((C*(b*4096):ℕ):ℕ∞)
-    bounded 2048 (1260/4096) 5146851 ∧ bounded 1024 (2164/4096) 2056867 ∧
-      bounded 512 (2778/4096) 2200781 ∧ bounded 256 (3194/4096) 6075100 := by
+    bounded 2048 (1262/4096) 3722270 ∧ bounded 1024 (2166/4096) 3891790 ∧
+      bounded 512 (2780/4096) 4624878 ∧ bounded 256 (3195/4096) 5864546 := by
   obtain ⟨h₁,h₂,h₃,h₄⟩ := slot_certificates
   refine ⟨?_,?_,?_,?_⟩
-  · simpa only [Nat.cast_ofNat, show (1-(2836:ℝ)/4096) = 1260/4096 by norm_num] using
-      list_of_slots (C:=5146851) hb (by decide) (by decide) (by decide) (by decide) hfield
+  · simpa only [Nat.cast_ofNat, show (1-(2834:ℝ)/4096) = 1262/4096 by norm_num] using
+      list_of_slots (C:=3722270) hb (by decide) (by decide) (by decide) (by decide) hfield
         (by decide +kernel) h₁ dom
-  · simpa only [Nat.cast_ofNat, show (1-(1932:ℝ)/4096) = 2164/4096 by norm_num] using
-      list_of_slots (C:=2056867) hb (by decide) (by decide) (by decide) (by decide) hfield
+  · simpa only [Nat.cast_ofNat, show (1-(1930:ℝ)/4096) = 2166/4096 by norm_num] using
+      list_of_slots (C:=3891790) hb (by decide) (by decide) (by decide) (by decide) hfield
         (by decide +kernel) h₂ dom
-  · simpa only [Nat.cast_ofNat, show (1-(1318:ℝ)/4096) = 2778/4096 by norm_num] using
-      list_of_slots (C:=2200781) hb (by decide) (by decide) (by decide) (by decide) hfield
+  · simpa only [Nat.cast_ofNat, show (1-(1316:ℝ)/4096) = 2780/4096 by norm_num] using
+      list_of_slots (C:=4624878) hb (by decide) (by decide) (by decide) (by decide) hfield
         (by decide +kernel) h₃ dom
-  · simpa only [Nat.cast_ofNat, show (1-(902:ℝ)/4096) = 3194/4096 by norm_num] using
-      list_of_slots (C:=6075100) hb (by decide) (by decide) (by decide) (by decide) hfield
+  · simpa only [Nat.cast_ofNat, show (1-(901:ℝ)/4096) = 3195/4096 by norm_num] using
+      list_of_slots (C:=5864546) hb (by decide) (by decide) (by decide) (by decide) hfield
         (by decide +kernel) h₄ dom
 
 /-- At each prize rate and every prime field admitting the prescribed domain, the scalar
@@ -437,8 +503,8 @@ theorem four_list_bounds {p b : ℕ} [Fact p.Prime] (hb : 0 < b)
     (dom : Fin (b*4096) ↪ ZMod p) :
     let bounded := fun (k : ℕ) (r : ℝ) (C : ℕ) =>
       Code.Lambda (code dom (b*k) : Set (Fin (b*4096) → ZMod p)) r ≤ ((C*(b*4096):ℕ):ℕ∞)
-    bounded 2048 (1260/4096) 5146851 ∧ bounded 1024 (2164/4096) 2056867 ∧
-      bounded 512 (2778/4096) 2200781 ∧ bounded 256 (3194/4096) 6075100 := by
+    bounded 2048 (1262/4096) 3722270 ∧ bounded 1024 (2166/4096) 3891790 ∧
+      bounded 512 (2780/4096) 4624878 ∧ bounded 256 (3195/4096) 5864546 := by
   apply four_field_list_bounds hb _ dom
   right
   simpa [ZMod.ringChar_zmod_n] using Fintype.card_le_of_injective dom dom.injective
@@ -450,8 +516,8 @@ theorem four_interleaved_list_bounds {p b : ℕ} [Fact p.Prime] (hb : 0 < b)
     let bounded := fun (k : ℕ) (r : ℝ) (C : ℕ) =>
       Code.Lambda (Code.interleavedCodeSet (κ := Fin width)
         (code dom (b*k) : Set (Fin (b*4096) → ZMod p))) r ≤ ((C*(b*4096):ℕ):ℕ∞)
-    bounded 2048 (1260/4096) 5146851 ∧ bounded 1024 (2164/4096) 2056867 ∧
-      bounded 512 (2778/4096) 2200781 ∧ bounded 256 (3194/4096) 6075100 := by
+    bounded 2048 (1262/4096) 3722270 ∧ bounded 1024 (2166/4096) 3891790 ∧
+      bounded 512 (2780/4096) 4624878 ∧ bounded 256 (3195/4096) 5864546 := by
   let φ := algebraMap (ZMod p) (RatFunc (ZMod p))
   have hsize : b*4096 ≤ p := by simpa using Fintype.card_le_of_injective dom dom.injective
   have hchar : ringChar (RatFunc (ZMod p)) = p := ringChar.eq _ p
@@ -463,6 +529,8 @@ theorem four_interleaved_list_bounds {p b : ℕ} [Fact p.Prime] (hb : 0 < b)
     (Lambda_interleaved_le_ratFunc dom _ width _).trans h₄⟩
 
 end ProximityGap.FineGridFirstOrderSecurity
+
+#print axioms ProximityGap.FineGridFirstOrderSecurity.rank_sum
 
 #print axioms ProximityGap.FineGridFirstOrderSecurity.four_rates
 
