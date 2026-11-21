@@ -145,12 +145,22 @@ theorem swap_reverse (f : Biv) (l : ℕ) :
   ext j k
   simp only [swap_coeff,coeff_reverseCoeffs,coeff_reflect]
 
-private theorem reflect_cube (P : (K[X])[X]) (w : ℕ) (h : P.natDegree ≤ w) :
-    reflect (3*w) (P^3) = (reflect w P)^3 := by
-  have d : (P^2).natDegree ≤ 2*w := (natDegree_pow_le ..).trans (Nat.mul_le_mul_left _ h)
-  rw [show 3*w=2*w+w by omega,show (3:ℕ)=2+1 by decide,pow_succ P 2,
-    reflect_mul _ _ d h,show 2*w=w+w by omega,pow_two P,reflect_mul _ _ h h]
-  ring
+private theorem reflect_power (P : (K[X])[X]) (w power : ℕ) (h : P.natDegree ≤ w) :
+    reflect (power*w) (P^power) = (reflect w P)^power := by
+  induction power with
+  | zero => simp
+  | succ power ih =>
+    rw [Nat.succ_mul,pow_succ,pow_succ,reflect_mul _ _ (natDegree_pow_le_of_le power h) h,ih]
+
+/-- The reversed numerator has parameter reflection weight power times the degree bound
+for the divided representative. -/
+theorem power_reversed (power : ℕ) (D : Finset K) (w : K → K[X]) (f : Biv) (l : ℕ)
+    (V : K[X]) (hw : ∀ i ∈ D, (w i).natDegree ≤ 1) (hf : ∀ j, (f.coeff j).natDegree ≤ l) :
+    C V * (Bivariate.swap (representative D C (fun i => reflect 1 (w i))
+      (reverseCoeffs l f)))^power =
+    reflect (power *(l+1)) (C V * (Bivariate.swap (representative D C w f))^power) := by
+  rw [representative_reversed _ _ _ _ hw hf,swap_reverse,reflect_C_mul,
+    reflect_power _ _ power (ApolarSyndromeInterpolation.degree_swap _ _ (pencil_coefficient_degree D w f l hw hf))]
 
 /-- The reciprocal numerator, built from the same coordinate vanisher, is precisely
 the weight-3(l+1) parameter reflection of the original numerator. -/
@@ -158,9 +168,41 @@ theorem cubic_reversed (D : Finset K) (w : K → K[X]) (f : Biv) (l : ℕ)
     (V : K[X]) (hw : ∀ i ∈ D, (w i).natDegree ≤ 1) (hf : ∀ j, (f.coeff j).natDegree ≤ l) :
     C V * (Bivariate.swap (representative D C (fun i => reflect 1 (w i))
       (reverseCoeffs l f)))^3 =
-    reflect (3*(l+1)) (C V * (Bivariate.swap (representative D C w f))^3) := by
-  rw [representative_reversed _ _ _ _ hw hf,swap_reverse,reflect_C_mul,
-    reflect_cube _ _ (ApolarSyndromeInterpolation.degree_swap _ _ (pencil_coefficient_degree D w f l hw hf))]
+    reflect (3*(l+1)) (C V * (Bivariate.swap (representative D C w f))^3) :=
+  power_reversed 3 D w f l V hw hf
+
+/-- Compare the two parameter-chart interpolation remainders at arbitrary power after
+clearing the inverse-site vanisher. -/
+theorem cleared_power_remainders (power : ℕ) {ι : Type*} (Z : Finset ι) (site : ι → K[X]ˣ)
+    (D : Finset K) (w : K → K[X]) (f : Biv) (V : K[X]) (l m k : ℕ)
+    (Q Qt B Bt : Biv) (hM : Z.card = power *(l+1)+k) (hw : ∀ i ∈ D, (w i).natDegree ≤ 1)
+    (hf : ∀ j, (f.coeff j).natDegree ≤ l) (hQt : l+Qt.natDegree ≤ Z.card+m)
+    (hBt : Bt.natDegree ≤ m) (hfree : ∀ i ∈ Z, (Bivariate.swap f).eval (site i:K[X]) ≠ 0)
+    (forward : C V * (Bivariate.swap (representative D C w f))^power =
+      Bivariate.swap f * Q + Lagrange.nodal Z (fun i => (site i:K[X])) * B)
+    (backward : C V * (Bivariate.swap (representative D C (fun i => reflect 1 (w i))
+        (reverseCoeffs l f)))^power =
+      Bivariate.swap (reverseCoeffs l f)*Qt + Lagrange.nodal Z (fun i => (↑(site i)⁻¹:K[X]))*Bt) :
+    let Bt' := C (↑(∏ i ∈ Z, -(site i))⁻¹:K[X])*Bt
+    f ∣ C 1 * reverseCoeffs m (Bivariate.swap Bt') - C (X^(m+k))*Bivariate.swap B := by
+  let c := ∏ i ∈ Z, -(site i)
+  let Bt' := C (↑c⁻¹:K[X])*Bt
+  change f ∣ C 1*reverseCoeffs m (Bivariate.swap Bt')-C (X^(m+k))*Bivariate.swap B
+  rw [power_reversed power D w f l V hw hf, swap_reverse,
+      ← unscale_nodal Z site Bt] at backward
+  have hu : (C V * (Bivariate.swap (representative D C w f))^power).natDegree ≤ power *(l+1) :=
+    (natDegree_C_mul_le ..).trans (natDegree_pow_le_of_le power
+      (ApolarSyndromeInterpolation.degree_swap _ _ (pencil_coefficient_degree D w f l hw hf)))
+  obtain ⟨q,hq⟩ := negative_dvd Z (fun i => (site i:K[X])) (Bivariate.swap f) _ Q Qt B Bt'
+    hM (ApolarSyndromeInterpolation.degree_swap f l hf) hu hQt ((natDegree_C_mul_le ..).trans hBt) hfree forward backward
+  have ht : Bivariate.swap (reflect m Bt') = reverseCoeffs m (Bivariate.swap Bt') := by
+    rw [← Bivariate.swap_swap_apply Bt', ← swap_reverse, Bivariate.swap_swap_apply,
+      Bivariate.swap_swap_apply]
+  refine ⟨Bivariate.swap q,?_⟩
+  have hpower : Bivariate.swap (X^(m+k) : Biv) = C (X^(m+k)) := by
+    rw [map_pow,Bivariate.swap_Y,C_pow]
+  simpa only [map_sub,map_mul,Bivariate.swap_swap_apply,ht,hpower,map_one,one_mul]
+    using congrArg Bivariate.swap hq
 
 /-- Four-chart input from the actual cubed representatives and the two interpolation
 identities. Here B and Bt are polynomials in the parameter with coordinate-polynomial
@@ -176,25 +218,8 @@ theorem cleared_cubic_remainders {ι : Type*} (Z : Finset ι) (site : ι → K[X
         (reverseCoeffs l f)))^3 =
       Bivariate.swap (reverseCoeffs l f)*Qt + Lagrange.nodal Z (fun i => (↑(site i)⁻¹:K[X]))*Bt) :
     let Bt' := C (↑(∏ i ∈ Z, -(site i))⁻¹:K[X])*Bt
-    f ∣ C 1 * reverseCoeffs m (Bivariate.swap Bt') - C (X^(m+k))*Bivariate.swap B := by
-  let c := ∏ i ∈ Z, -(site i)
-  let Bt' := C (↑c⁻¹:K[X])*Bt
-  change f ∣ C 1*reverseCoeffs m (Bivariate.swap Bt')-C (X^(m+k))*Bivariate.swap B
-  rw [cubic_reversed D w f l V hw hf, swap_reverse,
-      ← unscale_nodal Z site Bt] at backward
-  have hu : (C V * (Bivariate.swap (representative D C w f))^3).natDegree ≤ 3*(l+1) :=
-    (natDegree_C_mul_le ..).trans (natDegree_pow_le_of_le 3
-      (ApolarSyndromeInterpolation.degree_swap _ _ (pencil_coefficient_degree D w f l hw hf)))
-  obtain ⟨q,hq⟩ := negative_dvd Z (fun i => (site i:K[X])) (Bivariate.swap f) _ Q Qt B Bt'
-    hM (ApolarSyndromeInterpolation.degree_swap f l hf) hu hQt ((natDegree_C_mul_le ..).trans hBt) hfree forward backward
-  have ht : Bivariate.swap (reflect m Bt') = reverseCoeffs m (Bivariate.swap Bt') := by
-    rw [← Bivariate.swap_swap_apply Bt', ← swap_reverse, Bivariate.swap_swap_apply,
-      Bivariate.swap_swap_apply]
-  refine ⟨Bivariate.swap q,?_⟩
-  have hpower : Bivariate.swap (X^(m+k) : Biv) = C (X^(m+k)) := by
-    rw [map_pow,Bivariate.swap_Y,C_pow]
-  simpa only [map_sub,map_mul,Bivariate.swap_swap_apply,ht,hpower,map_one,one_mul]
-    using congrArg Bivariate.swap hq
+    f ∣ C 1 * reverseCoeffs m (Bivariate.swap Bt') - C (X^(m+k))*Bivariate.swap B :=
+  cleared_power_remainders 3 Z site D w f V l m k Q Qt B Bt hM hw hf hQt hBt hfree forward backward
 
 /-- The constant used to turn the monic inverse-site vanisher into the reversed
 one preserves both parameter and coordinate degrees of the remainder. -/
