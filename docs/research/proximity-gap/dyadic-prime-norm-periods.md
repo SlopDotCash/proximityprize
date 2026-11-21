@@ -41,3 +41,44 @@ There is a uniform bound on these **fixed-polynomial limiting ratios**. A recipr
  =\left(\prod_{\{\alpha,\alpha^{-1}\}}(\alpha^{m/2}+\alpha^{-m/2})\right)^2.
 \]
 The quantity inside parentheses is an algebraic integer fixed by the entire Galois group, hence an integer. This gives a square and excludes prime norms. For a nonreciprocal algebraic integer, Smyth proved $M(f)\ge\theta$, where $\theta$ is the real root of $X^3-X-1$. Therefore every limiting ratio above is at most $\sqrt{2/\log_2\theta}$, approximately $2.22$. Infinitely many dyadic prime norms are not established even for the cubic. Composite norms with an uncontrolled cofactor and polynomials varying with $m$ require separate analysis. [Smyth's original theorem](https://doi.org/10.1112/blms/3.2.169) · [Author's account](https://arxiv.org/abs/math/0701397)
+
+## A bound for proper prime divisors
+
+Let $f\in\mathbb Z[X]$ be a fixed monic squarefree polynomial of degree $d$. Write $M=\prod_{f(\lambda)=0}\max(1,|\lambda|)>1$. Suppose $g\in\mathbb F_p^\times$ satisfies $f(g)=0$ and has even order $n$. Put $H=\langle g\rangle$. With natural logarithms, there is a constant $C_f$ such that
+\[
+ \max_{u\ne0}\Re\sum_{h\in H}e^{2\pi i uh/p}
+ \;\ge\; 2\min\!\left(\frac n2,\frac{\log p-2d\log n}{\log M}\right)-C_f.
+\]
+This applies to a degree-one residue root at every proper prime divisor, including when several residue roots occur. The norm can have an arbitrary cofactor. For a sequence with $\log p/n\to\gamma>0$ the resulting asymptotic lower bound for the period divided by $n$ is $\min(1,2\gamma/\log M)$. Existence of such a sequence for any prescribed $f$ and dyadic orders remains a separate arithmetic question.
+
+Let $A$ be the integral companion matrix that sends $(x_0,\ldots,x_{d-1})$ to $(x_1,\ldots,x_{d-1},-\sum_{i<d} f_i x_i)$. For an integral lift $v$ of $(1,g,\ldots,g^{d-1})$, the lattice $\Lambda=\mathbb Z^d+\mathbb Z v/p$ has determinant $1/p$, and $Av\equiv gv\pmod p$. For any integer $L\ge1$ and $0<\delta<1$, take a symmetric convex body in real eigenvector coordinates of $A$. In each real coordinate use a centered interval and in each conjugate pair use a centered disk, of radius $c_f\delta\max(1,|\lambda|)^{-(L-1)}$. Squarefreeness gives these coordinates. Choose $c_f>0$ small enough that $\|A^i w\|_\infty\le\delta$ for all points $w$ in the body and $0\le i<L$. Its volume in the original coordinates is $V_f\delta^d M^{-(L-1)}$ for some $V_f>0$. When this exceeds $2^d/p$, Minkowski's convex body theorem supplies a nonzero $w\in\Lambda$. Since $\|w\|_\infty<1$, it represents a nonzero $b v/p$ modulo $\mathbb Z^d$. Taking the first coordinate of $A^i w$ gives $\|b g^i/p\|_{\mathbb R/\mathbb Z}\le\delta$ throughout the block. The entropy factor agrees with the usual Mahler-measure formula for toral automorphisms. [Lind, Schmidt and Ward](https://research-portal.uea.ac.uk/en/publications/mahler-measure-and-entropy-for-commuting-automorphisms-of-compact/)
+
+Take $J=n$, $\delta=n^{-2}$ and $L\le n/2$. The $2L$ sites $\pm g^i$ of the block are distinct. At a point with $\|t\|\le\delta$, the normalized Fejér kernel satisfies
+\[
+ K_J(t)=J^{-2}\Big|\sum_{j=0}^{J-1}e^{2\pi i j t}\Big|^2
+ \ge 1-\frac{\pi^2}{3}(J^2-1)\delta^2.
+\]
+This follows from $\cos z\ge1-z^2/2$ and $J^{-2}\sum_{a,b=0}^{J-1}(a-b)^2=(J^2-1)/6$. Every other site contributes a nonnegative quantity. In the expansion of $\sum_{h\in H}K_J(bh/p)$ only the $J$ diagonal pairs contribute the principal period since $J\le p-1$. If $R$ is the largest real nonprincipal period, then
+\[
+ \frac{n}{J}+\left(1-\frac1J\right)R
+ \ge 2L\left(1-\frac{\pi^2}{3}(J^2-1)\delta^2\right).
+\]
+Hence $R\ge 2L-O(1)$. The largest integer $L\le n/2$ allowed by the volume inequality is at least $\min(n/2,(\log p-2d\log n)/\log M)-O_f(1)$ whenever a positive such integer exists. In the remaining bounded-right-side range use $R\ge-n/(p-1)\ge-1$, from the mean over nonzero frequencies. This proves the bound. The kernel expansion and extraction of an actual nonzero difference from partial alignment have been verified in Lean for every prime and arbitrary finite sets of sites and frequencies. The companion-matrix volume argument is a written proof. [Lean kernel identity and extraction](../../../ArkLib/Research/ProximityGap/Frontier/FejerPeriodAlignment.lean)
+
+## A necessary common-prime-divisor bound
+
+For every $n$-element domain $D\subseteq\mathbb F_p$ with $n\ge64$, suppose $t$ sites in $D$ have integer lifts of absolute value at most $p/n^2$. There is a nonzero frequency with real period strictly greater than $t-2$. Apply the kernel argument with $J=n$. On each short site every character in the frequency progression has real part at least $1-20/n^2$. Its unnormalized squared sum exceeds or equals $n^2-40$. If every nonzero period were at most $t-2$, its total kernel mass would be at most $n^2+n(n-1)(t-2)$, which is less than $t(n^2-40)$ because their difference is $n(n-2)+(n-40)t>0$. This finite statement is fully verified in Lean. So is the consequence for an integral generator $a$ of order $n=2m$: if $L\le m$ and $a^L n^2\le p$, then a nonprincipal period of the entire subgroup has real part exceeding $2L-2$. [Lean proof](../../../ArkLib/Research/ProximityGap/Frontier/FejerPeriodAlignment.lean)
+
+Suppose a subgroup $H$ of size $n\ge64$ contains $r$ distinct rational primes $q_1,\ldots,q_r$ after reduction. Set $Q=\prod_iq_i$. If $Q^Ln^2\le p$, all $L^r$ products $\prod_i q_i^{e_i}$ with $0\le e_i<L$ have lifts below $p/n^2$. Unique factorization distinguishes them over the integers, and their magnitudes distinguish their residue classes. Lean proves that a nonprincipal real period of $H$ is strictly larger than $L^r-2$. [Formal rank-$r$ bound](../../../ArkLib/Research/ProximityGap/Frontier/FejerPeriodAlignment.lean)
+
+In particular a uniform sparse upper bound $C\sqrt{n\log(p/n)}$ on dyadic subgroups would imply, for every dyadic exponent $N$, that each prime divisor $p$ of $\gcd(2^N-1,3^N-1)$ satisfies
+\[
+ \log p=O_C\!\left(N^{1/3}\right).
+\]
+The finite endpoint `common_prime_period` also works directly on $D=\mu_N(\mathbb F_p)$: if $L\ge64$, $6^L N^2\le p$, $N>0$ and $p$ divides both indicated integers, it proves $|D|\le N$ and produces a nonzero frequency with real period greater than $L^2-2$. The first 64 powers of two in $D$ are distinct as ordinary integers modulo $p$, supplying the cardinality required by the kernel argument.
+
+To see the asymptotic implication, let $H=\langle2,3\rangle\subseteq\mathbb F_p^\times$. Its order $n$ divides $N$ since the ambient group is cyclic. Bounded $n$ gives bounded $p$ from $p\mid 2^n-1$. If $p\le n^4$ the conclusion follows immediately. Otherwise $H$ is sparse, and $L=\lfloor\log(p/n^2)/\log6\rfloor$ grows at least as $(\log p)/(2\log6)-1$. Combining the lower bound $L^2-2$ with the proposed upper bound and squaring gives $(\log p)^3=O_C(n)$. With $r$ fixed rational primes the exponent on $N$ becomes $1/(2r-1)$, with constants also depending on those primes. A dyadic sequence of common prime divisors with $\log p/N^{1/3}\to\infty$ would therefore refute every constant in the uniform period upper bound. Existence of this sequence is unresolved. The subexponential gcd estimate of Bugeaud, Corvaja and Zannier concerns the whole gcd and does not supply the required prime divisors. [Original gcd paper](https://doi.org/10.1007/S00209-002-0449-Z)
+
+As a finite check, for $N=2^{26}$ the exact integer gcd is $19515599812384085=5\cdot17\cdot257\cdot65537\cdot13631489$. Divisibility therefore exhausts the candidates for every $2^j$ with $j\le26$. Their respective subgroup orders $|\langle2,3\rangle|$ are $4,16,256,65536,1048576$, so each candidate has $p<n^2$. The integer gcd is reproducible with `from flint import fmpz; n=2**26; print((fmpz(2)**n-1).gcd(fmpz(3)**n-1))`. The order of the subgroup is the least common multiple of the two multiplicative orders.
+
+Ten larger common primes from the published factor list were also checked, with $p=k2^e+1$ and $41\le e\le28285$. Each passes a Proth primality certificate and direct modular checks of the exact orders of 2 and 3. Their generated subgroups all have $n^2>p$. The largest case is $81\cdot2^{28285}+1$, with order exponents 28282 and 28284. These ten checks extend the tested examples past the exhaustive gcd range. The independent checker `con-leche --verified` accepted the 36,543 transitive declarations for the Fejér endpoints together with both finite-field overlap-packing endpoints. [Factor search](https://mathoverflow.net/questions/70548/factors-of-gcd22n-1-32n-1) · [Reproducible integer checks](../../../scripts/probes/probe_dyadic_common_prime_period.py)
