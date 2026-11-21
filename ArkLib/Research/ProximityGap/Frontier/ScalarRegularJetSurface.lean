@@ -54,17 +54,17 @@ private theorem shift_factor (z : F) (R : F[X][X][X]) (i j : ℕ) (x a b : F) :
 
 /-- Scalar factors can be stripped in the polynomial jet identities. The resulting
 surface retains the support and all jets at all labels, and no scalar fiber is identically zero. -/
-theorem normalize (dom : I ↪ F) (u v₁ : I → F) (hT : 0 < T)
+theorem normalize_dvd (dom : I ↪ F) (u v₁ : I → F) (hT : 0 < T)
     (c : Monomials s v d T → F) (hc : c ≠ 0)
     (hjets : ∀ x i j, i+j<r → ∑ m, C (c m)*jetTerm m i j (dom x) (u x) (v₁ x) = 0) :
     ∃ (s' : ℕ) (b : Monomials s' v d T → F), s' ≤ s ∧ b ≠ 0 ∧
       (∀ x i j, i+j<r → ∑ m, C (b m)*jetTerm m i j (dom x) (u x) (v₁ x) = 0) ∧
-      ∀ z : F, (surface b).map (evalRingHom (C z)) ≠ 0 := by
+      (∀ z : F, (surface b).map (evalRingHom (C z)) ≠ 0) ∧ surface b ∣ surface c := by
   classical
   induction s using Nat.strong_induction_on with
   | h s ih =>
     by_cases hgood : ∀ z : F, (surface c).map (evalRingHom (C z)) ≠ 0
-    · exact ⟨s,c,le_rfl,hc,hjets,hgood⟩
+    · exact ⟨s,c,le_rfl,hc,hjets,hgood,dvd_rfl⟩
     push Not at hgood
     obtain ⟨z,hz⟩ := hgood
     have hd : scalarFactor z ∣ surface c := by
@@ -106,8 +106,45 @@ theorem normalize (dom : I ↪ F) (u v₁ : I → F) (hT : 0 < T)
       have he := hjets x i j h
       rw [← jet_surface,hR,shift_factor,← hb,jet_surface] at he
       exact (mul_eq_zero.mp he).resolve_left (X_sub_C_ne_zero z)
-    obtain ⟨s',c',hs',hrest⟩ := ih (s-1) (by omega) b hbn hjet
-    exact ⟨s',c',by omega,hrest⟩
+    obtain ⟨s',c',hs',hc',hj',hr',hd'⟩ := ih (s-1) (by omega) b hbn hjet
+    exact ⟨s',c',by omega,hc',hj',hr',hd'.trans (by rw [hb,hR]; exact dvd_mul_left R (scalarFactor z))⟩
 
+/-- Removing all identically zero scalar fibers preserves the jet equations. -/
+theorem normalize (dom : I ↪ F) (u v₁ : I → F) (hT : 0 < T)
+    (c : Monomials s v d T → F) (hc : c ≠ 0)
+    (hjets : ∀ x i j, i+j<r → ∑ m, C (c m)*jetTerm m i j (dom x) (u x) (v₁ x) = 0) :
+    ∃ (s' : ℕ) (b : Monomials s' v d T → F), s' ≤ s ∧ b ≠ 0 ∧
+      (∀ x i j, i+j<r → ∑ m, C (b m)*jetTerm m i j (dom x) (u x) (v₁ x) = 0) ∧
+      ∀ z : F, (surface b).map (evalRingHom (C z)) ≠ 0 := by
+  obtain ⟨s',b,hs,hb,hj,hr,_⟩ := normalize_dvd dom u v₁ hT c hc hjets
+  exact ⟨s',b,hs,hb,hj,hr⟩
+
+/-- At every positive multiplicity, every original rich section lies on the value-primitive
+part of the original jet interpolant. This also holds over finite base fields. -/
+theorem rich_on_primitive [NormalizedGCDMonoid F[X][X]] (dom : I ↪ F) (u v₁ : I → F)
+    {t : ℕ} (hr : 0 < r) (ht : 0 < t) (c : Monomials s v d (r*t) → F) (hc : c ≠ 0)
+    (hjets : ∀ x i j, i+j<r → ∑ m, C (c m)*jetTerm m i j (dom x) (u x) (v₁ x) = 0)
+    (z : F) (q : F[X]) (hq : q.natDegree ≤ d) (S : Finset I) (hS : t ≤ S.card)
+    (ha : ∀ x ∈ S, q.eval (dom x) = u x+z*v₁ x) :
+    (surface c).primPart.eval₂ (evalRingHom (C z)) q = 0 := by
+  obtain ⟨s',b,_,hb,hj,hreg,hdiv⟩ := normalize_dvd dom u v₁ (Nat.mul_pos hr ht) c hc hjets
+  let dom' : S ↪ F := (Function.Embedding.subtype _).trans dom
+  have hroot : (surface b).eval₂ (evalRingHom (C z)) q = 0 :=
+    (surface_eval b ..).trans (rich_of_jets dom' (fun x => u x.1) (fun x => v₁ x.1) hr ht b
+      (fun x i j h => hj x.1 i j h) z q hq univ (by simpa using hS) (fun x _ => ha x.1 x.2))
+  have hcont : (surface b).content.eval (C z) ≠ 0 := by
+    intro h
+    apply hreg z
+    conv_lhs => rw [eq_C_content_mul_primPart (surface b)]
+    simp only [Polynomial.map_mul,map_C,coe_evalRingHom,h,map_zero,zero_mul]
+  rw [eq_C_content_mul_primPart (surface b),eval₂_mul,eval₂_C] at hroot
+  have hkey := (mul_eq_zero.mp hroot).resolve_left hcont
+  have hd : (surface b).primPart ∣ (surface c).primPart :=
+    ((isPrimitive_primPart _).dvd_primPart_iff_dvd (surface_ne_zero hc)).mpr
+      ((primPart_dvd _).trans hdiv)
+  obtain ⟨w,hw⟩ := hd
+  rw [hw,eval₂_mul,hkey,zero_mul]
+
+#print axioms rich_on_primitive
 #print axioms normalize
 end ArkLib.ProximityGap.Frontier.ScalarRegularJetSurface

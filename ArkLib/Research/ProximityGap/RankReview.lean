@@ -89,6 +89,34 @@ private theorem mca_grid (D : I ↪ F) (ε : ℝ≥0) (k : ℕ) (e : Fin (Fintyp
     rw [← relDist_floor_bound_iff_complement_bound, gridPt_mul_card, Nat.floor_natCast]
   simp_rw [ge_iff_le, hcard]
 
+/-- The simultaneous rank search classifies every radius on an injective domain. -/
+theorem mcaAnswer_correct [SampleableType F] (D : I ↪ F) (ε : ℝ≥0) (k : ℕ) :
+    correctBoundary (Fintype.card I) (mcaAnswer D ε k) (fun δ =>
+      mcaError (AffineLineGenerator F) (ReedSolomon.code D k) (δ : ℝ) ≤ (ε : ENNReal)) := by
+  unfold mcaAnswer
+  simp_rw [← epsMCA_eq_mcaError]
+  apply firstFailure_correct_of_grid Fintype.card_pos
+  · intro a b hab hb
+    exact (epsMCA_mono _ hab).trans hb
+  · intro a b hab
+    rw [epsMCA_eq_of_floor_eq _ hab]
+  · exact mca_grid D ε k
+
+omit [DecidableEq F] [DecidableEq I] in
+/-- The list rank search classifies every radius at any dimension up to the domain size. -/
+theorem listAnswer_correct (D : I ↪ F) (ε : ℝ≥0) (k m : ℕ) (hk : k ≤ Fintype.card I) :
+    correctBoundary (Fintype.card I) (listAnswer D ε k m) (fun δ =>
+      (Lambda (interleavedCodeSet (κ := Fin m) (ReedSolomon.code D k : Set (I → F)))
+        (δ : ℝ) : ENNReal) ≤ (ε : ENNReal) * Fintype.card F) := by
+  unfold listAnswer
+  apply firstFailure_correct_of_grid Fintype.card_pos
+  · intro a b hab hb
+    exact (lambda_mono_nnreal hab).trans hb
+  · intro a b hab
+    rw [lambda_eq_of_floor_eq (C := interleavedCodeSet (κ := Fin m)
+      (ReedSolomon.code D k : Set (I → F))) hab]
+  · exact list_grid D ε k m hk
+
 /-- The finite support-rank formulas classify every radius in the unit interval, at all prize
 rates and all positive interleaving widths, for any supplied field, smooth domain and tolerance. -/
 theorem correctForEveryDomain [SampleableType F] (D : I ↪ F) [ReedSolomon.Smooth D]
@@ -97,24 +125,7 @@ theorem correctForEveryDomain [SampleableType F] (D : I ↪ F) [ReedSolomon.Smoo
   intro k hk
   have hk' : k ≤ Fintype.card I := by
     rcases hk with h | h | h | h <;> omega
-  constructor
-  · unfold mcaAnswer
-    simp_rw [← epsMCA_eq_mcaError]
-    apply firstFailure_correct_of_grid Fintype.card_pos
-    · intro a b hab hb
-      exact (epsMCA_mono _ hab).trans hb
-    · intro a b hab
-      rw [epsMCA_eq_of_floor_eq _ hab]
-    · exact mca_grid D ε k
-  · intro m _
-    unfold listAnswer
-    apply firstFailure_correct_of_grid Fintype.card_pos
-    · intro a b hab hb
-      exact (lambda_mono_nnreal hab).trans hb
-    · intro a b hab
-      rw [lambda_eq_of_floor_eq (C := interleavedCodeSet (κ := Fin m)
-        (ReedSolomon.code D k : Set (I → F))) hab]
-    · exact list_grid D ε k m hk'
+  exact ⟨mcaAnswer_correct D ε k, fun m _ => listAnswer_correct D ε k m hk'⟩
 
 #print axioms correctForEveryDomain
 end ProximityPrize.RankReview
