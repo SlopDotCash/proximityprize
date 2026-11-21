@@ -4,10 +4,10 @@ Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and L
 Authors: Proximity Prize Contributors
 -/
 import ArkLib.Research.ProximityGap.Frontier.WeightedHessianResultant
-import ArkLib.Research.ProximityGap.Frontier.CommonSectionChart
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeMobiusSections
+import ArkLib.Research.ProximityGap.Frontier.GenericProjectivePolarGcd
+import ArkLib.Research.ProximityGap.Frontier.ReceivedPolarContacts
 import ArkLib.Data.Polynomial.ResultantSpecialization
-import Mathlib.Algebra.Polynomial.Derivation
-import Mathlib.Algebra.Polynomial.OfFn
 
 /-! # The top coefficient of a weighted Sylvester determinant
 
@@ -19,7 +19,9 @@ open Polynomial Finset Matrix
 
 namespace ProximityGap.WeightedResultantInitial
 
-variable {K I : Type*} [Field K]
+variable {K : Type} {I : Type*} [Field K]
+
+open ArkLib.ProximityGap.Frontier
 
 private theorem coeff_product {ι : Type*} (s : Finset ι) (P : ι → K[X]) (w : ι → ℕ)
     (hw : ∀ i ∈ s, (P i).natDegree ≤ w i) :
@@ -208,21 +210,15 @@ private theorem polar_coeff_top (a b : K[X]) (c : K) (W d j : ℕ) (hd : 1 < d) 
     simp only [hle, ite_true, coeff_add, hlow, add_zero, coeff_derivative, ←Nat.cast_add_one,
       hidx, hcast, mul_comm]
 
-/-- The usual `X`-derivative on the coefficient ring. -/
-@[instance_reducible] private noncomputable def coordinateDifferential : Differential K[X] :=
-  ⟨(Polynomial.derivative' (R := K)).restrictScalars ℤ⟩
-
-/-- The ordinary first polar `P_X + c P_Y`, with `c` constant in `X`. -/
-noncomputable def ordinaryPolar (P : K[X][X]) (c : K) : K[X][X] :=
-  let _ : Differential K[X] := coordinateDifferential
-  Differential.mapCoeffs P + C (C c)*P.derivative
+/-- The ordinary first polar acting on the coordinate and ordinate. -/
+noncomputable abbrev ordinaryPolar (P : K[X][X]) (c : K) : K[X][X] :=
+  GenericProjectivePolarGcd.polar (ReceivedPolarContacts.dx P) P.derivative c
 
 private theorem polar_coeff (P : K[X][X]) (c : K) (j : ℕ) :
     (ordinaryPolar P c).coeff j =
       (P.coeff j).derivative + C c*((P.coeff (j+1))*C ((j+1:ℕ):K)) := by
-  simp only [ordinaryPolar, coeff_add, Differential.coeff_mapCoeffs, coeff_C_mul,
-    coeff_derivative, Nat.cast_add_one, map_add, map_natCast, map_one]
-  rfl
+  simp only [ordinaryPolar, GenericProjectivePolarGcd.polar, coeff_add, ReceivedPolarContacts.coeff_dx,
+    coeff_C_mul, coeff_derivative, Nat.cast_add_one, map_add, map_natCast, map_one]
 
 private theorem polar_weight (P : K[X][X]) (c : K) (d W : ℕ) (hd : 1 < d)
     (hP : ∀ j, P.coeff j ≠ 0 → (P.coeff j).natDegree+d*j ≤ W)
@@ -279,12 +275,6 @@ theorem cubic_polar_degree (P : K[X][X]) (f : K[X]) (c : K) (W d : ℕ)
       exact (polar_coeff_top _ _ c W d j hd hW (hbound j hj) (hP (j+1))).symm) hsep
   omega
 
-/-- The weighted transform of the four ordinate coefficients in the common
-section chart. -/
-noncomputable def chartCubic (P : K[X][X]) (r : K) (W d : ℕ) : K[X][X] := by
-  classical
-  exact Polynomial.ofFn 4 fun j => CommonSectionChart.change r (W-d*j) (P.coeff j)
-
 /-- At any old coordinate where the leading coefficient, constant coefficient
 and discriminant are nonzero, every ordinary polar in the new chart attains
 the full coordinate degree. These three tests can be supplied directly to
@@ -294,16 +284,16 @@ theorem chart_polar_degree (P : K[X][X]) (r c : K) (W d : ℕ)
     (hP : ∀ j, P.coeff j ≠ 0 → (P.coeff j).natDegree+d*j ≤ W)
     (hl : (P.coeff 3).eval r ≠ 0) (h0 : (P.coeff 0).eval r ≠ 0)
     (hr : (resultant P P.derivative 3 2).eval r ≠ 0) :
-    (resultant (chartCubic P r W d) (ordinaryPolar (chartCubic P r W d) c) 3 3).natDegree =
+    (resultant (SecondPrimeMobiusSections.plane r W d P) (ordinaryPolar (SecondPrimeMobiusSections.plane r W d P) c) 3 3).natDegree =
       6*W-9*d-3 := by
   classical
   let f := P.map (evalRingHom r)
-  have hc (j : ℕ) (hj : j ≤ 3) :
-      (chartCubic P r W d).coeff j = CommonSectionChart.change r (W-d*j) (P.coeff j) := by
-    unfold chartCubic
-    exact ofFn_coeff_eq_val_of_lt _ (by omega : j < 4)
-  have htop (j : ℕ) (hj : j ≤ 3) : f.coeff j = ((chartCubic P r W d).coeff j).coeff (W-d*j) := by
-    rw [hc j hj, CommonSectionChart.top_coeff]
+  have hc (j : ℕ) : (SecondPrimeMobiusSections.plane r W d P).coeff j =
+      SecondPrimeMobiusSections.chart r (W-d*j) (P.coeff j) := by
+    rw [SecondPrimeMobiusSections.plane_coeff, Nat.mul_comm j d]
+  have htop (j : ℕ) (_ : j ≤ 3) :
+      f.coeff j = ((SecondPrimeMobiusSections.plane r W d P).coeff j).coeff (W-d*j) := by
+    rw [hc j, SecondPrimeMobiusSections.chart_top]
     simp [f]
   have hfield (j : ℕ) : f.coeff j = (P.coeff j).eval r := by simp [f]
   have hdeg : f.natDegree = 3 := le_antisymm (natDegree_map_le.trans hm)
@@ -312,15 +302,12 @@ theorem chart_polar_degree (P : K[X][X]) (r c : K) (W d : ℕ)
     (separable_map_of_resultant_derivative_padded_ne_zero (evalRingHom r) P hm (by decide) hr)
     (by rwa [hfield 0])
   intro j hn
-  by_cases hj : j ≤ 3
-  · rw [hc j hj] at hn ⊢
-    have hp : P.coeff j ≠ 0 := fun h => hn (by simp [h, CommonSectionChart.change])
-    have hbound := hP j hp
-    have hcap : (P.coeff j).natDegree ≤ W-d*j := by omega
-    have hchanged := CommonSectionChart.degree_le r _ _ hcap
-    omega
-  · unfold chartCubic at hn
-    exact (hn (ofFn_coeff_eq_zero_of_ge _ (by omega : 4 ≤ j))).elim
+  rw [hc j] at hn ⊢
+  have hp : P.coeff j ≠ 0 := fun h => hn (by rw [h, map_zero])
+  have hbound := hP j hp
+  have hcap : (P.coeff j).natDegree ≤ W-d*j := by omega
+  have hchanged := SecondPrimeMobiusSections.chart_degree_le r _ _ hcap
+  omega
 
 #print axioms chart_polar_degree
 #print axioms cubic_polar_degree
