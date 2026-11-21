@@ -368,6 +368,9 @@ import ArkLib.Research.ProximityGap.Frontier.GeometricIncompleteSumNoGo
 import ArkLib.Research.ProximityGap.Frontier.GeometricWordLocator
 import ArkLib.Research.ProximityGap.Frontier.GradedAntipodalVanishingLower
 import ArkLib.Research.ProximityGap.Frontier.HalfRadiusListMcaSeparation
+import ArkLib.Research.ProximityGap.Frontier.HalfRateIntrinsicPopulation
+import ArkLib.Research.ProximityGap.Frontier.HalfRateJetCapacity
+import ArkLib.Research.ProximityGap.Frontier.HalfRatePopulationCover
 import ArkLib.Research.ProximityGap.Frontier.HalfRateUnrestrictedJetBudget
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorJetInterpolation
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorJetRank
@@ -609,6 +612,7 @@ import ArkLib.Research.ProximityGap.Frontier.RationalFiberEndpoint
 import ArkLib.Research.ProximityGap.Frontier.RawJacobianWindow
 import ArkLib.Research.ProximityGap.Frontier.RawMGFSaddleVacuity
 import ArkLib.Research.ProximityGap.Frontier.RealizerL2NotSup
+import ArkLib.Research.ProximityGap.Frontier.ReceivedHessianCharge
 import ArkLib.Research.ProximityGap.Frontier.ReceivedJetContact
 import ArkLib.Research.ProximityGap.Frontier.ReceivedOrderChartFamily
 import ArkLib.Research.ProximityGap.Frontier.ReceivedPolarContacts
