@@ -1,0 +1,31 @@
+# Which pullbacks could produce the quarter-rate split pencil?
+
+Let $H=\mu_n$, $n=2^{30}$, in the first designated prime field. Put $D=n/4-2=268435454$. The quarter-rate successor construction asks for a rational function $R=P/Q$ of degree $D$ whose fibers above $0,1,\infty$ consist of $D$ distinct points each in $H$. All three fibers are unramified, disjoint, and avoid the source point at infinity. We allow decompositions $R=V\circ U$ over the algebraic closure, so the obstructions also apply to constructions defined over the named field. [Split-pencil criterion](quarter-successor-split-pencil.md)
+
+The only possible proper inner degrees $\deg U>1$ are **$2$, $19173961$, $38347922$, and $134217727$**. The first permits exactly the source involution types described below. The other three have respective outer degrees $14$, $7$, and $2$. The existence of a pencil of one of these types, or of an indecomposable pencil, remains open. Lean proves the source-symmetry theorem, the integer cutoff, and the divisor classification. The bound on the intersection of a general curve with $H^2$ uses the published theorem below. [Lean declarations](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSplitFiberSymmetry.lean)
+
+## A source symmetry is unique if it exists
+
+A nonsingular Möbius map preserving any one complete fiber sends $268435454$ points of $H$ back into $H$. Every such map except $x\mapsto ux$ or $x\mapsto u/x$ sends at most $3960117$ points back to $H$, by the proved subgroup-intersection bound. Evaluating the map at one fiber point shows that $u\in H$. If it is a scaling, taking the product of all elements of the fiber before and after scaling gives $u^D=1$. As $\gcd(n,D)=2$, its only possible nonidentity value is $u=-1$. [Production intersection bound](../../../ArkLib/Research/ProximityGap/Frontier/MobiusSubgroupBound.lean)
+
+Negation and a scaled reciprocal cannot both preserve the three fibers. If they did, squaring would map the three fibers to disjoint sets, each of odd size $D/2=134217727$. The induced involution $w\mapsto u^2/w$ would have a fixed point in each of those sets. Its only possible nonzero fixed points are $u$ and $-u$. Two different reciprocals cannot both preserve the fibers either, since their composite would be a nonidentity scaling. Thus at most one nonidentity source automorphism preserves all three fibers, even just as sets. In particular, no Galois inner cover of degree greater than two can yield the pencil. Every deck transformation of such a cover would preserve all three fibers. [Lean source-symmetry proof](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSplitFiberSymmetry.lean)
+
+Every quadratic inner map is separable here. Its fixed subfield must be either $\overline{\mathbb F}_p(x^2)$ or $\overline{\mathbb F}_p(x+u/x)$ with $u\in H$. Each displayed generator has degree two and is fixed by the corresponding involution, so the original inner map differs from it by a Möbius change on its target. Consequently the power lift $x\mapsto x^2$ requires three complete fibers of **odd degree $134217727$ on $\mu_{2^{29}}$**. A second squaring cannot produce that degree. In the reciprocal case the same odd degree is required on $\{x+u/x:x\in H\}$. Values corresponding to fixed points must be omitted because their preimages ramify. Conversely, any three complete fibers of this odd degree on the respective image set, using only values with two preimages in $H$, pull back to the required degree-$D$ pencil. Finding such a pencil on either quotient is still necessary for these two constructions.
+
+## An obstruction for inner maps without symmetries
+
+Write $t=\deg U>1$. Above every point in each of the three specified fibers of $R$, all $t$ sites in its $U$-fiber are distinct and lie in the same specified fiber. There are therefore at least $3D(t-1)$ ordered pairs $(x,y)\in H^2$ with $x\ne y$ and $U(x)=U(y)$.
+
+The equation $U(x)=U(y)$ defines a curve of bidegree $(t,t)$ in $\mathbb P^1\times\mathbb P^1$. Removing the diagonal leaves bidegree $(t-1,t-1)$. It has no vertical or horizontal components since $U$ is nonconstant. On a component where $x,y$ are multiplicatively dependent modulo constants, the primitive character relation gives a parametrization $x=c z^a$, $y=c' z^b$ with $\gcd(a,b)=1$ in absolute value. Comparing the degrees of $U(cz^a)$ and $U(c'z^b)$ gives $|a|=|b|=1$. Thus such a component is the graph of a scaling or a reciprocal preserving $U$ and hence all three specified fibers of $R$. At most one off-diagonal component of this type can occur, contributing at most $n$ points. The diagonal has multiplicity one since $t\le D<p$ implies that $U$ is separable.
+
+Consider a remaining irreducible component of bidegree $(a,b)$ over the algebraic closure. On its smooth projective normalization, the coordinate functions have degrees $b,a$. Their zeros and poles occupy at most $2a+2b$ places, and the genus is at most $(a-1)(b-1)$. Thus deleting the zeros and poles gives $\chi=2g-2+|S|\le 2ab$. Apply Corvaja and Zannier, Theorem 2, to the multiplicatively independent functions $x^n,y^n$. The coordinate projections have degrees smaller than $p$, and $p\nmid n$, so both functions have nonzero differentials. Each point of this component in $H^2$ lifts to at least one place counted by their gcd bound. Its contribution is at most
+\[
+\max\!\left(\sqrt[3]{108n^2 a^2b^2},\,12n^2ab/p\right).
+\]
+The second term is below one since $12n^2D^2<p$ for the first named prime. [Corvaja and Zannier, Theorem 2](https://doi.org/10.4171/JEMS/409)
+
+The sums of the component degrees in each coordinate are at most $t-1$. Cauchy–Schwarz and $\sum_i a_i^{4/3}\le(\sum_i a_i)^{4/3}$ give $\sum_i(a_i b_i)^{2/3}\le(t-1)^{4/3}$. Combining the upper and lower counts yields
+\[
+3D(t-1)\ \le\ n + \sqrt[3]{108n^2(t-1)^4}.
+\]
+Lean verifies that this inequality fails throughout the integer interval $3\le t\le4194300$. If $t$ exceeds this interval and divides $D$, its only possibilities are $19173961,38347922,134217727,D$. The last corresponds to a degree-one outer map and imposes no decomposition. [Checked cutoff and divisor calculation](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSplitFiberSymmetry.lean)

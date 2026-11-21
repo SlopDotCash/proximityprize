@@ -18,8 +18,8 @@ import Mathlib.Tactic.NormNum.Prime
 At security error `2^-128`, the first over-budget radii for dimensions
 `16, 8, 4, 2` are `15/32, 24/32, 29/32, 31/32`. The same thresholds
 hold for every positive interleaving width. At half rate the product fibers
-of 17-subsets give a list at 17 agreements. The quarter-rate crossing occurs at
-capacity. The two lower rates first exceed the budget one Hamming step past capacity.
+of 17-subsets give a list at 17 agreements. At quarter rate the first failure is one error
+below the relative minimum distance. The two lower rates first fail at that distance.
 -/
 
 namespace ProximityGap.FourRateList673
