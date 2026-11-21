@@ -683,6 +683,7 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterRateSharedResultant
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateToleranceCurve
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor
 import ArkLib.Research.ProximityGap.Frontier.QuarterSlopeReconstruction
+import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorSplitPencil
 import ArkLib.Research.ProximityGap.Frontier.QuarticFieldProductionThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarticIntrinsicAuxiliary
 import ArkLib.Research.ProximityGap.Frontier.QuotientAnchorAllocation
