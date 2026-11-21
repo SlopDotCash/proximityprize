@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exhaust the binary Paley row decoding inequalities over F_3, F_5, F_7."""
+"""Exhaust the binary Paley row decoding inequalities over the four odd prime fields through 11."""
 
 from itertools import combinations
 
@@ -88,5 +88,5 @@ def check_prime(p):
 
 
 if __name__ == "__main__":
-    for prime in (3, 5, 7):
+    for prime in (3, 5, 7, 11):
         check_prime(prime)

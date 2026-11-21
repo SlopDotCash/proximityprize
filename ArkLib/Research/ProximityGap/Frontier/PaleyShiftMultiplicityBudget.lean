@@ -1,6 +1,7 @@
 /-
 Copyright (c) 2026 Proximity Prize Contributors. All rights reserved.
-SPDX-License-Identifier: MIT OR Apache-2.0
+Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and LICENSE.
+Authors: Proximity Prize Contributors
 -/
 import ArkLib.Research.ProximityGap.Frontier.PaleyShiftListRecovery
 import ArkLib.Research.ProximityGap.Frontier._R16LegendreCosetFace
@@ -51,7 +52,8 @@ theorem sum_multiplicity (hp : p ≠ 2) (A : Finset (ZMod p)) :
   let z (b : ZMod p) : ℤ := if -b ∈ A then 1 else 0
   have hz : ∑ b : ZMod p, z b = (A.card : ℤ) := by
     change (∑ b : ZMod p, (fun u : ZMod p => if u ∈ A then (1:ℤ) else 0) ((Equiv.neg _) b)) = _
-    refine ((Equiv.neg (ZMod p)).bijective.sum_comp (fun u => if u ∈ A then (1 : ℤ) else 0)).trans ?_
+    refine ((Equiv.neg (ZMod p)).bijective.sum_comp
+      (fun u => if u ∈ A then (1 : ℤ) else 0)).trans ?_
     rw [Finset.sum_boole]
     have h : univ.filter (fun i => i ∈ A) = A := by ext; simp
     rw [h]
