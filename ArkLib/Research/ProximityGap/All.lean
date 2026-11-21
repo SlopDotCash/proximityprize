@@ -564,6 +564,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeKernelCapacity
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeLinearFactor
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeLinearSaturation
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeNonlinearObstruction
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeParametricQuadratic
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimePrimitiveSurface
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeQuarticInterpolation
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeQuarticWeightBound
