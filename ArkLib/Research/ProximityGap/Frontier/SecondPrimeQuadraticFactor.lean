@@ -3,7 +3,7 @@ Copyright (c) 2026 Proximity Prize Contributors. All rights reserved.
 Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and LICENSE.
 -/
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeParametricQuadratic
-import ArkLib.Research.ProximityGap.Frontier.SquareSpecialization
+import ArkLib.Research.ProximityGap.Frontier.PaddedPowerSpecialization
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeNonlinearObstruction
 import ArkLib.Data.Polynomial.BivariateFactorDegrees
 import ArkLib.Research.ProximityGap.Frontier.SquarefreeCoordinateResultant
@@ -19,60 +19,51 @@ namespace ProximityGap.SecondPrimeQuadraticFactor
 
 variable {K : Type} [Field K]
 
-/-- If the odd part of a discriminant varies with the coordinate, the scalar
-specializations of the whole discriminant that are squares occupy at most five
-times its parameter degree, including all degree-dropping specializations. -/
+/-- Every scalar with a square fiber of a discriminant with moving squarefree part
+uses the padded resultant budget, except when the entire square factor vanishes there. -/
+theorem square_specialization_bound_padded (D E H : Polynomial K[X]) (S : Finset K)
+    (hD : D ≠ 0) (heq : D = E^2*H) (hr : 0 < H.natDegree)
+    (hRes : resultant H H.derivative H.natDegree (H.natDegree-1) ≠ 0)
+    (hS : ∀ z ∈ S, ∃ W : K[X], D.map (evalRingHom z) = W^2) :
+    S.card ≤ 4 * Bivariate.degreeX D - 1 := by
+  classical
+  have hmul : E ^ 2 * H ≠ 0 := heq ▸ hD
+  have hE : E ≠ 0 := by intro h; simp [h] at hmul
+  have hH := right_ne_zero_of_mul hmul
+  let A := S.filter fun t => Bivariate.evalX t E = 0
+  let T := S \ A
+  have hA : A.card ≤ Bivariate.degreeX E := Bivariate.card_evalX_eq_zero_le_degreeX E hE S
+  have hsplit : T.card + A.card = S.card := card_sdiff_add_card_eq_card (filter_subset ..)
+  have hheight : Bivariate.degreeX D = 2 * Bivariate.degreeX E + Bivariate.degreeX H := by
+    rw [heq, pow_two, Bivariate.degreeX_mul _ _ (mul_ne_zero hE hE) hH,
+      Bivariate.degreeX_mul _ _ hE hE]
+    omega
+  rcases T.eq_empty_or_nonempty with h0 | hne
+  · rw [h0, card_empty] at hsplit
+    omega
+  · have hcount := PaddedPowerSpecialization.square_fibers_lt H T hne hr hRes (by
+      intro t ht
+      obtain ⟨htS, htA⟩ := mem_sdiff.mp ht
+      let φ := evalRingHom t
+      have hv : E.map φ ≠ 0 := fun h =>
+        htA (mem_filter.mpr ⟨htS, (Bivariate.evalX_eq_map t E).trans h⟩)
+      obtain ⟨W, hW⟩ := hS t htS
+      have hmap : (E.map φ) ^ 2 * H.map φ = W ^ 2 := by
+        simpa only [heq, Polynomial.map_mul, Polynomial.map_pow] using hW
+      have hdvd : (E.map φ) ^ 2 ∣ W ^ 2 := ⟨H.map φ, hmap.symm⟩
+      obtain ⟨q, hq⟩ := (UniqueFactorizationMonoid.pow_dvd_pow_iff_dvd (by decide : 2 ≠ 0)).mp hdvd
+      refine ⟨q, ?_⟩
+      rw [hq, mul_pow] at hmap
+      exact mul_left_cancel₀ (pow_ne_zero 2 hv) hmap)
+    omega
+
+/-- The previous five-times-degree estimate follows from the padded bound. -/
 theorem square_specialization_bound (D E H : Polynomial K[X]) (S : Finset K)
     (hD : D ≠ 0) (heq : D = E^2*H) (hr : 0 < H.natDegree)
     (hRes : resultant H H.derivative H.natDegree (H.natDegree-1) ≠ 0)
     (hS : ∀ z ∈ S, ∃ W : K[X], D.map (evalRingHom z) = W^2) :
     S.card ≤ 5*Bivariate.degreeX D := by
-  classical
-  let good := S.filter fun z => D.leadingCoeff.eval z ≠ 0
-  let bad := S \ good
-  have hem : E^2*H ≠ 0 := heq ▸ hD
-  have hE := left_ne_zero_of_mul hem
-  have hH := right_ne_zero_of_mul hem
-  have hdegree : D.natDegree = 2*E.natDegree + H.natDegree := by
-    rw [heq,natDegree_mul hE hH,natDegree_pow]
-  have hg := SquareSpecialization.card_regular_squares_le H good hr hRes (by
-    intro z hz
-    obtain ⟨hzS,hzlc⟩ := mem_filter.mp hz
-    let φ := evalRingHom z
-    have hdz : (D.map φ).natDegree = D.natDegree := natDegree_map_eq_iff.mpr (Or.inl hzlc)
-    have hmap : D.map φ = (E.map φ)^2 * H.map φ := by rw [heq]; simp
-    have hmap0 : D.map φ ≠ 0 := by
-      intro he; rw [he,natDegree_zero] at hdz; omega
-    have hm0 : (E.map φ)^2*H.map φ ≠ 0 := hmap ▸ hmap0
-    have hE0 := left_ne_zero_of_mul hm0
-    have hH0 := right_ne_zero_of_mul hm0
-    have hsum := hdz
-    rw [hmap,natDegree_mul hE0 hH0,natDegree_pow] at hsum
-    have h1 : (E.map φ).natDegree ≤ E.natDegree := natDegree_map_le
-    have h2 : (H.map φ).natDegree ≤ H.natDegree := natDegree_map_le
-    refine ⟨?_,?_⟩
-    · change (H.map φ).natDegree = H.natDegree; omega
-    obtain ⟨W,hW⟩ := hS z hzS
-    have hv : (E.map φ)^2 ∣ W^2 := ⟨_,hW.symm.trans hmap⟩
-    obtain ⟨q,hq⟩ := (UniqueFactorizationMonoid.pow_dvd_pow_iff_dvd (by decide : 2 ≠ 0)).mp hv
-    refine ⟨1,q,?_⟩
-    have h := hmap.symm.trans hW
-    rw [hq,mul_pow] at h
-    simpa using mul_left_cancel₀ hE0 h)
-  have hb : bad.card ≤ D.leadingCoeff.natDegree := by
-    by_contra! hlarge
-    apply (leadingCoeff_ne_zero.mpr hD)
-    apply eq_zero_of_natDegree_lt_card_of_eval_eq_zero' _ bad _ hlarge
-    intro z hz
-    obtain ⟨hzS,hzg⟩ := mem_sdiff.mp hz
-    by_contra hh
-    exact hzg (mem_filter.mpr ⟨hzS,hh⟩)
-  have hc := card_sdiff_add_card_eq_card (show good ⊆ S from filter_subset _ _)
-  change bad.card+good.card = S.card at hc
-  have hlead : D.leadingCoeff.natDegree ≤ Bivariate.degreeX D :=
-    Bivariate.coeff_natDegree_le_degreeX D D.natDegree
-  have hHd : H ∣ D := heq ▸ dvd_mul_left _ _
-  have hh := Bivariate.degreeX_le_of_dvd hHd hD
+  have hh := square_specialization_bound_padded D E H S hD heq hr hRes hS
   omega
 
 private theorem discriminant_height {R : Type*} [CommRing R] (A B D : R[X])
@@ -131,14 +122,14 @@ private theorem actual_discriminant_degrees (Q f : Factor K) (hQ : Q ≠ 0) (hdi
     exact discriminant_height _ _ _ (degcoord 2) (degcoord 1) (degcoord 0) (by decide) (by decide)
 
 /-- An actual irreducible quadratic factor at the second-prime predecessor
-carries at most 330 distinct bad labels. The discriminant cases are exhaustive. -/
-theorem quadratic_population_le (fam : Family dom δ u) (φ : F →+* K)
+carries at most 263 distinct bad labels. The discriminant cases are exhaustive. -/
+theorem quadratic_population_le_263 (fam : Family dom δ u) (φ : F →+* K)
     (Q f : Factor K) (hQ : Q ≠ 0) (hdiv : f ∣ Q) (hf : Irreducible f) (hd : f.natDegree = 2)
     (hshape : ∀ j i a, ((Q.coeff j).coeff i).coeff a ≠ 0 → i+j ≤ 34 ∧ a < 357913943)
     (hchar : ∀ i : ℕ, 0 < i → i ≤ 715827884 → (i : K) ≠ 0)
     (hn : Fintype.card I = 1073741824)
     (ht : 357913943 ≤ ⌈(1 - δ) * (Fintype.card I : ℝ≥0)⌉₊) :
-    (population fam φ f).card ≤ 330 := by
+    (population fam φ f).card ≤ 263 := by
   classical
   let P := (f.coeff 1)^2 - 4*f.coeff 2*f.coeff 0
   let D := Bivariate.swap P
@@ -146,7 +137,7 @@ theorem quadratic_population_le (fam : Family dom δ u) (φ : F →+* K)
   change Bivariate.degreeX D ≤ 66 ∧ D.natDegree ≤ 715827884 at hheight
   have back : P = Bivariate.swap D := (Bivariate.swap_swap_apply P).symm
   have param (s : K[X]) (V : Polynomial K[X]) (h : P = s.map C * V^2) :
-      (population fam φ f).card ≤ 330 := by
+      (population fam φ f).card ≤ 263 := by
     have hw := factor_totalDegree_le hQ hdiv (fun j i a h => (hshape j i a h).1)
     have hc : (2 : K) ≠ 0 := hchar 2 (by decide) (by decide)
     exact (parametric_discriminant_population_le fam φ f hf hd hw hc s V h hn ht).trans (by decide)
@@ -165,7 +156,7 @@ theorem quadratic_population_le (fam : Family dom δ u) (φ : F →+* K)
     (Nat.pos_of_ne_zero hHz) (fun i hi hj => hchar i hi (hj.trans hbound))
   let T := (population fam φ f).image φ
   have hT : T.card = (population fam φ f).card := card_image_of_injective _ φ.injective
-  have hcap := square_specialization_bound D E H T hD hEH.symm (Nat.pos_of_ne_zero hHz) hres (by
+  have hcap := square_specialization_bound_padded D E H T hD hEH.symm (Nat.pos_of_ne_zero hHz) hres (by
     intro z hz
     obtain ⟨a,ha,rfl⟩ := mem_image.mp hz
     have he := (mem_filter.mp ha).2
@@ -183,6 +174,16 @@ theorem quadratic_population_le (fam : Family dom δ u) (φ : F →+* K)
     dsimp only [c] at *
     linear_combination -(4*(f.coeff 2).eval (C (φ a)))*hroot)
   omega
+
+/-- The terminal population bound with the original numerical interface. -/
+theorem quadratic_population_le (fam : Family dom δ u) (φ : F →+* K)
+    (Q f : Factor K) (hQ : Q ≠ 0) (hdiv : f ∣ Q) (hf : Irreducible f) (hd : f.natDegree = 2)
+    (hshape : ∀ j i a, ((Q.coeff j).coeff i).coeff a ≠ 0 → i+j ≤ 34 ∧ a < 357913943)
+    (hchar : ∀ i : ℕ, 0 < i → i ≤ 715827884 → (i : K) ≠ 0)
+    (hn : Fintype.card I = 1073741824)
+    (ht : 357913943 ≤ ⌈(1 - δ) * (Fintype.card I : ℝ≥0)⌉₊) :
+    (population fam φ f).card ≤ 330 := by
+  exact (quadratic_population_le_263 fam φ Q f hQ hdiv hf hd hshape hchar hn ht).trans (by decide)
 
 /-- An overbudget pair at the second-prime predecessor must produce a populous
 irreducible cubic or quartic. Both populations and coordinate weights are
@@ -211,6 +212,8 @@ theorem actual_cubic_or_quartic (fam : Family dom δ u) (φ : F →+* K)
       hn ht.ge
     omega
 
+#print axioms square_specialization_bound_padded
+#print axioms quadratic_population_le_263
 #print axioms square_specialization_bound
 #print axioms quadratic_population_le
 #print axioms actual_cubic_or_quartic
