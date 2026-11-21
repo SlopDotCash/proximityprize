@@ -88,6 +88,29 @@ theorem two_head_bad (dom : I ↪ F) (hn : Fintype.card I=n) {e : ℕ}
     (by rw [tsub_mul,one_mul,div_mul_cancel₀ _ (by norm_num [n]),← Nat.cast_tsub]) (by omega)
     (by rw [show n-(n-e)=e by dsimp [n]; omega]; exact hB)
 
+/-- A verified numerator cap below the sponsor budget gives a safe step. Two
+exceptional heads or the three-head attack give the stated failing step. -/
+theorem prime_bracket_of_cap {p B e M : ℕ} [Fact p.Prime] (dom : I ↪ ZMod p)
+    (hn : Fintype.card I=n) (hB : p/2^128=B) (hlB : 1006632960≤B) (huB : B≤2013265922)
+    (width : ℕ) [NeZero width] (hcap : M≤B)
+    (hg : epsMCA (F:=ZMod p) ((ReedSolomon.code dom k : Set (I → ZMod p)) ^⋈ (Fin width)) ((e:ℝ≥0)/n)
+      ≤ (M:ℝ≥0∞)/(Fintype.card (ZMod p):ℝ≥0∞)) :
+    let C := ((ReedSolomon.code dom k : Set (I → ZMod p)) ^⋈ (Fin width))
+    epsMCA (F:=ZMod p) C ((e:ℝ≥0)/n)≤tolerance ∧
+      tolerance<epsMCA (F:=ZMod p) C (((min 671088640 (B/2):ℕ):ℝ≥0)/n) := by
+  dsimp only
+  have hrat := (BoundarySecurityBudget.count_ratio_le_iff (Fintype.card_pos (α:=ZMod p)) (by decide : 0<2^128)).2
+    (by simpa only [ZMod.card,hB] using hcap : M≤Fintype.card (ZMod p)/2^128)
+  refine ⟨hg.trans (by simpa only [Nat.cast_pow,Nat.cast_ofNat] using hrat),?_⟩
+  rw [epsMCA_interleaved_eq]
+  by_cases hh : B/2≤671088640
+  · rw [min_eq_right hh]
+    exact two_head_bad dom hn (by omega) hh (by rw [ZMod.card,hB]; omega)
+  · rw [min_eq_left (by omega : 671088640≤B/2)]
+    have eqn : ((671088640:ℕ):ℝ≥0)/n=5/8 := by norm_num [n]
+    rw [eqn]
+    exact FiveEighthsPlateauThreshold.endpoint_bad dom hn (by rw [ZMod.card,hB]; omega)
+
 /-- The uniform cap supplies a safe Hamming step; either the two-head attack or
 the three-head plateau attack supplies the failing step. -/
 theorem prime_bracket {p B e x : ℕ} [Fact p.Prime] (dom : I ↪ ZMod p) (hn : Fintype.card I=n)
@@ -102,18 +125,23 @@ theorem prime_bracket {p B e x : ℕ} [Fact p.Prime] (dom : I ↪ ZMod p) (hn : 
     have h197 := Nat.le_max_left 197 (1+e/(3*x))
     unfold ceiling at hbudget
     omega
-  have hg := eps_upper dom hn (p:=p) (by omega) he hx hl width
-  have hrat := (BoundarySecurityBudget.count_ratio_le_iff (Fintype.card_pos (α:=ZMod p)) (by decide : 0<2^128)).2
-    (by simpa only [ZMod.card,hB] using hbudget : ceiling e x≤Fintype.card (ZMod p)/2^128)
-  refine ⟨hg.trans (by simpa only [Nat.cast_pow,Nat.cast_ofNat] using hrat),?_⟩
-  rw [epsMCA_interleaved_eq]
-  by_cases hh : B/2≤671088640
-  · rw [min_eq_right hh]
-    exact two_head_bad dom hn (by omega) hh (by rw [ZMod.card,hB]; omega)
-  · rw [min_eq_left (by omega : 671088640≤B/2)]
-    have eqn : ((671088640:ℕ):ℝ≥0)/n=5/8 := by norm_num [n]
-    rw [eqn]
-    exact FiveEighthsPlateauThreshold.endpoint_bad dom hn (by rw [ZMod.card,hB]; omega)
+  exact prime_bracket_of_cap dom hn hB (by omega) huB width hbudget
+    (eps_upper dom hn (p:=p) (by omega) he hx hl width)
+
+/-- A safe Hamming step puts the supremum at least one whole step higher. -/
+theorem successor_le_supremum (dom : I ↪ F) (hn : Fintype.card I=n) {e : ℕ}
+    (he : e<n) (width : ℕ) [NeZero width]
+    (hg : epsMCA (F:=F) ((ReedSolomon.code dom k : Set (I → F)) ^⋈ (Fin width)) ((e:ℝ≥0)/n)≤tolerance) :
+    ((e+1:ℕ):ℝ≥0)/n ≤ mcaDeltaStar (F:=F) ((ReedSolomon.code dom k : Set (I → F)) ^⋈ (Fin width)) tolerance := by
+  rw [epsMCA_interleaved_eq] at hg
+  rw [mcaDeltaStar_interleaved_eq]
+  let eqv := Fintype.equivFinOfCardEq hn
+  let domain := eqv.symm.toEmbedding.trans dom
+  rw [MCAReindexThresholdEquiv.mcaDeltaStar_reindex_reedSolomon_eq eqv.symm domain dom (fun _ => rfl)]
+  apply MCAAdjacentFloorExactPin.latticeRadius_le_mcaDeltaStar_of_predecessor_good
+    (a:=e+1) (by omega) (by omega)
+  rw [← MCAReindexThresholdEquiv.epsMCA_reindex_reedSolomon_eq eqv.symm domain dom (fun _ => rfl)]
+  simpa only [MCAAdjacentFloorExactPin.predecessorRadius, Nat.add_one_sub_one] using hg
 
 /-- The operational supremum lies from the Hamming step immediately after the
 verified safe predecessor through the verified failing step. -/
@@ -125,16 +153,7 @@ theorem prime_supremum_bracket {p B e x : ℕ} [Fact p.Prime] (dom : I ↪ ZMod 
       mcaDeltaStar (F:=ZMod p) C tolerance ≤ ((min 671088640 (B/2):ℕ):ℝ≥0)/n := by
   dsimp only
   obtain ⟨hg,hbad⟩ := prime_bracket dom hn hB huB he hx hl hbudget width
-  refine ⟨?_,mcaDeltaStar_le_of_bad _ _ hbad⟩
-  rw [epsMCA_interleaved_eq] at hg
-  rw [mcaDeltaStar_interleaved_eq]
-  let eqv := Fintype.equivFinOfCardEq hn
-  let domain := eqv.symm.toEmbedding.trans dom
-  rw [MCAReindexThresholdEquiv.mcaDeltaStar_reindex_reedSolomon_eq eqv.symm domain dom (fun _ => rfl)]
-  apply MCAAdjacentFloorExactPin.latticeRadius_le_mcaDeltaStar_of_predecessor_good
-    (a:=e+1) (by omega) (by dsimp [n]; omega)
-  rw [← MCAReindexThresholdEquiv.epsMCA_reindex_reedSolomon_eq eqv.symm domain dom (fun _ => rfl)]
-  simpa only [MCAAdjacentFloorExactPin.predecessorRadius, Nat.add_one_sub_one] using hg
+  exact ⟨successor_le_supremum dom hn (by dsimp [n]; omega) width hg,mcaDeltaStar_le_of_bad _ _ hbad⟩
 
 /-- On this budget interval the possible first failing counts lie within 99 Hamming steps. -/
 theorem two_head_bracket {p B : ℕ} [Fact p.Prime] (dom : I ↪ ZMod p) (hn : Fintype.card I=n)
