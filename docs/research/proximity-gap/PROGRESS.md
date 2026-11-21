@@ -1652,6 +1652,24 @@ indicator vectors yields the displayed inequality. Translation cancels in $a-b$,
 and scaling contributes the common sign $\chi(c)$. These finite numerical inequalities
 were computed outside Lean. [Certified transform](../../../scripts/probes/probe_sponsor_paley_spectrum.cpp)
 
+**Product strata of the subgroup sumset.** For $H=\langle g\rangle$ at each named prime,
+let $T_a=\{x+g^a/x:x\in H\}$. The ordinary signed Paley sums on $T_0,T_1$ are
+$1,617,901,344$ and $-65,858,000$ at the first prime, and $3,686,242,496$ and
+$-1,801,854,912$ at the second. Scaling gives every other product stratum. Each has
+at least $2^{29}$ points and absolute discrepancy below seven times its size. Under
+the verified fourth-energy floor the strata partition the nonzero subgroup sumset.
+On two separately injective exponent intervals in the same stratum, the certified
+one-dimensional Paley spectra bound relative discrepancy by $1.19\%$ when each has
+length at least $2^{27}$. The trace kernel splits into the two indices $i-j$ and
+$i+j-a$. Every complete double Fourier coefficient becomes a sum of at most two
+products of known one-dimensional coefficients. Four exact integer class sums
+suffice for each complete-stratum value. These are computed in GMP. The field
+factorization, trace fiber multiplicity and cyclic sum transport are proved in Lean.
+Cross-stratum rectangles and arbitrary small sets remain open.
+[Derivation and reproducibility](paley-product-traces.md) ·
+[Lean proofs](../../../ArkLib/Research/ProximityGap/Frontier/PaleyInversionTrace.lean) ·
+[Prime verifier](../../../scripts/probes/probe_sponsor_paley_trace.cpp)
+
 **Fourier energy of a weighted code domain.** Let $D=t+cH$, write
 $S_{xy}=\chi(x-y)$ on $D$, and for complex weights $z$ put
 $\widehat z(r)=\sum_{x\in D}z_x e^{2\pi irx/p}$. For nonzero squares $R$ and
