@@ -61,6 +61,20 @@ def check_full_fiber():
             "odd-degree factorizations")
     require(all(15790321 % a for a in range(2, isqrt(15790321) + 1)), "large prime factor")
 
+    m = 15790321
+    require(2**24 > m and m - 1 < 2 * threshold, "prime inner orbital count")
+    require((m - 1) % 2 == 0 and (m - 1) % 3 == 0, "linear projective degree")
+    for length in range(3, 25):
+        low, high = 2, m
+        while low < high:
+            middle = (low + high) // 2
+            if sum(middle**i for i in range(length)) < m:
+                low = middle + 1
+            else:
+                high = middle
+        require(sum(low**i for i in range(length)) != m, "higher projective degree")
+    require(2**23 < threshold + 1 <= 2**24, "indecomposable power-of-two factor")
+
 
 def rotate(mask, shift, n):
     return ((mask << shift) | (mask >> (n - shift))) & ((1 << n) - 1)
