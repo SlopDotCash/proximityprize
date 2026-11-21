@@ -283,6 +283,7 @@ import ArkLib.Research.ProximityGap.Frontier.DilationDoublingLevelSet
 import ArkLib.Research.ProximityGap.Frontier.DilationDoublingMassHalf
 import ArkLib.Research.ProximityGap.Frontier.DilationDoublingMassNoCompose
 import ArkLib.Research.ProximityGap.Frontier.DilationRealSignCocycle
+import ArkLib.Research.ProximityGap.Frontier.DimensionMultiplierMCA
 import ArkLib.Research.ProximityGap.Frontier.DimensionRaiseMCA
 import ArkLib.Research.ProximityGap.Frontier.DimensionThreeHeadWindow
 import ArkLib.Research.ProximityGap.Frontier.DiscriminantSquareClass
@@ -480,6 +481,7 @@ import ArkLib.Research.ProximityGap.Frontier.ListSupportRank
 import ArkLib.Research.ProximityGap.Frontier.LiuZhouSplitRecursion
 import ArkLib.Research.ProximityGap.Frontier.LogRatioTowerBoundedIncrement
 import ArkLib.Research.ProximityGap.Frontier.LogRatioTowerExpForm
+import ArkLib.Research.ProximityGap.Frontier.LowDimensionCubicPlateau
 import ArkLib.Research.ProximityGap.Frontier.LowDimensionThreeLinePhase
 import ArkLib.Research.ProximityGap.Frontier.MGFGeneralToConvergenceHub
 import ArkLib.Research.ProximityGap.Frontier.MGFToConvergenceHub
@@ -895,6 +897,7 @@ import ArkLib.Research.ProximityGap.Frontier.TwoAnchorListWitness
 import ArkLib.Research.ProximityGap.Frontier.TwoDAnnihilatorLineParseval
 import ArkLib.Research.ProximityGap.Frontier.TwoHeadLinearBudget
 import ArkLib.Research.ProximityGap.Frontier.TwoParityMca
+import ArkLib.Research.ProximityGap.Frontier.TwoParityPrize
 import ArkLib.Research.ProximityGap.Frontier.UncertaintyCapacitySidePrime
 import ArkLib.Research.ProximityGap.Frontier.UncertaintyTwoPowerBounds
 import ArkLib.Research.ProximityGap.Frontier.UncertaintyTwoPowerDonohoStarkBridge
