@@ -269,9 +269,47 @@ theorem tangent_head_population {α : Type*} [DecidableEq α] (dom : ι ↪ F) (
       nlinarith [hsq.trans hsecondR, sq_nonneg ((m : ℝ) * n + Cs)]
     exact le_of_mul_le_mul_left key hNpos
 
+open Classical in
+/-- Integer form of `tangent_head_population`, as used for the price of a nonlinear
+factor in `TangentHeadWindows`: below the Johnson radius the number of sections
+is at most `(m n (2t + n) + 2 Cs (t + n)) / (t² - n d)`. -/
+theorem tangent_head_population_nat {α : Type*} [DecidableEq α] (dom : ι ↪ F)
+    (u₀ u₁ : ι → F) (S : Finset α) (z : α → F) (q s₁ s₂ : α → F[X]) (c : α → ℕ)
+    (J : α → Finset ι) {d m t Cs : ℕ} (hm : 1 ≤ m)
+    (hjohnson : Fintype.card ι * d < t ^ 2)
+    (hz : ∀ σ ∈ S, ∀ τ ∈ S, σ ≠ τ → z σ ≠ z τ)
+    (hq : ∀ σ ∈ S, (q σ).natDegree ≤ d)
+    (hs : ∀ σ ∈ S, s₁ σ ≠ 0)
+    (h₁ : ∀ σ ∈ S, (s₁ σ).natDegree ≤ c σ) (h₂ : ∀ σ ∈ S, (s₂ σ).natDegree ≤ d + c σ)
+    (hne : ∀ σ ∈ S, ∀ x ∈ J σ, (s₁ σ).eval (dom x) ≠ 0)
+    (hV : ∀ σ ∈ S, ∀ x ∈ J σ, (s₂ σ).eval (dom x) = u₁ x * (s₁ σ).eval (dom x))
+    (hR : ∀ σ ∈ S, ∀ x ∈ J σ, (q σ).eval (dom x) * (s₁ σ).eval (dom x)
+      - z σ * (s₂ σ).eval (dom x) = u₀ x * (s₁ σ).eval (dom x))
+    (hhead : ∀ A B : F[X], (S.filter fun τ => q τ = A + C (z τ) * B).card ≤ m)
+    (hheight : ∑ σ ∈ S, c σ ≤ Cs)
+    (hlow : S.card * t ≤ ∑ σ ∈ S, (J σ).card + (m * Fintype.card ι + Cs)) :
+    S.card ≤ (m * Fintype.card ι * (2 * t + Fintype.card ι)
+        + 2 * Cs * (t + Fintype.card ι)) / (t ^ 2 - Fintype.card ι * d) := by
+  have hreal := tangent_head_population dom u₀ u₁ S z q s₁ s₂ c J hm hz hq hs h₁ h₂ hne
+    hV hR hhead hheight hlow
+  set n := Fintype.card ι with hn
+  have hden : 0 < t ^ 2 - n * d := Nat.sub_pos_of_lt hjohnson
+  apply (Nat.le_div_iff_mul_le hden).mpr
+  have hcast : ((t ^ 2 - n * d : ℕ) : ℝ) = (t : ℝ) ^ 2 - n * d := by
+    rw [Nat.cast_sub hjohnson.le]
+    push_cast
+    ring
+  have hgoal : ((S.card * (t ^ 2 - n * d) : ℕ) : ℝ)
+      ≤ ((m * n * (2 * t + n) + 2 * Cs * (t + n) : ℕ) : ℝ) := by
+    rw [Nat.cast_mul, hcast]
+    push_cast
+    nlinarith [hreal]
+  exact_mod_cast hgoal
+
 #print axioms card_le_natDegree_of_vanish
 #print axioms inter_card_le_or_commonHead
 #print axioms commonHead_eq
 #print axioms tangent_head_population
+#print axioms tangent_head_population_nat
 
 end ProximityGap.TangentHeadCount
