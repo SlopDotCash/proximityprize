@@ -476,9 +476,13 @@ import ArkLib.Research.ProximityGap.Frontier.PaleyAffineSecondMoment
 import ArkLib.Research.ProximityGap.Frontier.PaleyBilinearDiscrepancy
 import ArkLib.Research.ProximityGap.Frontier.PaleyCodingCosets
 import ArkLib.Research.ProximityGap.Frontier.PaleyCosetCancellation
+import ArkLib.Research.ProximityGap.Frontier.PaleyDefectMinor
+import ArkLib.Research.ProximityGap.Frontier.PaleyInterpolationContact
 import ArkLib.Research.ProximityGap.Frontier.PaleyListInterpolation
 import ArkLib.Research.ProximityGap.Frontier.PaleyProjectiveMoment
 import ArkLib.Research.ProximityGap.Frontier.PaleyShiftListRecovery
+import ArkLib.Research.ProximityGap.Frontier.PaleySingleSizeQuadratic
+import ArkLib.Research.ProximityGap.Frontier.PaleySliceSampling
 import ArkLib.Research.ProximityGap.Frontier.PaleyTranslateInterpolation
 import ArkLib.Research.ProximityGap.Frontier.PaleyTranslationEnergy
 import ArkLib.Research.ProximityGap.Frontier.PencilAutocorrEnergyMaxBridge
