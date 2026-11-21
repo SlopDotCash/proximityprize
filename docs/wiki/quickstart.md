@@ -416,10 +416,10 @@ If you specifically need to regenerate `ArkLib.lean`, use:
 For blueprint output, use `scripts/blueprint-ci.py render` with the TeX/Python
 requirements described in [blueprint and citations](blueprint-and-citations.md).
 
-To replay the dimension-two list bounds at both nominated primes against Lewko’s pinned
+To replay the affine, quadratic and general-dimension list bounds against Lewko’s pinned
 external incidence proof, run `python3 scripts/integration/lewko/verify.py`. The verifier
 builds the repository targets with the normal serialization wrapper, compiles the external
-source in a temporary directory, and checks the named-prime axiom reports. A local clone
+source in a temporary directory, and checks the five axiom reports. A local clone
 can be supplied with `--source /path/to/szemeredi-trotter-lean`.
 [Proof and exact integer bounds](../research/proximity-gap/affine-list-incidences.md)
 

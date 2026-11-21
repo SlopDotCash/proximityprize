@@ -25,8 +25,27 @@ For degree at most two, some site $x_0$ has at least $l=\lceil Lt/n\rceil$ agree
 
 The same method improves Johnson at larger admissible field budgets. At $B=8n$ choose $t=44429$, $l=355433$ and $d=71085$. At $B=64n$ choose $t=26412$, $l=1690369$ and $d=120739$. The two incidence costs are 15,790,779,803 and 44,644,246,795 respectively, strictly below $l(t-1)$. Every prime with actual budget at least the displayed $B$ meets its 128-bit budget at that agreement count, on every injective domain and at every positive width. Since the finite Johnson thresholds at these two budgets are 46,342 and 46,341, the improvements are 1,913 and 19,929 agreements. Both bounds link to the external discrete theorem and pass the native axiom check. [Lean shortening and arithmetic](../../../ArkLib/Research/ProximityGap/Frontier/QuadraticListIncidences.lean) · [Unconditional prime-field endpoints](../../../scripts/integration/lewko/AffineNamedEndpoints.lean)
 
+## A near-capacity bound at every production rate
+
+Let $n=2^{30}$ and take any dimension $k=s+2$ such that $s+3073\le n$. Set $t=k+3071$, and let $B=\lfloor p/2^{128}\rfloor$ be the actual budget of a prime field supporting the domain. If
+\[
+ B\binom ts\ge n\binom ns,
+\]
+the closed-list bound holds at $n-t$ errors on **every injective domain** and at **every positive interleaving width**. The four prize rates give the safe counts in the table, each under the displayed budget condition for its own $k$. The two named budgets are smaller than these sufficient thresholds.
+
+| Rate | Dimension | Agreements | Safe errors | Elementary budget divided by the new budget, before rounding |
+|---:|---:|---:|---:|---:|
+| 1/2 | 536,870,912 | 536,873,983 | 536,867,841 | 28.44 |
+| 1/4 | 268,435,456 | 268,438,527 | 805,303,297 | 63.98 |
+| 1/8 | 134,217,728 | 134,220,799 | 939,521,025 | 87.08 |
+| 1/16 | 67,108,864 | 67,111,935 | 1,006,629,889 | 99.97 |
+
+For an over-budget sublist of exactly $B+1$ distinct scalar words, double count the pairs of a word and an $s$-subset of its agreements. The budget inequality implies that one common set $A$ of $s$ sites belongs to at least $n+1$ words. Choose one polynomial $v$ from that slice and let $H$ be the monic locator of $A$. For every selected polynomial $w$, the difference $w-v$ vanishes on $A$ and hence equals $H q_w$ for an affine polynomial $q_w$. These quotients are distinct. On the $n-s$ remaining sites the graph of the transformed center $(u-v)/H$ meets each of the selected lines at **3073 or more sites**. The original first-prime integer cost for $n$ points and $n+1$ lines applies because there are at most $n$ remaining points. It yields fewer than $3073(n+1)$ incidences, a contradiction. Every prime admitting the length has characteristic greater than the required interpolation degree 1,048,575. The support-based scalar projection theorem transfers the result to positive widths at the actual budget even when $B$ exceeds the square root of the field size.
+
+For comparison, counting $k$-subsets directly gives the elementary list bound $\binom nk/\binom tk$. Dividing this by the new sufficient budget $n\binom ns/\binom ts$ cancels all large binomial factors. The ratio is $(n-s)(n-s-1)/(n\cdot3073\cdot3072)$, as reported above. This comparison concerns sufficient budgets and does not identify the first failing radius. [General shortening and incidence proof](../../../ArkLib/Research/ProximityGap/Frontier/SharedLocatorListIncidences.lean) · [Linked prime-field endpoint](../../../scripts/integration/lewko/AffineNamedEndpoints.lean)
+
 ## Reproducing the proof
 
-The repository's conditional discrete-incidence consumer constructs the graph of the center, extracts a sublist of exactly $B+1$ codewords, dualizes the second configuration and applies scalar projection. The separate named-prime endpoints link that consumer to the author's fully proved `graph_discrete` declaration. The external project is distributed under AGPL-3.0-only. The verifier obtains the pinned, unmodified sources, compiles their import closure with this repository's Lean and mathlib, and checks both named affine endpoints and both quadratic endpoints. [Repository consumer](../../../ArkLib/Research/ProximityGap/Frontier/AffineListIncidences.lean) · [Named-prime proof](../../../scripts/integration/lewko/AffineNamedEndpoints.lean) · [External source and license](https://github.com/mrklwk/szemeredi-trotter-lean/tree/844228bc6c042e59373888d1b69f4e215d1c00e4)
+The repository's conditional discrete-incidence consumer constructs the graph of the center, extracts a sublist of exactly $B+1$ codewords, dualizes the second configuration and applies scalar projection. The separate named-prime endpoints link that consumer to the author's fully proved `graph_discrete` declaration. The external project is distributed under AGPL-3.0-only. The verifier obtains the pinned, unmodified sources, compiles their import closure with this repository's Lean and mathlib, and checks both named affine endpoints, both quadratic endpoints and the general near-capacity bound. [Repository consumer](../../../ArkLib/Research/ProximityGap/Frontier/AffineListIncidences.lean) · [Named-prime proof](../../../scripts/integration/lewko/AffineNamedEndpoints.lean) · [External source and license](https://github.com/mrklwk/szemeredi-trotter-lean/tree/844228bc6c042e59373888d1b69f4e215d1c00e4)
 
 From the repository root run `python3 scripts/integration/lewko/verify.py`. An existing clone can be supplied with `--source /path/to/szemeredi-trotter-lean`.
