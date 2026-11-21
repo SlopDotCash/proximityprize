@@ -262,3 +262,6 @@ ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor ArkLib.ProximityGa
 # Smooth extension fields in the quarter-rate two-head interval
 ArkLib.Research.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow ArkLib.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow.classification
 ArkLib.Research.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow ArkLib.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow.rank_answer
+
+ArkLib.Research.ProximityGap.Frontier.PrimitiveReceivedInterpolation ArkLib.ProximityGap.Frontier.PrimitiveReceivedInterpolation.raw_primitive_section
+ArkLib.Research.ProximityGap.Frontier.DegreeTenDeficitWindow ArkLib.ProximityGap.Frontier.DegreeTenDeficitWindow.primitive_two_head_bracket
