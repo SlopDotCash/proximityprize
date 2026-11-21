@@ -76,9 +76,12 @@ private def orderTwo : Fin 2 ↪ ZMod 3 where
 
 /- At budget one the repetition code has MCA safety throughout and its list first fails
 at one error. The two further tests exercise failure at zero and safety at every count. -/
-#guard (RankExecutable.mcaBoundary (Equiv.refl (Fin 2)) [0, 1, 2] orderTwo 1 1).isNone
-#guard (RankExecutable.listBoundary [0, 1] orderTwo 2 1 3 1 1).map Fin.val == some 1
-#guard (RankExecutable.listBoundary [0, 1] orderTwo 2 1 3 1 0).map Fin.val == some 0
-#guard (RankExecutable.listBoundary [0, 1] orderTwo 2 1 3 1 3).isNone
+run_cmd do
+  let mca := RankExecutable.mcaBoundary (Equiv.refl (Fin 2)) [0, 1, 2] orderTwo 1 1
+  let list (budget : ℕ) := (RankExecutable.listBoundary [0, 1] orderTwo 2 1 3 1 budget).map Fin.val
+  unless mca.isNone do throwError "The repetition-code MCA evaluator failed the all-safe case"
+  unless list 1 == some 1 do throwError "The budget-one list must first fail at one error"
+  unless list 0 == some 0 do throwError "The zero-budget list must fail at zero errors"
+  unless (list 3).isNone do throwError "The full-field list budget must pass every radius"
 
 end ProximityPrize.Review
