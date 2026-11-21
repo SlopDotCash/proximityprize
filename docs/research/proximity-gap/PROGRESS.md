@@ -65,6 +65,10 @@ The rectangular hyperbola construction at half rate now has exact one-fresh firs
 | Unit sixth-moment inequality at order 64 | Exactly 182 split primes violate it. The largest is 926510094425921. At 173249 all three repeated-entry tests pass, and the exact integer excess is 7565522944. | [All-prime classification](../../../scripts/probes/probe_order64_sixth_moment_classification.py), [Lean counterexample](../../../ArkLib/Research/ProximityGap/Frontier/SixthMomentSparseCounterexampleWiring.lean) |
 | Workbench flatness conjecture | Quadratic extensions refute the all-finite-fields formulation. The uniform prime-field cancellation bound remains open. | [Lean counterexample](../../../ArkLib/Research/ProximityGap/Frontier/ShawFlatnessSubfieldCounterexample.lean) |
 
+## Two extra directions and the odd sixteenth-rate budgets
+
+At length $2^{30}$ and rate $1/16$, a single received pair on every smooth domain has at least $2(e+1)+2$ distinct finite bad scalar labels for all **659,903,830 through 671,088,639 errors** when the field exceeds $\binom{2(e+1)+1}{2}$. Thus all **11,184,810 odd budgets from 1,319,807,663 through 1,342,177,281** fail by $\lfloor B/2\rfloor-1$ at every positive width. Four fibers of $X^{k/2}$ supply two projected witnesses, one on each row, with a shared complement forcing their joint explanation. A single parameter separates the two full heads’ fresh labels. An invertible row change retains both extra directions as finite scalar labels. This is a written proof with reconstructions of 320 and 322 simultaneous labels over $\mathbb F_{65537}$. [Construction and proof](two-head-extra-scalar.md#two-extra-directions-from-four-power-fibers) · [Reproduction](../../../scripts/probes/probe_two_projective_extra_labels.py)
+
 ## Two full heads and an extra scalar at rate one sixteenth
 
 On every smooth length-$2^{30}$ domain over a field larger than $\binom{2(e+1)+1}{2}$, a single received pair has at least $2(e+1)+1$ bad labels for all **654,311,425 through 671,088,639** errors. On the complement of two chosen $(t-1)$-site cores, prescribe the first row to equal a third polynomial $Q$ and put the second row equal to $XQ+\theta$. The existing split cubic pencil on the order-64 quotient fixes enough extra agreements of $Q$ inside the two cores. A single parameter separates every fresh label from the two heads and from zero. The projected witness at zero gives the extra bad label. For every even budget from **1,308,622,852 through 1,342,177,280**, the first failure occurs by $B/2-1$ at every positive width. The witness, smooth-domain specialization and even-budget threshold inequality are kernel-checked. [Proof and arithmetic](two-head-extra-scalar.md) · [Lean probability and threshold bounds](../../../ArkLib/Research/ProximityGap/Frontier/TwoHeadExtraCoset.lean)
@@ -1793,8 +1797,11 @@ row evaluated at a fractional-linear map. Its coset occupancy is bounded
 by the positive-characteristic gcd theorem of Corvaja and Zannier, or by the
 repository's integral Stepanov theorem. The signed amplification bound, finite
 Stepanov application, Goldilocks primality, and the two complete exceptional-row
-estimates passed Lean. The two larger named prime fields lie below the new
-size range. [Derivation and constants](paley-mixed-trace-saving.md) ·
+estimates passed Lean. The complete theorem on the ordinary Goldilocks sets
+now passes Lean as well, including the two-to-one cyclic reindexing and both
+branch-fiber corrections. At either named prize prime, even setting the
+occupancy and moment constants to one leaves this fourth-moment upper bound
+above the rectangle area. [Full set theorem](../../../ArkLib/Research/ProximityGap/Frontier/GoldilocksMixedTrace.lean) [Derivation and constants](paley-mixed-trace-saving.md) ·
 [Finite Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/PaleyMixedTraceSaving.lean)
 
 **Fourier energy of a weighted code domain.** Let $D=t+cH$, write
