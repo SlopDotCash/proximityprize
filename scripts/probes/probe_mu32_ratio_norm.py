@@ -105,11 +105,13 @@ def check_list_lower():
 
 def main():
     logs = log2_chords()
-    degrees = (7, 8, 9)
+    degrees = (5, 6, 7, 8, 9)
     bounds = [maxima(logs, y, degrees) for y in (1, 2, 4, 8)]
     for d in degrees:
         row = [b[d] for b in bounds]
         print(f"d={d}, scaled upper exponents at spacings 1,2,4,8: {row} / {SCALE}")
+    if max(b[d] for b in bounds for d in (5, 6, 7)) >= 118 * SCALE:
+        raise ArithmeticError("the quarter-rate lift above 2^118 failed")
     if max(b[d] for b in bounds for d in (7, 8)) >= 128 * SCALE:
         raise ArithmeticError("the lift to characteristics above 2^128 failed")
     if max(b[9] for b in bounds) >= 133 * SCALE:
