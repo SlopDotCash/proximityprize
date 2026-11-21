@@ -2,6 +2,8 @@
 
 The universal rank formula now determines the operational MCA and list cutoffs on every supplied smooth prize code. Evaluating it at large dimensions can be impractical. The table records numerical values and bounds with their verification status. Dated entries preserve intermediate results. [Current reviewer guide](full-prize-review.md) · [November 21 integration assessment](integration-assessment-2026-11-21.md)
 
+The rectangular hyperbola construction at half rate now has exact one-fresh first-failure counts of **357,913,942** and **402,653,185** errors on the two named primes. For every positive quotient degree and every rectangle obeying the construction’s locator and separator degree allocation, the preceding counts allow at most 715,827,884 and 2,013,265,925 one-fresh labels. A three-head first-prime example has 1,073,741,828 bad scalars at the next count, while the second-prime six-head example has 2,415,919,114. Independent verified replay accepted 29,854 declarations for the two restricted label caps and the two actual failure witnesses. The unrestricted first-prime bound is earlier and the second-prime unrestricted predecessor remains open. [Class definition, incidence proof and both witnesses](second-prime-hyperbola-grid.md#how-early-a-rectangular-hyperbola-grid-can-fail)
+
 ## Verified results and open cases
 
 | Question | Result | Verification |
@@ -32,6 +34,7 @@ The universal rank formula now determines the operational MCA and list cutoffs o
 | Subgroup against a prescribed first set | Write $d_D$ for the square-minus-nonsquare count of $A$ in each coset $D$. When both sizes exceed $q^{1/4+\epsilon}$ and $\sum_Dd_D^2\le K\lvert A\rvert$, the relative discrepancy is at most $q^{-\epsilon/4}$ for $q^\epsilon\ge 4C(q)K$ under the field and nonzero-site hypotheses. | [Precise hypotheses, weighted bound and Lean proofs](paley-subgroup-transversals.md) |
 | MCA at the two quarter-length budgets | At $n=2^{30}$, first failure is $B$ on every injective domain at every positive width for $B=268435456$, $0\le k\le536870911$, and for $B=268435457$, $0\le k\le536870909$. | [Lean proof and endpoint conventions](cubic-spike-boundary.md) |
 | Quarter-rate MCA at the first designated prime and length $2^{30}$ | Lean bounds the first failure in **[447392428, 480946859]**. At 447392427 errors the exact worst-pair count is **894784856** bad scalars. At every smooth-domain budget $0\le B\le894784857$ and every positive width, the first bad count is $\min(B,\max(402653184,\lfloor B/2\rfloor))$. On every smooth domain with $q<2^{256}$, Lean gives the exact worst-pair numerator at all **447392428** grid counts from zero through 447392427. It is $e+1$ below 402653184 errors and $2(e+1)$ thereafter. | [Uniform predecessor proof](../../../ArkLib/Research/ProximityGap/Frontier/QuarterRateCompleteSafety.lean) · [Formal bracket](../../../ArkLib/Research/ProximityGap/Frontier/QuarterRateTwoRichFloor.lean) · [Proof](quarter-rate-two-rich-cores.md) |
+| First unresolved quarter-rate count, 447392428 errors at the first prime | The written section bound reduces failure exactly to three disjoint full fibers of a degree-268435454 pencil on the named subgroup. Its existence is open. If it exists, the worst count is exactly **1073741826**. | [Reduction and near-coset exclusions](quarter-successor-split-pencil.md) · [Lean construction and numerical bounds](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSuccessorSplitPencil.lean) |
 | Rates $1/4$ and $1/8$ on arbitrary smooth finite-field cosets | For $n=16s$ or $32s$, $2\le s$, $n\le2^{62}$ and $0<B\le4n-28s+7$, an explicit four-head formula bounds the first failure at every positive width. | [Operational ceiling in Lean](../../../ArkLib/Research/ProximityGap/Frontier/SmoothCosetFourHeadMass.lean) · [Formula](smooth-four-head-attack.md) |
 | Half-rate safety at the second designated prime | A written proof bounds the first failure below by **302,850,001** on every injective length-$2^{30}$ domain. At the predecessor, the all-pair numerator is at most **2,025,212,835**. | [Proof using horizontal sections](horizontal-section-deviation.md) · [Lean intersection and moment lemmas](../../../ArkLib/Research/ProximityGap/Frontier/HorizontalSectionDeviation.lean) · [Exact count](../../../scripts/probes/probe_horizontal_section_deviation.py) |
 | Safety at the second prime, length $2^{30}$ | A written proof gives first-failure lower bounds of **503,316,474** at quarter rate and **662,710,816** at eighth rate on every injective domain. The maximum bad-scalar counts at the respective predecessors are 2,137,705,552 and 2,147,480,528, below the budget of 2,147,483,648. | [Geometric proof](quarter-eighth-shared-component-safety.md#reducing-the-scalar-degree-cost-of-the-jacobian-columns) · [Exact-arithmetic checker](../../../scripts/probes/probe_quarter_eighth_shared_component_safety.py) · [Column rank in Lean](../../../ArkLib/Research/ProximityGap/Frontier/PolarBasisDegreeLoss.lean) |
@@ -1764,6 +1767,22 @@ A power saving for the complete individual $T_0,T_1$ pair remains open.
 [Derivations and exact certificates](paley-product-traces.md#between-two-different-products) ·
 [Lean identities](../../../ArkLib/Research/ProximityGap/Frontier/PaleyMixedProductTraces.lean)
 
+**Full mixed products below square-root size.** On any prime field, for
+a cyclic subgroup of order $n$ divisible by four and $n\ge4p^{1/4}$, the
+relative Paley discrepancy on every two distinct prescribed product strata
+is $O(p^{1/8}/n^{1/3}+p^{-1/8}+n^{-1})$. This saves a power whenever
+$n\ge p^{3/8+\varepsilon}$. At Goldilocks $p=2^{64}-2^{32}+1$ and
+$n=2^{30}$, every such full pair has relative discrepancy **strictly below
+four fifths**. Its two sides each have about one eighth of square-root size.
+In ratio and product coordinates the mixed kernel becomes a signed subgroup
+row evaluated at a fractional-linear map. Its coset occupancy is bounded
+by the positive-characteristic gcd theorem of Corvaja and Zannier, or by the
+repository's integral Stepanov theorem. The signed amplification bound, finite
+Stepanov application, Goldilocks primality, and the two complete exceptional-row
+estimates passed Lean. The two larger named prime fields lie below the new
+size range. [Derivation and constants](paley-mixed-trace-saving.md) ·
+[Finite Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/PaleyMixedTraceSaving.lean)
+
 **Fourier energy of a weighted code domain.** Let $D=t+cH$, write
 $S_{xy}=\chi(x-y)$ on $D$, and for complex weights $z$ put
 $\widehat z(r)=\sum_{x\in D}z_x e^{2\pi irx/p}$. For nonzero squares $R$ and
@@ -2426,6 +2445,8 @@ For a saturated four-head overrun at the second-prime quarter-rate successor, th
 
 For the second-prime quarter-rate seam, a three-map solution with simple disjoint signed coincidences gives explicit polynomial rows of degree at most $d$. Both rational split directions and conjugate nonsplit directions descend to the actual prime field. A four-head overrun occurs for that data exactly when the double sites give all $4d$ possible direction orbits and the holes add at least nine new directions, or when the double sites give $4d-1$ orbits and the holes add at least eleven. Three concrete fractional linear maps give **36** distinct literal bad scalars at $n=16$, $k=4$, $e=8$ on a selected injective domain in the second prime field. This exceeds twice the test length; the smooth production-domain case remains open. [Converse and witness](quarter-three-slope-reconstruction.md) · [Lean reconstruction](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSlopeReconstruction.lean) · [Exact interpolation check](../../../scripts/probes/probe_quarter_slope_reconstruction.py)
 
+For any four-head overrun, the individual $J$-orbit image of each degree-$m$ direction map on $H$ has at least $n/2+2m-3$ values. This rules out even one map factoring through $X^2$. Two maps of the form $M_i(X^a),M_j(X^b)$ for independent Möbius transformations must have $a+b\le4993531$, excluding a triple of such maps. If the largest map has this form, both companions have degree at least 76. The graph estimates use Corvaja–Zannier. The finite-set restriction and the exact numerical comparisons are kernel-checked. [Proof and scope](quarter-slope-power-barrier.md) · [Lean bounds](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSlopePowerBarrier.lean)
+
 ### Nineteen bad extension-field labels and a shortest elliptic section
 
 All three punctured four-head overlap patterns occur on the sixteen nonzero elements of the field of seventeen elements. The five-double and one-triple patterns each have fifteen ordinary fresh labels and four distinct hole values. Over **every proper extension**, a pair of words on the same prescribed subgroup has **nineteen distinct MCA-bad labels at five errors**. Lean verifies the arbitrary-extension theorem with the three standard axioms, and independent `con-leche --verified` accepted all 22,979 transitive declarations. Two further complete censuses of 25,200 and 92,400 balanced partitions check the binary and quartic symbol systems and the original pencil equations for the remaining patterns. [Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/SmoothSeventeenExtension.lean) · [Explicit centers and finite counts](four-fiber-quadratic-characters.md#the-other-two-overlap-patterns)
@@ -2523,3 +2544,9 @@ The argument uses the ramification budget but not the Hodge index theorem. It is
 
 Lean now covers the Fourier lemma, the odd-pencil class count and the 4-cycle contradiction. The pattern classification, the cyclotomic-unit step and the assembly into the list bound remain written. All of this concerns characteristic zero.
 
+
+### Sixteen-site quarter-rate four-head overruns are excluded at both named primes
+
+At eight agreements on the order-sixteen domain, exceeding 32 represented bad labels would force four seven-site cores and exactly two double sites per edge of the four heads. Every signed-minor layout in this class has a two-dimensional scalar spline kernel after subtracting head zero. The exact label census over all 24 singleton assignments gives a maximum of **22** at each named prime and at 65537. Of the 32,256 weighted assignments, 29,184 yield 16 directions, 2,048 yield 21, and 1,024 yield 22. At characteristic 97 the maximum is **32**, attained by 1,536 of 43,008 assignments. A common shear and direct witness checks turn the projective counts into finite bad labels. The generic inventory also holds over the complex numbers and every splitting prime above $432000^8$.
+
+On the order-32 subgroup, at both named primes and at 65537, the separate degree-seven probe excludes all saturated noncollinear quartets whose pair labels admit a faithful order-four rotation or Klein four action. This covers all four faithful Klein four vertex actions and both reflection classes. A layout with no such symmetry remains open. These small-domain results do not certify a production list bound. [Proof, counts and replay commands](quarter-sixteen-splines.md)
