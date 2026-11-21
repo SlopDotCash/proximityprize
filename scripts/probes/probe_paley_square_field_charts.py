@@ -42,6 +42,19 @@ def check(s):
                    for points in combinations(range(s), 4))
     if s >= 5 and (s-2)*quartics != comb(s, 4)*((s-1)*(s-2) + 3):
         raise ArithmeticError(("quartic mean", s, quartics))
+    coefficients = [0]*(s+1)
+    for z in range(q):
+        # Collect all branch-cardinality products directly from this row.
+        poly = [1]
+        for a in range(s):
+            symbol = row[a][z]
+            poly = ([*poly, 0] if symbol == 0 else
+                    [a0 + symbol*a1 for a0, a1 in zip([*poly, 0], [0, *poly])])
+        coefficients = [total + value for total, value in zip(coefficients, poly)]
+    for r in range(1, s//2 + 1):
+        expected = (s - 2*r)*comb(s, 2*r) + (q-s)*(-1)**r*comb((s-1)//2, r)
+        if coefficients[2*r] != expected:
+            raise ArithmeticError(("even branch mean", s, r, coefficients[2*r]))
     return q*q
 
 

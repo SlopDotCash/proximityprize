@@ -21,3 +21,9 @@ $$
 In the base field itself the mean is $3/(s-2)$. Thus base extension adds exactly $s-1$ to this average and violates every upper estimate $s(s^2)^{-\eta}$ with fixed $\eta>0$ for large $s$. This exhibits the obstruction directly in the one-sided trace estimate.
 
 Indeed the original rows equal $s-1$ at each $b\in A$ and $-1$ elsewhere by the norm calculation. The quartic identity follows by the same partition expansion over every odd finite field. Insert $m=s$, field size $s^2$, fourth moment $s(s-1)^4+s^2-s$ and pole sum $s(s-1)^2$. The result is $24\sum_I Q_F(I)=s(s-1)(s-3)(s^2-3s+5)$. Dividing by $24\binom s4$ gives the stated mean. In the base field summing the fourth elementary symmetric polynomial at each shift gives $s\binom{(s-1)/2}{2}$, since each full row has generating polynomial $(1-X^2)^{(s-1)/2}$. [Quartic identity and fixed-prime-field means](paley-domain-tails.md) · [Independent finite-field check](../../../scripts/probes/probe_paley_square_field_charts.py)
+
+The obstruction persists at **every fixed positive genus**. For $1\le2r\le s$, the exact mean of the $2r$-branch character sum in $F$ is
+$$
+s-2r+(s^2-s)(-1)^r\frac{\binom{(s-1)/2}{r}}{\binom{s}{2r}}.
+$$
+For $b\in A$ the $s$ character values have generating polynomial $(1+X)^{s-1}$. For $b\notin A$ their sum is $-1$ and all values are nonzero, so the generating polynomial is $(1-X)(1-X^2)^{(s-1)/2}$. Extracting the coefficient of $X^{2r}$ and dividing by the number of branch sets proves the formula. For $r=1$ the mean is $-1$ as required by quadratic orthogonality. For every fixed $r\ge2$ it is asymptotic to $s$. In particular, increasing the fixed genus in the [one-sided criterion](paley-domain-tails.md) still requires an argument that uses the prime field.
