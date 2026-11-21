@@ -86,6 +86,34 @@ theorem no_deeper_window {n k a B q : ℕ} (ha : 0 < a) (hB : 0 < B)
   change n * q ^ a * B * (2 * (t + 1).choose k) < n.choose t * (2 * (t + 1).choose k) at right
   nlinarith only [left, right, count]
 
+/-- At length `2^30` the same two tests cannot certify any cutoff in the designated
+budget range, including the unadorned product (`a = 0`). All four sponsor dimensions
+lie between four and half the length. -/
+theorem no_production_window {k a B q : ℕ} (hk : 4 ≤ k) (hkn : k ≤ 2 ^ 29)
+    (hB : 0 < B) (hcap : B ≤ 2 ^ 31) (hq : 4 * (2 ^ 30) ^ 2 ≤ q)
+    (ht : k + 1 + a ≤ 2 ^ 30)
+    (hlower : 2 ^ 30 * q ^ a * B < (2 ^ 30).choose (k + 1 + a)) :
+    B < (2 ^ 30).choose k / (k + 1 + a + 1).choose k := by
+  by_cases ha : 0 < a
+  · exact no_deeper_window ha hB ht hq hlower
+  obtain rfl : a = 0 := by omega
+  simp only [Nat.add_zero]
+  have small (j : ℕ) (hj : 4 ≤ j) : j ≤ 2 ^ 29 → (2 ^ 30).choose 4 ≤ (2 ^ 30).choose j := by
+    induction j, hj using Nat.le_induction with
+    | base => simp
+    | succ j _ ih =>
+      intro hj'
+      exact (ih (by omega)).trans (Nat.choose_le_succ_of_lt_half_left (by omega))
+  change B + 1 ≤ (2 ^ 30).choose k / (k + 2).choose k
+  apply (Nat.le_div_iff_mul_le (Nat.choose_pos (by omega : k ≤ k + 2))).mpr
+  rw [Nat.choose_symm_add, Nat.choose_two_right]
+  calc
+    (B + 1) * ((k + 2) * (k + 2 - 1) / 2) ≤
+        (2 ^ 31 + 1) * ((2 ^ 29 + 2) * (2 ^ 29 + 1) / 2) := by gcongr; omega
+    _ ≤ (2 ^ 30).choose 4 := by rw [Nat.choose_eq_descFactorial_div_factorial]; decide
+    _ ≤ _ := small k hk hkn
+
+#print axioms no_production_window
 #print axioms no_deeper_window
 #print axioms good_iff
 end ProximityGap.SmoothListPackingRadius
