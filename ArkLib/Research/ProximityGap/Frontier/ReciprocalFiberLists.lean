@@ -84,6 +84,26 @@ theorem split_fiber [DecidableEq F] (sites : Finset J) (modes : Finset A) (g : �
       exact congrArg Prod.snd (emb.injective (Subtype.ext he))
     simpa using Fintype.card_le_of_injective f hinj
 
+omit [Field F] in
+/-- Compatible local allocations on disjoint fibers define a single center, even when
+the pattern sets differ from fiber to fiber. -/
+theorem split_fibers {K : Type*} [DecidableEq F] (address : J → K) (sites : K → Finset J)
+    (hs : ∀ k j, j ∈ sites k → address j = k) (modes : K → Finset A) (g : ℕ)
+    (base : J → F) (pattern : K → A → J → F)
+    (hcap : ∀ k, (modes k).card * g ≤ (sites k).card) :
+    ∃ center : J → F, (∀ j, j ∉ sites (address j) → center j = base j) ∧
+      ∀ k a, a ∈ modes k → g ≤ ((sites k).filter fun j ↦ center j = pattern k a j).card := by
+  classical
+  choose word outside hits using fun k ↦ split_fiber (sites k) (modes k) g base
+    (pattern k) (hcap k)
+  refine ⟨fun j ↦ word (address j) j, fun j hj ↦ outside _ _ hj, ?_⟩
+  intro k a ha
+  have he := Finset.filter_congr (s := sites k) (p := fun j ↦ word (address j) j = pattern k a j)
+    (q := fun j ↦ word k j = pattern k a j) (fun j hj ↦ by rw [hs k j hj])
+  rw [he]
+  exact hits k a ha
+
+#print axioms split_fibers
 #print axioms norm_double
 #print axioms locator_eq_or_neg
 #print axioms split_fiber

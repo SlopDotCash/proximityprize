@@ -15,6 +15,7 @@ ArkLib.Research.ProximityGap.Frontier.FirstPrimeSepticCores ProximityGap.FirstPr
 # Finite list thresholds from rounded agreement and error-set packing
 ArkLib.Research.ProximityGap.Frontier.ReciprocalFiberLists ProximityGap.ReciprocalFiberLists.locator_eq_or_neg
 ArkLib.Research.ProximityGap.Frontier.ReciprocalFiberLists ProximityGap.ReciprocalFiberLists.split_fiber
+ArkLib.Research.ProximityGap.Frontier.ReciprocalFiberLists ProximityGap.ReciprocalFiberLists.split_fibers
 ArkLib.Research.ProximityGap.Frontier.RecursiveListPacking ProximityGap.RecursiveListPacking.list_bound
 ArkLib.Research.ProximityGap.Frontier.RecursiveListPacking ProximityGap.RecursiveListPacking.four_rates_128
 ArkLib.Research.ProximityGap.Frontier.RecursiveListPacking ProximityGap.RecursiveListPacking.prime_four_rates
