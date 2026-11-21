@@ -16,6 +16,8 @@ At 128-bit tolerance with $q<2^{256}$, Lean also settles the literal MCA maximum
 
 Under the same field-size and tolerance assumptions, the largest possible smooth length for simultaneous radius-one MCA safety and first list failure at minimum distance is **128** at rates $1/2,1/4,1/8$ and **256** at rate $1/16$. The BLS12-381 scalar field realizes every eligible dyadic length up to each ceiling, at every positive interleaving width. Above each ceiling, every such field and smooth domain already fails MCA at $n-k-1$ errors and exceeds the list budget at $n-k$ errors. Earlier failure is possible. [Sharp length ceilings and field realization](../../../ArkLib/Research/ProximityGap/JointDyadicCeilings.lean)
 
+For an arbitrary supplied tolerance $ε$, write $B=\lfloor εq\rfloor$ and $N=\binom{n}{k+1}$. When $\binom{B+1}{2}\le q$ (in particular, when $B^2<q$), MCA is safe at the sponsor's capacity radius exactly when $N\le B$. In that case every radius through one is safe. Otherwise a first failure occurs at or before $n-k-1$ errors and there is no largest safe real radius. Without any restriction on the field or tolerance, radius-one safety still requires $Nq\le B(q+N-1)$. [Arbitrary-tolerance circuit criterion](../../../ArkLib/Research/ProximityGap/ToleranceCircuitCriterion.lean)
+
 ## How the formulas determine the answer
 
 At $e$ errors put $t=n-e$, $B=\lfloor εq\rfloor$ and $L=B+1$. Either challenge fails as soon as one of the following tests succeeds. The tests examine supports and finite-field linear equations. Their inputs contain the actual evaluation points. [Answer definitions and correctness](../../../ArkLib/Research/ProximityGap/RankReview.lean)

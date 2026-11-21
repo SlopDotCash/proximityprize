@@ -57,3 +57,5 @@ Let $D(X)$ be the monic vanisher on these $d$ common sites. Both differences of 
 No multiplicative-subgroup assumption enters the lower bound.
 
 At the next step $\Delta=-1$, so the positive surplus for $Q_1$ no longer follows. The unrestricted predecessor at 480946858 errors remains open. The known three-head classification concerns heads on 32 prescribed quotient fibers. [Restricted sharpness](quarter-three-heads-32-fibers.md)
+
+At the first unresolved step, 447392428 errors, failure is equivalent in the written section argument to a split degree-268435454 pencil on the named subgroup. The conditional witness has two more labels than the field budget. [Successor reduction and its remaining algebraic question](quarter-successor-split-pencil.md)

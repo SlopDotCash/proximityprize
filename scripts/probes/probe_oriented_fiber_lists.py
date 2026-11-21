@@ -75,8 +75,13 @@ def oriented_counter(order, subset_size, omitted=None):
     of at most M-2 roots, hence is below this base, including before cyclic
     reduction. Integer multiplication followed by end-around carry of whole
     histograms performs exact cyclic convolution without per-digit carries.
-    An optional omitted ordinary exponent removes its orientation at its one tree node.
+    Omitted ordinary exponents remove their orientations at the corresponding tree nodes.
     """
+    if omitted is None:
+        omitted = ()
+    elif isinstance(omitted, int):
+        omitted = (omitted,)
+    forbidden = frozenset(omitted)
     bits = order
     width = 2 * order * bits
     mask = (1 << width) - 1
@@ -91,7 +96,7 @@ def oriented_counter(order, subset_size, omitted=None):
 
     @lru_cache(None)
     def orientations(node):
-        return tuple(j for j in (node, order-node) if j != omitted)
+        return tuple(j for j in (node, order-node) if j not in forbidden)
 
     @lru_cache(None)
     def subtree(node, signature):

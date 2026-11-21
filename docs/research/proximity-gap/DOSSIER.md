@@ -6,7 +6,7 @@ historical evidence, not live issue status or a new proof claim.
 
 ## Current proof status — 2026-11-21
 
-The November assessment records the exact four-rate MCA window at production length, including the sharp half-rate endpoint at the boundary prime. It gives the remaining bounds for the two larger named prime fields and distinguishes formally verified results from written improvements. The general prize challenges remain open. [Proof assessment](integration-assessment-2026-11-21.md)
+Lean proves exact finite rank tests for the first failing MCA and list error counts on every supplied smooth code at the four prize rates. Some cryptographic-size instances have exact numerical results. At the two designated length-$2^{30}$ primes, three of the eight MCA counts have exact numerical values and the eight list counts have certified bounds. The referee manuscript states the literal real-radius conclusions and compares the operational cutoffs with Johnson and the relative minimum distance. [Manuscript](support-rank-thresholds.tex) · [Formal statements and reproduction](full-prize-review.md) · [Current numerical ledger](PROGRESS.md)
 
 The historical graph dictionary in §2.1 conflates two conjectures. For the generalized
 Paley graph with connection set a multiplicative subgroup of size $n$, the eigenvalues
