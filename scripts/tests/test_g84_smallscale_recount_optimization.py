@@ -18,7 +18,9 @@ PROBE = (
 
 class SmallScaleRecountOptimization(unittest.TestCase):
     def run_probe(self, flag, recount_matches):
-        recount_expression = "set(range(self.n + 1))" if recount_matches else "set()"
+        recount_expression = (
+            "set(range(self.n + 1))" if recount_matches else "set(range(1, self.n + 2))"
+        )
         code = (
             "import runpy\n"
             f"m = runpy.run_path({str(PROBE)!r})\n"
@@ -54,7 +56,7 @@ class SmallScaleRecountOptimization(unittest.TestCase):
             with self.subTest(flag=flag):
                 result = self.run_probe(flag, recount_matches=False)
                 self.assertNotEqual(result.returncode, 0, result.stdout)
-                self.assertIn("independent recount mismatch: 0 != 9", result.stderr)
+                self.assertIn("independent recount mismatch: 9 recounted, 9 reported", result.stderr)
 
 
 if __name__ == "__main__":

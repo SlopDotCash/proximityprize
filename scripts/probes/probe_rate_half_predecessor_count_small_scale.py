@@ -350,7 +350,7 @@ def run():
                     rec = cell.recount(u0, u1)
                     if set(rec) != set(bad):
                         raise RuntimeError(
-                            f"independent recount mismatch: {len(rec)} != {len(bad)} "
+                            f"independent recount mismatch: {len(rec)} recounted, {len(bad)} reported "
                             f"(n={n}, p={p}, t={t}, {label})"
                         )
                     print(f"!! REFUTATION n={n} p={p} t={t} ({label}) "

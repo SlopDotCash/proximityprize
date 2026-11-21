@@ -40,7 +40,7 @@ class CLM046RuntimeGuards(unittest.TestCase):
                 result = self.run_probe(flag, corrupt=False)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 self.assertIn("fingerprints: inputs=225", result.stdout)
-                self.assertIn("PASS: all exact runtime checks reproduced", result.stdout)
+                self.assertIn("PASS: all exact assertions reproduced", result.stdout)
 
     def test_corrupted_exact_pin_fails_optimized(self):
         for flag in ("-O", "-OO"):

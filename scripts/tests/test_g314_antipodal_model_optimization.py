@@ -3,9 +3,11 @@
 # LICENSE-MIT and LICENSE.
 # Authors: Jonas Augustinus (GitHub: Jonas-Augustinus-Linus)
 """G314's exact antipodal model comparisons survive Python optimization."""
+import os
 from pathlib import Path
 import subprocess
 import sys
+import tempfile
 import unittest
 
 
@@ -38,12 +40,14 @@ class G314AntipodalModelOptimization(unittest.TestCase):
             "    if result.code != 0:\n"
             "        raise\n"
         )
-        return subprocess.run(
-            [sys.executable, flag, "-c", code],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
+        with tempfile.TemporaryDirectory() as temp_dir:
+            return subprocess.run(
+                [sys.executable, flag, "-c", code],
+                env={**os.environ, "TMPDIR": temp_dir},
+                capture_output=True,
+                text=True,
+                check=False,
+            )
 
     def test_valid_model_relations_pass_optimized(self):
         for flag in ("-O", "-OO"):

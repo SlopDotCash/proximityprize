@@ -3,9 +3,11 @@
 # LICENSE-MIT and LICENSE.
 # Authors: Jonas Augustinus (GitHub: Jonas-Augustinus-Linus)
 """G316's finite antipodal formula checks survive Python optimization."""
+import os
 from pathlib import Path
 import subprocess
 import sys
+import tempfile
 import unittest
 
 
@@ -25,12 +27,14 @@ class G316Optimization(unittest.TestCase):
                 "g['coeff2_antipodal_dot'] = lambda h, r: original(h, r) + (h == 8 and r == 5)\n"
             )
         code += "m['main']()\n"
-        return subprocess.run(
-            [sys.executable, flag, "-c", code],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
+        with tempfile.TemporaryDirectory() as temp_dir:
+            return subprocess.run(
+                [sys.executable, flag, "-c", code],
+                env={**os.environ, "TMPDIR": temp_dir},
+                capture_output=True,
+                text=True,
+                check=False,
+            )
 
     def test_valid_formula_passes_optimized(self):
         for flag in ("-O", "-OO"):

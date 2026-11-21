@@ -260,7 +260,7 @@ def main():
         f"enriched={len(enriched_fingerprints)}"
     )
     print(f"first support ratios: {first_support_ratios}")
-    print("PASS: all exact runtime checks reproduced")
+    print("PASS: all exact assertions reproduced")
 
 
 if __name__ == "__main__":
