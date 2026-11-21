@@ -30,7 +30,7 @@
 {\large Affine-line mutual correlated agreement and interleaved list decoding\par}
 \vspace{.5em}
 \textbf{Abstract.}
-For a Reed--Solomon code with prescribed evaluation points, two finite matrix tests determine the first error count at which an affine-line mutual correlated agreement (MCA) budget or an interleaved list budget is exceeded. One test asks whether each of several sets of joint interpolation equations raises the rank of a common matrix. The other counts distinct compatible polynomial tuples by inclusion--exclusion. Both remove received words from the search. The tests are exact at every positive width and include small fields. At length 128 a 246-bit prime gives all eight numerical outcomes at the four prize rates. A second complete benchmark at length $2^{30}$ gives MCA failure at one error and list failure at the unique-decoding boundary on a 129-bit prime field. At length $2^{30}$ a separate four-polynomial construction gives a half-rate MCA failure at 313,174,699 errors. The general enumeration can be impractical on codes of cryptographic size.
+For a Reed--Solomon code with prescribed evaluation points, two finite matrix tests determine the first error count at which an affine-line mutual correlated agreement (MCA) budget or an interleaved list budget is exceeded. One test asks whether each of several sets of joint interpolation equations raises the rank of a common matrix. The other counts distinct compatible polynomial tuples by inclusion--exclusion. Both remove received words from the search. The tests are exact at every positive width and include small fields. All eight boundaries are explicit on a length-32 family, a length-128 subgroup and a length-$2^{30}$ subgroup of a 129-bit prime field. At length $2^{30}$ and rate $1/16$, prime-field MCA thresholds follow an exact formula on 581,610,155 consecutive integer budgets. At budget $2^{31}$ all eligible smooth fields first fail at 715,827,882 errors. The general enumeration can be impractical on codes of cryptographic size.
 
 \section*{1.\quad Parameters and the operational endpoint}
 Let $D=(x_i)_{i\in I}$ be $n>0$ distinct elements of $\F$, and let $1\le k\le n$. Write $C=\rs(D,k)$ for evaluations of polynomials of degree $<k$. The sponsor specifies a multiplicative subgroup of power-of-two order and rate $k/n\in\{1/2,1/4,1/8,1/16\}$. The Lean smooth-domain interface also admits nonzero cosets and permutations of the coordinates. The matrix arguments below apply to any injective domain. The field need not be prime.
@@ -145,6 +145,47 @@ The \href{https://github.com/SlopDotCash/proximityprize/blob/d7087b90e/ArkLib/Re
 apply the closed-ball endpoint convention in Section~1.
 
 \newpage
+\section*{4.2.\quad Eight sharp thresholds on a family of fields}
+Put $n=32$, $\varepsilon=2^{-128}$ and $B=\lfloor q/2^{128}\rfloor$. The table applies to every
+smooth domain over every finite field in the interval
+\[
+                  3{,}928{,}630\le B\le10{,}518{,}299 .
+\]
+For example, the prime $p=17\cdot 2^{147}+1$ gives $B=8{,}912{,}896$. The
+\href{https://github.com/SlopDotCash/proximityprize/blob/797227d570944e033c0af8fc9fff22e4be8f7e7c/ArkLib/Research/ProximityGap/Frontier/FourRatePrime152.lean}{prime-field certificate} verifies Lucas primality, an element of multiplicative order 32, and the four rates on the subgroup it generates.
+\begin{center}
+\begin{tabular}{@{}lrrl@{}}\toprule
+Rate & Dimension & First list failure & First MCA failure\\\midrule
+$1/2$ &16&15&14\\
+$1/4$ &8&24&23\\
+$1/8$ &4&29&All grid counts pass\\
+$1/16$ &2&31&All grid counts pass\\\bottomrule
+\end{tabular}\\[4pt]
+{\small First failing error counts at all positive interleaving widths.}
+\end{center}
+
+\textbf{Lists.} At dimension 16, the $16$-subset packing bound from Section~4 gives at most
+$\lfloor\binom{32}{16}/\binom{18}{16}\rfloor=3{,}928{,}630$ words at 18 agreements.
+At 17 agreements the equal-product construction from Section~4 yields more than $B$,
+since $\binom{32}{17}>32B$. At dimensions $k=8,4,2$ the same packing bound gives
+at most $\lfloor\binom{32}k/(k+1)\rfloor\le B$ at $k+1$ agreements. At exactly $k$
+agreements the largest list has size $\binom{32}k$. Indeed, every $k$-subset interpolates
+one message against the center $y(x)=x^k$, and different subsets give different messages
+because $X^k-f(X)$ has at most $k$ roots. The scalar lists embed in every positive width,
+and the packing bound applies at every width. Of these three binomial coefficients,
+only $\binom{32}8=10{,}518{,}300$ exceeds $B$. At $k-1$ agreements, the $q$ multiples
+of a fixed locator already exceed the budget.
+
+\textbf{MCA.} At dimensions 16 and 8, the circuit count from Section~4 gives at most
+$3{,}697{,}534$ bad scalars at 19 agreements and $3{,}116{,}533$ at 10, respectively.
+For failure at the next step, choose more than $B$ dimension-17 messages on 18-site
+product fibers, or dimension-9 messages at nine agreements by the interpolation argument
+above. In each case $k\binom{B+1}{2}<q-32$ allows the division by $X-z$ from Section~4
+to turn the list into distinct bad scalars. For $k=4,2$, at most $\binom{32}{k+1}\le B$
+circuits can witness a bad scalar at any radius. Interleaving stability transfers the
+scalar counts to all positive widths. The \href{https://github.com/SlopDotCash/proximityprize/blob/797227d570944e033c0af8fc9fff22e4be8f7e7c/ArkLib/Research/ProximityGap/Frontier/FourRateBudget32.lean}{uniform Lean classification} proves the corresponding predicates at every real radius.
+
+\newpage
 \section*{5.\quad A half-rate ceiling at length \texorpdfstring{$2^{30}$}{2 to the 30}}
 For $p_1=365375409332725729550921208179070755120141565953$ take the order-$n$ subgroup, $n=2^{30}$, $k=n/2$ and $\varepsilon=2^{-128}$. Now $B=n$. A single received pair yields $n+1$ bad scalars at 313,174,699 errors. Thus the first failure is \emph{at most} $\lceil7n/24\rceil$. Safety at the preceding error count is open.
 
@@ -171,6 +212,54 @@ Choose $4h+3,h-1,h$ roots in fibers $7,3,11$, respectively, and let $H$ be their
 Their degrees are at most $1+(s-2)+7s=k-1$. At locator roots receive $(0,0)$. On the triple fibers receive the value shared by three pairs. On nonroots in fibers 3 and 11 receive the indicated pair class, and split fiber 15 equally between its two classes. Reserve the remaining $2h+1$ sites of fiber 7. The joint agreement cores of the four pairs have sizes $760567124,760567125,760567124,760567125$. Indeed the triple fibers contribute $9s$ to each, all $s-2$ locator roots contribute, the appropriate single-pair fiber adds $s-h$ or $s-h+1$, and fiber 15 adds $s/2$.
 
 At an assigned nonroot site $x$, take a differing pair and use label $-x$. Its fold agrees there since all four polynomial pairs and the assigned value are of the form $(xv,v)$. At a reserved site the four values $v=V_i(x)$ are distinct. Choose $u_1$ outside them and $u_0\ne xu_1$. The four labels $(xv-u_0)/(u_1-v)$ are distinct. Avoid previous labels by excluding at most four values of $u_0$ per label, possible since $p_1>4(n+1)+1$. The number of labels is $n-(s-2)+3(2h+1)=n+1$. For each label use its pair's core plus the fresh position. A joint explanation would coincide with the designated pair on at least $k$ core sites and hence everywhere, contradicting the fresh discrepancy. There are at least $760567125=n-313174699$ witnessed agreements. This ceiling, approximately $0.291666667$, is strictly below the finite Johnson radius $1-\sqrt{(k-1)/n}\approx0.292893219$. Equivalently $(n-313174699)^2>n(k-1)$.
+
+
+\textbf{Unresolved numerical values.} For this field at quarter rate, the checked first-failure interval is $[402{,}653{,}185,480{,}946{,}859]$. For the second designated prime in the next section, the half-, quarter- and eighth-rate MCA counts still have gaps between the known safe and failing steps. On both designated primes the four worst-case list thresholds still require explicit numerical evaluations. The \href{https://github.com/SlopDotCash/proximityprize/blob/34ad8f82ba3449b5304777c7871f07aea71783f4/docs/research/proximity-gap/integration-assessment-2026-11-21.md}{numerical ledger} distinguishes checked bounds, written arguments and exact values.
+
+\newpage
+\section*{5.1.\quad An exact rate-$1/16$ boundary at length $2^{30}$}
+Set $n=2^{30}$, $k=2^{26}$, $\varepsilon=2^{-128}$ and $B=\lfloor q/2^{128}\rfloor$.
+At $B=2^{31}$, every smooth domain of this length in a finite field has the same
+MCA boundary at every positive interleaving width:
+\[
+   e_{\rm first}=715{,}827{,}882,\qquad
+   \{\delta\in[0,1]:\varepsilon_{\rm MCA}(C,\delta)\le2^{-128}\}
+     =[0,715{,}827{,}882/n).
+\]
+The order-$n$ subgroup of the prime field of order $p_2=2^{30}(2^{129}+13)+1$ realizes
+this case. At $715{,}827{,}881$ errors every received pair meets the budget. One more
+error admits a pair with too many bad scalars. The boundary lies just below $2/3$,
+whereas the Johnson radius $1-\sqrt{(2^{26}-1)/2^{30}}$ exceeds $3/4$.
+The \href{https://github.com/SlopDotCash/proximityprize/blob/797227d570944e033c0af8fc9fff22e4be8f7e7c/ArkLib/Research/ProximityGap/SecondPrimeRankReview.lean}{named rank and executable theorems} prove that both functions return this integer on the designated subgroup. The proof evaluates their outputs by uniqueness of the boundary.
+
+\textbf{Why the crossing is sharp.}
+Let $b(e)$ be the largest number of bad scalars for any one received pair.
+In characteristic $p>1{,}744{,}830{,}589$, any injective domain has
+$b(e)\le3(e+1)$ for $671{,}088{,}640\le e\le715{,}827{,}881$.
+Each bad scalar supplies an interpolating message and a set of agreements for its fold.
+If there were $3(e+1)+1$ such labels, a common interpolation polynomial of value
+degree at most four would contain all the selected sections. Factoring it and bounding
+the labels on its components forces an irreducible cubic to carry at least
+$1{,}342{,}177{,}249$ labels. Resultant and intersection bounds on that same cubic
+give at most $1{,}200{,}005{,}270$, a contradiction.
+The matching construction assigns three polynomial pairs to common and private sites.
+Each fresh equality of a folded received row with a different pair provides a bad label.
+Choosing a projection that separates the labels gives $3(e+1)$ distinct labels in the
+interior, and more than $B$ at $e=\lfloor B/3\rfloor$ in the following budget window.
+The \href{https://github.com/SlopDotCash/proximityprize/blob/797227d570944e033c0af8fc9fff22e4be8f7e7c/docs/research/proximity-gap/second-prime-exact-threshold.md}{detailed counting proof} and the \href{https://github.com/SlopDotCash/proximityprize/blob/797227d570944e033c0af8fc9fff22e4be8f7e7c/ArkLib/Research/ProximityGap/Frontier/UniversalCubicBudgetWindow.lean}{Lean upper and lower bounds} give the factor estimates, projection and endpoint arithmetic.
+
+\textbf{Field and budget dependence.} For $2{,}013{,}265{,}923\le B\le2^{31}$ and
+$p>1{,}744{,}830{,}589$ the first failure is $\lfloor B/3\rfloor$ on every injective domain.
+At the single budget $B=2^{31}$, smoothness implies that characteristic condition:
+$n\mid q-1$ excludes characteristic two. Writing $q=p^a$, the budget gives
+$2^{159}\le p^a<2^{159}+2^{128}$. Consecutive odd-base powers bracket this interval
+for each $6\le a\le100$, and $3^{101}$ exceeds it. Thus $a\le5$ and the lower field-size bound
+forces the required $p$. The \href{https://github.com/SlopDotCash/proximityprize/blob/797227d570944e033c0af8fc9fff22e4be8f7e7c/ArkLib/Research/ProximityGap/SecondBudgetSmoothReview.lean}{smooth-field theorem} discharges these arithmetic conditions internally.
+
+Over prime fields the \href{https://github.com/SlopDotCash/proximityprize/blob/34ad8f82ba3449b5304777c7871f07aea71783f4/ArkLib/Research/ProximityGap/Frontier/ThreeHeadThresholdCurve.lean}{extended classification} gives
+$e_{\rm first}=\max(671{,}088{,}640,\lfloor B/3\rfloor)$ throughout
+$1{,}565{,}873{,}494\le B\le2^{31}$. It also proves $b(e)=3(e+1)$ for all
+$671{,}088{,}640\le e\le715{,}827{,}881$ when $p\ge2{,}305{,}843{,}008{,}139{,}952{,}128$.
 
 \newpage
 \section*{6.\quad Interpretation, evidence and attribution}
