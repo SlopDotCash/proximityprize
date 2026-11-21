@@ -140,3 +140,4 @@ ArkLib.Research.ProximityGap.Frontier.BoundaryPairSeparation ProximityGap.Bounda
 ArkLib.Research.ProximityGap.Frontier.BoundaryFullMass ProximityGap.BoundaryFullMass.mcaError_eq_one
 ArkLib.Research.ProximityGap.RankReview ProximityPrize.RankReview.correctForEveryDomain
 ArkLib.Research.ProximityGap.RankKnownDomain ProximityPrize.RankKnownDomain.numericalBoundaries
+ArkLib.Tests.ProximityPrize.GrandChallengeReview ProximityPrize.Review.allRadii
