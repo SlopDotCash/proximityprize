@@ -57,7 +57,7 @@ abbrev core := SixteenFiberMass.core S cut group
 abbrev owner := SixteenFiberMass.owner S own
 
 /-- Apply the simultaneous planar label count using only residue-level comparison data. -/
-theorem mass (D : Fin N ↪ F) (k d : ℕ) (δ : ℝ≥0)
+theorem mass {F : Type} [Field F] [Fintype F] (D : Fin N ↪ F) (k d : ℕ) (δ : ℝ≥0)
     (A B : Fin heads → F[X]) (U V : Fin heads → Fin 16 → F)
     (hu : ∀ i (s : Grid), (A i).eval (D (index s)) = U i s.1)
     (hv : ∀ i (s : Grid), (B i).eval (D (index s)) = V i s.1)

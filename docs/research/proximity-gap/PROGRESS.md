@@ -2,6 +2,8 @@
 
 The universal rank formula now determines the operational MCA and list cutoffs on every supplied smooth prize code. Evaluating it at large dimensions can be impractical. The table records numerical values and bounds with their verification status. Dated entries preserve intermediate results. [Current reviewer guide](full-prize-review.md) · [November 21 integration assessment](integration-assessment-2026-11-21.md)
 
+The rectangular hyperbola construction at half rate now has exact one-fresh first-failure counts of **357,913,942** and **402,653,185** errors on the two named primes. For every positive quotient degree and every rectangle obeying the construction’s locator and separator degree allocation, the preceding counts allow at most 715,827,884 and 2,013,265,925 one-fresh labels. A three-head first-prime example has 1,073,741,828 bad scalars at the next count, while the second-prime six-head example has 2,415,919,114. Independent verified replay accepted 29,854 declarations for the two restricted label caps and the two actual failure witnesses. The unrestricted first-prime bound is earlier and the second-prime unrestricted predecessor remains open. [Class definition, incidence proof and both witnesses](second-prime-hyperbola-grid.md#how-early-a-rectangular-hyperbola-grid-can-fail)
+
 ## Verified results and open cases
 
 | Question | Result | Verification |
@@ -1763,6 +1765,22 @@ A power saving for the complete individual $T_0,T_1$ pair remains open.
 [Derivations and exact certificates](paley-product-traces.md#between-two-different-products) ·
 [Lean identities](../../../ArkLib/Research/ProximityGap/Frontier/PaleyMixedProductTraces.lean)
 
+**Full mixed products below square-root size.** On any prime field, for
+a cyclic subgroup of order $n$ divisible by four and $n\ge4p^{1/4}$, the
+relative Paley discrepancy on every two distinct prescribed product strata
+is $O(p^{1/8}/n^{1/3}+p^{-1/8}+n^{-1})$. This saves a power whenever
+$n\ge p^{3/8+\varepsilon}$. At Goldilocks $p=2^{64}-2^{32}+1$ and
+$n=2^{30}$, every such full pair has relative discrepancy **strictly below
+four fifths**. Its two sides each have about one eighth of square-root size.
+In ratio and product coordinates the mixed kernel becomes a signed subgroup
+row evaluated at a fractional-linear map. Its coset occupancy is bounded
+by the positive-characteristic gcd theorem of Corvaja and Zannier, or by the
+repository's integral Stepanov theorem. The signed amplification bound, finite
+Stepanov application, Goldilocks primality, and the two complete exceptional-row
+estimates passed Lean. The two larger named prime fields lie below the new
+size range. [Derivation and constants](paley-mixed-trace-saving.md) ·
+[Finite Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/PaleyMixedTraceSaving.lean)
+
 **Fourier energy of a weighted code domain.** Let $D=t+cH$, write
 $S_{xy}=\chi(x-y)$ on $D$, and for complex weights $z$ put
 $\widehat z(r)=\sum_{x\in D}z_x e^{2\pi irx/p}$. For nonzero squares $R$ and
@@ -2424,6 +2442,8 @@ For a saturated four-head overrun at the second-prime quarter-rate successor, th
 ### Three rational maps reconstruct the four heads, with an exact singleton test
 
 For the second-prime quarter-rate seam, a three-map solution with simple disjoint signed coincidences gives explicit polynomial rows of degree at most $d$. Both rational split directions and conjugate nonsplit directions descend to the actual prime field. A four-head overrun occurs for that data exactly when the double sites give all $4d$ possible direction orbits and the holes add at least nine new directions, or when the double sites give $4d-1$ orbits and the holes add at least eleven. Three concrete fractional linear maps give **36** distinct literal bad scalars at $n=16$, $k=4$, $e=8$ on a selected injective domain in the second prime field. This exceeds twice the test length; the smooth production-domain case remains open. [Converse and witness](quarter-three-slope-reconstruction.md) · [Lean reconstruction](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSlopeReconstruction.lean) · [Exact interpolation check](../../../scripts/probes/probe_quarter_slope_reconstruction.py)
+
+For any four-head overrun, the individual $J$-orbit image of each degree-$m$ direction map on $H$ has at least $n/2+2m-3$ values. This rules out even one map factoring through $X^2$. Two maps of the form $M_i(X^a),M_j(X^b)$ for independent Möbius transformations must have $a+b\le4993531$, excluding a triple of such maps. If the largest map has this form, both companions have degree at least 76. The graph estimates use Corvaja–Zannier. The finite-set restriction and the exact numerical comparisons are kernel-checked. [Proof and scope](quarter-slope-power-barrier.md) · [Lean bounds](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSlopePowerBarrier.lean)
 
 ### Nineteen bad extension-field labels and a shortest elliptic section
 
