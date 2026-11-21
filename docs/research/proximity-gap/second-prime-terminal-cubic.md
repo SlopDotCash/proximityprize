@@ -12,7 +12,7 @@ Use the generic fractional-linear change of $X$ from the persistent-singularity 
 \[
  \deg_X G_z(X,q_z(X))=J=W-d
 \]
-for every one of them. This chart preserves polynomial sections, their received agreements and the degree bounds. The case $F\mid H(F)$ for the reverse Hessian has at most three selected points. In what follows take $F\nmid H(F)$.
+for every one of them. This chart preserves polynomial sections, their received agreements and the degree bounds. Lean verifies the same coordinate change for every simple specialized cubic in a finite family. The theorem also avoids any prescribed finite set of nonzero polynomial tests over a coefficient-field extension, so the chart can be chosen away from roots of the generic leading, constant and discriminant tests. [Common chart and agreement equivalence](../../../ArkLib/Research/ProximityGap/Frontier/CommonSectionChart.lean) The case $F\mid H(F)$ for the reverse Hessian has at most three selected points. In what follows take $F\nmid H(F)$.
 
 ## A finite polynomial matrix for powers of the Jacobian ideal
 
