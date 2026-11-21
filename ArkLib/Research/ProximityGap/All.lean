@@ -327,6 +327,7 @@ import ArkLib.Research.ProximityGap.Frontier.E2W4ModSignNonCollisionFp
 import ArkLib.Research.ProximityGap.Frontier.E3RouteBridge
 import ArkLib.Research.ProximityGap.Frontier.E3StrataCharZero
 import ArkLib.Research.ProximityGap.Frontier.EffKatzConductorBarrier
+import ArkLib.Research.ProximityGap.Frontier.EighthMobiusSites
 import ArkLib.Research.ProximityGap.Frontier.EighthRatePrime159
 import ArkLib.Research.ProximityGap.Frontier.EighthTransverseMobius
 import ArkLib.Research.ProximityGap.Frontier.EnergyLogConvexRatioMonotone
