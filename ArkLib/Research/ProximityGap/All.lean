@@ -578,6 +578,9 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetTwoThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarterPairTripleSignatures
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateApolarBracket
 import ArkLib.Research.ProximityGap.Frontier.QuarticIntrinsicAuxiliary
+import ArkLib.Research.ProximityGap.Frontier.QuotientMaskSelections
+import ArkLib.Research.ProximityGap.Frontier.QuotientSignatureCensus
+import ArkLib.Research.ProximityGap.Frontier.QuotientSignatureTables
 import ArkLib.Research.ProximityGap.Frontier.R2UnfoldedDesignFloor
 import ArkLib.Research.ProximityGap.Frontier.REnergyCyclicFloorAllDepth
 import ArkLib.Research.ProximityGap.Frontier.REnergyDiagonalFloor
