@@ -1,13 +1,11 @@
 # The second rate-sixteenth threshold and a field-size interval
 
 Let $n=2^{30}$, $k=2^{26}$, and $d=k-1$. For the repository's second prime
-$p=730750818665451459101842416358141509841924915201$, the written proof gives
-**715827881** as the largest good integer error count and **715827882** as the
-first bad count. On its smooth evaluation domain the good real radii at tolerance
-$2^{-128}$ are exactly $0\le\delta<715827882/n$. The endpoint is the supremum.
-The earlier end-to-end Lean theorem proves a bracket, and the explicit failure
-at the upper endpoint is already kernel-checked. The plane-curve estimates used
-for the new good side are written proofs. [Existing Lean bracket](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeConditionedThreshold.lean) · [Explicit failure](../../../ArkLib/Research/ProximityGap/Frontier/_ThreeCoreSecondPrimeBracket.lean)
+$p=730750818665451459101842416358141509841924915201$, Lean proves that
+**715827881** is the last safe integer error count and **715827882** is the
+first failure. At tolerance $2^{-128}$ the safe real radii on its smooth
+evaluation domain are exactly $0\le\delta<715827882/n$. The operational
+supremum is $715827882/n$. [Exact Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeCubicExact.lean) · [Endpoint failure](../../../ArkLib/Research/ProximityGap/Frontier/_ThreeCoreSecondPrimeBracket.lean)
 
 In fact, let $B=\lfloor p/2^{128}\rfloor$ for any prime $p$ with
 $2013265923\le B\le2147483648$. On **every injective** length-$n$
