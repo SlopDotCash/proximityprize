@@ -32,6 +32,12 @@ is deterministic and the assertions are exact.
 from __future__ import annotations
 
 
+def require(condition: bool, message: str) -> None:
+    """Keep the exact G320 rank certificate active under Python optimization."""
+    if not condition:
+        raise AssertionError(message)
+
+
 # ---------- stdlib matrix toolkit ----------
 
 def mat_vec(A, v):
@@ -106,7 +112,7 @@ def primitive_root(p: int) -> int:
 
 
 def setup(p: int, n: int):
-    assert (p - 1) % n == 0
+    require((p - 1) % n == 0, f"subgroup order n={n} does not divide p-1={p - 1}")
     m = (p - 1) // n
     g = primitive_root(p)
     logs = [0] * p
@@ -125,7 +131,7 @@ def incidence(p: int, m: int, logs: list[int]) -> list[list[int]]:
         y = (2 - x) % p
         if y:
             N[logs[x] % m][logs[y] % m] += 1
-    assert N == [list(row) for row in zip(*N)]
+    require(N == [list(row) for row in zip(*N)], "quotient-incidence matrix is not symmetric")
     return N
 
 
@@ -143,7 +149,10 @@ def subset_profiles(p: int, G: list[int], rmax: int) -> list[list[int]]:
                     cur[(t + x) % p] += v
     from math import comb
     for r in range(rmax + 1):
-        assert sum(dp[r]) == comb(len(G), r)
+        require(
+            sum(dp[r]) == comb(len(G), r),
+            f"subset-profile histogram lost mass at rank r={r}",
+        )
     return dp
 
 
@@ -152,7 +161,10 @@ def quotient_value(profile: list[int], p: int, m: int, g: int) -> list[int]:
     vals = [profile[pow(g, a, p)] for a in range(m)]
     for a, want in enumerate(vals):
         for j in range(1, (p - 1) // m):
-            assert profile[pow(g, a + m * j, p)] == want
+            require(
+                profile[pow(g, a + m * j, p)] == want,
+                f"subset profile is not invariant under subgroup dilation at quotient class a={a}",
+            )
     return vals
 
 
@@ -163,7 +175,7 @@ def audit_cell(n: int, p: int, *, label: str, expected_minor_rows=(0, 1, 2, 4),
                expected_rank_aug: int = 4):
     """Run the G246 audit on the cell (n, p). Return a result dict."""
     m, g, logs, G = setup(p, n)
-    assert 2 not in set(G), f"cell ({n},{p}): 2 in G, sponsor condition broken"
+    require(2 not in set(G), f"cell ({n},{p}): 2 in G, sponsor condition broken")
     N = incidence(p, m, logs)
     dp = subset_profiles(p, G, 6)
     R = quotient_value(dp[6], p, m, g)
@@ -193,15 +205,18 @@ def audit_cell(n: int, p: int, *, label: str, expected_minor_rows=(0, 1, 2, 4),
     det = det4(minor)
 
     # Assert known facts for the G246 cell
-    assert rank_seed == expected_rank_seed, (
-        f"cell ({n},{p}) [{label}]: rank_seed={rank_seed}, expected {expected_rank_seed}"
+    require(
+        rank_seed == expected_rank_seed,
+        f"cell ({n},{p}) [{label}]: rank_seed={rank_seed}, expected {expected_rank_seed}",
     )
-    assert rank_aug == expected_rank_aug, (
-        f"cell ({n},{p}) [{label}]: rank_aug={rank_aug}, expected {expected_rank_aug}"
+    require(
+        rank_aug == expected_rank_aug,
+        f"cell ({n},{p}) [{label}]: rank_aug={rank_aug}, expected {expected_rank_aug}",
     )
     if expected_minor_det is not None:
-        assert det == expected_minor_det, (
-            f"cell ({n},{p}) [{label}]: det={det}, expected {expected_minor_det}"
+        require(
+            det == expected_minor_det,
+            f"cell ({n},{p}) [{label}]: det={det}, expected {expected_minor_det}",
         )
 
     # The remaining-rank coefficient A_r
@@ -224,8 +239,8 @@ def audit_cell(n: int, p: int, *, label: str, expected_minor_rows=(0, 1, 2, 4),
 
 def main() -> None:
     # Nonintegral elimination ratios must not be truncated: det = -1, rank = 2.
-    assert rank_int([[2, 1], [1, 0]]) == 2
-    assert rank_int([[2, 1], [4, 2]]) == 1
+    require(rank_int([[2, 1], [1, 0]]) == 2, "fraction-free rank check failed on a nonsingular matrix")
+    require(rank_int([[2, 1], [4, 2]]) == 1, "fraction-free rank check failed on a dependent matrix")
     # ---- Cell 1: G246's published cell (n=8, p=1009). Reproduces the
     #      published minor determinant -285768 from the Lean file.
     cell1 = audit_cell(8, 1009, label="G246-cell (reproduction)",
