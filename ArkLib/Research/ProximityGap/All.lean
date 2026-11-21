@@ -388,6 +388,7 @@ import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorJetInterpolation
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorJetRank
 import ArkLib.Research.ProximityGap.Frontier.HeightGateNormBound
 import ArkLib.Research.ProximityGap.Frontier.HodgeSectionIncidence
+import ArkLib.Research.ProximityGap.Frontier.HodgeSectionLattice
 import ArkLib.Research.ProximityGap.Frontier.HodgeSectionVariance
 import ArkLib.Research.ProximityGap.Frontier.I031ChainingBrick
 import ArkLib.Research.ProximityGap.Frontier.I031DilationOrbitReduction
@@ -888,6 +889,7 @@ import ArkLib.Research.ProximityGap.Frontier.WF407_T371_01_CensusMomentDepth
 import ArkLib.Research.ProximityGap.Frontier.WF407_T389_03_PhaseInert
 import ArkLib.Research.ProximityGap.Frontier.WF407_T400_05_defect
 import ArkLib.Research.ProximityGap.Frontier.WeightedHessianResultant
+import ArkLib.Research.ProximityGap.Frontier.WeightedHodgeWindows
 import ArkLib.Research.ProximityGap.Frontier.WeightedResultantInitial
 import ArkLib.Research.ProximityGap.Frontier.WeightedSylvesterDegree
 import ArkLib.Research.ProximityGap.Frontier.WickMGFFromTermwise
