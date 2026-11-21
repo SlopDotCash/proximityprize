@@ -264,6 +264,9 @@ ArkLib.Research.ProximityGap.Frontier.SecondPrimeNonlinearObstruction ArkLib.Pro
 # First-failure counts on the order-2^30 budget-one subgroup and comparisons with Johnson
 ArkLib.Research.ProximityGap.RankProductionDomain ProximityPrize.RankProductionDomain.numericalBoundaries
 ArkLib.Research.ProximityGap.RankProductionDomain ProximityPrize.RankProductionDomain.executable_budget_one
+ArkLib.Research.ProximityGap.DesignatedPrimeJohnson ProximityPrize.DesignatedPrimeJohnson.first_four
+ArkLib.Research.ProximityGap.DesignatedPrimeJohnson ProximityPrize.DesignatedPrimeJohnson.second_lower_rates
+ArkLib.Research.ProximityGap.DesignatedPrimeJohnson ProximityPrize.DesignatedPrimeJohnson.second_eighth_list
 ArkLib.Research.ProximityGap.RankJohnsonComparison ProximityPrize.RankJohnsonComparison.prime246_above
 ArkLib.Research.ProximityGap.RankJohnsonComparison ProximityPrize.RankJohnsonComparison.listAtJohnson_exceeds_one
 
@@ -340,3 +343,7 @@ ArkLib.Research.ProximityGap.CapacityBoundaryReview ProximityPrize.CapacityBound
 # Full probability and list-size lower bound near the production capacity radius
 ArkLib.Research.ProximityGap.JointDyadicCeilings ProximityPrize.JointDyadicCeilings.dense_saturation
 ArkLib.Research.ProximityGap.JointDyadicCeilings ProximityPrize.JointDyadicCeilings.prize_dense
+
+# The real Johnson comparison at every dyadic length from 64
+ArkLib.Research.ProximityGap.JohnsonListBoundary ProximityPrize.JohnsonListBoundary.above_of_nonsquare
+ArkLib.Research.ProximityGap.JohnsonListBoundary ProximityPrize.JohnsonListBoundary.all_rates
