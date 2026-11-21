@@ -70,6 +70,13 @@ ArkLib.Research.ProximityGap.Frontier.SmoothPlanarQuartetCoset ArkLib.ProximityG
 ArkLib.Research.ProximityGap.Frontier.FourHeadCommonRootObstruction ArkLib.ProximityGap.Frontier.FourHeadCommonRootObstruction.predecessor_cap
 ArkLib.Research.ProximityGap.Frontier.SmoothCosetFourHeadMass ArkLib.ProximityGap.Frontier.SmoothCosetFourHeadMass.operational_ceiling
 
+# Fixed-dimension puncture retention and the neighboring second-prime lengths
+ArkLib.Research.ProximityGap.Frontier.OnePunctureRetention ArkLib.ProximityGap.Frontier.OnePunctureRetention.at_most_one_repair
+ArkLib.Research.ProximityGap.Frontier.OnePunctureRetention ArkLib.ProximityGap.Frontier.OnePunctureRetention.count
+ArkLib.Research.ProximityGap.Frontier.OnePunctureCubicThreshold ArkLib.ProximityGap.Frontier.OnePunctureCubicThreshold.count
+ArkLib.Research.ProximityGap.Frontier.OnePunctureCubicThreshold ArkLib.ProximityGap.Frontier.OnePunctureCubicThreshold.classification
+ArkLib.Research.ProximityGap.Frontier.OnePunctureCubicThreshold ArkLib.ProximityGap.Frontier.OnePunctureCubicThreshold.second_prime
+
 # Smooth-field and executable equality for the second-budget MCA boundary
 ArkLib.Research.ProximityGap.Frontier.SecondBudgetCharacteristic ArkLib.ProximityGap.Frontier.SecondBudgetCharacteristic.smooth
 ArkLib.Research.ProximityGap.SecondBudgetSmoothReview ProximityPrize.SecondBudgetSmoothReview.classification
@@ -360,3 +367,7 @@ ArkLib.Research.ProximityGap.SmoothPrizeCapacityTable ProximityPrize.SmoothPrize
 ArkLib.Research.ProximityGap.SmoothCapacityGap ProximityPrize.SmoothCapacityGap.mca_from_base
 ArkLib.Research.ProximityGap.SmoothCapacityGap ProximityPrize.SmoothCapacityGap.full_from_base
 ArkLib.Research.ProximityGap.Frontier.SmoothPowerListDescent ProximityGap.SmoothPowerListDescent.smooth_list_exceeds_of_count
+
+# First-prime quarter-rate successor and its split polynomial pencil
+ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorOneHole ArkLib.ProximityGap.Frontier.QuarterSuccessorOneHole.mass_bounds
+ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorSplitCriterion ArkLib.ProximityGap.Frontier.QuarterSuccessorSplitCriterion.failure_iff
