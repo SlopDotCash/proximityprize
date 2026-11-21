@@ -62,7 +62,7 @@ theorem rankAnswer_of_interior_supremum (D : I ↪ F) (ε : ℝ≥0) (k : ℕ)
     rw [div_lt_div_iff_of_pos_right hn]
     exact_mod_cast Iff.rfl
   have hit : ∃ i : Fin (n + 1), !safe i := ⟨e, by simpa using (hs e).not.mpr (lt_irrefl _)⟩
-  rw [← RankExecutable.mcaBoundary_eq E labels hf D ε k]
+  rw [← RankExecutable.mcaBoundary_eq E labels hf D ε k, RankExecutable.mcaBoundary_eq_scan E labels hf D]
   change Fin.find? (fun i => !safe i) = some e
   rw [Fin.find?_eq_some_find_of_exists hit, Option.some.injEq, Fin.find_eq_iff]
   exact ⟨by simpa using (hs e).not.mpr (lt_irrefl _),

@@ -133,14 +133,23 @@ def mcaBoundary {n : ℕ} (E : Fin n ≃ I) (labels : List F) (D : I ↪ F) (k B
   if n = k+2 then twoCheckBoundary n B else
     scan n fun e => SimultaneousSupportGaussian.anchoredSafe E labels D k B (n - e.val)
 
+/-- The optimized MCA boundary agrees with the ordinary support scan on an
+exhaustive presentation of the coordinates and scalar labels. -/
+theorem mcaBoundary_eq_scan {n : ℕ} [Fintype I] [Nonempty I] [Fintype F] [SampleableType F]
+    (E : Fin n ≃ I) (labels : List F) (hlabels : ∀ g, g ∈ labels)
+    (D : I ↪ F) (k B : ℕ) :
+    mcaBoundary E labels D k B =
+      scan n (fun e => SimultaneousSupportGaussian.anchoredSafe E labels D k B (n - e.val)) := by
+  unfold mcaBoundary
+  exact ite_eq_right_iff.mpr (twoCheckBoundary_eq_scan E labels hlabels D B)
+
 /-- Executing the MCA search produces the universal operational answer. -/
 theorem mcaBoundary_eq [Fintype I] [Nonempty I] [Fintype F] [SampleableType F]
     (E : Fin (Fintype.card I) ≃ I) (labels : List F) (hlabels : ∀ g, g ∈ labels)
     (D : I ↪ F) (ε : ℝ≥0) (k : ℕ) :
     mcaBoundary E labels D k (RankReview.budget F ε) = RankReview.mcaAnswer D ε k := by
   classical
-  unfold mcaBoundary
-  rw [ite_eq_right_iff.mpr (twoCheckBoundary_eq_scan E labels hlabels D _)]
+  rw [mcaBoundary_eq_scan E labels hlabels D]
   apply scan_eq_firstFailure
   intro e
   rw [SimultaneousSupportGaussian.anchoredSafe_iff E labels hlabels D k _ e.val
