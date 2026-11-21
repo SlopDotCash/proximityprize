@@ -2522,3 +2522,9 @@ The argument uses the ramification budget but not the Hodge index theorem. It is
 
 Lean now covers the Fourier lemma, the odd-pencil class count and the 4-cycle contradiction. The pattern classification, the cyclotomic-unit step and the assembly into the list bound remain written. All of this concerns characteristic zero.
 
+
+### Sixteen-site quarter-rate four-head overruns are excluded at both named primes
+
+At eight agreements on the order-sixteen domain, exceeding 32 represented bad labels would force four seven-site cores and exactly two double sites per edge of the four heads. Every signed-minor layout in this class has a two-dimensional scalar spline kernel after subtracting head zero. The exact label census over all 24 singleton assignments gives a maximum of **22** at each named prime and at 65537. Of the 32,256 weighted assignments, 29,184 yield 16 directions, 2,048 yield 21, and 1,024 yield 22. At characteristic 97 the maximum is **32**, attained by 1,536 of 43,008 assignments. A common shear and direct witness checks turn the projective counts into finite bad labels. The generic inventory also holds over the complex numbers and every splitting prime above $432000^8$.
+
+On the order-32 subgroup, at both named primes and at 65537, the separate degree-seven probe excludes all saturated noncollinear quartets whose pair labels admit a faithful order-four rotation or Klein four action. This covers all four faithful Klein four vertex actions and both reflection classes. A layout with no such symmetry remains open. These small-domain results do not certify a production list bound. [Proof, counts and replay commands](quarter-sixteen-splines.md)
