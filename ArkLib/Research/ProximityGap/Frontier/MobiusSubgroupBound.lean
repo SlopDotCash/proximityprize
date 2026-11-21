@@ -11,13 +11,13 @@ open Finset
 
 variable {F : Type*} [Field F]
 
-/-- Rectangular choices of source and target powers for the two subgroup conditions.
+/-- Rectangular choices of powers for one source subgroup and a union of target cosets.
 The degree limit depends on the characteristic, independently of the field cardinality. -/
-theorem rectangular {p N M A B C D : ℕ} [CharP F p] (hp : p.Prime) (hA : 0<A) (hC : 0<C)
+theorem rectangular_many {p N M A B C D J : ℕ} [CharP F p] (hp : p.Prime) (hA : 0<A) (hC : 0<C)
     (hAN : A≤N) (hsize : A*C≤M) (hchar : A-1+N*(C-1)<p) (hD : D≤p)
-    (hgap : D*(A+2*(D-1))<B*(A*C)) {a b K : F} (ha : a≠0) (hab : a≠b)
+    (hgap : J * (D*(A+2*(D-1)))<B*(A*C)) {a b : F} (K : Fin J → F) (ha : a≠0) (hab : a≠b)
     (S : Finset F) (hreg : ∀ x ∈ S, x≠0 ∧ x≠a ∧ x≠b)
-    (hpow : ∀ x ∈ S, x^N=1) (hratio : ∀ x ∈ S, (x-a)^M=K*(x-b)^M) :
+    (hpow : ∀ x ∈ S, x^N=1) (hratio : ∀ x ∈ S, ∃ i, (x-a)^M=K i*(x-b)^M) :
     D*S.card ≤ A-1+N*(C-1)+M*(B-1) := by
   let d (j : Fin (A*C)) := j.val % A
   let e (j : Fin (A*C)) := d j + N*(j.val/A)
@@ -45,8 +45,42 @@ theorem rectangular {p N M A B C D : ℕ} [CharP F p] (hp : p.Prime) (hA : 0<A) 
     have := (Nat.Prime.dvd_factorial hp).mp hh
     have := hp.pos
     omega
-  exact MobiusStepanov.mobius_count ha hab hv hsize he hA hd hgap hf S hreg
+  exact MobiusStepanov.mobius_count_many K ha hab hv hsize he hA hd hgap hf S hreg
     (fun x hx j => by simp [e,pow_add,pow_mul,hpow x hx]) hratio
+
+/-- Rectangular choices of source and target powers for the two subgroup conditions.
+The degree limit depends on the characteristic, independently of the field cardinality. -/
+theorem rectangular {p N M A B C D : ℕ} [CharP F p] (hp : p.Prime) (hA : 0<A) (hC : 0<C)
+    (hAN : A≤N) (hsize : A*C≤M) (hchar : A-1+N*(C-1)<p) (hD : D≤p)
+    (hgap : D*(A+2*(D-1))<B*(A*C)) {a b K : F} (ha : a≠0) (hab : a≠b)
+    (S : Finset F) (hreg : ∀ x ∈ S, x≠0 ∧ x≠a ∧ x≠b)
+    (hpow : ∀ x ∈ S, x^N=1) (hratio : ∀ x ∈ S, (x-a)^M=K*(x-b)^M) :
+    D*S.card ≤ A-1+N*(C-1)+M*(B-1) := by
+  apply rectangular_many (J := 1) hp hA hC hAN hsize hchar hD (by simpa using hgap)
+    (fun _ => K) ha hab S hreg hpow
+  exact fun x hx => ⟨0, hratio x hx⟩
+
+/-- For a union of `J` target cosets, the choice `J²u³ ≤ N` yields total
+occupancy at most `1+5N/u`. This is on the scale `N^(2/3) J^(2/3)`. -/
+theorem simultaneous_cubic {p N J u : ℕ} [CharP F p] (hp : p.Prime)
+    (hJ : 0 < J) (hu : 0 < u) (hn : J^2*u^3 ≤ N)
+    (hchar : J*u^2-1 + N*(J*u-1) < p) {a b : F} (K : Fin J → F)
+    (ha : a ≠ 0) (hab : a ≠ b) (S : Finset F)
+    (hreg : ∀ x ∈ S, x ≠ 0 ∧ x ≠ a ∧ x ≠ b) (hpow : ∀ x ∈ S, x^N = 1)
+    (hratio : ∀ x ∈ S, ∃ i, (x-a)^N = K i*(x-b)^N) :
+    (J*u^2)*S.card ≤ J*u^2-1 + N*(J*u-1) + N*(4*(J*u)-1) := by
+  have hA : 0 < J*u^2 := by positivity
+  have hC : 0 < J*u := by positivity
+  have hsize : J*u^2*(J*u) ≤ N := by simpa only [← show J*u^2*(J*u)=J^2*u^3 by ring] using hn
+  have hAN : J*u^2 ≤ N := (Nat.le_mul_of_pos_right _ hC).trans hsize
+  apply rectangular_many hp hA hC hAN hsize hchar (by omega) _ K ha hab S hreg hpow hratio
+  calc
+    J * (J*u^2 * (J*u^2 + 2*(J*u^2-1))) ≤ J * (J*u^2 * (J*u^2 + 2*(J*u^2))) := by gcongr; omega
+    _ < 4*(J*u)*(J*u^2*(J*u)) := by
+      have hpos : 0 < J^3*u^4 := by positivity
+      nlinarith only [hpos]
+
+#print axioms simultaneous_cubic
 
 /-- The integral choice of powers giving the two-thirds bound for any subgroup order.
 Taking the largest u with 2u³ ≤ N gives an explicit bound asymptotic to
@@ -76,44 +110,61 @@ theorem production {p : ℕ} [CharP F p] (hp : p.Prime) (hbig : 2^40<p) {a b K :
     (by decide) ha hab S hreg hpow hratio
   omega
 
-private theorem graph_direct {p : ℕ} [CharP F p] (hp : p.Prime) (hbig : 2^40<p)
+/-- A fractional-linear graph between two normalized subgroups with distinct orders.
+The numerator's leading and constant coefficients and the denominator's leading
+coefficient are nonzero. Scaling either coset representative preserves these hypotheses. -/
+theorem rectangular_graph {p N M A B C D : ℕ} [CharP F p] (hp : p.Prime)
+    (hN : 0<N) (hM : 0<M) (hA : 0<A) (hC : 0<C)
+    (hAN : A≤N) (hsize : A*C≤M) (hchar : A-1+N*(C-1)<p) (hD : D≤p)
+    (hgap : D*(A+2*(D-1))<B*(A*C))
     {I : Type*} [Fintype I] (x y : I → F) (hi : Function.Injective x)
-    (hx : ∀ i, (x i)^(2^30 : ℕ)=1) (hy : ∀ i, (y i)^(2^30 : ℕ)=1)
+    (hx : ∀ i, (x i)^N=1) (hy : ∀ i, (y i)^M=1)
     {a b c d : F} (ha : a≠0) (hb : b≠0) (hc : c≠0) (hdet : a*d-b*c≠0)
-    (hxy : ∀ i, a*x i+b=y i*(c*x i+d)) : Fintype.card I ≤ 3960117 := by
+    (hxy : ∀ i, a*x i+b=y i*(c*x i+d)) :
+    D*Fintype.card I ≤ A-1+N*(C-1)+M*(B-1) := by
   classical
-  let A := -b/a
-  let B := -d/c
-  have hA : A ≠ 0 := div_ne_zero (neg_ne_zero.mpr hb) ha
-  have hAB : A ≠ B := by
+  let zero := -b/a
+  let pole := -d/c
+  have hzero : zero ≠ 0 := div_ne_zero (neg_ne_zero.mpr hb) ha
+  have hAB : zero ≠ pole := by
     intro hh
     apply hdet
     have h := (div_eq_div_iff ha hc).mp hh
     linear_combination h
-  have he (i : I) : x i-A = (c/a)*y i*(x i-B) := by
-    dsimp [A,B]
+  have he (i : I) : x i-zero = (c/a)*y i*(x i-pole) := by
+    dsimp [zero,pole]
     field_simp
     linear_combination hxy i
-  have hB (i : I) : x i ≠ B := by
+  have hB (i : I) : x i ≠ pole := by
     intro hh
     apply hAB
     have hh' := he i
     rw [hh,sub_self,mul_zero] at hh'
     exact (sub_eq_zero.mp hh').symm
-  have hA' (i : I) : x i ≠ A := by
+  have hA' (i : I) : x i ≠ zero := by
     apply sub_ne_zero.mp
     rw [he]
-    exact mul_ne_zero (mul_ne_zero (div_ne_zero hc ha) (by intro hh; simpa [hh] using hy i))
+    exact mul_ne_zero (mul_ne_zero (div_ne_zero hc ha) (by intro hh; simpa [hh, Nat.ne_of_gt hM] using hy i))
       (sub_ne_zero.mpr (hB i))
-  have hh := production hp hbig hA hAB (univ.image x) (by
+  have hh := rectangular hp hA hC hAN hsize hchar hD hgap hzero hAB (univ.image x) (by
     intro z hz
     obtain ⟨i,_,rfl⟩ := mem_image.mp hz
-    exact ⟨by intro hh; simpa [hh] using hx i, hA' i,hB i⟩) (by simpa using hx)
-    (K:=(c/a)^(2^30 : ℕ)) (by
+    exact ⟨by intro hh; simpa [hh, Nat.ne_of_gt hN] using hx i, hA' i,hB i⟩) (by simpa using hx)
+    (K:=(c/a)^M) (by
       intro z hz
       obtain ⟨i,_,rfl⟩ := mem_image.mp hz
       rw [he i, mul_pow,mul_pow,hy i,mul_one])
   simpa only [card_image_of_injective _ hi, card_univ] using hh
+
+private theorem graph_direct {p : ℕ} [CharP F p] (hp : p.Prime) (hbig : 2^40<p)
+    {I : Type*} [Fintype I] (x y : I → F) (hi : Function.Injective x)
+    (hx : ∀ i, (x i)^(2^30 : ℕ)=1) (hy : ∀ i, (y i)^(2^30 : ℕ)=1)
+    {a b c d : F} (ha : a≠0) (hb : b≠0) (hc : c≠0) (hdet : a*d-b*c≠0)
+    (hxy : ∀ i, a*x i+b=y i*(c*x i+d)) : Fintype.card I ≤ 3960117 := by
+  have h := rectangular_graph (A:=1322342) (B:=1621) (C:=812) (D:=659139) hp
+    (by decide) (by decide) (by decide) (by decide) (by decide) (by decide) (by omega)
+    (by omega) (by decide) x y hi hx hy ha hb hc hdet hxy
+  omega
 
 /-- Every nonsingular fractional linear map other than a scaling or a scaled
 reciprocal sends at most 3,960,117 members of the production subgroup back to it.

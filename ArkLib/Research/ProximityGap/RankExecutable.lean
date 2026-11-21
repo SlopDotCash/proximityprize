@@ -9,7 +9,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.MCAStaircaseRS
 import ArkLib.Data.CodingTheory.ProximityGap.UniversalStaircaseCollapse
 import ArkLib.Research.ProximityGap.Frontier.TwoParityMca
 import ArkLib.Research.ProximityGap.Frontier.ListInterpolationBoundary
-import ArkLib.Research.ProximityGap.BoundedChoose
+import ArkLib.Research.ProximityGap.SmoothListExecutable
+import ArkLib.Research.ProximityGap.Frontier.ListBudgetOne
 
 /-! # Computing operational radii from a presented domain and integer budget
 
@@ -52,14 +53,17 @@ theorem scan_eq_firstFailure {n : ℕ} (safe : Fin (n + 1) → Bool) (fails : Fi
 
 variable {F I : Type} [Field F] [DecidableEq F] [DecidableEq I]
 
-/-- Compute a certified list cutoff using only the integer parameters when the packing
-bound applies. A missing value leaves the support search to decide the answer. -/
+/-- Compute a certified list cutoff from the integer parameters by unique decoding or interpolation
+packing. A missing value leaves the support search to decide the answer. -/
 def packingBoundary (n k q m B : ℕ) : Boundary n :=
-  let limit := (B + 1) * (k + 1)
-  let count := BoundedChoose.capped n k limit
-  if h : 0 < k ∧ k ≤ n ∧ 0 < m ∧ B < q ∧ count < limit then
-    some ⟨if count ≤ B then n - k + 1 else n - k, by split <;> omega⟩
-  else none
+  if h : 0 < k ∧ k ≤ n ∧ 0 < m ∧ B = 1 then
+    some ⟨(n - k + 2) / 2, by omega⟩
+  else
+    let limit := (B + 1) * (k + 1)
+    let count := BoundedChoose.capped n k limit
+    if h : 0 < k ∧ k ≤ n ∧ 0 < m ∧ B < q ∧ count < limit then
+      some ⟨if count ≤ B then n - k + 1 else n - k, by split <;> omega⟩
+    else none
 
 omit [DecidableEq F] [DecidableEq I] in
 /-- A returned packing cutoff is the rank answer on every injective domain of the supplied size. -/
@@ -70,37 +74,52 @@ theorem packingBoundary_correct [Fintype I] [Nonempty I] [Fintype F]
     some e = RankReview.listAnswer D ε k m := by
   classical
   unfold packingBoundary at result
-  dsimp only at result
   split at result
-  · rename_i fast
-    obtain ⟨hkp, hk, hm, hq, hcap⟩ := fast
-    rw [BoundedChoose.capped_eq, min_lt_iff] at hcap
-    have hlt := hcap.resolve_right (lt_irrefl _)
-    have packed := (Nat.div_lt_iff_lt_mul (Nat.succ_pos k)).mpr hlt
-    have hc : BoundedChoose.capped (Fintype.card I) k
-        ((RankReview.budget F ε + 1) * (k + 1)) = (Fintype.card I).choose k := by
-      rw [BoundedChoose.capped_eq, min_eq_left hlt.le]
+  · rename_i h
+    obtain ⟨hk, hkn, hm, one⟩ := h
     cases result
-    apply correctBoundary_unique Fintype.card_pos _ (RankReview.listAnswer_correct D ε k m hk)
+    apply correctBoundary_unique Fintype.card_pos _ (RankReview.listAnswer_correct D ε k m hkn)
     intro δ _
     refine (ListSupportRank.lambda_le_floor_iff (K := F) (I := I) (A := Fin m → F)
       (ListInterpolationBoundary.words D k m) (δ : ℝ) ε).trans ?_
-    have spec := ListInterpolationBoundary.good_iff D hkp hk hm
-      (Nat.le_of_lt_succ packed) hq (δ : ℝ)
-    refine spec.trans ?_
+    change (Code.Lambda _ _ ≤ (RankReview.budget F ε : ℕ∞)) ↔ _
     dsimp only
-    rw [hc, ← NNReal.coe_lt_coe, NNReal.coe_div, NNReal.coe_natCast, NNReal.coe_natCast]
-  · cases result
+    rw [one, Nat.cast_one]
+    rw [← NNReal.coe_lt_coe, NNReal.coe_div, NNReal.coe_natCast, NNReal.coe_natCast]
+    exact ListBudgetOne.rs_safe_iff D k m hk hkn hm (δ : ℝ)
+  · dsimp only at result
+    split at result
+    · rename_i fast
+      obtain ⟨hkp, hk, hm, hq, hcap⟩ := fast
+      rw [BoundedChoose.capped_eq, min_lt_iff] at hcap
+      have hlt := hcap.resolve_right (lt_irrefl _)
+      have packed := (Nat.div_lt_iff_lt_mul (Nat.succ_pos k)).mpr hlt
+      have hc : BoundedChoose.capped (Fintype.card I) k
+          ((RankReview.budget F ε + 1) * (k + 1)) = (Fintype.card I).choose k := by
+        rw [BoundedChoose.capped_eq, min_eq_left hlt.le]
+      cases result
+      apply correctBoundary_unique Fintype.card_pos _ (RankReview.listAnswer_correct D ε k m hk)
+      intro δ _
+      refine (ListSupportRank.lambda_le_floor_iff (K := F) (I := I) (A := Fin m → F)
+        (ListInterpolationBoundary.words D k m) (δ : ℝ) ε).trans ?_
+      have spec := ListInterpolationBoundary.good_iff D hkp hk hm
+        (Nat.le_of_lt_succ packed) hq (δ : ℝ)
+      refine spec.trans ?_
+      dsimp only
+      rw [hc, ← NNReal.coe_lt_coe, NNReal.coe_div, NNReal.coe_natCast, NNReal.coe_natCast]
+    · cases result
+
+private def listSupportBoundary (points : List I) (D : I ↪ F) (n k q m B : ℕ) : Boundary n :=
+  scan n fun e =>
+    if 0 < m ∧ (B + 1).choose 2 ≤ q then
+      ListSupportRank.gaussianPairSafe points D k B (n - e.val)
+    else ListSupportRank.gaussianSafe points D k q m B (n - e.val)
 
 /-- Compute the list boundary from a coordinate list, its evaluation map, and an integer budget. -/
 def listBoundary (points : List I) (D : I ↪ F) (n k q m B : ℕ) : Boundary n :=
   match packingBoundary n k q m B with
   | some e => some e
-  | none =>
-    scan n fun e =>
-      if 0 < m ∧ (B + 1).choose 2 ≤ q then
-        ListSupportRank.gaussianPairSafe points D k B (n - e.val)
-      else ListSupportRank.gaussianSafe points D k q m B (n - e.val)
+  | none => listSupportBoundary points D n k q m B
 
 /-- Executing the list search produces the universal operational answer. -/
 theorem listBoundary_eq [Fintype I] [Fintype F] (points : List I) (hp : ∀ i, i ∈ points)
@@ -112,7 +131,8 @@ theorem listBoundary_eq [Fintype I] [Fintype F] (points : List I) (hp : ∀ i, i
   split
   · rename_i e he
     exact packingBoundary_correct D ε k m he
-  · apply scan_eq_firstFailure
+  · unfold listSupportBoundary
+    apply scan_eq_firstFailure
     intro e
     let B := RankReview.budget F ε
     have hs : (if 0 < m ∧ (B + 1).choose 2 ≤ Fintype.card F then
@@ -128,6 +148,29 @@ theorem listBoundary_eq [Fintype I] [Fintype F] (points : List I) (hp : ∀ i, i
     unfold RankReview.listFails
     push Not
     rfl
+
+/-- Compute the smooth-domain list cutoff. Coordinates are supplied on demand, so all
+parameter-only branches can run even when materializing the domain would exhaust memory. -/
+def smoothListBoundary (points : Unit → List I) (D : I ↪ F) (n k q m B : ℕ) : Boundary n :=
+  match packingBoundary n k q m B with
+  | some e => some e
+  | none => match productBoundary n k m B with
+    | some e => some e
+    | none => listSupportBoundary (points ()) D n k q m B
+
+/-- The smooth-domain shortcuts and fallback return the same canonical first failure. -/
+theorem smoothListBoundary_eq [Fintype I] [Nonempty I] [Fintype F]
+    (points : Unit → List I) (hi : ∀ i, i ∈ points ()) (D : I ↪ F) [ReedSolomon.Smooth D]
+    (ε : ℝ≥0) (k m : ℕ) (hk : k ≤ Fintype.card I) :
+    smoothListBoundary points D (Fintype.card I) k (Fintype.card F) m (RankReview.budget F ε) =
+      RankReview.listAnswer D ε k m := by
+  unfold smoothListBoundary
+  split
+  · exact packingBoundary_correct D ε k m ‹_›
+  · rename_i hp
+    split
+    · exact productBoundary_correct D ε k m ‹_›
+    · simpa only [listBoundary, hp] using listBoundary_eq (points ()) hi D ε k m Fintype.card_pos hk
 
 /-- Constant-time boundary when two parity checks determine the entire MCA curve. -/
 def twoCheckBoundary (n B : ℕ) : Boundary n :=
@@ -320,6 +363,23 @@ theorem correctForEveryDomain [Fintype I] [Nonempty I] [Fintype F] [SampleableTy
   · intro m hm
     simpa only [listBoundary_eq points hi D ε k m Fintype.card_pos hk'] using hL m hm
 
+/-- Delaying the coordinates allows the parameter-only list certificates to run on large domains. -/
+theorem correctForEverySmoothDomain [Fintype I] [Nonempty I] [Fintype F] [SampleableType F]
+    (E : Fin (Fintype.card I) ≃ I) (labels : Unit → List F) (hf : ∀ g, g ∈ labels ())
+    (points : Unit → List I) (hi : ∀ i, i ∈ points ()) (D : I ↪ F) [ReedSolomon.Smooth D]
+    (ε : ℝ≥0) :
+    correctForDomain D ε
+      (fun k => mcaBoundaryWith E labels D k (RankReview.budget F ε))
+      (fun k m => smoothListBoundary points D (Fintype.card I) k (Fintype.card F) m
+        (RankReview.budget F ε)) := by
+  intro k hk
+  obtain ⟨hM, hL⟩ := RankReview.correctForEveryDomain D ε k hk
+  constructor
+  · simpa only [mcaBoundaryWith_eq E labels hf D ε k] using hM
+  · intro m hm
+    have hkn : k ≤ Fintype.card I := by rcases hk with h | h | h | h <;> omega
+    simpa only [smoothListBoundary_eq points hi D ε k m hkn] using hL m hm
+
 /-- At the prize example tolerance, the evaluator only needs ordinary integer division. -/
 theorem prizeBudget (F : Type) [Fintype F] :
     RankReview.budget F (prizeThreshold : ℝ≥0) = Fintype.card F / 2 ^ 128 := by
@@ -339,6 +399,18 @@ theorem correctAtPrizeTolerance [Fintype I] [Nonempty I] [Fintype F] [Sampleable
   simpa only [prizeBudget] using correctForEveryDomain E labels hf points hi D
     (prizeThreshold : ℝ≥0)
 
+/-- The smooth-domain evaluator with on-demand coordinates at the sponsor tolerance. -/
+theorem smoothCorrectAtPrizeTolerance [Fintype I] [Nonempty I] [Fintype F] [SampleableType F]
+    (E : Fin (Fintype.card I) ≃ I) (labels : Unit → List F) (hf : ∀ g, g ∈ labels ())
+    (points : Unit → List I) (hi : ∀ i, i ∈ points ()) (D : I ↪ F) [ReedSolomon.Smooth D] :
+    correctForDomain D (prizeThreshold : ℝ≥0)
+      (fun k => mcaBoundaryWith E labels D k (Fintype.card F / 2 ^ 128))
+      (fun k m => smoothListBoundary points D (Fintype.card I) k (Fintype.card F) m
+        (Fintype.card F / 2 ^ 128)) := by
+  simpa only [prizeBudget] using correctForEverySmoothDomain E labels hf points hi D
+    (prizeThreshold : ℝ≥0)
+
+#print axioms smoothCorrectAtPrizeTolerance
 #print axioms correctAtPrizeTolerance
 #print axioms listBoundary_eq
 #print axioms mcaBoundary_eq

@@ -266,3 +266,41 @@ Thus the two base sums are $-32928,2000$ at the first prime and
 $-88256,20416$ at the second. Scaling gives the single sums for all remaining
 products. These $n$-entry subfamilies give only a small relative improvement
 in the bound on the full fixed rectangular sum.
+
+### A single stratum against two reciprocal products
+
+At the second prize prime let $A_s=T(s)\setminus\{0\}$, for any $s\in H$.
+For every odd $k$, put $q=g^k$. Then
+$$
+S\big(A_s,A_{q^2s}\cup A_{q^{-2}s}\big)=0.
+$$
+Each side of the rectangle is an ordinary set. The source has exactly
+$n/2$ points for every product, since an even product adds two fixed
+points and includes zero, whereas an odd product has no fixed points
+and omits zero. The target has exactly $n$ points. If $s$ has odd product
+exponent, all three sets in the formula are already the full product strata.
+
+For every finite set $A$, exchanging the summation variables gives
+$S(A,qA)=\chi(-q)S(A,q^{-1}A)$. Each difference transforms by
+$y-qx=(-q)(x-q^{-1}y)$. The second prime has $\chi(-1)=1$ and
+$\chi(q)=-1$, so the two sums cancel exactly. Dilation carries $A_s$
+to $A_{q^2s}$ by multiplying both summands by $q$. Since $q$ has order
+$2^{30}$, the three products $s,q^2s,q^{-2}s$ are distinct. The uniqueness
+of nonzero two-term sums makes the two target strata disjoint. The identity
+also holds for any union of distinct such reciprocal pairs about $s$.
+For one such pair the individual sums have the same absolute value,
+which may be positive. At the first prime the subgroup consists of squares,
+so the reflected sums have the same sign.
+
+A small prime gives a nonzero individual sum. In $\mathbb F_{313}$ take the
+order-eight generator $q=188$ and product $s=188$. The full stratum is
+$\{20,124,189,293\}$. Its two target strata are $\{4,150,163,309\}$ and
+$\{6,100,213,307\}$. Evaluating the quadratic characters on the two
+$4\times4$ rectangles gives $+8$ and $-8$.
+
+The Lean theorem on the named field takes the additive Sidon property as its
+only computational premise. The independent exhaustive fourth-energy scan
+supplies that premise; the signed identity holds without it for the sum
+of the two separate rectangles.
+[Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/PaleyMixedProductTraces.lean) ·
+[Production Sidon scan](../../../scripts/probes/probe_sponsor_phi.cpp)

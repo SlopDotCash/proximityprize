@@ -326,6 +326,10 @@ ArkLib.Research.ProximityGap.Frontier.PrimitiveReceivedInterpolation ArkLib.Prox
 ArkLib.Research.ProximityGap.Frontier.DegreeTenDeficitWindow ArkLib.ProximityGap.Frontier.DegreeTenDeficitWindow.primitive_two_head_bracket
 
 # Third secant from agreement outside two nearly full cores
+ArkLib.Research.ProximityGap.Frontier.QuadraticListIncidences ProximityGap.QuadraticListIncidences.eight_lengths
+ArkLib.Research.ProximityGap.Frontier.QuadraticListIncidences ProximityGap.QuadraticListIncidences.sixty_four_lengths
+ArkLib.Research.ProximityGap.Frontier.AffineListIncidences ProximityGap.AffineListIncidences.first
+ArkLib.Research.ProximityGap.Frontier.AffineListIncidences ProximityGap.AffineListIncidences.second
 ArkLib.Research.ProximityGap.Frontier.TwoHeadExtraCoset ArkLib.ProximityGap.Frontier.TwoHeadExtraCoset.smooth_mass
 ArkLib.Research.ProximityGap.Frontier.TwoHeadExtraCoset ArkLib.ProximityGap.Frontier.TwoHeadExtraCoset.even_ceiling
 ArkLib.Research.ProximityGap.Frontier.TwoHeadExtraWitness ArkLib.ProximityGap.Frontier.TwoHeadExtraWitness.witnesses
