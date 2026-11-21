@@ -166,6 +166,65 @@ theorem primitive_norm_charts [IsSepClosed K] [Infinite K] (F : K[X][X]) (hF : F
   rw [resultant_map_map] at H'
   exact H'
 
+/-- The padded value-derivative resultant of a cubic is nonzero as soon as
+the generic polynomial is separable. -/
+theorem derivative_resultant_ne_zero {R : Type*} [CommRing R] [IsDomain R]
+    (F : R[X]) (hd : F.natDegree = 3)
+    (hsep : (F.map (algebraMap R (FractionRing R))).Separable) :
+    F.resultant F.derivative 3 3 ≠ 0 := by
+  let φ := algebraMap R (FractionRing R)
+  let f := F.map φ
+  have hf : f.natDegree=3 := (natDegree_map_eq_of_injective (IsFractionRing.injective R _) F).trans hd
+  have hder : f.derivative.natDegree ≤ 3 := (natDegree_derivative_le _).trans (by omega)
+  have hco := (Polynomial.separable_def f).mp hsep
+  have hbase := Polynomial.resultant_ne_zero f f.derivative hco
+  have hlc : f.coeff 3 ≠ 0 := by
+    rw [← hf]
+    apply leadingCoeff_ne_zero.mpr
+    rintro hz
+    simp [hz] at hf
+  have he : 3 = f.derivative.natDegree + (3-f.derivative.natDegree) := by omega
+  have hres : f.resultant f.derivative 3 3 ≠ 0 := by
+    conv_lhs => arg 4; rw [he]
+    rw [resultant_add_right_deg _ _ _ _ _ le_rfl]
+    apply mul_ne_zero (pow_ne_zero _ hlc)
+    simpa only [hf] using hbase
+  intro hz
+  apply hres
+  change (F.map φ).resultant (F.map φ).derivative 3 3 = 0
+  rw [derivative_map, resultant_map_map, hz, map_zero]
+
+/-- Tame irreducible cubics are separable over their generic field. -/
+theorem irreducible_cubic_separable {L : Type*} [Field L] (F : L[X]) (hF : Irreducible F)
+    (hd : F.natDegree=3) (h₃ : (3:L) ≠ 0) : F.Separable := by
+  apply (Polynomial.separable_iff_derivative_ne_zero hF).mpr
+  intro hz
+  have h := congrArg (fun g : L[X] => g.coeff 2) hz
+  rw [coeff_derivative, coeff_zero] at h
+  have hlc : F.coeff 3 ≠ 0 := by rw [← hd]; exact leadingCoeff_ne_zero.mpr hF.ne_zero
+  norm_num at h
+  exact h.elim hlc h₃
+
+/-- Select both distinct ordinary polar slopes in the ground constant
+field, with nonzero resultants and the geometric gcd charge on their sheets. -/
+theorem exists_two_polars [IsSepClosed K] [DecidableEq K] (p : ℕ) [CharP K p]
+    {k : Type*} [Field k] [Infinite k] (φ : k →+* K) (F U V : K[X][X])
+    (h : ℕ) (hU : U.natDegree ≤ h) (hV : V.natDegree ≤ h) (hR : F.resultant V 3 h ≠ 0)
+    (a b : K → Fin 3 → K⟦X⟧) (H : NormCharts F a b) (except : Finset k) [DecidableEq k]
+    (hsmall : ∀ c : k, (F.resultant (polar U V (φ c)) 3 h).natDegree < p) :
+    ∃ c ∉ except, ∃ d ∉ insert c except,
+      let A := F.resultant (polar U V (φ c)) 3 h
+      let B := F.resultant (polar U V (φ d)) 3 h
+      A ≠ 0 ∧ B ≠ 0 ∧ 6 • ((GCDMonoid.gcd A B).natDegree : ℕ∞) ≤
+        ∑ α ∈ A.roots.toFinset, ∑ i, min (sheetValue α U h (b α i) (a α i)).order
+          (sheetValue α V h (b α i) (a α i)).order := by
+  obtain ⟨c,hc,hA,_⟩ := generic_second_polar φ F U V h hU hV hR a b H ∅ except
+  obtain ⟨d,hd,hB,hg⟩ := generic_gcd_charge p φ _ hA (hsmall c) F U V h hU hV hR a b H (insert c except)
+  exact ⟨c,hc,d,hd,hA,hB,hg⟩
+
+#print axioms exists_two_polars
+#print axioms derivative_resultant_ne_zero
+#print axioms irreducible_cubic_separable
 #print axioms primitive_norm_charts
 #print axioms generic_gcd_charge
 #print axioms generic_second_polar
