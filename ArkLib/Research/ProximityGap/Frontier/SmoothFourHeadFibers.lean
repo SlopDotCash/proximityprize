@@ -49,7 +49,7 @@ def coarse : Fin 8 → Fin 4 := ![0,1,2,3,3,3,3,3]
 private def merge (r : Fin 4) (j : Fin 5) : Fin 8 :=
   if r = 3 then ![3,4,5,6,7] j else ![0,1,2,3] r
 
-/-- Split the sites outside the three pair fibers into prescribed core and residual classes. -/
+/-- Partition the all-distinct sites into common, private and unused sets of prescribed sizes. -/
 theorem refine_fibers {I : Type} [Fintype I] (raw : I → Fin 4)
     (D G P T : ℕ) (hc : ∀ j, (univ.filter (fun x => raw x = j)).card =
       (![D,D,D,G+3*P+T] : Fin 4 → ℕ) j) :

@@ -219,6 +219,45 @@ theorem firstPrime_quarter_tangentHead :
       16777216 4194304 = 1000463 := by
   decide
 
+/-- Counting step of Theorem D′. If the incidence total `S` of `N` sections is at
+least `N * t - E` and its square is at most `n * (N² * d + N * F)`, then
+`N * (t² - n * d) ≤ 2 * t * E + n * F`. In the application
+`E = h * n + C'` and `F = h * n + 2 * C'`. -/
+theorem averaged_count {N S t n d E F : ℝ} (hN : 0 < N) (ht : 0 ≤ t) (hE : 0 ≤ E)
+    (hlow : N * t - E ≤ S) (hpos : 0 ≤ N * t - E)
+    (hmoment : S ^ 2 ≤ n * (N ^ 2 * d + N * F)) :
+    N * (t ^ 2 - n * d) ≤ 2 * t * E + n * F := by
+  have hsq : (N * t - E) ^ 2 ≤ S ^ 2 := by nlinarith [hlow, hpos]
+  have h1 : (N * t - E) ^ 2 ≤ n * (N ^ 2 * d + N * F) := hsq.trans hmoment
+  have h2 : N * (N * (t ^ 2 - n * d)) ≤ N * (2 * t * E + n * F) := by
+    nlinarith [h1, sq_nonneg E, mul_nonneg ht hE]
+  exact le_of_mul_le_mul_left h2 hN
+
+/-- Integer form of the bound of Theorem D′, with the sharper ramification budget
+`2 * β_X * β_Γ` of Lemma 4. -/
+def tangentHeadAveraged (n t d b g h a W : ℕ) : ℕ :=
+  (2 * b - 2) * g
+    + (h * n * (2 * t + n)
+        + 2 * (2 * ((2 * b - 2) * g + 1) * ((2 * b - 2) * a + 1)
+            + b * (W * (h - b) + h * (W - b * d))) * (t + n))
+      / (t ^ 2 - n * d)
+
+/-- Theorem D′ at the last second-prime predecessor and for the multiplicity-three
+interpolant of the first-prime rate-1/4 bracket. -/
+theorem tangentHeadAveraged_values :
+    1073741824 * 67108863 < 357913943 ^ 2 ∧
+    tangentHeadAveraged 1073741824 357913943 67108863 3 34 34 290805098 290805098 = 19433 ∧
+    tangentHeadAveraged 1073741824 357913943 67108863 4 34 34 302954072 302954072 = 41542 ∧
+    1073741824 * 268435455 < 592794966 ^ 2 ∧
+    tangentHeadAveraged 1073741824 592794966 268435455 2 23 23 1778384897 1778384897 = 25522 ∧
+    tangentHeadAveraged 1073741824 592794966 268435455 3 23 23 1778384897 1778384897 = 79953 ∧
+    tangentHeadAveraged 1073741824 592794966 268435455 4 23 23 1778384897 1778384897 = 168073 ∧
+    tangentHeadAveraged 1073741824 592794966 268435455 5 23 23 1778384897 1778384897 = 289882 ∧
+    tangentHeadAveraged 1073741824 592794966 268435455 6 23 23 1778384897 1778384897 = 445379 := by
+  decide
+
+#print axioms averaged_count
+#print axioms tangentHeadAveraged_values
 #print axioms packing_of_second_moment
 #print axioms terminal_tangentHead
 #print axioms firstPrime_quarter_tangentHead
