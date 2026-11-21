@@ -2641,3 +2641,9 @@ The prime $p=240518169179\cdot2^{119}+1$ has 128-bit budget 469,762,049 and an e
 
 This removes one assumption from the Lean chain: the forcing hypotheses of `three_odd_sets_one_class` and `four_cycle_false` are exactly the conclusion of this theorem. What Lean still assumes is equation (2.1) itself, which comes from the multiplicative independence of $1-\zeta^r$ in characteristic zero. The pattern classification and the final assembly are also still written. None of this addresses the named prime fields.
 
+### Lean: Theorem A composed on $\mathbb Z/2^{e+1}$
+
+`ProximityGap.DyadicOddPencil.odd_triple_bound` in [DyadicOddPencilExclusion.lean](../../../ArkLib/Research/ProximityGap/Frontier/DyadicOddPencilExclusion.lean): for $e\ge1$, three pairwise disjoint subsets of $\mathbb Z/2^{e+1}$ of the same odd size $m\ge5$ that satisfy the reflection equations (2.1) in all three roles obey $3(m-2)\le2^e$. So with $n=2^{e+1}$ no such triple exists when $3(m-2)>n/2$, which is Theorem A of the [dyadic list-three note](dyadic-radius-successor-list-three.md) with (2.1) as its only hypothesis. The file composes the set-level parity lemma with the class-count theorem and proves that each parity class has $2^e$ elements. Standard axioms only; checked against privately built oleans of its two imports, not by a full `lake build`.
+
+The hypothesis (2.1) is where characteristic zero enters (independence of the $1-\zeta^r$). It is false in general modulo a prime, so this theorem does not transfer to the named fields.
+

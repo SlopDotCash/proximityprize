@@ -313,6 +313,7 @@ import ArkLib.Research.ProximityGap.Frontier.DyadicGeomeanPrizeVsSqrtN
 import ArkLib.Research.ProximityGap.Frontier.DyadicLocatorSumBarrier
 import ArkLib.Research.ProximityGap.Frontier.DyadicLogWitness237
 import ArkLib.Research.ProximityGap.Frontier.DyadicOddPencilCount
+import ArkLib.Research.ProximityGap.Frontier.DyadicOddPencilExclusion
 import ArkLib.Research.ProximityGap.Frontier.DyadicParityLemma
 import ArkLib.Research.ProximityGap.Frontier.DyadicPeriodCeiling
 import ArkLib.Research.ProximityGap.Frontier.DyadicSidonTriple
