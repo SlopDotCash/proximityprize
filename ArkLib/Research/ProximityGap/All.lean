@@ -727,6 +727,7 @@ import ArkLib.Research.ProximityGap.Frontier.SameDomainListMca
 import ArkLib.Research.ProximityGap.Frontier.SaturatedListCliques
 import ArkLib.Research.ProximityGap.Frontier.SaturatedSplitTriangle
 import ArkLib.Research.ProximityGap.Frontier.SaturatedTripleRotation
+import ArkLib.Research.ProximityGap.Frontier.SaturatedTripleRows
 import ArkLib.Research.ProximityGap.Frontier.ScalarHessianLocalOrder
 import ArkLib.Research.ProximityGap.Frontier.ScalarRegularJetSurface
 import ArkLib.Research.ProximityGap.Frontier.ScaledFirstOrderSecurity
