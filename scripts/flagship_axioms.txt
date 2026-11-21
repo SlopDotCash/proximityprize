@@ -31,6 +31,11 @@ ArkLib.Research.ProximityGap.Frontier.QuadraticCubicWindowExample ArkLib.Proximi
 ArkLib.Research.ProximityGap.Frontier.QuadraticCubicWindowExample ArkLib.ProximityGap.Frontier.QuadraticCubicWindowExample.rank_answer
 ArkLib.Research.ProximityGap.Frontier.QuarterRateRichSecants ArkLib.ProximityGap.Frontier.QuarterRateRichSecants.two_rich_cap
 ArkLib.Research.ProximityGap.Frontier.QuarterRateSharedResultant ArkLib.ProximityGap.Frontier.QuarterRateSharedResultant.common_resultant
+# Absolute intersections of horizontal sections and the half-rate count
+ArkLib.Research.ProximityGap.Frontier.HorizontalSectionDeviation ArkLib.ProximityGap.Frontier.HorizontalSectionDeviation.absolute_intersections
+ArkLib.Research.ProximityGap.Frontier.HorizontalSectionDeviation ArkLib.ProximityGap.Frontier.HorizontalSectionDeviation.no_middle_population
+ArkLib.Research.ProximityGap.Frontier.HorizontalSectionDeviation ArkLib.ProximityGap.Frontier.HorizontalSectionDeviation.HalfRate.numerical_certificate
+
 # Independent component and polar columns in the higher-rate safety estimates
 ArkLib.Research.ProximityGap.Frontier.PolarBasisDegreeLoss ArkLib.ProximityGap.Frontier.PolarBasisDegreeLoss.separate_blocks
 ArkLib.Research.ProximityGap.Frontier.PolarBasisDegreeLoss ArkLib.ProximityGap.Frontier.PolarBasisDegreeLoss.weighted_loss
