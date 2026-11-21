@@ -49271,6 +49271,9 @@ to reproduce the checks using integer and rational arithmetic. Bounds with
 an unspecified absolute Paley constant or a $K^r$ moment factor remain
 open, as do the estimates for the designated production primes.
 
+### Shifted first-order hybrid certificate at small field budgets
+
+For $0<D<A\le n$ and $A^2\le nD$, every passing shifted first-order slot test incurs optimized hybrid exceptional-count charge at least $(n-A)(1+\max(0,2D-3))$. The zero derivative cap permits a strict surplus exactly when $A^2>nD$. A positive derivative cap with total jet degree one requires $3A\ge 2n+D$. Consequently the charge at length $2^{30}$, rate one half, and radius $39/128$ exceeds $2^{58}$ for every passing parameter choice. The two designated fields allow $2^{30}$ and $2^{31}$ bad scalars respectively. This refutes the proposal to certify that radius on those fields by retuning only the shifted slots and optimizing the existing hybrid charge. [Proof for arbitrary parameters](../../../ArkLib/Research/ProximityGap/Frontier/FirstOrderZeroCapJohnson.lean)
 ## 2026-11-21 · Testing direct Paley transfers on the joint coding-prize instance
 
 At $p=65\cdot2^{239}+1$ both canonical prize predicates hold on $H=\mu_{128}$.
