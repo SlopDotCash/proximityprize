@@ -846,6 +846,7 @@ import ArkLib.Research.ProximityGap.Frontier.SmoothQuinticSeventeen
 import ArkLib.Research.ProximityGap.Frontier.SmoothRationalFiberObstruction
 import ArkLib.Research.ProximityGap.Frontier.SmoothSeventeenExtension
 import ArkLib.Research.ProximityGap.Frontier.SmoothSeventeenFiveErrors
+import ArkLib.Research.ProximityGap.Frontier.SmoothSignedListProfile
 import ArkLib.Research.ProximityGap.Frontier.SpanCriterionGeneral
 import ArkLib.Research.ProximityGap.Frontier.SparseSupportIdealSVPLowerBound
 import ArkLib.Research.ProximityGap.Frontier.SpectrumGFAlternatingSum
@@ -947,6 +948,7 @@ import ArkLib.Research.ProximityGap.Frontier.UnifyBDemandSupplyNormConsolidation
 import ArkLib.Research.ProximityGap.Frontier.UniversalCubicBudgetWindow
 import ArkLib.Research.ProximityGap.Frontier.UniversalCubicThreshold
 import ArkLib.Research.ProximityGap.Frontier.UniversalObstructionOmegaBudget
+import ArkLib.Research.ProximityGap.Frontier.UniversalSignedListNorms
 import ArkLib.Research.ProximityGap.Frontier.UniversalTwoHeadBudget
 import ArkLib.Research.ProximityGap.Frontier.UnrestrictedSectionPopulation
 import ArkLib.Research.ProximityGap.Frontier.WF407W2_D2gspec
