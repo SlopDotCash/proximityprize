@@ -39,3 +39,33 @@ The core of every head has $3h-2\ge2h$ points. For every assigned scalar, adding
 ## A full odd pencil is necessary
 
 Return to the extended four-word list. Each of the three overlap patterns contains a triangle of head indices whose three error intersections are distinct singleton sites. For the triple-error pattern use the head outside the triple and two of its heads. For the graph with five edges use either triangle avoiding the missing edge. For the triangle $i,j,k$, let $Q_i$ be $E_i$ with its two triangle intersections removed, and define $Q_j,Q_k$ similarly. These three disjoint sets have size $h-1$. The complement $Z$ of the three error sets in the full domain has size $h$. The difference of the two extended polynomials with indices $i,j$ vanishes on $Z\cup Q_k$, exactly its $2h-1$ allowed distinct roots. Cancelling the common vanisher on $Z$ from the three edge differences gives a nontrivial linear dependence among $L_{Q_i},L_{Q_j},L_{Q_k}$, with all coefficients nonzero. Thus an over-budget example requires three **full** fibers of degree $2^{28}-1$. A four-cycle with only a partially filled third fiber cannot realize the punctured criterion. For comparison the full-fiber case is impossible on the complex $2^{30}$th roots by the sharp degree gap. The positive-characteristic component-size restrictions apply at the actual production length. [Complex degree gap](quarter-three-heads-32-fibers.md#a-sharp-degree-gap-on-complex-dyadic-roots) · [Named-field full-fiber restriction](production-fiber-correspondence.md)
+
+## An equivalent test with four affine functions
+
+There is a criterion involving only divisibility into the known univariate domain polynomial. Put $S=(X^n-1)/(X-a)$. A punctured list as in condition 2 exists **if and only if** there are coprime $A,B\in F[X]$ and four distinct affine functions $\ell_i\in F[X]$ such that every $A+\ell_i B$ has degree $h+1$ and divides $S$ up to a nonzero scalar. One may take $\deg A\le h+1$ and $\deg B\le h$. Thus the four required fibers are intersections of a single rational function with four affine functions. Their shared sites are determined by the intersections of those functions.
+
+**Necessity.** Let $L_i$ be the monic locator of $E_i$, let $Y$ interpolate the center, and put $Q_i=(Y-D_i)L_i/S$. These are polynomials because $Y-D_i$ vanishes off $E_i$. For the two-column vectors $V_i=(L_i,Q_i)$, every minor
+$$
+M_{ij}=\det(V_i,V_j)=(D_i-D_j)L_iL_j/S
+$$
+is nonzero and has degree at most one. Every error intersection is a root of that minor. In each of the three patterns, every head has two other heads with overlaps at two different coordinates. In particular choose $M_{01},M_{02}$ after relabeling with distinct roots. These two affine polynomials have a constant linear combination equal to one. Apply that same combination to $V_1,V_2$ to obtain $W$ with $\det(V_0,W)=1$.
+
+In the polynomial basis $V_0,W$ all four original vectors have affine coordinate pairs, since each coordinate is a constant linear combination of the minors. The determinant of each coordinate pair with another is still affine. Hence their coefficient vectors of $X$ have all two-by-two determinants zero and span one constant line. This line is nonzero because some minors have degree one. Make a constant change of basis so that each coordinate pair has constant first entry and affine second entry. Write $A,B$ for the first components of these new basis vectors. Their polynomial determinant is a nonzero constant, so $\gcd(A,B)=1$. We have $L_i=c_i A+b_i(X)B$. If $c_i=0$, every minor incident with $i$ is proportional to $b_i$. This is impossible because two such minors have distinct roots. Division by $c_i$ gives the claimed affine functions $\ell_i=b_i/c_i$. At least one difference $\ell_i-\ell_j$ has degree one. Subtracting the corresponding normalized locators gives $\deg B\le h$, and then $\deg A\le h+1$.
+
+**Sufficiency.** Write $L_i=A+\ell_i B$, allowing nonmonic locators. Choose $A',B'$ with $AB'-A'B=1$ and put $Q_i=A'+\ell_i B'$. Then $L_iQ_j-L_jQ_i=\ell_j-\ell_i$. Any common root of two locators is a root of $\ell_j-\ell_i$ since $\gcd(A,B)=1$. Since the $L_i$ divide the squarefree $S$, the polynomials
+$$
+D_i=S(Q_0/L_0-Q_i/L_i)
+$$
+have degree at most $(4h-1)+1-2(h+1)=2h-2$. Distinct affine functions give distinct heads. For every pair, $D_i-D_j$ vanishes at every domain site outside the two locators. Choose the center at each site from any head whose locator is nonzero there, or freely if all vanish. Each head errs only on its own $h+1$ roots. This proves the converse.
+
+In particular there are polynomials $U,V$ of degrees at most one and six, respectively, with
+$$
+(X-a)U\,\prod_i L_i=(X^n-1)V
+$$
+after rescaling, where $U$ records punctured sites omitted from all four locators and $V$ counts excess root multiplicities. This follows from the three exact error patterns. It keeps the constraints on all four locators in a single polynomial identity.
+
+For an exact small example over $\mathbb F_{17}$ take $a=1$, $n=16$, and coefficients in increasing order
+$$
+A=(3,15,8,12,6,1),\qquad B=(7,3,0,12,3).
+$$
+The functions $0,\ X-4,\ 9(X-2),\ 15(X-3)$ give respectively the five-root sets $\{2,3,4,5,14\},\{4,6,7,9,15\},\{2,6,11,12,13\},\{3,9,10,13,16\}$. The example confirms that the affine divisibility criterion is realizable in finite characteristic. [Exact arithmetic check](../../../scripts/probes/probe_punctured_affine_locators.py)
