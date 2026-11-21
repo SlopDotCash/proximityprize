@@ -326,7 +326,6 @@ import ArkLib.Research.ProximityGap.Frontier.FoldedSourceFiber
 import ArkLib.Research.ProximityGap.Frontier.FourFiberThreshold
 import ArkLib.Research.ProximityGap.Frontier.FourFiberTripleAlignment
 import ArkLib.Research.ProximityGap.Frontier.FourHeadCrossRatio
-import ArkLib.Research.ProximityGap.Frontier.PuncturedFourWordProfile
 import ArkLib.Research.ProximityGap.Frontier.FourHeadQuotient
 import ArkLib.Research.ProximityGap.Frontier.FourHeadWitness
 import ArkLib.Research.ProximityGap.Frontier.FourRateList128
@@ -520,6 +519,7 @@ import ArkLib.Research.ProximityGap.Frontier.ProjectiveDirectionUnion
 import ArkLib.Research.ProximityGap.Frontier.ProjectiveListTransfer
 import ArkLib.Research.ProximityGap.Frontier.PseudocyclicDefectSum
 import ArkLib.Research.ProximityGap.Frontier.PuncturedFiberAgreement
+import ArkLib.Research.ProximityGap.Frontier.PuncturedFourWordProfile
 import ArkLib.Research.ProximityGap.Frontier.Q1ArisingFamilyDescent
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetFourRates
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetTwoThreshold
@@ -638,6 +638,7 @@ import ArkLib.Research.ProximityGap.Frontier.SmoothPowerEndpoint
 import ArkLib.Research.ProximityGap.Frontier.SmoothPowerMcaDescent
 import ArkLib.Research.ProximityGap.Frontier.SmoothQuinticSeventeen
 import ArkLib.Research.ProximityGap.Frontier.SmoothRationalFiberObstruction
+import ArkLib.Research.ProximityGap.Frontier.SmoothSeventeenFiveErrors
 import ArkLib.Research.ProximityGap.Frontier.SpanCriterionGeneral
 import ArkLib.Research.ProximityGap.Frontier.SparseSupportIdealSVPLowerBound
 import ArkLib.Research.ProximityGap.Frontier.SpectrumGFAlternatingSum
