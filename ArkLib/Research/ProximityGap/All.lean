@@ -546,6 +546,7 @@ import ArkLib.Research.ProximityGap.Frontier.PaleyDefectDiscrepancy
 import ArkLib.Research.ProximityGap.Frontier.PaleyDefectMinor
 import ArkLib.Research.ProximityGap.Frontier.PaleyHankelDegree
 import ArkLib.Research.ProximityGap.Frontier.PaleyInterpolationContact
+import ArkLib.Research.ProximityGap.Frontier.PaleyInversionTrace
 import ArkLib.Research.ProximityGap.Frontier.PaleyListInterpolation
 import ArkLib.Research.ProximityGap.Frontier.PaleyPairDeterminants
 import ArkLib.Research.ProximityGap.Frontier.PaleyPrescribedRectangle
