@@ -184,6 +184,7 @@ import ArkLib.Research.ProximityGap.Frontier.CharZeroSharpNewtonR2
 import ArkLib.Research.ProximityGap.Frontier.CharZeroSlackLeadingCoeff
 import ArkLib.Research.ProximityGap.Frontier.CharZeroStepLawSlack
 import ArkLib.Research.ProximityGap.Frontier.CharZeroStepLawSlackHigh
+import ArkLib.Research.ProximityGap.Frontier.ChartFiberHessian
 import ArkLib.Research.ProximityGap.Frontier.CircuitBudgetRadius
 import ArkLib.Research.ProximityGap.Frontier.CircuitDensity
 import ArkLib.Research.ProximityGap.Frontier.ClassInjectiveCount
@@ -237,6 +238,7 @@ import ArkLib.Research.ProximityGap.Frontier.CubicApolarAttainment
 import ArkLib.Research.ProximityGap.Frontier.CubicApolarEvent
 import ArkLib.Research.ProximityGap.Frontier.CubicApolarExtremum
 import ArkLib.Research.ProximityGap.Frontier.CubicApolarWitness
+import ArkLib.Research.ProximityGap.Frontier.CubicPolarDescent
 import ArkLib.Research.ProximityGap.Frontier.CubicPolarSiteBudget
 import ArkLib.Research.ProximityGap.Frontier.CubicSheetExcess
 import ArkLib.Research.ProximityGap.Frontier.CumulantOnsetNoGo
@@ -377,11 +379,15 @@ import ArkLib.Research.ProximityGap.Frontier.ImplicitDerivativeNumerator
 import ArkLib.Research.ProximityGap.Frontier.ImprimitiveSpikeStructure
 import ArkLib.Research.ProximityGap.Frontier.IncidenceDevL2Offset
 import ArkLib.Research.ProximityGap.Frontier.IntegralCommonPolar
+import ArkLib.Research.ProximityGap.Frontier.IntegralOrdinaryPolars
+import ArkLib.Research.ProximityGap.Frontier.IntegralSectionChart
 import ArkLib.Research.ProximityGap.Frontier.InterleavedListJohnsonPuncture
 import ArkLib.Research.ProximityGap.Frontier.InterleavedListJohnsonQuadratic
 import ArkLib.Research.ProximityGap.Frontier.InterleavedListJohnsonRank
 import ArkLib.Research.ProximityGap.Frontier.InterleavedListProjection
+import ArkLib.Research.ProximityGap.Frontier.IntrinsicCubicPopulation
 import ArkLib.Research.ProximityGap.Frontier.IntrinsicCubicQuotientWindow
+import ArkLib.Research.ProximityGap.Frontier.IntrinsicCubicWindowCount
 import ArkLib.Research.ProximityGap.Frontier.IntrinsicQuarticSectionCap
 import ArkLib.Research.ProximityGap.Frontier.IntrinsicReceivedSections
 import ArkLib.Research.ProximityGap.Frontier.InverseTaylorFlat
@@ -514,6 +520,7 @@ import ArkLib.Research.ProximityGap.Frontier.PrimeFieldEntropyPhase
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldLimitSet
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldMultiplierHeight
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldPeriodAlignment
+import ArkLib.Research.ProximityGap.Frontier.PrimitiveIntegralSectionChart
 import ArkLib.Research.ProximityGap.Frontier.Prize407EntropyPinSynthesis
 import ArkLib.Research.ProximityGap.Frontier.PrizeConditionalPinCapstone
 import ArkLib.Research.ProximityGap.Frontier.PrizeEquivalencePin
@@ -577,6 +584,7 @@ import ArkLib.Research.ProximityGap.Frontier.ReceivedPowerSeriesHessian
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalAverageEnergy
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalChartMCA
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalChartMoments
+import ArkLib.Research.ProximityGap.Frontier.ReciprocalChartReceivedOrder
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalEnergyFailure
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalFiberLists
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalSubsetSeparation
@@ -641,6 +649,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSylvesterFiberMass
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeTerminalKernel
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeUnrestrictedJetBudget
 import ArkLib.Research.ProximityGap.Frontier.SelfConsistencyCeiling
+import ArkLib.Research.ProximityGap.Frontier.SeparableScalarDifferential
 import ArkLib.Research.ProximityGap.Frontier.ShallowDiagonalRouteNonReach
 import ArkLib.Research.ProximityGap.Frontier.SharpApolarMCA
 import ArkLib.Research.ProximityGap.Frontier.ShawFlatnessSubfieldCounterexample
