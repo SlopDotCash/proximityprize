@@ -186,6 +186,7 @@ import ArkLib.Research.ProximityGap.Frontier.CircuitDensity
 import ArkLib.Research.ProximityGap.Frontier.ClassInjectiveCount
 import ArkLib.Research.ProximityGap.Frontier.CliqueDecayPigeonholeVacuous
 import ArkLib.Research.ProximityGap.Frontier.CliqueOrbitFreeness
+import ArkLib.Research.ProximityGap.Frontier.CommonSectionChart
 import ArkLib.Research.ProximityGap.Frontier.CompletedFirstPolar
 import ArkLib.Research.ProximityGap.Frontier.ConcreteBGKCompletionCorridor
 import ArkLib.Research.ProximityGap.Frontier.ConcreteBaselineInsufficiency
