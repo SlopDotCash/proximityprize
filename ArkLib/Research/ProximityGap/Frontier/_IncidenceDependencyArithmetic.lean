@@ -418,6 +418,7 @@ theorem active_error_rank_incidence_budget {F I Coord : Type*} [Field F]
   have hshort := received_space_shortening_bound C V P D hD hVP hP
     (sharedSupport Q) hvan (hr.trans hrank) hdistance
   have hbudget := shared_support_incidence_budget Q
+  omega
 
 /-- Three circuits whose head sets intersect pairwise in at most one head charge
 at least three times the minimum pairwise union size in actual error incidences. -/
