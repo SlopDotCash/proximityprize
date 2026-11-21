@@ -19,7 +19,7 @@ static long pw(long a,long e,long q){long r=1;a%=q;while(e){if(e&1)r=r*a%q;a=a*a
 std::mutex mu; std::atomic<long> cnt(0), nT(0);
 int main(int argc,char**argv){
   N=atoi(argv[1]); H=N/4; int nth=atoi(argv[2]);
-  int step=(N%3==0)?N:3*N; int q=1; 
+  int step=(N%3==0)?N:3*N; int q=1;
   for(int i=0;i<NQ;i++){ do{q+=step;}while(!isprime(q));
     int g=2; for(;;g++){bool ok=true; int m=q-1; for(int d=2;d<=m;d++) if(m%d==0){ if(pw(g,(q-1)/d,q)==1){ok=false;break;} while(m%d==0)m/=d; } if(ok)break;}
     std::vector<int> ind(q); long v=1; for(int e=0;e<q-1;e++){ind[v]=e;v=v*g%q;}
@@ -37,7 +37,7 @@ int main(int argc,char**argv){
   for(int w=0;w<nth;w++) th.emplace_back([&]{
     for(;;){ size_t ti=next++; if(ti>=Ts.size())break; u64 T=Ts[ti];
       int t[64],R[64],nt=0,nr=0; for(int i=0;i<N;i++){ if(T>>i&1)t[nt++]=i; else R[nr++]=i; }
-      // per q: per p in R: trit vector over x in T\{x0}, packed 2 bits per x into u64 (nt-1 <= 15 -> 30 bits) 
+      // per q: per p in R: trit vector over x in T\{x0}, packed 2 bits per x into u64 (nt-1 <= 15 -> 30 bits)
       // we use plain arrays for clarity
       static thread_local std::vector<uint8_t> d; d.assign((size_t)NQ*nr*(nt-1),0);
       uint8_t base[NQ][16];
