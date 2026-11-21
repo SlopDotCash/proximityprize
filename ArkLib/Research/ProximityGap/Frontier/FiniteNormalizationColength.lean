@@ -7,6 +7,7 @@ import Mathlib.RingTheory.Length
 import Mathlib.Data.ENat.Monoid
 import Mathlib.RingTheory.PowerSeries.Inverse
 import Mathlib.LinearAlgebra.Dimension.Constructions
+import Mathlib.LinearAlgebra.Matrix.Nondegenerate
 
 /-! # Colength on branches of a curve
 
@@ -149,6 +150,65 @@ theorem finite_factor_rank_le {L : Type*} [AddCommGroup L] [Module K L] [Module.
   rw [Module.length_eq_finrank, local_polar_colength inc u r hi hr hc hdef] at h
   exact_mod_cast h
 
+/-- One scalar realizes the minimum of the two partial orders on every
+branch, including branches on which one of the partials vanishes identically. -/
+theorem exists_generic_polar [Infinite K] (u v : ι → K⟦X⟧) (huv : ∀ i, u i ≠ 0 ∨ v i ≠ 0) :
+    ∃ c : K, ∀ i, let r := u i + c • v i
+      r ≠ 0 ∧ r.order = min (u i).order (v i).order := by
+  classical
+  let n (i : ι) := (min (u i).order (v i).order).toNat
+  have hn (i : ι) : (n i : ℕ∞) = min (u i).order (v i).order := by
+    apply ENat.natCast_toNat_eq_self.mpr
+    rcases huv i with h | h
+    · exact ne_top_of_le_ne_top (PowerSeries.order_eq_top.not.mpr h) (min_le_left ..)
+    · exact ne_top_of_le_ne_top (PowerSeries.order_eq_top.not.mpr h) (min_le_right ..)
+  let A (i : ι) := PowerSeries.coeff (n i) (u i)
+  let B (i : ι) := PowerSeries.coeff (n i) (v i)
+  have hAB (i : ι) : A i ≠ 0 ∨ B i ≠ 0 := by
+    rcases le_total (u i).order (v i).order with h | h
+    · exact Or.inl (PowerSeries.order_eq_nat.mp ((hn i).trans (min_eq_left h)).symm).1
+    · exact Or.inr (PowerSeries.order_eq_nat.mp ((hn i).trans (min_eq_right h)).symm).1
+  obtain ⟨c,hc⟩ := Infinite.exists_notMem_finset (univ.image fun i => -(A i) / B i)
+  refine ⟨c, fun i => ?_⟩
+  have hlead : A i + c * B i ≠ 0 := by
+    intro h
+    by_cases hzero : B i = 0
+    · exact (hAB i).resolve_right (not_not.mpr hzero) (by simpa [hzero] using h)
+    · apply hc
+      refine mem_image.mpr ⟨i, mem_univ _, ?_⟩
+      apply Eq.symm
+      apply (eq_div_iff hzero).mpr
+      linear_combination h
+  have hord : (u i + c • v i).order = n i := by
+    apply PowerSeries.order_eq_nat.mpr
+    refine ⟨by simpa only [map_add, map_smul, smul_eq_mul] using hlead, ?_⟩
+    intro j hj
+    have hmin : (j : ℕ∞) < min (u i).order (v i).order := by
+      rw [← hn]
+      exact_mod_cast hj
+    simp [PowerSeries.coeff_of_lt_order j (lt_min_iff.mp hmin).1,
+      PowerSeries.coeff_of_lt_order j (lt_min_iff.mp hmin).2]
+  refine ⟨?_, hord.trans (hn i)⟩
+  intro h
+  simp [h] at hord
+
+/-- A nonzero determinant for a branch evaluation matrix gives both
+injectivity and a finite normalization defect over the coefficient field. -/
+theorem finite_defect_of_matrix [DecidableEq ι] (M : Matrix ι ι K⟦X⟧) (hM : M.det ≠ 0) :
+    Function.Injective (M.mulVecLin.restrictScalars K) ∧
+      Module.length K ((ι → K⟦X⟧) ⧸ (M.mulVecLin.restrictScalars K).range) ≤
+        ↑(Fintype.card ι * M.det.order.toNat) := by
+  refine ⟨Matrix.mulVec_injective_of_det_ne_zero hM, ?_⟩
+  let r : ι → K⟦X⟧ := fun _ => M.det
+  have hr : (branchMul r).range ≤ (M.mulVecLin.restrictScalars K).range := by
+    rintro _ ⟨x,rfl⟩
+    exact ⟨M.cramer x, M.mulVec_cramer x⟩
+  have h := Module.length_le_of_surjective (Submodule.factor hr) (Submodule.factor_surjective hr)
+  rw [branch_polar_colength r (fun _ => hM)] at h
+  simpa [r] using h
+
+#print axioms finite_defect_of_matrix
+#print axioms exists_generic_polar
 #print axioms finite_factor_rank_le
 #print axioms length_eq_of_finite_defect
 #print axioms branch_polar_colength
