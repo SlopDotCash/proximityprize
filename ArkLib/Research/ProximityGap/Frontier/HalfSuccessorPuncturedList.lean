@@ -4,6 +4,7 @@ SPDX-License-Identifier: MIT OR Apache-2.0
 -/
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorFourHeadCover
 import ArkLib.Research.ProximityGap.Frontier.FourHeadWitness
+import ArkLib.Data.CodingTheory.ProximityGap.InterleavingStabilityMCA
 
 /-! # A literal punctured four-word list from an over-budget half-rate MCA family -/
 
@@ -18,13 +19,61 @@ open HalfPredecessorRateQuarterPrimitiveDirection
 variable {F I : Type} [Field F] [Fintype F] [DecidableEq F] [Fintype I] [Nonempty I] [DecidableEq I]
 variable {dom : I ↪ F} {δ : ℝ≥0} {u : Code.WordStack F (Fin 2) I}
 
+/-- For four large sets with bounded pairwise intersections, the two-set union
+lower bound is strict when their four complements cannot be disjoint in that union. -/
+theorem four_core_union {J : Type*} [DecidableEq J] (U : Finset J) (V : Fin 4 → Finset J)
+    {w d : ℕ} (hU : ∀ i, V i ⊆ U) (hw : ∀ i, w ≤ (V i).card)
+    (hd : ∀ i j, i ≠ j → (V i ∩ V j).card ≤ d) (hgap : 3*d < 2*w) :
+    2*w < U.card+d := by
+  classical
+  by_contra! hsmall
+  have hpair (i j : Fin 4) (hne : i ≠ j) :
+      V i ∪ V j = U ∧ (V i).card = w := by
+    have h := card_union_add_card_inter (V i) (V j)
+    have hsub := union_subset (hU i) (hU j)
+    have hc := card_le_card hsub
+    have hI := hd i j hne
+    have h1 := hw i
+    have h2 := hw j
+    exact ⟨eq_of_subset_of_card_le hsub (by omega),by omega⟩
+  have hsize (i : Fin 4) : (V i).card = w := by
+    by_cases hi : i = 0
+    · subst i
+      exact (hpair 0 1 (by decide)).2
+    · exact (hpair i 0 hi).2
+  let W (i : Fin 4) := U \ V i
+  have hdisj : ((univ : Finset (Fin 4)) : Set (Fin 4)).PairwiseDisjoint W := by
+    intro i _ j _ hne
+    apply disjoint_left.mpr
+    intro x hx hy
+    have hxl := (mem_sdiff.mp hx)
+    have hxr := (mem_sdiff.mp hy)
+    rw [← (hpair i j hne).1] at hxl
+    exact (mem_union.mp hxl.1).elim hxl.2 hxr.2
+  have hinc : univ.biUnion W ⊆ U := by
+    intro x hx
+    obtain ⟨i,_,hi⟩ := mem_biUnion.mp hx
+    exact (mem_sdiff.mp hi).1
+  have hmon := card_le_card hinc
+  rw [card_biUnion hdisj] at hmon
+  have hW (i : Fin 4) : (W i).card = U.card-w := by
+    change (U \ V i).card = _
+    rw [card_sdiff_of_subset (hU i),hsize]
+  simp only [hW,sum_const,card_univ,Fintype.card_fin,smul_eq_mul] at hmon
+  have hwu := (hw 0).trans (card_le_card (hU 0))
+  have he := hpair 0 1 (by decide)
+  have hsize' := card_union_add_card_inter (V 0) (V 1)
+  rw [he.1,hsize,hsize] at hsize'
+  have hp := hd 0 1 (by decide)
+  omega
+
 /-- On every injective production-size domain, an over-budget actual family at 268435457
 errors yields one puncture, four distinct lower-dimension polynomials and a single received
 word with 805306366 agreements per polynomial away from the puncture. -/
-theorem extraction {p : ℕ} [CharP F p] (hp : 116 < p) (fam : BadScalarRichPointFamily dom 536870912 δ u)
+theorem cap_and_extraction {p : ℕ} [CharP F p] (hp : 116 < p) (fam : BadScalarRichPointFamily dom 536870912 δ u)
     (hn : Fintype.card I = 1073741824) (ht : ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊ = 805306367)
     (hbig : 1073741824 < fam.G.card) :
-    ∃ (a : I) (q : Fin 4 → F[X]) (w : I → F), Function.Injective q ∧
+    fam.G.card ≤ 1073741827 ∧ ∃ (a : I) (q : Fin 4 → F[X]) (w : I → F), Function.Injective q ∧
       (∀ i, (q i).natDegree ≤ 536870910) ∧
       ∀ i, 805306366 ≤ (univ.filter fun x => x ≠ a ∧ (q i).eval (dom x) = w x).card := by
   classical
@@ -116,18 +165,70 @@ theorem extraction {p : ℕ} [CharP F p] (hp : 116 < p) (fam : BadScalarRichPoin
       omega
   obtain ⟨A,B,hAB⟩ := primitiveDirection_isCoprime hab
   let w (x : I) := A.eval (dom x)*(u 0 x-a.1.eval (dom x))+B.eval (dom x)*(u 1 x-a.2.eval (dom x))
-  refine ⟨hole,D,w,hinj,hDegree,fun i => (hcore _ (e i).property).trans (card_le_card ?_)⟩
+  have hagree (i : Fin 4) (x : I) (hx : x∈Cores (e i).val) : (D i).eval (dom x) = w x := by
+    have hag := (mem_filter.mp hx).2
+    have hax := congrArg (fun p : F[X] => p.eval (dom x)) (hA i)
+    have hbx := congrArg (fun p : F[X] => p.eval (dom x)) (hB i)
+    have hux := congrArg (fun p : F[X] => p.eval (dom x)) hAB
+    simp only [eval_sub,eval_add,eval_mul,eval_one] at hax hbx hux
+    dsimp [w]
+    rw [← hag.1,← hag.2,hax,hbx]
+    linear_combination -(D i).eval (dom x)*hux
+  have hinter (i j : Fin 4) (hne : i ≠ j) : (Cores (e i).val ∩ Cores (e j).val).card ≤ 536870910 := by
+    by_contra! h
+    apply hne
+    apply hinj
+    let common := Cores (e i).val ∩ Cores (e j).val
+    apply Polynomial.eq_of_natDegree_lt_card_of_eval_eq (D i) (D j) (f:=fun x : common => dom x.val)
+      (dom.injective.comp Subtype.val_injective)
+    · intro x
+      exact (hagree i x.val (mem_inter.mp x.property).1).trans (hagree j x.val (mem_inter.mp x.property).2).symm
+    · rw [Fintype.card_coe]
+      exact max_lt ((hDegree i).trans_lt h) ((hDegree j).trans_lt h)
+  have hunion := four_core_union U (fun i => Cores (e i).val) (fun i => incl _ (e i).property)
+    (fun i => hcore _ (e i).property) hinter (by decide)
+  refine ⟨by omega,hole,D,w,hinj,hDegree,fun i => (hcore _ (e i).property).trans (card_le_card ?_)⟩
   intro x hx
-  have hag := (mem_filter.mp hx).2
-  have hax := congrArg (fun p : F[X] => p.eval (dom x)) (hA i)
-  have hbx := congrArg (fun p : F[X] => p.eval (dom x)) (hB i)
-  have hux := congrArg (fun p : F[X] => p.eval (dom x)) hAB
-  simp only [eval_sub,eval_add,eval_mul,eval_one] at hax hbx hux
-  apply mem_filter.mpr
-  refine ⟨mem_univ _,fun he => hh (he ▸ incl _ (e i).property hx),?_⟩
-  dsimp [w]
-  rw [← hag.1,← hag.2,hax,hbx]
-  linear_combination -(D i).eval (dom x)*hux
+  exact mem_filter.mpr ⟨mem_univ _,fun he => hh (he ▸ incl _ (e i).property hx),hagree i x hx⟩
+
+/-- On every injective production-size domain, an over-budget actual family at 268435457
+errors yields one puncture, four distinct lower-dimension polynomials and a single received
+word with 805306366 agreements per polynomial away from the puncture. -/
+theorem extraction {p : ℕ} [CharP F p] (hp : 116 < p) (fam : BadScalarRichPointFamily dom 536870912 δ u)
+    (hn : Fintype.card I = 1073741824) (ht : ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊ = 805306367)
+    (hbig : 1073741824 < fam.G.card) :
+    ∃ (a : I) (q : Fin 4 → F[X]) (w : I → F), Function.Injective q ∧
+      (∀ i, (q i).natDegree ≤ 536870910) ∧
+      ∀ i, 805306366 ≤ (univ.filter fun x => x ≠ a ∧ (q i).eval (dom x) = w x).card := by
+  exact (cap_and_extraction hp fam hn ht hbig).2
+
+/-- Every actual family at the first half-rate successor has at most three labels
+beyond the first named field's block-length budget. -/
+theorem family_cap {p : ℕ} [CharP F p] (hp : 116 < p) (fam : BadScalarRichPointFamily dom 536870912 δ u)
+    (hn : Fintype.card I = 1073741824) (ht : ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊ = 805306367) :
+    fam.G.card ≤ 1073741827 := by
+  by_cases h : 1073741824 < fam.G.card
+  · exact (cap_and_extraction hp fam hn ht h).1
+  · omega
+
+open _root_.ProximityGap
+open scoped ENNReal
+
+/-- At every positive interleaving width the probability of the first-successor
+MCA event is at most the block length plus three divided by the field cardinality. -/
+theorem eps_cap {p : ℕ} [CharP F p] (hp : 116 < p) (dom : I ↪ F)
+    (hn : Fintype.card I = 1073741824) (width : ℕ) [NeZero width] :
+    epsMCA (F:=F) ((ReedSolomon.code dom 536870912 : Set (I → F)) ^⋈ (Fin width)) ((268435457:ℝ≥0)/1073741824) ≤
+      (1073741827:ℝ≥0∞)/(Fintype.card F:ℝ≥0∞) := by
+  rw [epsMCA_interleaved_eq]
+  apply epsMCA_le_of_badCount_le
+  intro u
+  let fam := canonicalBadScalarRichPointFamily dom (k:=536870912) ((268435457:ℝ≥0)/1073741824) u (by decide)
+  apply family_cap hp fam hn
+  rw [hn]
+  have ht := TwoCorePackingThreshold.agreement_ceiling 268435457 (by decide)
+  rw [Fintype.card_fin] at ht
+  exact ht
 
 section FirstPrime
 open _root_.ProximityGap
@@ -170,5 +271,7 @@ theorem first_prime
 end FirstPrime
 
 #print axioms first_prime
+#print axioms eps_cap
+#print axioms family_cap
 #print axioms extraction
 end ArkLib.ProximityGap.Frontier.HalfSuccessorPuncturedList
