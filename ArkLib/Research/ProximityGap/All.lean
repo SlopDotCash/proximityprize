@@ -383,6 +383,7 @@ import ArkLib.Research.ProximityGap.Frontier.ImprimitiveSpikeStructure
 import ArkLib.Research.ProximityGap.Frontier.IncidenceDevL2Offset
 import ArkLib.Research.ProximityGap.Frontier.IntegralCommonPolar
 import ArkLib.Research.ProximityGap.Frontier.IntegralOrdinaryPolars
+import ArkLib.Research.ProximityGap.Frontier.IntegralPolarDescent
 import ArkLib.Research.ProximityGap.Frontier.IntegralSectionChart
 import ArkLib.Research.ProximityGap.Frontier.InterleavedListJohnsonPuncture
 import ArkLib.Research.ProximityGap.Frontier.InterleavedListJohnsonQuadratic
@@ -470,6 +471,7 @@ import ArkLib.Research.ProximityGap.Frontier.OrderSixteenEntryPrimes
 import ArkLib.Research.ProximityGap.Frontier.OrdinaryPolarCappedGcd
 import ArkLib.Research.ProximityGap.Frontier.OrdinaryPolarGcdBudget
 import ArkLib.Research.ProximityGap.Frontier.OrdinaryPolarRankLoss
+import ArkLib.Research.ProximityGap.Frontier.OriginalCubicResultants
 import ArkLib.Research.ProximityGap.Frontier.OverdetIncidenceUnionCount
 import ArkLib.Research.ProximityGap.Frontier.OverdetVanishingCosetCount
 import ArkLib.Research.ProximityGap.Frontier.P5SymbolZeroSetEmpty
@@ -505,6 +507,7 @@ import ArkLib.Research.ProximityGap.Frontier.PolynomialJetConstraintSpace
 import ArkLib.Research.ProximityGap.Frontier.PolynomialLocalOrder
 import ArkLib.Research.ProximityGap.Frontier.PolynomialProjectiveHessian
 import ArkLib.Research.ProximityGap.Frontier.PolynomialSectionJacobian
+import ArkLib.Research.ProximityGap.Frontier.PopulatedCubicChart
 import ArkLib.Research.ProximityGap.Frontier.PositiveCharacteristicHeightDescent
 import ArkLib.Research.ProximityGap.Frontier.PowMapFiberCard
 import ArkLib.Research.ProximityGap.Frontier.PowerFiberEndpoint
@@ -583,6 +586,7 @@ import ArkLib.Research.ProximityGap.Frontier.RawJacobianWindow
 import ArkLib.Research.ProximityGap.Frontier.RawMGFSaddleVacuity
 import ArkLib.Research.ProximityGap.Frontier.RealizerL2NotSup
 import ArkLib.Research.ProximityGap.Frontier.ReceivedJetContact
+import ArkLib.Research.ProximityGap.Frontier.ReceivedOrderChartFamily
 import ArkLib.Research.ProximityGap.Frontier.ReceivedPolarContacts
 import ArkLib.Research.ProximityGap.Frontier.ReceivedPowerSeriesHessian
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalAverageEnergy
@@ -615,6 +619,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeConditionedCubic
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeConditionedIncidence
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeConditionedThreshold
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCoordinateWeight
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicExact
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicIntrinsicEscape
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicOnly
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicReceivedOrder

@@ -4,6 +4,9 @@
 # All names verified against source namespaces — a rename or deletion here is a
 # hard CI failure, not a skip (update this list in the same PR as the rename).
 
+# Exact rate-one-sixteenth MCA threshold at the second designated prime
+ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicExact ArkLib.ProximityGap.Frontier.SecondPrimeCubicExact.secondPrime_rateSixteenth
+
 # All power fibers and the actual second-prime quadratic population cap
 ArkLib.Research.ProximityGap.Frontier.PaddedPowerSpecialization ProximityGap.PaddedPowerSpecialization.power_fiber_count
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeQuadraticFactor ProximityGap.SecondPrimeQuadraticFactor.quadratic_population_le_263
