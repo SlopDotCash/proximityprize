@@ -551,6 +551,8 @@ import ArkLib.Research.ProximityGap.Frontier.OddRedundancySquareLift
 import ArkLib.Research.ProximityGap.Frontier.OddReturnDeterminant
 import ArkLib.Research.ProximityGap.Frontier.OddSmoothPrimeThreshold
 import ArkLib.Research.ProximityGap.Frontier.OneErasureDimensionDrop
+import ArkLib.Research.ProximityGap.Frontier.OnePunctureCubicThreshold
+import ArkLib.Research.ProximityGap.Frontier.OnePunctureRetention
 import ArkLib.Research.ProximityGap.Frontier.OptimalOverlapPacking
 import ArkLib.Research.ProximityGap.Frontier.OptimizedSupFromNonprincipalWick
 import ArkLib.Research.ProximityGap.Frontier.OptimizedSupFromWraparound
