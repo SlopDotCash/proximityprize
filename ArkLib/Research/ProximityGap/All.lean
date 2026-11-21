@@ -493,6 +493,7 @@ import ArkLib.Research.ProximityGap.Frontier.RawMGFSaddleVacuity
 import ArkLib.Research.ProximityGap.Frontier.RealizerL2NotSup
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalChartMCA
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalSubsetSeparation
+import ArkLib.Research.ProximityGap.Frontier.RecursiveListPacking
 import ArkLib.Research.ProximityGap.Frontier.RegimePin
 import ArkLib.Research.ProximityGap.Frontier.RegularTaylorPole
 import ArkLib.Research.ProximityGap.Frontier.ReservedFiberList

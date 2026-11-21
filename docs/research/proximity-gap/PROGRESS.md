@@ -537,6 +537,10 @@ Four degree-seven quotient heads give **1,073,741,825 distinct MCA-bad scalars a
 
 The complete endpoint theorem, including the exclusion of constant cross-ratio, passed the focused Lean gate in [CrossRatioEndpoint.lean](../../../ArkLib/Research/ProximityGap/Frontier/CrossRatioEndpoint.lean). The axiom report for `ProximityGap.FourHeadCrossRatio.degree_one_or_two` contains only `propext`, `Classical.choice`, and `Quot.sound`. The independent pure-Python full length-sixteen sweep above finished with 147 support orbits, 3,218 isolated full-support intersections and 29 coincident line pairs. Every compatible triple was excluded.
 
+## Four list cutoffs from integer packing on every 128-point domain
+
+The first failing error counts at rates $1/2,1/4,1/8,1/16$ are $64,97,113,121$ for any 128-point injection whenever $351980102567944271741142966174134400\le\lfloor q/2^{128}\rfloor<\binom{128}{64}$. The 247-bit prime $2219\cdot2^{235}+1$ is in the extended interval. The proof rounds after each point incidence, on the agreement sets and also on their complements. The general recursion supplies an exact first failure at $n-k$ whenever it fits the budget one step before interpolation and the monomial list exceeds the budget at interpolation. Lean verifies the supplied-domain result at every positive interleaving width, the prime certificate, and a generator of the smooth 128-point subgroup. [Derivation and exact integers](prescribed-product-list-thresholds.md#integer-packing-and-a-four-rate-threshold-interval) · [Lean exports](../../../ArkLib/Research/ProximityGap/Frontier/RecursiveListPacking.lean)
+
 ## 2026-11-21 · Prime-field four-rate list-decoding solution and exact budget interval
 
 Every multiplicative subgroup of order 128 in a finite field of cardinality $q$ has the same four first bad error counts $63,97,113,121$ whenever its 128-bit list budget $B=\lfloor q/2^{128}\rfloor$ lies in the interval

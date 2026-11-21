@@ -27,6 +27,19 @@ The kernel-verified statements include the radius at every rate and the reposito
 
 Take any received word with any number of rows. Among the $n$ evaluation points, each list member with at least $t$ joint agreements has at least $\binom tk$ subsets of size $k$ on which every row agrees. No two distinct list members can claim the same subset, because $k$ common interpolation values determine each polynomial of degree below $k$. Thus every such list has size at most $\lfloor\binom nk/\binom tk\rfloor$.
 
+## Integer packing and a four-rate threshold interval
+
+For $k\le t$ and $2t\le n+k$, the maximum list at $t$ agreements is at most
+\[
+\min\{J(n,t,k),J(n,n-t,n+k-2t)\},\qquad
+J(n,t,0)=1,\quad J(n,t,k+1)=\left\lfloor\frac{n J(n-1,t-1,k)}{t}\right\rfloor.
+\]
+Choose exactly $t$ agreement coordinates for each candidate. Distinct chosen sets intersect in fewer than $k$ coordinates, since agreement on $k$ sites determines every row. The sets containing a given coordinate satisfy the same condition after it is removed, with each of the three parameters one smaller. Summing the resulting bound over all $n$ coordinates counts each chosen set $t$ times. The complementary $(n-t)$-sets have intersections smaller than $n+k-2t$, giving the second bound. This is the Johnson–Schönheim recursion applied to a constant-weight binary code and its complements. It applies directly to every supplied injective domain and every positive interleaving width. [Johnson’s packing bound](https://doi.org/10.1109/TIT.1962.1057714) · [Lean proof and threshold theorem](../../../ArkLib/Research/ProximityGap/Frontier/RecursiveListPacking.lean)
+
+At $t=k+1$, whenever the smaller recursive bound is at most $B<\binom nk$, the first failing error count is exactly $n-k$. At $k$ agreements the monomial center attains $\binom nk$ codewords. For example, at $(n,k,t)=(128,64,65)$ the complementary recursion gives **351980102567944271741142966174134400**, below the direct recursion's 362809707601132265209624858889168317 and the unrounded binomial bound 368479169875816659479009042713546950.
+
+At every field size $q$ with $351980102567944271741142966174134400\le\lfloor q/2^{128}\rfloor<\binom{128}{64}$, the four first failures are **64, 97, 113, 121** errors, in decreasing rate order, on every supplied 128-point evaluation domain. The prime $p=2219\cdot2^{235}+1$ lies in the part of this interval added by the complementary recursion. Its budget is 360053335284024453365911604829356032. Lean checks its Lucas primality certificate, an element of order 128, and the closed-ball inequalities at every real radius. [Arithmetic and four-rate theorem](../../../ArkLib/Research/ProximityGap/Frontier/RecursiveListPacking.lean)
+
 ## A lower bound for a multiplicative domain
 
 Let $D$ have $n$ distinct evaluation points in a subgroup $H\subset K^\times$ of order $h$, where $K$ is a finite field of order $q_0$ inside the code alphabet $F$. Choose $a\ge0$ and put $t=k+1+a\le n$. For each $t$-subset $T\subset D$, form its monic locator $L_T(X)=\prod_{x\in T}(X-x)$. Group subsets by their product in $H$ and by the $a$ coefficients of $X^{k+1},\ldots,X^{k+a}$ in $L_T$. There are at most $h q_0^a$ groups. Fix a largest group and use one of its locators $P$ to define a single received word $w(x)=P(x)/x$.
