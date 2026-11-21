@@ -7,6 +7,8 @@ import ArkLib.Research.ProximityGap.Frontier.BudgetOneProduction
 import ArkLib.Research.ProximityGap.Frontier.FourRateSmoothMca128
 import ArkLib.Research.ProximityGap.Frontier.SharpApolarMCA
 import ArkLib.Research.ProximityGap.RankExecutable
+import ArkLib.Research.ProximityGap.SmoothProductionMcaExecutable
+import ArkLib.Research.ProximityGap.Frontier._PrizeShapePrimeP30Second
 
 /-! Compile-time review of numerical thresholds for affine-line MCA and worst-center lists. -/
 set_option autoImplicit false
@@ -27,6 +29,31 @@ run_cmd do
     let last := (2^30 - k) / 3 + 1
     unless [first k 0, first k 1, first k last] == [some 0, some 1, some last] do
       throwError "Incorrect exact MCA count in the spike window"
+end
+
+/- The production solver computes the three established numerical answers on the
+two designated subgroups without requesting a field enumeration. -/
+section
+open ArkLib.ProximityGap ProximityGap.KKH26RegimeSplit
+local instance : Fact PrizeShapePrimeP30.P.Prime := ⟨PrizeShapePrimeP30.prime_P⟩
+local instance : Fact PrizeShapePrimeP30Second.P.Prime := ⟨PrizeShapePrimeP30Second.prime_P⟩
+
+run_cmd do
+  let firstDomain := powDomain PrizeShapePrimeP30.g PrizeShapePrimeP30.orderOf_g
+    (ne_zero_of_orderOf_eq PrizeShapePrimeP30.orderOf_g)
+  let secondDomain := powDomain PrizeShapePrimeP30Second.g PrizeShapePrimeP30Second.orderOf_g
+    (ne_zero_of_orderOf_eq PrizeShapePrimeP30Second.orderOf_g)
+  let one (k : ℕ) := SmoothProductionMcaExecutable.answer (Equiv.refl _)
+    (fun _ => panic! "First-prime solution forced field labels") firstDomain k PrizeShapePrimeP30.P
+  let two (k : ℕ) := SmoothProductionMcaExecutable.answer (Equiv.refl _)
+    (fun _ => panic! "Second-prime solution forced field labels") secondDomain k
+    PrizeShapePrimeP30Second.P
+  unless [one (2^27), one (2^26), two (2^26)] ==
+      [some 536870912, some 536870912, some 715827882] do
+    throwError "Incorrect first failure on a named production domain"
+  let known := SmoothProductionMcaExecutable.knownCount
+  unless (known (2^29) (2^30)).isNone && (known (2^28) (2^31)).isNone do
+    throwError "An unresolved named endpoint received a numerical shortcut"
 end
 
 /-- The numerical list answers written independently of the library table. -/
