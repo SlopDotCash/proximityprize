@@ -28,7 +28,8 @@ noncomputable def central (A : Finset (ZMod p)) : (ZMod p)[X] :=
 
 private theorem int_toNat_eq {v : ℤ} {j : ℕ} (h : v=(j : ℤ)) : v.toNat=j := by simp [h]
 
-private theorem quarter_square {a e z : ℕ} (ha : 2 ≤ a) (hz : z ≤ 1)
+/-- The local determinant charge equals the floor of a quarter of the squared sign imbalance. -/
+theorem quota_of_minority {a e z : ℕ} (ha : 2 ≤ a) (hz : z ≤ 1)
     {w : ℤ} (hw : w = (a : ℤ) - z - 2*e) (hw0 : 0 ≤ w) :
     let h := a/2-1
     let r := h+1-e
@@ -94,7 +95,7 @@ theorem shift_dvd (hp : p ≠ 2) (A : Finset (ZMod p))
     dsimp only [w, E, z]
     split_ifs at he ⊢ <;> push_cast <;> linarith
   have hz : z ≤ 1 := by dsimp [z]; split <;> decide
-  have hquota := quarter_square ha hz hw hw0
+  have hquota := quota_of_minority ha hz hw hw0
   let h := A.card/2-1
   let ν := if -b ∈ A then A.card-2 else A.card-2+1
   have hnu : A.card-1-z=ν := by dsimp [z,ν]; split <;> omega
