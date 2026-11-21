@@ -83,7 +83,9 @@ theorem exists_reindex_scale (D : I ↪ F) (E : J ↪ F)
   congr 1
   rw [← mul_assoc, Units.inv_mul, one_mul]
 
-private theorem mem_code_scale {D : I ↪ F} {E : J ↪ F} (e : I ≃ J)
+omit [DecidableEq F] [Fintype I] [Fintype J] in
+/-- Every word on a rescaled and reindexed domain is represented by a polynomial of the same degree bound. -/
+theorem mem_code_scale {D : I ↪ F} {E : J ↪ F} (e : I ≃ J)
     (a : Fˣ) (he : ∀ i, D i = (a : F)*E (e i)) {k : ℕ} {w : J → F}
     (hw : w ∈ ReedSolomon.code E k) : w ∘ e ∈ ReedSolomon.code D k := by
   obtain ⟨P,hP,h⟩ := ReedSolomon.mem_code_iff_eval.mp hw
