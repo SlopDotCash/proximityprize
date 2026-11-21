@@ -4,6 +4,7 @@ Released under the MIT and Apache-2.0 licenses as described in LICENSE-MIT and L
 Authors: ArkLib Contributors
 -/
 import ArkLib.Research.ProximityGap.Frontier.CubicApolarAttainment
+import Mathlib.NumberTheory.PrimesCongruentOne
 
 /-! # Power-fiber witnesses at the unique-decoding endpoint
 
@@ -31,6 +32,7 @@ private theorem fold_identity (V Q : K[X]) (t : K) (m : ℕ)
     smul_divByMonic, smul_divByMonic, smul_eq_C_mul, smul_eq_C_mul] at h
   exact h
 
+omit [Fintype K] in
 /-- Removing all but one site of a full power fiber gives a bad witness
 on its complementary site set. -/
 theorem event_of_fiber (D : Finset K) (k e : ℕ) (hk : 0 < k) (he : 0 < e)
@@ -142,6 +144,56 @@ theorem attain (k e : ℕ) (hk : 0<k) (he : 0<e) {g : K} (hg : IsPrimitiveRoot g
   intro x hx
   exact hAD ((ha x).mpr ((mem_nthRootsFinset (Nat.succ_pos e) _).mp hx ▸ hval))
 
+open Classical in
+/-- On every sufficiently large prime field splitting the power fibers,
+one can choose their representatives and the additional sites. -/
+theorem prime_attain (k e m p : ℕ) [Fact p.Prime] (hk : 0<k) (he : 0<e)
+    (hroom : m*(e+1) ≤ k+2*e) (hp : k+2*e < p) (hdiv : e+1 ∣ p-1) :
+    ∃ D : Finset (ZMod p), D.card=k+2*e ∧ ∃ u v : D → ZMod p,
+      m*(e+1) ≤ (univ.filter fun t : ZMod p => _root_.ProximityGap.mcaEvent
+        (ReedSolomon.code (Function.Embedding.subtype (·∈D)) k : Set (D → ZMod p))
+        ((e:ℝ≥0)/D.card) u v t).card := by
+  classical
+  obtain ⟨z,hz⟩ := IsCyclic.exists_ofOrder_eq_natCard (α := (ZMod p)ˣ)
+  let g := (z : ZMod p)
+  have hg : IsPrimitiveRoot g (p-1) := IsPrimitiveRoot.coe_units_iff.mpr <|
+    IsPrimitiveRoot.iff_orderOf.mpr <| by simpa only [Nat.card_eq_fintype_card,ZMod.card_units] using hz
+  obtain ⟨c,hc⟩ := hdiv
+  have h₁ : IsPrimitiveRoot (g^c) (e+1) := IsPrimitiveRoot.pow (by omega : 0<p-1) hg
+    (hc.trans (Nat.mul_comm ..))
+  let rep := fun j : ℕ => g^(j*(e+1))
+  let I := (range m).image rep
+  have ltord (j : ℕ) (hj : j ∈ range m) : j*(e+1) < p-1 := by
+    exact (Nat.mul_lt_mul_of_pos_right (mem_range.mp hj) (show 0<e+1 by omega)).trans_le
+      (hroom.trans (by omega))
+  have hi : I.card=m := by
+    rw [Finset.card_image_of_injOn,card_range]
+    intro i hi j hj hij
+    exact Nat.eq_of_mul_eq_mul_right (Nat.succ_pos e) (hg.pow_inj (ltord i hi) (ltord j hj) hij)
+  have hpow : ∀ a ∈ I, a≠0 ∧ ∃ x : ZMod p, x^(e+1)=a := by
+    intro a ha
+    obtain ⟨j,_,rfl⟩ := mem_image.mp ha
+    exact ⟨pow_ne_zero _ z.ne_zero,g^j,(pow_mul ..).symm⟩
+  simpa only [hi] using attain k e hk he h₁ I hpow (hi ▸ hroom) (by rw [ZMod.card];omega)
+
+open Classical in
+/-- For any permitted number of complete fibers, the actual lower count is
+attained or exceeded over arbitrarily large prime fields. -/
+theorem arbitrarily_large_primes (k e m bound : ℕ) (hk : 0<k) (he : 0<e)
+    (hroom : m*(e+1) ≤ k+2*e) :
+    ∃ (p : ℕ) (hp : Nat.Prime p), bound<p ∧
+      let _ : Fact p.Prime := ⟨hp⟩
+      ∃ D : Finset (ZMod p), D.card=k+2*e ∧ ∃ u v : D → ZMod p,
+        m*(e+1) ≤ (univ.filter fun t : ZMod p => _root_.ProximityGap.mcaEvent
+          (ReedSolomon.code (Function.Embedding.subtype (·∈D)) k : Set (D → ZMod p))
+          ((e:ℝ≥0)/D.card) u v t).card := by
+  obtain ⟨p,hp,hbig,hcong⟩ := Nat.exists_prime_gt_modEq_one (max bound (k+2*e)) (Nat.succ_ne_zero e)
+  let _ : Fact p.Prime := ⟨hp⟩
+  exact ⟨p,hp,(le_max_left ..).trans_lt hbig,
+    prime_attain k e m p hk he hroom ((le_max_right ..).trans_lt hbig) hcong.symm.dvd'⟩
+
+#print axioms prime_attain
+#print axioms arbitrarily_large_primes
 #print axioms event_of_fiber
 #print axioms attain
 end ArkLib.ProximityGap.Frontier.PowerFiberEndpoint

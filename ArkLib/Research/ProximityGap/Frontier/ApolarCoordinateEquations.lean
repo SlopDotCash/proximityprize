@@ -40,22 +40,22 @@ theorem apolar_map (D : Finset ι) (y w : ι → R) (φ : R →+* A) (f : R[X]) 
 
 variable [Nontrivial A]
 
-/-- A projective-coordinate comparison built directly from two polynomial
-decompositions of the cubed divided representative. -/
-theorem coordinate_equations (D : Finset ι) (y : ι → Rˣ) (w : ι → R)
+/-- Coordinate inversion compares two interpolation decompositions at an arbitrary power
+in the universal root algebra. -/
+theorem power_equations (power : ℕ) (D : Finset ι) (y : ι → Rˣ) (w : ι → R)
     (f V B B' Q Q' : R[X]) (s : R) (φ : R →+* A) (x : Aˣ) {r k n : ℕ}
     (hk : 0 < k) (hf : f.natDegree ≤ r + 1) (hV : V.natDegree ≤ n)
     (hx : (f.map φ).IsRoot (x:A)) (hs : IsUnit (φ s))
     (ha : ApolarThrough (measure D (fun i => (y i:R)) w) f (k-1))
-    (h0 : V*(representative D (fun i => (y i:R)) w f)^3 = f*Q+C s*B)
+    (h0 : V*(representative D (fun i => (y i:R)) w f)^power = f*Q+C s*B)
     (h1 : reflect n V*(-representative D (fun i => (↑(y i)⁻¹:R))
-      (fun i => w i*(y i:R)^(r+k)) (reflect (r+1) f))^3 =
+      (fun i => w i*(y i:R)^(r+k)) (reflect (r+1) f))^power =
       reflect (r+1) f*Q'+C s*B') :
-    (x:A)^n*(B'.map φ).eval (↑x⁻¹:A) = (x:A)^((k+1)*3)*(B.map φ).eval (x:A) := by
+    (x:A)^n*(B'.map φ).eval (↑x⁻¹:A) = (x:A)^((k+1)* power)*(B.map φ).eval (x:A) := by
   let z (i : ι) := Units.map φ.toMonoidHom (y i)
   obtain ⟨v,hv⟩ := hs
   have hfm := (natDegree_map_le (p := f) (f := φ)).trans hf
-  apply cubic_remainders D z (φ ∘ w) x v (f.map φ) (V.map φ) _ _ hk hfm hx
+  apply power_remainders power D z (φ ∘ w) x v (f.map φ) (V.map φ) _ _ hk hfm hx
       (apolar_map D (fun i => (y i:R)) w φ f (k-1) ha) (natDegree_map_le.trans hV)
   · have h := congrArg (fun p : R[X] => (p.map φ).eval (x:A)) h0
     simp only [Polynomial.map_mul,Polynomial.map_pow,Polynomial.map_add,Polynomial.map_C,
@@ -75,17 +75,31 @@ theorem coordinate_equations (D : Finset ι) (y : ι → Rˣ) (w : ι → R)
     rw [hv,hw]
     exact h.symm
 
-/-- The cleared coordinate congruence for the actual cubic interpolation
-remainders. Both sides lie in the original bivariate polynomial ring. -/
-theorem coordinate_congruence {K J : Type*} [Field K] [IsAlgClosed K]
+/-- A projective-coordinate comparison built directly from two polynomial
+decompositions of the cubed divided representative. -/
+theorem coordinate_equations (D : Finset ι) (y : ι → Rˣ) (w : ι → R)
+    (f V B B' Q Q' : R[X]) (s : R) (φ : R →+* A) (x : Aˣ) {r k n : ℕ}
+    (hk : 0 < k) (hf : f.natDegree ≤ r + 1) (hV : V.natDegree ≤ n)
+    (hx : (f.map φ).IsRoot (x:A)) (hs : IsUnit (φ s))
+    (ha : ApolarThrough (measure D (fun i => (y i:R)) w) f (k-1))
+    (h0 : V*(representative D (fun i => (y i:R)) w f)^3 = f*Q+C s*B)
+    (h1 : reflect n V*(-representative D (fun i => (↑(y i)⁻¹:R))
+      (fun i => w i*(y i:R)^(r+k)) (reflect (r+1) f))^3 =
+      reflect (r+1) f*Q'+C s*B') :
+    (x:A)^n*(B'.map φ).eval (↑x⁻¹:A) = (x:A)^((k+1)*3)*(B.map φ).eval (x:A) :=
+  power_equations 3 D y w f V B B' Q Q' s φ x hk hf hV hx hs ha h0 h1
+
+/-- Clear the coordinate transition for any power of the divided representative in the
+bivariate ring. -/
+theorem power_congruence (power : ℕ) {K J : Type*} [Field K] [IsAlgClosed K]
     (D : Finset J) (y : J → K[X]ˣ) (w : J → K[X]) (f V B B' Q Q' : K[X][X]) (s : K[X])
     {r k n m b c : ℕ} (hk : 0 < k) (hf : f.natDegree ≤ r + 1) (hV : V.natDegree ≤ n)
     (hnodes : ∀ t : K, f.map (evalRingHom t) ≠ 0) (hzero : f.coeff 0 ≠ 0) (hs : s ≠ 0)
-    (hm : B'.natDegree ≤ m) (htwist : b + (k+1)*3 = n + c)
+    (hm : B'.natDegree ≤ m) (htwist : b + (k+1)* power = n + c)
     (ha : ApolarThrough (ApolarRootTransition.measure D (fun i => (y i:K[X])) w) f (k-1))
-    (h0 : V*(representative D (fun i => (y i:K[X])) w f)^3 = f*Q+C s*B)
+    (h0 : V*(representative D (fun i => (y i:K[X])) w f)^power = f*Q+C s*B)
     (h1 : reflect n V*(-representative D (fun i => (↑(y i)⁻¹:K[X]))
-      (fun i => w i*(y i:K[X])^(r+k)) (reflect (r+1) f))^3 =
+      (fun i => w i*(y i:K[X])^(r+k)) (reflect (r+1) f))^power =
       reflect (r+1) f*Q'+C s*B') :
     Bivariate.swap f ∣ C (X^b) *
         ArkLib.ProximityGap.Frontier.ApolarReciprocalCharts.reverseCoeffs m (Bivariate.swap B') -
@@ -109,7 +123,7 @@ theorem coordinate_congruence {K J : Type*} [Field K] [IsAlgClosed K]
     rw [hx]
     simpa only [F,Polynomial.map_map,ψ] using AdjoinRoot.isRoot_root F
   have hs' : IsUnit (ψ s) := ((map_ne_zero_iff φ hinj).mpr hs).isUnit.map (AdjoinRoot.of F)
-  have h := coordinate_equations D y w f V B B' Q Q' s ψ x hk hf hV hroot hs' ha h0 h1
+  have h := power_equations power D y w f V B B' Q Q' s ψ x hk hf hV hroot hs' ha h0 h1
   have hclear := clear_twist x (B.map ψ) (B'.map ψ) (natDegree_map_le.trans hm) htwist h
   have hv (q : K[X][X]) : (q.map ψ).eval (x:AdjoinRoot F) = AdjoinRoot.mk F (q.map φ) := by
     rw [hx,show q.map ψ = (q.map φ).map (AdjoinRoot.of F) from (Polynomial.map_map φ _ q).symm,
@@ -117,6 +131,23 @@ theorem coordinate_congruence {K J : Type*} [Field K] [IsAlgClosed K]
     exact AdjoinRoot.aeval_eq (q.map φ)
   rw [reflect_map,hv,hv,hx] at hclear
   exact hclear
+
+/-- The cleared coordinate congruence for the actual cubic interpolation
+remainders. Both sides lie in the original bivariate polynomial ring. -/
+theorem coordinate_congruence {K J : Type*} [Field K] [IsAlgClosed K]
+    (D : Finset J) (y : J → K[X]ˣ) (w : J → K[X]) (f V B B' Q Q' : K[X][X]) (s : K[X])
+    {r k n m b c : ℕ} (hk : 0 < k) (hf : f.natDegree ≤ r + 1) (hV : V.natDegree ≤ n)
+    (hnodes : ∀ t : K, f.map (evalRingHom t) ≠ 0) (hzero : f.coeff 0 ≠ 0) (hs : s ≠ 0)
+    (hm : B'.natDegree ≤ m) (htwist : b + (k+1)*3 = n + c)
+    (ha : ApolarThrough (ApolarRootTransition.measure D (fun i => (y i:K[X])) w) f (k-1))
+    (h0 : V*(representative D (fun i => (y i:K[X])) w f)^3 = f*Q+C s*B)
+    (h1 : reflect n V*(-representative D (fun i => (↑(y i)⁻¹:K[X]))
+      (fun i => w i*(y i:K[X])^(r+k)) (reflect (r+1) f))^3 =
+      reflect (r+1) f*Q'+C s*B') :
+    Bivariate.swap f ∣ C (X^b) *
+        ArkLib.ProximityGap.Frontier.ApolarReciprocalCharts.reverseCoeffs m (Bivariate.swap B') -
+        C (X^(m+c)) * Bivariate.swap B :=
+  power_congruence 3 D y w f V B B' Q Q' s hk hf hV hnodes hzero hs hm htwist ha h0 h1
 
 #print axioms coordinate_congruence
 #print axioms apolar_map

@@ -76,6 +76,7 @@ import ArkLib.Research.ProximityGap.Frontier.ApolarMovingCount
 import ArkLib.Research.ProximityGap.Frontier.ApolarParameterTransition
 import ArkLib.Research.ProximityGap.Frontier.ApolarPencilExtraction
 import ArkLib.Research.ProximityGap.Frontier.ApolarPencilNullity
+import ArkLib.Research.ProximityGap.Frontier.ApolarPowerBound
 import ArkLib.Research.ProximityGap.Frontier.ApolarPrimitiveKernel
 import ArkLib.Research.ProximityGap.Frontier.ApolarReciprocalCharts
 import ArkLib.Research.ProximityGap.Frontier.ApolarRootTransition
@@ -83,6 +84,8 @@ import ArkLib.Research.ProximityGap.Frontier.ApolarSparseInterpolation
 import ArkLib.Research.ProximityGap.Frontier.ApolarSparseRankBound
 import ArkLib.Research.ProximityGap.Frontier.ApolarSparseSpecialization
 import ArkLib.Research.ProximityGap.Frontier.ApolarSpikeBudgetRange
+import ArkLib.Research.ProximityGap.Frontier.ApolarSuccessorDefect
+import ArkLib.Research.ProximityGap.Frontier.ApolarSuccessorPopulation
 import ArkLib.Research.ProximityGap.Frontier.ApolarSyndromeInterpolation
 import ArkLib.Research.ProximityGap.Frontier.ApolarUnitChart
 import ArkLib.Research.ProximityGap.Frontier.ApolarUnitChartData
@@ -200,6 +203,7 @@ import ArkLib.Research.ProximityGap.Frontier.CrossStepRungTwo
 import ArkLib.Research.ProximityGap.Frontier.CrossingDepthLinearTracking
 import ArkLib.Research.ProximityGap.Frontier.CubicApolarAttainment
 import ArkLib.Research.ProximityGap.Frontier.CubicApolarEvent
+import ArkLib.Research.ProximityGap.Frontier.CubicApolarExtremum
 import ArkLib.Research.ProximityGap.Frontier.CubicApolarWitness
 import ArkLib.Research.ProximityGap.Frontier.CumulantOnsetNoGo
 import ArkLib.Research.ProximityGap.Frontier.CurveDecodability
@@ -397,6 +401,7 @@ import ArkLib.Research.ProximityGap.Frontier.PinnedScalarRatioImage
 import ArkLib.Research.ProximityGap.Frontier.PoissonAveragedMGF
 import ArkLib.Research.ProximityGap.Frontier.PowMapFiberCard
 import ArkLib.Research.ProximityGap.Frontier.PowerFiberEndpoint
+import ArkLib.Research.ProximityGap.Frontier.PowerFiberProduction
 import ArkLib.Research.ProximityGap.Frontier.PowerSumLogConvexSpacing
 import ArkLib.Research.ProximityGap.Frontier.PowerSumMaxBracket
 import ArkLib.Research.ProximityGap.Frontier.PowerSumRatioMeanFloor
@@ -3329,6 +3334,7 @@ import ArkLib.Research.ProximityGap.Frontier._wfTT07_adelic_capacity_house_ceili
 import ArkLib.Research.ProximityGap.Frontier._wfTT08_arakelov_self_intersection
 import ArkLib.Research.ProximityGap.Frontier._wfTT09_adelic_equidist_house_nogo
 import ArkLib.Research.ProximityGap.Frontier._wfTT10_mahler_lehmer_house_kb
+import ArkLib.Research.ProximityGap.FullPrizeContract
 import ArkLib.Research.ProximityGap.GG25CurveDecodabilityB2Capstone
 import ArkLib.Research.ProximityGap.GeneralSpikeLowerBound
 import ArkLib.Research.ProximityGap.GrandChallenges
@@ -3399,6 +3405,7 @@ import ArkLib.Research.ProximityGap.JohnsonCommonCenterRefutation
 import ArkLib.Research.ProximityGap.JohnsonInvariant
 import ArkLib.Research.ProximityGap.KKH26DimGeneralSharpInterleavedPin
 import ArkLib.Research.ProximityGap.KKH26RegimeSplit
+import ArkLib.Research.ProximityGap.KnownDomainReview
 import ArkLib.Research.ProximityGap.LDAttainment
 import ArkLib.Research.ProximityGap.LDEliasCertificate
 import ArkLib.Research.ProximityGap.LDFourRate

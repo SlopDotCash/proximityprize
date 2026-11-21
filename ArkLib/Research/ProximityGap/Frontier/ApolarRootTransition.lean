@@ -84,6 +84,29 @@ omit [Nontrivial A] in
 private theorem cancel_unit (u : Aˣ) {a b : A} (h : (u:A)*a=(u:A)*b) : a=b := by
   simpa only [← mul_assoc,Units.inv_mul,one_mul] using congrArg (fun z : A => (↑u⁻¹:A)*z) h
 
+/-- Coordinate reversal multiplies the P-th power of the representative by the
+corresponding P-th power of the root. Here the exponent can be any natural number. -/
+theorem power_remainders (power : ℕ) (D : Finset ι) (y : ι → Aˣ) (w : ι → A) (x s : Aˣ)
+    (f V B B' : A[X]) {r k n : ℕ} (hk : 0<k) (hf : f.natDegree ≤ r+1)
+    (hx : f.IsRoot (x:A)) (ha : ApolarThrough (measure D (fun i => (y i:A)) w) f (k-1))
+    (hV : V.natDegree ≤ n)
+    (hB : (s:A)*B.eval (x:A) = V.eval (x:A)*
+      (representative D (fun i => (y i:A)) w f).eval (x:A)^power)
+    (hB' : (s:A)*B'.eval (↑x⁻¹:A) = (reflect n V).eval (↑x⁻¹:A)*
+      (-(representative D (fun i => (↑(y i)⁻¹:A)) (fun i => w i*(y i:A)^(r+k))
+        (reflect (r+1) f))).eval (↑x⁻¹:A)^power) :
+    (x:A)^n*B'.eval (↑x⁻¹:A) = (x:A)^((k+1)* power)*B.eval (x:A) := by
+  have hv : (reflect n V).eval (↑x⁻¹:A)*(x:A)^n = V.eval (x:A) := by
+    let _ := x.isUnit.invertible
+    simpa only [invOf_units,eval₂_id] using eval₂_reflect_mul_pow (RingHom.id A) (x:A) n V hV
+  apply cancel_unit s
+  calc
+    _ = (x:A)^n*((s:A)*B'.eval (↑x⁻¹:A)) := by ring
+    _ = (x:A)^((k+1)* power)*((s:A)*B.eval (x:A)) := by
+      rw [hB',reciprocal_representative D y w x f hk hf hx ha,hB,← hv,pow_mul,mul_pow]
+      ring
+    _ = _ := by ring
+
 /-- The two cubic interpolation identities imply the precise Laurent transition
 for their actual remainders in the universal root algebra. -/
 theorem cubic_remainders (D : Finset ι) (y : ι → Aˣ) (w : ι → A) (x s : Aˣ)
@@ -95,17 +118,8 @@ theorem cubic_remainders (D : Finset ι) (y : ι → Aˣ) (w : ι → A) (x s : 
     (hB' : (s:A)*B'.eval (↑x⁻¹:A) = (reflect n V).eval (↑x⁻¹:A)*
       (-(representative D (fun i => (↑(y i)⁻¹:A)) (fun i => w i*(y i:A)^(r+k))
         (reflect (r+1) f))).eval (↑x⁻¹:A)^3) :
-    (x:A)^n*B'.eval (↑x⁻¹:A) = (x:A)^((k+1)*3)*B.eval (x:A) := by
-  have hv : (reflect n V).eval (↑x⁻¹:A)*(x:A)^n = V.eval (x:A) := by
-    let _ := x.isUnit.invertible
-    simpa only [invOf_units,eval₂_id] using eval₂_reflect_mul_pow (RingHom.id A) (x:A) n V hV
-  apply cancel_unit s
-  calc
-    _ = (x:A)^n*((s:A)*B'.eval (↑x⁻¹:A)) := by ring
-    _ = (x:A)^((k+1)*3)*((s:A)*B.eval (x:A)) := by
-      rw [hB',reciprocal_representative D y w x f hk hf hx ha,hB,← hv,pow_mul]
-      ring
-    _ = _ := by ring
+    (x:A)^n*B'.eval (↑x⁻¹:A) = (x:A)^((k+1)*3)*B.eval (x:A) :=
+  power_remainders 3 D y w x s f V B B' hk hf hx ha hV hB hB'
 
 omit [Nontrivial A] in
 /-- In a chart of nonnegative coordinate degree this is the cleared polynomial
