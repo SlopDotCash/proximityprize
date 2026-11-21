@@ -91,9 +91,12 @@ private def threeSites : Fin 3 ↪ ZMod 3 where
 
 /- At one error the repetition code has three bad scalars. This exercises the fixed
 labels and a free third label, as well as the separate singleton case. -/
-#guard (RankExecutable.mcaBoundary (Equiv.refl (Fin 3)) [0, 1, 2] threeSites 1 2).map
-  Fin.val == some 1
-#guard (RankExecutable.mcaBoundary (Equiv.refl (Fin 3)) [0, 1, 2] threeSites 1 0).map
-  Fin.val == some 0
+run_cmd do
+  let mca (budget : ℕ) :=
+    (RankExecutable.mcaBoundary (Equiv.refl (Fin 3)) [0, 1, 2] threeSites 1 budget).map Fin.val
+  unless mca 2 == some 1 do
+    throwError "At budget two, the three-site MCA test should first fail at one error."
+  unless mca 0 == some 0 do
+    throwError "At budget zero, the three-site MCA test should fail at zero errors."
 
 end ProximityPrize.Review
