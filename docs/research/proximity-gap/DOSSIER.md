@@ -4,7 +4,13 @@ This is the canonical dossier for `SlopDotCash/proximityprize`. The complete dat
 research record and v4 standalone update are consolidated below; their snapshots are
 historical evidence, not live issue status or a new proof claim.
 
-## Current coordination — 2026-09-06
+## Current proof status — 2026-11-21
+
+The November assessment records the exact four-rate MCA window at production length, including the sharp half-rate endpoint at the boundary prime. It gives the remaining bounds for the two larger named prime fields and distinguishes formally verified results from written improvements. The general prize challenges remain open. [Proof assessment](integration-assessment-2026-11-21.md)
+
+Issue #164 closed on 2026-10-08 when PR #217 merged. That PR characterizes when a greatest good radius exists, and explicitly leaves the production threshold open. [Issue #164](https://github.com/SlopDotCash/proximityprize/issues/164) · [PR #217](https://github.com/SlopDotCash/proximityprize/pull/217)
+
+## Coordination snapshot — 2026-09-06
 
 [Issue #164](https://github.com/SlopDotCash/proximityprize/issues/164) is the consolidated
 research and independent production-completion tracker. Former trackers #1 and #4 were

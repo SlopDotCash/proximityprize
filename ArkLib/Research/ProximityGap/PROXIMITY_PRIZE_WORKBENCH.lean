@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Agent
 -/
 import Mathlib
+import ArkLib.Research.ProximityGap.Frontier.ShawFlatnessSubfieldCounterexample
 import ArkLib.Research.ProximityGap.All
 import ArkLib.Data.CodingTheory.ProximityGap.EnergyCharacterTransport
 import ArkLib.Data.CodingTheory.ProximityGap.LiteralBudgetRateThreeSixteenths
@@ -121,7 +122,8 @@ theorems at the end):
 3. the **Shaw operator** `𝖲_D`, whose spectral gap `B(μ_n)` *heuristically* organizes the
    "unknown quantities" the prize has been reduced to, and whose **corrected gap law**
    `B ≤ C·√(n·log(q/n))` on multiplicative subgroups (the `√2·√n` form is refuted, R3) is the
-   open W4/Shkredov-type conjecture `ShawFlatnessConjecture`.  No declaration in this file links
+   open W4/Shkredov-type question over prime fields. The all-fields predicate
+   `ShawFlatnessConjecture` is refuted in §8. No declaration in this file links
    that conjecture to `WorstCaseIncidenceBound`, `badScalars`, or `epsMCA`; the links in §0–§9
    are heuristics, not theorems.
 
@@ -216,8 +218,8 @@ Production: `n = 2^25`, `q ≈ n·2^128 ≈ 2^153`, `ε* = 2^{-128}`, `ρ = 1/2`
 
 The prize is a **recognized open problem**. This file does **not** claim to close it. Every
 `theorem` is axiom-clean Lean (`propext, Classical.choice, Quot.sound`); the open core is isolated
-as the named `Prop`s `WorstCaseIncidenceBound` / `ShawFlatnessConjecture`, *labelled as the
-classical wall*; these are two separate open `Prop`s, and no in-tree theorem relates them.
+as `WorstCaseIncidenceBound` and the prime-field restriction of the spectral law.
+The all-fields statement `ShawFlatnessConjecture` has a subfield counterexample in §8.
 "Named residual = modularity, not closure." Refutations live in
 `docs/research/proximity-gap/DISPROOF_LOG.md` and the §9 ledger below.
 
@@ -444,7 +446,7 @@ theorem shaw_offdiag_moment_le {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (D : 
 
 /-- **Shaw Spectral Flatness** at constant `C`: every nontrivial frequency has square-root–cancelled
 magnitude, `‖η_b‖ ≤ C·√|D|`.  (This `√|D|` scale is refuted for the max, R3; the surviving
-open conjecture is the log-corrected, subgroup-restricted `ShawFlatnessConjecture` of §8.) -/
+open question concerns the log-corrected `ShawGapLaw` for subgroups in prime fields.) -/
 def ShawFlatness (ψ : AddChar F ℂ) (D : Finset F) (C : ℝ) : Prop :=
   ∀ b : F, b ≠ 0 → ‖eta ψ D b‖ ≤ C * Real.sqrt (D.card)
 
@@ -476,7 +478,7 @@ theorem shaw_flatness_constant_ge_sqrt_two {ψ : AddChar F ℂ} (hψ : ψ.IsPrim
     le_trans hfloor hupper
   nlinarith [hchain, hnR]
 
-/-! ## §8  The Shaw gap conjecture (corrected scale, multiplicative subgroups — OPEN)
+/-! ## §8  The Shaw gap conjecture over prime fields and the all-fields counterexample
 
 **Refutation update (2026-06-13, `probe_shaw_flatness_refute.py`, `6a073c50e`).** The first form of
 this conjecture — `B(μ_n) ≤ √2·√n` — is **empirically FALSE**: direct computation gives
@@ -490,34 +492,19 @@ LOWER bound on the *average* constant; it does **not** pin the max. The correcte
 `D` with `|D|² ≤ q`: for an interval `D = {0,…,m−1} ⊆ F_p` and `ψ(x) = e(x/p)`, `b = 1`, one has
 `|η_1| = |sin(πm/p)/sin(π/p)| ≈ m`, while the bound is `C·√(m·log₂(p/m))`; at `p = 1000003`,
 `m = 1000` this forces `C ≥ 10.02`, at `p = 10¹² + 39`, `m = 10⁶` it forces `C ≥ 224`, and the
-required `C` grows like `√(m / log m)`.  The conjecture below is therefore restricted to
+required `C` grows like `√(m / log m)`.  The original workbench conjecture is therefore restricted to
 multiplicative subgroups `D ≤ F^×`, the case the prize needs. (For the prize `q/n ≈ 1/ε* = 2^128`, so the correction is
 `B ≈ √128·√n ≈ 11.3·√n`, and the surviving `√(log(1/ε*))` IS the window's `Θ(1/log n)` lower-order
 content.) Crucially the corrected bound **still yields the Shkredov target** `E ≤ n²·O(log q) =
 n^{2+o(1)}` (the log is subpolynomial), so it is the right open W4 core, not a weaker statement. -/
 
-/-- **Corrected Shaw gap law** at constant `C`: `‖η_b‖ ≤ C·√(|D|·log_2(q/|D|))` — the worst-case
-incomplete character sum at its true scale (max, not moment-average). -/
-noncomputable def ShawGapLaw (ψ : AddChar F ℂ) (D : Finset F) (C : ℝ) : Prop :=
-  ∀ b : F, b ≠ 0 →
-    ‖eta ψ D b‖ ≤ C * Real.sqrt ((D.card : ℝ) * Real.logb 2 ((Fintype.card F : ℝ) / D.card))
+/-! The definitions `ShawGapLaw` and `ShawFlatnessConjecture` retain their original predicates
+in `Frontier.ShawFlatnessSubfieldCounterexample`. The latter quantifies over every finite field.
+In a field of order `p²`, the prime subfield contributes a multiplicative subgroup of size
+`p-1` on which a primitive additive character is identically one. As primes grow, this
+violates every proposed constant. The corresponding prime-field estimate remains open. -/
 
-/-- **The Shaw gap conjecture (corrected, subgroup-restricted; OPEN).** There is an absolute
-constant `C` such that every multiplicative subgroup `D ≤ F^×` (encoded as a finset avoiding `0`,
-containing `1`, and closed under multiplication) with `|D|² ≤ q` obeys the Shaw gap law
-`B(D) ≤ C·√(|D|·log₂(q/|D|))`.  This is a worst-case incomplete-character-sum bound for a small
-multiplicative subgroup (`n ≪ √q`) — an open **W4 / Bourgain–Konyagin**-type problem, not
-decidable from the energy floor (the √log moment-vs-max gap).  By §6 it would bound every
-character-sum moment of `D`.  It is NOT shown here to imply or be implied by
-`WorstCaseIncidenceBound`, a list-size bound, or any statement about `δ*`; the earlier
-unrestricted form (all finsets `D`) is false (interval counterexample above). -/
-def ShawFlatnessConjecture : Prop :=
-  ∃ C : ℝ, 0 < C ∧
-    ∀ {F : Type} [Field F] [Fintype F] [DecidableEq F]
-      (ψ : AddChar F ℂ) (D : Finset F),
-      ψ.IsPrimitive → (0 : F) ∉ D → (1 : F) ∈ D → (∀ x ∈ D, ∀ y ∈ D, x * y ∈ D) →
-      (D.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ) →
-      ShawGapLaw ψ D C
+#check not_shawFlatnessConjecture
 
 /-! ## §8b  The HISTORICAL structured candidate `prizeDeltaStar` — refuted pin, ladder ceiling
 
@@ -606,10 +593,9 @@ R1. "δ* = Johnson = 1−√ρ"                    — REFUTED: in-tree `kkh26_d
 R2. "δ* = capacity = 1−ρ exactly"            — REFUTED: finite ε* forces δ* = 1−ρ − Θ(1/log n)
     (the `log_q(1/ε*)/n` term of `deltaStar_closedForm` is nonzero).
 
-R3. "B(μ_n) ≤ √2·√n, pinned sharp by the energy floor" — REFUTED (`probe_shaw_flatness_refute.py`):
-    direct computation gives B = Θ(√(n·log(q/n))), so B/√n ~ √(log(q/n)) is UNBOUNDED. The √2 floor
-    bounds the L⁴/L²-AVERAGE of |η_b|, not the MAX; the max exceeds it by √(log #cosets). The
-    corrected, refutation-surviving conjecture is `ShawGapLaw`: B ≤ C·√(n·log(q/n)) (§8).
+R3. The probe `probe_shaw_flatness_refute.py` gives examples exceeding √2·√n.
+    The L⁴/L² argument supplies a lower bound on the allowed constant. For prime fields the
+    upper bound B ≤ C·√(n·log(q/n)) remains open (§8).
 
 R4. "worst-case incidence = average exactly" — REFUTED: the gap term is nonzero, so `(R)` is `≤`
     (one-sided) with a genuine (1+o(1)), not equality.
@@ -641,7 +627,7 @@ R10. "the corrected bound is weaker than Shkredov" — REFUTED: `B ≤ C·√(n�
     `E ≤ n²·O(log q) = n^{2+o(1)}` (log is subpolynomial), the exact Shkredov target. The √log is
     the genuine `√(log(1/ε*))` lower-order content, not a weakening.
 
-What remains open includes `ShawFlatnessConjecture` (the subgroup-restricted `ShawGapLaw`
+What remains open includes the prime-field restriction of `ShawGapLaw` (the bound
 `B ≤ C·√(n·log(q/n))`), `WorstCaseIncidenceBound`, and monomial-extremal optimality.  This file
 treats them as heuristically linked (cf. BCHKS 2025/169 Thm 1.9 for incidence vs. list size), but
 proves no equivalence or implication among them.
@@ -661,13 +647,13 @@ proves no equivalence or implication among them.
 | `shaw_flatness_constant_ge_sqrt_two` (moment/avg lower bound C ≥ √2) | **PROVEN, axiom-clean** |
 | `deltaStar_closedForm` (candidate expression) | **DEFINITION only** — not identified with δ* |
 | `prizeDeltaStar` (mixed-base structured candidate) | **HISTORICAL**; pin refuted (§8b) |
-| `ShawFlatnessConjecture` (subgroup-restricted `ShawGapLaw`) | **OPEN conjecture** (W4/Shkredov type) |
+| `ShawFlatnessConjecture` (subgroup-restricted `ShawGapLaw`) | **REFUTED** by `not_shawFlatnessConjecture` over quadratic extensions |
 | `WorstCaseIncidenceBound` `(R)` | **OPEN `Prop`**; no proved link to the row above |
 
 **One sentence.** Heuristically, the faces of the prize are spectral statistics of the Shaw
 operator `𝖲_D`, and a bound on its gap — the corrected `B(μ_n) ≤ C·√(n·log(q/n))` (the `√2·√n`
 form is refuted, R3) — would control all its character-sum moments at once; what is
-machine-checked here is exactly the eight PROVEN rows of the table above, while the links from the
+machine-checked here includes the positive rows and the all-fields refutation above. The links from the
 gap to `(R)`, to list sizes, and to any closed form for δ* are unproved heuristics.
 -/
 
