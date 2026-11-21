@@ -68,14 +68,20 @@ def signature_pool(leaves, levels, deviations, subset_size, limit):
     return sorted(ranked, reverse=True)[:limit]
 
 
-def oriented_counter(order, subset_size):
+def oriented_counter(order, subset_size, omitted=None):
     """Count (degree, exponent mod 2M) for each fixed labelled signature.
 
     Store a cyclic histogram as digits in base 2^M. Each digit counts subsets
     of at most M-2 roots, hence is below this base, including before cyclic
     reduction. Integer multiplication followed by end-around carry of whole
     histograms performs exact cyclic convolution without per-digit carries.
+    Omitted ordinary exponents remove their orientations at the corresponding tree nodes.
     """
+    if omitted is None:
+        omitted = ()
+    elif isinstance(omitted, int):
+        omitted = (omitted,)
+    forbidden = frozenset(omitted)
     bits = order
     width = 2 * order * bits
     mask = (1 << width) - 1
@@ -89,15 +95,18 @@ def oriented_counter(order, subset_size):
         return fold(value << (exponent * bits))
 
     @lru_cache(None)
+    def orientations(node):
+        return tuple(j for j in (node, order-node) if j not in forbidden)
+
+    @lru_cache(None)
     def subtree(node, signature):
         if len(signature) == 1:
             occupancy = signature[0]
-            choices = (1, (1 << (bits * node)) + (1 << (bits * (order - node))),
-                       1 << (bits * order))
-            return {occupancy: choices[occupancy]} if occupancy <= 2 else {}
+            choices = (1, sum(1 << (bits * j) for j in orientations(node)), 1 << (bits * order))
+            return {occupancy: choices[occupancy]} if occupancy <= len(orientations(node)) else {}
         middle = len(signature) // 2
         result = {}
-        for occupancy in range(min(2, min(signature)) + 1):
+        for occupancy in range(min(len(orientations(node)), min(signature)) + 1):
             reduced = tuple(v - occupancy for v in signature)
             left = subtree(node // 2, reduced[:middle])
             right = subtree((order - node) // 2, reduced[middle:])
@@ -109,7 +118,7 @@ def oriented_counter(order, subset_size):
                         joined[size] = joined.get(size, 0) + fold(first * second)
             for size, labels in joined.items():
                 if occupancy == 1:
-                    labels = rotate(labels, node) + rotate(labels, order - node)
+                    labels = sum(rotate(labels, j) for j in orientations(node))
                 elif occupancy == 2:
                     labels = rotate(labels, order)
                 result[size] = result.get(size, 0) + labels

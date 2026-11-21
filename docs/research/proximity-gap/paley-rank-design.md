@@ -32,3 +32,19 @@ $$
 Indeed the fourth power of the largest singular value of $C_X$ is at most $E(X)$. The same event bounds all complex-weighted rectangles with the two Euclidean norms in place of the square roots of the sizes. For $|A|,|B|\ge c m$ with fixed $c>0$, the relative discrepancy is at most $3^{1/4}c^{-1}m^{-1/4}$. Thus both partners can be chosen after seeing one sampled set. The variance still permits exceptional prescribed sets.
 
 The verifier forms the actual integer conference matrix including infinity, tests the four-site determinants modulo three, and accumulates block counts over all fixed-size slices. On selected domains it independently compares them with the matrix fourth moment. [Exact verifier](../../../scripts/probes/probe_paley_rank_design.py)
+
+## Every puncturing in a production chart
+
+At each named prime $e=1$. Let $X$ be **any** $m$-subset of one projective image of its order-$2^{30}$ subgroup, with $m\ge4$. Let $\Lambda$ be the certified operator norm for that field and $d_X=D(X)/\binom m4$. Every principal restriction has operator norm at most $\Lambda$ and squared Frobenius norm $m(m-1)$. Hence $m(m-1)^2\le E(X)\le\Lambda^2m(m-1)$, by Cauchy–Schwarz on the $m$ squared singular values for the lower bound. Substitution in the principal formula gives
+$$
+\frac14-\frac{3}{4(m-3)}
+ \ \le d_X\le\
+\frac14+\frac{3(\Lambda^2-2m+3)}{4(m-2)(m-3)}.
+$$
+
+| Size of each prescribed puncturing | Lower density at either field | Upper density at the first field | Upper density at the second field |
+|---:|---:|---:|---:|
+| $2^{20}$ | $0.24999928$ | $0.27648807$ | $0.26454232$ |
+| $2^{24}$ | $0.24999995$ | $0.25010339$ | $0.25005673$ |
+
+These endpoints are rounded outward using $\Lambda\le197063$ and $\Lambda\le146018$. Both the singularity and the energy survive a projective change of coordinates, including a chart containing infinity. These estimates therefore verify the rank statistic on every puncturing of the indicated size within each production chart. [Certified production norms](paley-production-spectrum.md)
