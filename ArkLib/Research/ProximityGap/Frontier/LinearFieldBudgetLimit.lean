@@ -10,7 +10,8 @@ namespace ProximityGap.LinearFieldBudgetLimit
 open Filter Topology LinearFieldBudgetRadius MCAThresholdLedger
 open scoped NNReal ENNReal
 
-private theorem floor_limit (p n : ℕ → ℕ) (Q : ℕ) (hQ : 0<Q) [∀ i, NeZero (n i)]
+/-- Rounding the field-size budget costs less than one Hamming step. -/
+theorem floor_limit (p n : ℕ → ℕ) (Q : ℕ) (hQ : 0<Q) [∀ i, NeZero (n i)]
     (hn : Tendsto n atTop atTop) {slope : ℝ}
     (hp : Tendsto (fun i => (p i:ℝ)/n i) atTop (𝓝 slope)) :
     Tendsto (fun i => ((p i/Q:ℕ):ℝ)/n i) atTop (𝓝 (slope/Q)) := by

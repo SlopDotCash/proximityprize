@@ -1224,6 +1224,17 @@ If $F$ had total $(\Gamma,Y)$-degree at least six, every quotient would have tot
 
 At the final predecessor of the second-prime rate-sixteenth bracket, any putative family of $2n+1$ bad scalars must have selected points of affine dimension at least **10,526,872** over the prime field. For a polynomial span of dimension $r$, a Wronskian equation of order $r$ replaces the universal order-$d+1$ derivative in the moving-factor argument. A nonzero differential numerator allows at most $80+136(r-1)$ labels across the quartic/degree-twelve common factors. Identically zero numerators yield polynomial sections over the algebraic parameter field, where the head or small-incidence alternative applies. The previous one-186-point-secant obstruction controls all head contributions. The result is a necessary condition from a written proof. [Wronskian calculation and integer bound](second-prime-quadratic-discriminant.md)
 
+## The half-distance plateau for fields of linear size
+
+For fixed security denominator \(Q\), let \(n\to\infty\), \(p/n\to\lambda\) and \(k/n\to\rho\in(0,1)\). For **every** choice of injective prime-field evaluation domains, including smooth domains whenever supplied, the operational scalar line-MCA radius has the limit
+\[
+ \min\!\left(\frac{\lambda}{Q},\frac{1-\rho}{2}\right)
+ \qquad\text{if}\qquad \frac{\lambda}{Q}\le 1-\rho .
+\]
+Below half the limiting redundancy, the earlier exact finite formula applies eventually. From half through full redundancy the limit stays at \((1-\rho)/2\), including both endpoints and sequences crossing either endpoint at finite lengths. Beyond that interval this theorem leaves the limiting radius open. [Earlier strict regime](../../../ArkLib/Research/ProximityGap/Frontier/LinearFieldBudgetLimit.lean) and [plateau theorem](../../../ArkLib/Research/ProximityGap/Frontier/LinearFieldHalfDistancePlateau.lean).
+
+The lower bound uses the apolar predecessor at a fixed number of Hamming steps below \(\min(\lfloor p/Q\rfloor,\lfloor(n-k)/2\rfloor)\). For the upper bound, at any integer \(e\) with \(2(e+1)\le n\le k+2e\) and \(k+e+1\le n\), one received pair has at least \(2(e+1)\) distinct bad challenges over any finite field. Choose two disjoint private sets of \(e+1\) sites. The locator \(H\) of their common complement supplies the heads \((0,0)\) and \((XH,H)\). Each private site \(x\) gives the bad challenge \(-x\); the opposite core pins both codewords. Applying this at \(e=\max(\lceil(n-k)/2\rceil,\lfloor\lfloor p/Q\rfloor/2\rfloor)\) yields the upper limit. [Finite lower approximation](../../../ArkLib/Research/ProximityGap/Frontier/CriticalLinearBudget.lean), [two-head witness](../../../ArkLib/Research/ProximityGap/Frontier/TwoHeadLinearBudget.lean) and [earlier two-head construction](three-rates-two-head-window.md).
+
 ## Exact line-MCA radius when the field size grows linearly
 
 Let \(n\) be the block length, \(k\ge1\) the dimension, \(Q\ge1\) the security denominator, and \(B=\lfloor q/Q\rfloor\). For every finite field of size \(q\) and every injective evaluation domain, the operational line-MCA radius at error \(1/Q\) is exactly \(B/n\) if
