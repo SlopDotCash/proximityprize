@@ -1130,3 +1130,93 @@ At the last predecessor an irreducible cyclic cubic of the quartic's weighted he
 Take four fixed coordinate sets $U_0,U_1,U_2,U_3$ on any field. At every site of $U_i$, all the decoders except possibly $i$ agree with their received words. Fix three distinct labels and vary the fourth, even allowing a different received pair and new polynomials at every fourth label. If $|U_0\cup U_2|,|U_1\cup U_3|\ge k$ and some genuine singleton miss occurs off label 1 in each realization, then **at most $|U_3|$ fourth labels are possible**. Normalize the two parity checks to $P=0$, $Q=0$, $P=Q$, $P=\lambda Q$ on the respective sets. Every linear relation among the vectors $Q|_{U_3}$ persists after multiplication by their respective normalized labels $\lambda$. Interpolation on the two unions proves this relation. Distinct $\lambda$ then give independent vectors in a space of dimension $|U_3|$. [Arbitrary-domain theorem](../../../ArkLib/Research/ProximityGap/Frontier/FourSupportSpectrum.lean)
 
 An exact scalar constraint holds for **four complete fibers of a common monic degree-$h$ polynomial $H$**, each of size $h$, with degree-$<2h$ decoders. Let $\alpha_i$ be the four fiber values and let $\gamma_i$ be the decoder labels. A genuine singleton miss away from label 1 forces $\operatorname{cr}(\gamma)=\operatorname{cr}(\alpha)$, where the normalization sends entries $0,1,2$ to $0,\infty,1$. Indeed $P=(H-\alpha_0)p$ and $Q=(H-\alpha_1)q$ for degree-$<h$ quotients. The $h$ sites of fiber 2 force $p,q$ to be proportional as polynomials. The condition on fiber 3 then determines the ratio. Taking $H=X^h$ gives the four interlaced subgroup cosets in every smooth domain of size $4h$. All five audited declarations depend only on the three standard axioms. [Four decoding polynomials on complete fibers](../../../ArkLib/Research/ProximityGap/Frontier/FourSupportSpectrum.lean)
+
+## 2026-11-21 · From the coding prizes to classical Paley discrepancy
+
+The joint coding theorem covers the order-128 subgroup of the prime field of order
+$p=65\cdot2^{239}+1$. At rates $1/2,1/4,1/8,1/16$ its first bad list error counts are
+$63,97,113,121$. For MCA the half-rate crossing is $62$ errors and the other three rates
+stay within budget through radius one. The proof counts agreement subsets, constructs
+prescribed-product witnesses, and transfers scalar lists to MCA under explicit field-size
+conditions. The length-$2^{30}$ four-rate MCA result has a separate field-budget window.
+[Joint theorem](../../../ArkLib/Research/ProximityGap/Frontier/FourRateSmoothMca128.lean) ·
+[List proof](../../../ArkLib/Research/ProximityGap/Frontier/FourRateList128.lean) ·
+[Production-length window](../../../ArkLib/Research/ProximityGap/Frontier/SharpApolarMCA.lean)
+
+**An exact coding reduction.** For an odd prime, write $S(A,B)=\sum_{b\in B,a\in A}\chi(a+b)$
+for the quadratic character. On coordinates $a\in A$, use the affine Reed–Solomon word
+$a\mapsto a+b$. For $s=\pm1$ let $h_s(b)$ count coordinates where the symbol has character
+$s$. The signed excess is exactly $2h_s(b)-|A|+\mathbf1_{-b\in A}$. If for each sign at
+most $L$ shifts have excess greater than a nonnegative integer $t$, then
+$|S(A,B)|\le t|B|+L|A|$ for every $B$. Conversely, if $|S(A,B)|\le t|B|$ for every
+$|B|\ge m>0$, each exceptional list has size below $m$. This identifies the missing estimate
+in coding language. Every coordinate accepts the same half-alphabet of squares, or of
+nonsquares. A single-symbol center has just $|A|$ agreements across *all* shifts.
+The affine pair $X,1$ has zero MCA-bad scalars in every dimension at least two. Direct
+encoding of the Legendre values also meets a degree obstruction. On at most $(p-1)/2$
+coordinates their off-domain translates have full affine hull over the prime field.
+[Shift-list equivalences and MCA proof](../../../ArkLib/Research/ProximityGap/Frontier/PaleyShiftListRecovery.lean) ·
+[Affine-hull theorem](../../../ArkLib/Research/ProximityGap/Frontier/PaleyTranslateInterpolation.lean)
+
+**Classical Paley results.** At the second designated production prime the order-$2^{30}$
+generator $g$ is a nonsquare. Simultaneous scaling by $g$ makes $S(A,B)=0$ for every pair
+of unions of its cosets. For two geometric intervals in arbitrary such cosets,
+$|S(A,B)|\le |A|+|B|$. Negating $B$ converts the sum convention above to graph differences.
+At the first prime, the complete subgroup has quadratic row sum $-30929$ at one, and
+all its elements are squares. Thus its ordered difference sum is $-33209760874496$.
+The second-prime zero and interval bound are Lean theorems. The first-prime value is
+an exact GMP evaluation. The scan pairs $g^i$ with $g^{-i}$, treats the two self-inverse
+elements separately, and checks each shard endpoint by modular powering. Direct evaluation
+of every ordered pair at the two small controls reproduced every dyadic subtotal.
+[Cosets and intervals](../../../ArkLib/Research/ProximityGap/Frontier/PaleyCosetCancellation.lean) ·
+[Production character scan](../../../scripts/probes/probe_sponsor_paley_row.cpp)
+
+For arbitrary sets in a finite field of order $q$, put $a=|A|$ and $b=|B|$.
+The kernel-checked second moment yields $q|S|^2\le ab(q-a)(q-b)$ for every nontrivial
+multiplicative character. For the quadratic character, the repository's unconditional Stepanov
+fourth moment gives $r^2|S|^4\le17qa^3b^4$ whenever $1\le r\le b$ and $r^4\le q$.
+Averaging over the $r$-subsets of $B$ yields this bound with no upper limit on $b$.
+Thus $17q^{1+4\delta}\le ar^2$ suffices for a relative saving $q^{-\delta}$.
+For arbitrary balanced sets of size $p^\epsilon$ below the square-root threshold, the
+uniform saving remains open. [Lean estimates](../../../ArkLib/Research/ProximityGap/Frontier/PaleyBilinearDiscrepancy.lean) ·
+[Kim–Yip–Yoo, Conjecture 2.12](https://arxiv.org/html/2309.09124v3#S2.SS4)
+
+**Two graphs on the joint prize instance.** In the classical Paley graph, the subgraph
+induced on the 128 code coordinates is 67-regular and its ordered signed sum is 896.
+Lean checked Euler's criterion at every power of the domain generator. A separate
+integer computation gives clique number 10, independence number 8 and signed matrix
+norm below 30 on these coordinates. The signed matrix $K$ is circulant and symmetric.
+Nine cyclic convolution squarings give $\operatorname{tr}(K^{512})<30^{512}$.
+Every eigenvalue therefore has absolute value below 30. In particular all subsets
+$U,V$ of the domain satisfy $|S(U,-V)|\le30\sqrt{|U||V|}$. Clique enumeration fixes
+one vertex by transitivity, then recursively intersects ordered candidate sets with the
+neighborhood of each chosen vertex. For the generalized graph with connection set
+the same subgroup, Lean instead finds a nonprincipal additive period of magnitude
+greater than $64$. The base-two logarithmic upper bound with constant one holds here
+because $\log_2(p/128)>128$. The uniform prime-field logarithmic estimate remains open.
+[Kernel-checked results](../../../ArkLib/Research/ProximityGap/Frontier/PrizeInstancePaleySpectrum.lean) ·
+[Exact induced-graph calculation](../../../scripts/probes/probe_paley_joint_prize_domain.py)
+
+**Arbitrary subsets of one production coset.** At either named prime let $H$ have order
+$n=2^{30}$. For all $A,B$ in a common affine copy $t+cH$, $c\ne0$, the exact-arithmetic
+certificate gives
+$$
+\left|\sum_{a\in A,b\in B}\chi(a-b)\right|\le K\sqrt{|A||B|},\qquad K_1=449676,\quad K_2=448831.
+$$
+In particular, for sets of size at least $2^{20}$ the relative discrepancy is below
+$0.429$. This covers arbitrary choices of the two subsets *within* the specified copy.
+
+To reproduce the certificate, compile the spectrum probe with C++17 and GMP, then
+run it with arguments `first 128 4` and `second 128 4`. For a generator $g$, the signed matrix on $H$
+has entries $\chi(g)^i v_{j-i}$ with $v_l=\chi(1-g^l)$. Multiplying the rows by signs
+preserves singular values, giving the magnitudes of the discrete Fourier transform of
+$v$. Split the exponents into 128 residue classes. At each frequency modulo $2^{23}$
+sum the certified magnitudes across the classes before maximizing. The row phases in
+the full transform have modulus one. Each radix-two transform uses fixed-point integer
+arithmetic, with GMP square-root enclosures for its roots of unity and error below one
+per row. The largest upper bounds occur at residues 66,773 and 3,625,762, respectively. The row sums
+$-30929$ and $-1441$ at one agree with the independent character scans. Both certified
+operator norms are below $14\sqrt n$. Applying the matrix bound to
+indicator vectors yields the displayed inequality. Translation cancels in $a-b$,
+and scaling contributes the common sign $\chi(c)$. These finite numerical inequalities
+were computed outside Lean. [Certified transform](../../../scripts/probes/probe_sponsor_paley_spectrum.cpp)

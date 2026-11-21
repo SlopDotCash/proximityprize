@@ -1,13 +1,13 @@
 /-
 Copyright (c) 2026 Proximity Prize Contributors. All rights reserved.
-SPDX-License-Identifier: MIT OR Apache-2.0
+Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and LICENSE.
+Authors: Proximity Prize Contributors
 -/
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Data.Nat.Choose.Dvd
 import Mathlib.LinearAlgebra.Dual.Lemmas
 import Mathlib.LinearAlgebra.Vandermonde
 import Mathlib.NumberTheory.LegendreSymbol.Basic
-import Mathlib.Tactic
 
 /-!
 # Affine checks on punctured Legendre translates
@@ -37,7 +37,7 @@ theorem translate_check_trivial (hp : p ≠ 2) (x : Fin n ↪ ZMod p) (hn : n �
     apply natDegree_sum_le_of_forall_le
     intro i _
     apply (natDegree_C_mul_le ..).trans
-    simpa using natDegree_pow_le d (X + C (x i))
+    simp [Polynomial.natDegree_pow]
   have hchar : ringChar (ZMod p) ≠ 2 := by rwa [ringChar.eq (ZMod p) p]
   have hpoly : P = C t := by
     apply sub_eq_zero.mp
