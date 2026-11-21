@@ -46,7 +46,7 @@ theorem correctForPrime246 :
     · simpa [mcaAnswer, errorCount, card_H] using
         FourRateSmoothMca128.half_good_iff domain card_H FourRateSmoothMca128.prime246_window δ
     · have hk' : k ≠ 64 := by omega
-      simp only [mcaAnswer, if_neg hk', iff_true]
+      simp only [mcaAnswer, ite_eq_right hk', iff_true]
       exact FourRateSmoothMca128.lower_rates_good domain card_H
         FourRateSmoothMca128.prime246_window hk δ
   · intro m hm δ _
