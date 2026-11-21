@@ -377,6 +377,10 @@ import ArkLib.Research.ProximityGap.Frontier.P8ListDecodingFaceNoLever
 import ArkLib.Research.ProximityGap.Frontier.PackingCoverSharpReach
 import ArkLib.Research.ProximityGap.Frontier.PackingDeflationBandAntitone
 import ArkLib.Research.ProximityGap.Frontier.PackingFloorTwoPowLower
+import ArkLib.Research.ProximityGap.Frontier.PaleyBilinearDiscrepancy
+import ArkLib.Research.ProximityGap.Frontier.PaleyCosetCancellation
+import ArkLib.Research.ProximityGap.Frontier.PaleyShiftListRecovery
+import ArkLib.Research.ProximityGap.Frontier.PaleyTranslateInterpolation
 import ArkLib.Research.ProximityGap.Frontier.PencilAutocorrEnergyMaxBridge
 import ArkLib.Research.ProximityGap.Frontier.PencilAutocorrRootBound
 import ArkLib.Research.ProximityGap.Frontier.PencilAutocorrSubgroupExact
@@ -407,6 +411,7 @@ import ArkLib.Research.ProximityGap.Frontier.Prize407EntropyPinSynthesis
 import ArkLib.Research.ProximityGap.Frontier.PrizeConditionalPinCapstone
 import ArkLib.Research.ProximityGap.Frontier.PrizeEquivalencePin
 import ArkLib.Research.ProximityGap.Frontier.PrizeFloorFromCrossStep
+import ArkLib.Research.ProximityGap.Frontier.PrizeInstancePaleySpectrum
 import ArkLib.Research.ProximityGap.Frontier.PrizeRegimeDCEnergyBridge
 import ArkLib.Research.ProximityGap.Frontier.ProductionHalfSubsetRelations
 import ArkLib.Research.ProximityGap.Frontier.ProductionMcaIntervals
