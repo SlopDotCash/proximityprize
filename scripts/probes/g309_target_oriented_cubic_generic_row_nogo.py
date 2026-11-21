@@ -8,8 +8,15 @@ from pathlib import Path
 BASE = Path(__file__).with_name("g302_common_order7_normal_nogo.py")
 SPEC = importlib.util.spec_from_file_location("g302_base", BASE)
 MOD = importlib.util.module_from_spec(SPEC)
-assert SPEC.loader is not None
+if SPEC.loader is None:
+    raise ImportError(f"could not load shared exact arithmetic helper from {BASE}")
 SPEC.loader.exec_module(MOD)
+
+
+def require(condition: bool, message: str) -> None:
+    """Keep the G309 exact counterexample certificate active under optimization."""
+    if not condition:
+        raise AssertionError(message)
 
 
 def odd_cubic_weight(j: int) -> int:
@@ -22,25 +29,31 @@ def main() -> None:
     primitive = MOD.primitive_root(p)
     subgroup = MOD.subgroup(p, n, primitive)
     coeffs = [pow(2, j, p) for j in range(m)]
-    assert m == 9
-    assert subgroup == [1, 10, 27, 51, 72, 63, 46, 22]
-    assert len({pow(a, n, p) for a in coeffs}) == m
+    require(m == 9, f"G309 quotient order changed: {m}")
+    require(
+        subgroup == [1, 10, 27, 51, 72, 63, 46, 22],
+        f"G309 subgroup pin failed: {subgroup}",
+    )
+    require(len({pow(a, n, p) for a in coeffs}) == m, "G309 coefficient powers are not distinct")
 
     kernels = [MOD.weighted_kernel(subgroup, p, a) for a in coeffs]
     witnesses: list[tuple[int, int, int, list[int]]] = []
     for t in range(p):
         row = [0] * p
         row[t] = 1
-        assert all(value >= 0 for value in row)
+        require(all(value >= 0 for value in row), f"G309 delta row at t={t} is not nonnegative")
         values = [MOD.alignment(kernel, row, p, n) for kernel in kernels]
         target = values[1]
         odd = sum(odd_cubic_weight(j) * values[j] for j in range(m))
         if target < 0 < odd:
             witnesses.append((t, target, odd, values))
 
-    assert len(witnesses) == 8
+    require(len(witnesses) == 8, f"G309 counterexample count changed: {len(witnesses)}")
     first = witnesses[0]
-    assert first == (4, -64, 73, [-64, -64, -64, 9, 82, 9, -64, 82, 82])
+    require(
+        first == (4, -64, 73, [-64, -64, -64, 9, 82, 9, -64, 82, 82]),
+        f"G309 exact target-oriented cubic witness pin failed: {first}",
+    )
     print(f"cell n={n} p={p} quotient={m}")
     print(f"nonnegative delta-row counterexamples: {len(witnesses)}")
     print(f"first: t={first[0]} target={first[1]} odd={first[2]} values={first[3]}")
