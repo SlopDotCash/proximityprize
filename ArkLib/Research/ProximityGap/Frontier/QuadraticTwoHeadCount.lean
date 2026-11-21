@@ -31,11 +31,11 @@ private theorem capacity {n d t : ℕ} (surplus : 35*n+100*d < 102*t) :
 set_option maxRecDepth 8192 in
 /-- At any rate through one third, the triangular surplus and a positive
 error budget force all bad labels into at most two secants. -/
-theorem family_cap {k : ℕ} (fam : BadScalarRichPointFamily dom k δ u) {n e t t₀ : ℕ}
+theorem family_cap_weighted {k : ℕ} (fam : BadScalarRichPointFamily dom k δ u) {n e t t₀ : ℕ}
     (hn : Fintype.card I=n) (hsum : e+t=n) (hk : 1≤k) (rate : 3*k≤n)
     (he : 2080 < e) (htmin : t₀≤t) (surplus : 35*n+100*(k-1)<102*t₀)
     (ht : ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊=t)
-    (hchar : ∀ i : ℕ, 0 < i → i≤2*(t₀-1) → (i:F)≠0) :
+    (hchar : ∀ i : ℕ, 0 < i → i≤2*(t₀-1-(k-1)) → (i:F)≠0) :
     fam.G.card ≤ 2*e+2 := by
   classical
   have extract : SecantExtraction fam 512 := by
@@ -113,10 +113,10 @@ theorem family_cap {k : ℕ} (fam : BadScalarRichPointFamily dom k δ u) {n e t 
   have hlin : f.natDegree = 1 := by
     by_contra hnon
     have hquad : f.natDegree = 2 := by omega
-    have hbound := SecondPrimeQuadraticFactor.quadratic_population_of_extraction
-      (w := t₀-1) (m := 511) fam φ Q f hQ hdivQ hirr hquad
+    have hbound := SecondPrimeQuadraticFactor.quadratic_population_weighted
+      (d := k-1) (w := t₀-1) (m := 511) fam φ Q f hQ hdivQ hirr hquad
       (fun _ _ _ h => ⟨(shape h).2.1, by have := (shape h).2.2; omega⟩)
-      (by omega) hchar extract
+      (by omega) (by omega) hchar extract
     rw [population_eq f] at hbound
     omega
   obtain ⟨p,hp,hcarry⟩ := linear_factor_is_head_of_extraction (m := 511) fam φ f hirr hlin
@@ -134,6 +134,16 @@ theorem family_cap {k : ℕ} (fam : BadScalarRichPointFamily dom k δ u) {n e t 
     (Nat.mul_le_mul hL (le_max_right 1 (t-core))).trans (by exact (Nat.le_add_right _ _).trans pack)
   change t - n/1024 ≤ core
   omega
+
+/-- Unweighted characteristic bound for existing callers. -/
+theorem family_cap {k : ℕ} (fam : BadScalarRichPointFamily dom k δ u) {n e t t₀ : ℕ}
+    (hn : Fintype.card I=n) (hsum : e+t=n) (hk : 1≤k) (rate : 3*k≤n)
+    (he : 2080 < e) (htmin : t₀≤t) (surplus : 35*n+100*(k-1)<102*t₀)
+    (ht : ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊=t)
+    (hchar : ∀ i : ℕ, 0 < i → i≤2*(t₀-1) → (i:F)≠0) :
+    fam.G.card ≤ 2*e+2 :=
+  family_cap_weighted fam hn hsum hk rate he htmin surplus ht
+    (fun i hi bound => hchar i hi (by omega))
 
 end ArkLib.ProximityGap.Frontier.QuadraticTwoHeadCount
 #print axioms ArkLib.ProximityGap.Frontier.QuadraticTwoHeadCount.family_cap

@@ -294,9 +294,13 @@ import ArkLib.Research.ProximityGap.Frontier.DiscriminantSquareClass
 import ArkLib.Research.ProximityGap.Frontier.DistinctPeriodMomentLaw
 import ArkLib.Research.ProximityGap.Frontier.DistinctPeriodSecondMoment
 import ArkLib.Research.ProximityGap.Frontier.DividedDifferenceDeflation
+import ArkLib.Research.ProximityGap.Frontier.DoubleQuadraticHeadCount
+import ArkLib.Research.ProximityGap.Frontier.DoubleQuadraticPhase
+import ArkLib.Research.ProximityGap.Frontier.DoubleQuadraticThreshold
 import ArkLib.Research.ProximityGap.Frontier.DyadicCharacterCirculant
 import ArkLib.Research.ProximityGap.Frontier.DyadicFrobeniusNorm
 import ArkLib.Research.ProximityGap.Frontier.DyadicGeomeanPrizeVsSqrtN
+import ArkLib.Research.ProximityGap.Frontier.DyadicLocatorSumBarrier
 import ArkLib.Research.ProximityGap.Frontier.DyadicLogWitness237
 import ArkLib.Research.ProximityGap.Frontier.DyadicOddPencilCount
 import ArkLib.Research.ProximityGap.Frontier.DyadicParityLemma
@@ -939,6 +943,7 @@ import ArkLib.Research.ProximityGap.Frontier.ThreeHeadDeficitWindow
 import ArkLib.Research.ProximityGap.Frontier.ThreeHeadDeterminantCover
 import ArkLib.Research.ProximityGap.Frontier.ThreeHeadPrime38
 import ArkLib.Research.ProximityGap.Frontier.ThreeHeadThresholdCurve
+import ArkLib.Research.ProximityGap.Frontier.ThreeRegimePrimeThreshold
 import ArkLib.Research.ProximityGap.Frontier.ThreeWordAgreement
 import ArkLib.Research.ProximityGap.Frontier.TranslatedSiteSeparation
 import ArkLib.Research.ProximityGap.Frontier.TransverseSectionBudget
