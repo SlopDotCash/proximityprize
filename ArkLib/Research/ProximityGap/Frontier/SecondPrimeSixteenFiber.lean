@@ -95,7 +95,58 @@ private theorem origin (u : Grid) : index u∈roots cut ↔ sel cut u=false := b
   rw [roots,mem_selected]; simp [rootSel,sel]
 private theorem inside (u : Grid) (i : Fin heads) : index u∈core cut group i ↔ sel cut u=false ∨ i∈group u.1 := by
   rw [core,mem_selected]; simp [coreSel,sel]
-private theorem owner_at (u : Grid) : owner own (index u)=own u.1 := by simp [owner]
+
+/-- Selected off-root sites supplying one fresh scalar for a head. -/
+def fresh (labels : Fin 16 → Finset (Fin heads)) (i : Fin heads) : Finset (Fin N) :=
+  selected cut (fun j high => high && decide (i ∈ labels j))
+
+private theorem outside (labels : Fin 16 → Finset (Fin heads)) (s : Grid) (i : Fin heads) :
+    index s ∈ fresh cut labels i ↔ sel cut s = true ∧ i ∈ labels s.1 := by
+  rw [fresh, mem_selected]
+  simp [sel]
+
+/-- Convert quotient-level incidences and distinct chosen directions to a bad
+stack. A received value may lie outside every head on a selected fiber. -/
+theorem selected_mass {F : Type} [Field F] [Fintype F]
+    (D : Fin N ↪ F) (k d : ℕ) (δ : ℝ≥0) (A B : Fin heads → F[X])
+    (U V : Fin heads → Fin 16 → F) (u v : Fin 16 → F) (labels : Fin 16 → Finset (Fin heads))
+    (hu : ∀ i (s : Grid), (A i).eval (D (index s)) = U i s.1)
+    (hv : ∀ i (s : Grid), (B i).eval (D (index s)) = V i s.1)
+    (agree : ∀ r i, i ∈ group r → U i r = u r ∧ V i r = v r)
+    (miss : ∀ r i, i ∈ labels r → V i r ≠ v r)
+    (sep : ∀ r i j, i ∈ labels r → j ∈ labels r → i ≠ j →
+      (u r-U i r)*(V j r-v r) ≠ (u r-U j r)*(V i r-v r))
+    (degree : (roots cut).card+d+1 < k)
+    (da : ∀ i, (A i).natDegree ≤ d) (db : ∀ i, (B i).natDegree ≤ d)
+    (large : ∀ i, k ≤ (core cut group i).card)
+    (size : ∀ i, (1-δ) * (Fintype.card (Fin N) : ℝ≥0) ≤ (((core cut group i).card+1 : ℕ) : ℝ≥0))
+    (field : (∑ i, (fresh cut labels i).card).choose 2 ≤ Nat.card F) :
+    ((∑ i, (fresh cut labels i).card : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤
+      epsMCA (F := F) (ReedSolomon.code D k : Set (Fin N → F)) δ := by
+  apply PlanarQuartetMass.selected_mass D k d δ A B (roots cut)
+    (fun x => u (index.symm x).1) (fun x => v (index.symm x).1)
+    (core cut group) (fresh cut labels) degree da db
+  · intro i
+    apply Finset.disjoint_left.mpr
+    intro x hx hr
+    obtain ⟨s, rfl⟩ := index.surjective x
+    have h₁ := ((outside cut labels s i).mp hx).1
+    have h₂ := (origin cut s).mp hr
+    simp_all
+  · intro i x hx hr
+    obtain ⟨s, rfl⟩ := index.surjective x
+    simpa only [hu, hv, Equiv.symm_apply_apply] using
+      agree s.1 i (((inside cut group s i).mp hx).resolve_left (fun h => hr ((origin cut s).mpr h)))
+  · intro i x hx
+    obtain ⟨s, rfl⟩ := index.surjective x
+    simpa only [hv, Equiv.symm_apply_apply] using miss s.1 i (((outside cut labels s i).mp hx).2)
+  · intro x i j hi hj ne
+    obtain ⟨s, rfl⟩ := index.surjective x
+    simpa only [hu, hv, Equiv.symm_apply_apply] using
+      sep s.1 i j (((outside cut labels s i).mp hi).2) (((outside cut labels s j).mp hj).2) ne
+  · exact large
+  · exact size
+  · exact field
 
 /-- Apply the simultaneous planar label count using only residue-level comparison data. -/
 theorem mass {F : Type} [Field F] [Fintype F] (D : Fin N ↪ F) (k d : ℕ) (δ : ℝ≥0)
@@ -114,24 +165,16 @@ theorem mass {F : Type} [Field F] [Fintype F] (D : Fin N ↪ F) (k d : ℕ) (δ 
     (field : (∑ i, (core cut group i)ᶜ.card).choose 2 ≤ Nat.card F) :
     ((∑ i, (core cut group i)ᶜ.card : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤
       epsMCA (F := F) (ReedSolomon.code D k : Set (Fin N → F)) δ := by
-  apply PlanarQuartetMass.mass D k d δ A B (roots cut) (owner own) (core cut group) degree da db
-  · intro i x hx
-    obtain ⟨u, rfl⟩ := index.surjective x
-    exact (inside cut group u i).mpr (Or.inl ((origin cut u).mp hx))
-  · intro i x hx hr
-    obtain ⟨u, rfl⟩ := index.surjective x
-    have h := agree u.1 i (((inside cut group u i).mp hx).resolve_left (fun h => hr ((origin cut u).mpr h)))
-    simpa only [hu, hv, owner_at] using h
-  · intro i x hx
-    obtain ⟨u, rfl⟩ := index.surjective x
-    simpa only [hv, owner_at] using miss u.1 i (fun h => hx ((inside cut group u i).mpr (Or.inr h)))
-  · intro x i j hi hj ne
-    obtain ⟨u, rfl⟩ := index.surjective x
-    simpa only [hu, hv, owner_at] using sep u.1 i j
-      (fun h => hi ((inside cut group u i).mpr (Or.inr h)))
-      (fun h => hj ((inside cut group u j).mpr (Or.inr h))) ne
-  · exact large
-  · exact size
-  · exact field
+  let labels (r : Fin 16) := (group r)ᶜ
+  have hsets (i : Fin heads) : fresh cut labels i = (core cut group i)ᶜ := by
+    ext x
+    obtain ⟨s, rfl⟩ := index.surjective x
+    simp only [outside, mem_compl, inside]
+    cases h : sel cut s <;> simp [h, labels]
+  have h := selected_mass cut group D k d δ A B U V (fun r => U (own r) r)
+    (fun r => V (own r) r) labels hu hv agree (fun r i hi => miss r i (mem_compl.mp hi))
+    (fun r i j hi hj => sep r i j (mem_compl.mp hi) (mem_compl.mp hj)) degree da db large size
+    (by simpa only [hsets] using field)
+  simpa only [hsets] using h
 
 end ArkLib.ProximityGap.Frontier.SecondPrimeSixteenFiber

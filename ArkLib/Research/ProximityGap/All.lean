@@ -790,6 +790,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeHessianTransport
 import ArkLib.Research.ProximityGap.Frontier.FirstPrimeHyperbolaGrid
 import ArkLib.Research.ProximityGap.Frontier.HyperbolaGridObstruction
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeHyperbolaGrid
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeTetrahedron
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeIntrinsicArithmetic
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeJetMultiplication
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeJetSpecialization
