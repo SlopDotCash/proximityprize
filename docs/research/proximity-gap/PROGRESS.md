@@ -1822,6 +1822,29 @@ A power saving for the complete individual $T_0,T_1$ pair remains open.
 [Derivations and exact certificates](paley-product-traces.md#between-two-different-products) ·
 [Lean identities](../../../ArkLib/Research/ProximityGap/Frontier/PaleyMixedProductTraces.lean)
 
+**Zero discrepancy on full reciprocal product strata at the second prime.**
+For $A_s=T(s)\setminus\{0\}$ and any odd power $q$ of the generator, the
+rectangle $A_s\times(A_{q^2s}\cup A_{q^{-2}s})$ has discrepancy exactly
+zero. Its sides contain $2^{29}$ and $2^{30}$ ordinary points. For odd
+product exponents all three strata already omit zero. Swapping the two
+summation variables gives opposite signed discrepancies on the two individual
+rectangles. The named Lean implication uses the Sidon property verified by
+the external production scan. The individual absolute discrepancies remain
+open. [Proof and scope](paley-product-traces.md#a-single-stratum-against-two-reciprocal-products)
+
+**Cube-root scale for each individual mixed product pair.** Simultaneous
+Stepanov interpolation bounds the total occupancy in any $J\le\sqrt m$
+multiplicative cosets of a fractional-linear image of an order-$m$ subgroup
+by $O(m^{2/3}J^{2/3})$ when $m+m^{3/2}\le p$. Its squared occupancies sum
+to $O(m^{3/2})$. The signed fourth moment then gives relative discrepancy
+$O(p^{1/8}n^{-3/8}+n^{-1})$ on every complete pair of distinct product
+strata, for $4\mid n$ and $n\ge4p^{1/4}$. This saves a power for
+$n\ge p^{1/3+\varepsilon}$. Lean verifies the simultaneous linear kernel
+and the integer occupancy bound. The summation and moment deduction are
+given in the written proof.
+[Derivation](paley-mixed-trace-saving.md#a-power-saving-above-the-cube-root-scale) ·
+[Finite theorem](../../../ArkLib/Research/ProximityGap/Frontier/MobiusSubgroupBound.lean)
+
 **Full mixed products below square-root size.** On any prime field, for
 a cyclic subgroup of order $n$ divisible by four and $n\ge4p^{1/4}$, the
 relative Paley discrepancy on every two distinct prescribed product strata
