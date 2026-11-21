@@ -113,4 +113,21 @@ run_cmd do
   unless boundary 3 == some 1 do throwError "The four-site code fails at one error for budget three"
   unless (boundary 4).isNone do throwError "The four-site code is safe at every radius for budget four"
 
+/- The numerical certificates reach the published 246-bit code without enumerating the field.
+At length eight, the budgets distinguish both interpolation cutoffs and the fallback. -/
+run_cmd do
+  let q := 65 * 2 ^ 239 + 1
+  let B := q / 2 ^ 128
+  for (k, firstBad) in [(32, 97), (16, 113), (8, 121)] do
+    unless RankExecutable.circuitsCovered 128 k B &&
+        (RankExecutable.packingBoundary 128 k q 1 B).map Fin.val == some firstBad do
+      throwError "The numerical certificates disagree with the length-128 prize table"
+  let small (B : ℕ) := (RankExecutable.packingBoundary 8 2 59 1 B).map Fin.val
+  unless [small 8, small 9, small 28] == [none, some 6, some 7] do
+    throwError "The list packing threshold was evaluated at the wrong budget"
+  unless !RankExecutable.circuitsCovered 8 2 55 && RankExecutable.circuitsCovered 8 2 56 do
+    throwError "The circuit bound must include equality"
+  unless !RankExecutable.circuitsCovered (2 ^ 30) (2 ^ 29) (2 ^ 30) do
+    throwError "The production circuit count exceeds this budget"
+
 end ProximityPrize.Review
