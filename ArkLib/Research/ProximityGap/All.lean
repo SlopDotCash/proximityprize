@@ -238,6 +238,7 @@ import ArkLib.Research.ProximityGap.Frontier.CubicApolarEvent
 import ArkLib.Research.ProximityGap.Frontier.CubicApolarExtremum
 import ArkLib.Research.ProximityGap.Frontier.CubicApolarWitness
 import ArkLib.Research.ProximityGap.Frontier.CubicPolarSiteBudget
+import ArkLib.Research.ProximityGap.Frontier.CubicSectionDiscriminant
 import ArkLib.Research.ProximityGap.Frontier.CubicSheetExcess
 import ArkLib.Research.ProximityGap.Frontier.CumulantOnsetNoGo
 import ArkLib.Research.ProximityGap.Frontier.CurveDecodability
@@ -603,6 +604,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeConditionedThreshold
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCoordinateWeight
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicOnly
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicWeightBound
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicWitness
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeDegreeSevenDimension
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeExceptionalCeilings
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeHeadDescent
