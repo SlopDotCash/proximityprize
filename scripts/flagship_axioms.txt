@@ -4,6 +4,11 @@
 # All names verified against source namespaces — a rename or deletion here is a
 # hard CI failure, not a skip (update this list in the same PR as the rename).
 
+# Closed answers for both grand challenges on supplied sufficiently large fields
+ArkLib.Research.ProximityGap.JointLargeFieldReview ProximityPrize.JointLargeFieldReview.classification
+ArkLib.Research.ProximityGap.JointLargeFieldReview ProximityPrize.JointLargeFieldReview.rank_answers
+ArkLib.Research.ProximityGap.JointLargeFieldReview ProximityPrize.JointLargeFieldReview.prize_large_field
+
 # Exact rate-one-sixteenth MCA threshold at the second designated prime
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicExact ArkLib.ProximityGap.Frontier.SecondPrimeCubicExact.secondPrime_rateSixteenth
 ArkLib.Research.ProximityGap.Frontier.UniversalCubicThreshold ArkLib.ProximityGap.Frontier.UniversalCubicThreshold.prime_classification
