@@ -798,6 +798,7 @@ import ArkLib.Research.ProximityGap.Frontier.TerminalQuarticLocalization
 import ArkLib.Research.ProximityGap.Frontier.ThornerZamanInstance
 import ArkLib.Research.ProximityGap.Frontier.ThornerZamanS128
 import ArkLib.Research.ProximityGap.Frontier.ThreeGapPositionalRigidity
+import ArkLib.Research.ProximityGap.Frontier.ThreeHeadDeficitWindow
 import ArkLib.Research.ProximityGap.Frontier.ThreeHeadDeterminantCover
 import ArkLib.Research.ProximityGap.Frontier.ThreeHeadThresholdCurve
 import ArkLib.Research.ProximityGap.Frontier.ThreeWordAgreement

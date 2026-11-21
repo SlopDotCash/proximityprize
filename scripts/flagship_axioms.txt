@@ -11,6 +11,7 @@ ArkLib.Research.ProximityGap.Frontier.UniversalCubicBudgetWindow ArkLib.Proximit
 ArkLib.Research.ProximityGap.Frontier.UniversalCubicBudgetWindow ArkLib.ProximityGap.Frontier.UniversalCubicBudgetWindow.prime_exact_eps
 ArkLib.Research.ProximityGap.Frontier.ThreeHeadThresholdCurve ArkLib.ProximityGap.Frontier.ThreeHeadThresholdCurve.prime_classification
 ArkLib.Research.ProximityGap.Frontier.ThreeHeadThresholdCurve ArkLib.ProximityGap.Frontier.ThreeHeadThresholdCurve.prime_exact_eps
+ArkLib.Research.ProximityGap.Frontier.ThreeHeadDeficitWindow ArkLib.ProximityGap.Frontier.ThreeHeadDeficitWindow.prime_supremum_bracket
 
 # All power fibers and the actual second-prime quadratic population cap
 ArkLib.Research.ProximityGap.Frontier.PaddedPowerSpecialization ProximityGap.PaddedPowerSpecialization.power_fiber_count
