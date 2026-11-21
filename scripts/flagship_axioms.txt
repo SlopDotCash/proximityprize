@@ -127,3 +127,7 @@ ArkLib.Research.ProximityGap.Frontier.PrimeFieldEntropyPhase ProximityGap.PrimeF
 ArkLib.Research.ProximityGap.Frontier.PrimeFieldEntropyPhase ProximityGap.PrimeFieldEntropyPhase.above_entropy
 ArkLib.Research.ProximityGap.Frontier.ApolarEndpointExact ArkLib.ProximityGap.Frontier.ApolarEndpointExact.pair_bound
 ArkLib.Research.ProximityGap.Frontier.ApolarEndpointExact ArkLib.ProximityGap.Frontier.ApolarEndpointExact.prime
+
+# Exact interleaved list size on a supplied RS domain and the 128-bit budget windows
+ArkLib.Research.ProximityGap.Frontier.ListInterpolationBoundary ProximityGap.ListInterpolationBoundary.at_dimension_agreement
+ArkLib.Research.ProximityGap.Frontier.ListInterpolationBoundary ProximityGap.ListInterpolationBoundary.prize_good_iff
