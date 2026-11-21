@@ -63,14 +63,16 @@ private theorem heavy_pair (fam : Family dom δ u) {p e : ℕ} [CharP F p]
   rw [sdiff_eq_empty_iff_subset.mpr hsub,card_empty] at hgpop
   omega
 
-/-- Every received pair has at most two full secants' worth of bad scalars,
-including the endpoint where the complement estimate alone can attain equality. -/
-theorem family_cap (fam : Family dom δ u) {p e : ℕ} [CharP F p] (hp : 1744830589<p)
-    (hn : Fintype.card I=1073741824) (hl : 610000000≤e) (hu : e≤648719019)
-    (ht : ⌈(1-δ)*(Fintype.card I:ℝ≥0)⌉₊=1073741824-e) : fam.G.card≤2*(e+1) := by
-  classical
-  by_contra! large
-  obtain ⟨a,ha,b,hb,hab,hA,hB⟩ := heavy_pair fam hp hn hl (by omega) ht large
+/-- Any violation of the two-head count has two distinct secants with core deficits
+of at most one and two sites, respectively. -/
+theorem near_full_pair (fam : Family dom δ u) {p e : ℕ} [CharP F p] (hp : 1744830589<p)
+    (hn : Fintype.card I=1073741824) (hl : 610000000≤e) (hu : e≤671088639)
+    (ht : ⌈(1-δ)*(Fintype.card I:ℝ≥0)⌉₊=1073741824-e) (large : 2*(e+1)<fam.G.card) :
+    ∃ a∈lineParameters fam, ∃ b∈lineParameters fam, a≠b ∧
+      400000000 < (pointsOn fam a).card ∧ 300000000 < (pointsOn fam b).card ∧
+      1073741824-e-1 ≤ (jointCore dom (u 0) (u 1) a.1 a.2).card ∧
+      1073741824-e-2 ≤ (jointCore dom (u 0) (u 1) b.1 b.2).card := by
+  obtain ⟨a,ha,b,hb,hab,hA,hB⟩ := heavy_pair fam hp hn hl hu ht large
   let D (l : LineParameter F) := jointCore dom (u 0) (u 1) l.1 l.2
   let t := 1073741824-e
   have pack (l : LineParameter F) (h : l ∈ lineParameters fam) :
@@ -87,6 +89,20 @@ theorem family_cap (fam : Family dom δ u) {p e : ℕ} [CharP F p] (hp : 1744830
     have h' := pack _ hb
     dsimp [t] at *
     omega
+  exact ⟨a,ha,b,hb,hab,hA,hB,nearA,nearB⟩
+
+/-- Every received pair has at most two full secants' worth of bad scalars,
+including the endpoint where the complement estimate alone can attain equality. -/
+theorem family_cap (fam : Family dom δ u) {p e : ℕ} [CharP F p] (hp : 1744830589<p)
+    (hn : Fintype.card I=1073741824) (hl : 610000000≤e) (hu : e≤648719019)
+    (ht : ⌈(1-δ)*(Fintype.card I:ℝ≥0)⌉₊=1073741824-e) : fam.G.card≤2*(e+1) := by
+  classical
+  by_contra! large
+  obtain ⟨a,ha,b,hb,hab,hA,hB,nearA,nearB⟩ := near_full_pair fam hp hn hl (by omega) ht large
+  let D (l : LineParameter F) := jointCore dom (u 0) (u 1) l.1 l.2
+  let t := 1073741824-e
+  change t-1≤(D a).card at nearA
+  change t-2≤(D b).card at nearB
   have hole : t≤(univ \ (D a ∪ D b)).card+2*67108863 := by
     by_contra! below
     have cc := G_subset_two_lines_of_small_core_complement fam (by decide) (h:=t-1)
