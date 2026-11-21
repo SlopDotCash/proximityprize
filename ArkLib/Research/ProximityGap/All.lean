@@ -367,6 +367,7 @@ import ArkLib.Research.ProximityGap.Frontier.FloorResonanceLowerBound
 import ArkLib.Research.ProximityGap.Frontier.FoldedSourceFiber
 import ArkLib.Research.ProximityGap.Frontier.FourFiberThreshold
 import ArkLib.Research.ProximityGap.Frontier.FourFiberTripleAlignment
+import ArkLib.Research.ProximityGap.Frontier.FourHeadCommonRootObstruction
 import ArkLib.Research.ProximityGap.Frontier.FourHeadCoreDeterminant
 import ArkLib.Research.ProximityGap.Frontier.FourHeadCrossRatio
 import ArkLib.Research.ProximityGap.Frontier.FourHeadQuotient
@@ -549,12 +550,15 @@ import ArkLib.Research.ProximityGap.Frontier.PaleyAbsoluteSlice
 import ArkLib.Research.ProximityGap.Frontier.PaleyAffineSecondMoment
 import ArkLib.Research.ProximityGap.Frontier.PaleyBalancedLimit
 import ArkLib.Research.ProximityGap.Frontier.PaleyBilinearDiscrepancy
+import ArkLib.Research.ProximityGap.Frontier.PaleyBipartiteCrossRatio
 import ArkLib.Research.ProximityGap.Frontier.PaleyCodingCosets
 import ArkLib.Research.ProximityGap.Frontier.PaleyCosetCancellation
 import ArkLib.Research.ProximityGap.Frontier.PaleyDefectDiscrepancy
 import ArkLib.Research.ProximityGap.Frontier.PaleyDefectMinor
+import ArkLib.Research.ProximityGap.Frontier.PaleyGramFourthMoment
 import ArkLib.Research.ProximityGap.Frontier.PaleyHankelDegree
 import ArkLib.Research.ProximityGap.Frontier.PaleyInterpolationContact
+import ArkLib.Research.ProximityGap.Frontier.PaleyIntervalCriterion
 import ArkLib.Research.ProximityGap.Frontier.PaleyInversionTrace
 import ArkLib.Research.ProximityGap.Frontier.PaleyListInterpolation
 import ArkLib.Research.ProximityGap.Frontier.PaleyPairDeterminants
@@ -666,6 +670,7 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterRateQuadraticSafety
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateRichSecants
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateSaturatedCores
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateSharedResultant
+import ArkLib.Research.ProximityGap.Frontier.QuarterRateToleranceCurve
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor
 import ArkLib.Research.ProximityGap.Frontier.QuarticFieldProductionThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarticIntrinsicAuxiliary

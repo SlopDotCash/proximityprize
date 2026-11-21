@@ -8,8 +8,8 @@ At security $2^{-128}$, the first named prime permits $2^{30}$ words in a closed
 | Second | $1/2$ | 502,118,109 | **502,025,926** | 2,198,117,102 |
 | First | $1/4$ | 771,744,959 | **771,742,301** | 1,074,248,723 |
 | Second | $1/4$ | 771,749,148 | **771,747,593** | 2,147,920,993 |
-| First | $1/8$ | 922,484,737 | **922,365,581** | 1,075,279,395 |
-| Second | $1/8$ | 922,611,581 | **922,568,400** | 2,155,690,992 |
+| First | $1/8$ | 922,365,581 | **922,101,604** | 1,077,692,870 |
+| Second | $1/8$ | 922,568,400 | **922,447,288** | 2,197,233,550 |
 
 ## The locator value at the spare fiber
 
@@ -49,9 +49,22 @@ The four labels with uniform signature require an intersection count. On each ro
 | $1/8$ | First | 16 | 2, 20 | 143,276 | 1,075,279,395 | 381,300 |
 | $1/8$ | Second | 64 | 2, 45 | 143,146 | 2,155,690,992 | 178,481 |
 
+## A third fiber for the common roots at rate one eighth
+
+Take $M=128$, $m=17$, $h=2^{23}$ and root class $16$. After the anchor labels have been chosen, each member $T$ of the candidate family misses exactly $109$ of the $126$ quotient nodes other than $1,-1$. Counting pairs $(T,z)$ with $z$ missed shows that some ordinary fiber $z$ is missed by at least $\lceil109N/126\rceil$ of the $N$ candidates. Keep these candidates and put all $h-1$ roots of $H$ in that fiber. Both anchors now have all $h$ sites available. The $17$ fibers in each retained $T$ still contribute $17h$ agreements. The common zeros and the assigned anchor sites raise this to $18h-1+g$. The Lean theorem takes the population before restriction, finds the fiber and proves a strict lower bound on the canonical worst-center list. [Formal construction and averaging proof](../../../ArkLib/Research/ProximityGap/Frontier/TwoAnchorListWitness.lean)
+
+Start both anchor pools with the two exponent lifts of the uniform vector $(2,\ldots,2)$. These four classes overlap in exactly $143276$ candidates as above. Each additional group in the table specifies a leaf sum $W$, an anchor, and a number of labels. At each group take that many largest label populations at the indicated weight and anchor from the verifier’s finite signature pool. At $1$ the exponent representatives lie over $16$ modulo $128$. At $-1$ the corresponding representatives of $-T$ lie over $80$. Negation preserves the leaf sum, so groups with distinct weights are disjoint even across anchors. No added group has the uniform weight $64$. Within each group the labels partition the candidates, including when two labels give the same field value.
+
+| Prime | Additional groups $(W,\text{anchor},\text{labels})$ | Labels per anchor | Distinct candidates $N$ | Retained at least | Gain $g$ |
+|---|---|---:|---:|---:|---:|
+| First | $(48,+1,4),(68,-1,11),(60,+1,7)$ | 13 | 1,245,773,409 | 1,077,692,870 | 645,277 |
+| Second | $(48,+1,4),(68,+1,16),(60,-1,16),(66,-1,10),(72,+1,6)$ | 28 | 2,539,921,351 | 2,197,233,550 | 299,593 |
+
+With $K$ labels at each anchor, each receives $g=\lfloor h/K\rfloor$ sites. Each retained word has at least $18h-1+g$ agreements with the same center. The resulting list exceeds $2^{30}$ words on the first prime at **922,101,604 errors** and $2^{31}$ on the second at **922,447,288 errors**. The integer recurrence supplies the two candidate populations and the explicit error counts. Exact first failure at either prime still requires a matching all-center safety bound. [Population verifier](../../../scripts/probes/probe_oriented_fiber_lists.py)
+
 The construction applies on the subgroup and every multiplicative coset by precomposing the evaluation polynomials and the center with a nonzero dilation. The first prime is $365375409332725729550921208179070755120141565953$. The second is $730750818665451459101842416358141509841924915201$.
 
-Run the following command from the repository root. The standard-library verifier first enumerates every allowed subset on quotient orders 8 and 16, checks the predicted label counts against direct enumeration and checks the locator equalities by field arithmetic. It also checks the two-anchor intersection recurrence on three small boards. It then verifies the six single-anchor and four double-anchor production counts, root classes, allocations and budgets. The numerical claims use this integer certificate and the written argument. [Reproduction script](../../../scripts/probes/probe_oriented_fiber_lists.py)
+Run the following command from the repository root. The standard-library verifier enumerates every allowed subset on quotient orders 8 and 16, checks the predicted label counts against direct enumeration and checks the locator equalities by field arithmetic. It also checks the two-anchor intersection recurrence on three small boards. It checks six single-anchor counts, four counts with the common roots at the two anchors, and both third-fiber counts, together with their root classes, allocations and budgets. The numerical claims use this integer certificate and the written argument. [Reproduction script](../../../scripts/probes/probe_oriented_fiber_lists.py)
 
 ```sh
 python3 scripts/probes/probe_oriented_fiber_lists.py

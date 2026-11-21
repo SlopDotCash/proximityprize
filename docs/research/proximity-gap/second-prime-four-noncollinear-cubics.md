@@ -39,3 +39,21 @@ Write $b=w^2$, $a=w^{14}=b^{-1}$, $R=t-a$, $S=t+a$, $C=t^2+b$, $D=t^2-a$, $A=RC-
 The four oriented triangle determinants in lexicographic order are $ACS$, $bARD$, $RCM$ and $bSDM$. Each splits completely over the sixteenth roots in every field containing an element of that order. Among the sixteen fibers, a second-coordinate projection fails to separate a pair at only one slope for each pair of distinct values having distinct first coordinates. A field with more than 256 elements supplies one common projection.
 
 On a coset of length $64m$ the substitution $t=(X/u)^{4m}$ uses the inverse coset representative $u^{-1}$. Choose $m-1,m-1,m,m$ common roots on the four private fibers. Their locator has degree $4m-2$. The four cores have sizes $31m-1,31m-1,31m-2,31m-2$. Their complements supply $132m+6$ labels at $33m+1$ errors. This applies from dimension $16m$ through $31m-2$. The first failing error count for unrestricted received words at the second prime is still open at quarter rate. [Formal coset theorem](../../../ArkLib/Research/ProximityGap/Frontier/SmoothPlanarQuartetCoset.lean)
+
+## Predecessor obstruction
+
+At $33m$ errors a head needs $31m$ agreements. Suppose all four heads reduce outside $R$ by a common pointwise injective map to planar polynomials of degree at most $d$, with three noncollinear and the fourth distinct. If $C_i$ are their joint cores, the four-head determinant applied to $C_i\setminus R$ gives
+\[
+ \sum_i |C_i|\le n+3|R|+4d.
+\]
+The three copies of $|R|$ come from allowing four cores to agree at each exceptional site, while the union away from $R$ has size at most $n-|R|$. When $3|R|+4d+5\le60m$, one core has size at most $31m-2$. A label on that head needs at least two agreements outside the core, and different labels use disjoint such sites. The three other heads each have at most $33m+1$ labels. The four heads together account for at most $\lfloor(231m+8)/2\rfloor$ labels. At the named length this gives 1,937,768,452, short of the second-prime budget by 209,715,196. It covers the constructed family with $d=12m$ and $|R|=4m-2$. [Kernel-checked predecessor cap](../../../ArkLib/Research/ProximityGap/Frontier/FourHeadCommonRootObstruction.lean)
+
+## The antipodal degree-seven extension
+
+A direct extension of the cubic would use opposite edge multiplicities $7,6,1$ on the 32nd roots. In the sign-symmetric version, normalize the singleton pair to $\{1,-1\}$. The opposite size-seven edges have locators $A(t)$ and $A(-t)$, where $A$ is monic with one root from each of seven other antipodal pairs. The two size-six edges have even locators $C(t)$ and $D(t)$. For nonzero constants $u,v$, this construction requires
+\[
+ A(t)=u(t-1)C(t)-v(t+1)D(t).
+\]
+At a root of $C$, this forces $(t-1)A(t)=(-t-1)A(-t)$. At a root of $D$ it forces $(t+1)A(t)=(-t+1)A(-t)$. The six disjoint eligible antipodal pairs would have to come from the eight unused pairs. Over $\mathbb F_{65537}$, screening all $\binom{15}{7}2^7=823680$ choices for $A$ gives at most two eligible pairs in total. [Reproducible exact computation](../../../scripts/probes/probe_antipodal_septic_quartet.py)
+
+This rules out the same construction at the second named prime. Each tested equality is a difference of two products of eight root differences in $\mathbb Z[\zeta_{32}]$. Its absolute value at each of the sixteen complex embeddings is at most $2^9$. Hence a nonzero norm has absolute value at most $2^{144}$, below the production prime. An equality there must already hold in $\mathbb Z[\zeta_{32}]$ and survive specialization to the screen field. Other degree-seven configurations remain open.

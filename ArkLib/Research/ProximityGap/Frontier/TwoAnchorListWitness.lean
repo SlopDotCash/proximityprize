@@ -17,6 +17,21 @@ open Finset Polynomial Code
 variable {I J F : Type} [Fintype I] [Fintype J] [Nonempty J]
   [DecidableEq I] [DecidableEq J] [Field F]
 
+/-- Some ordinary quotient fiber is avoided by at least the mean number of
+candidates. Restricting to these candidates frees that fiber for the vanisher. -/
+theorem exists_avoided_fiber (U : Finset I) (hu : U.Nonempty) (family : Finset (Finset I))
+    (t : ℕ) (hsize : ∀ S ∈ family, S.card ≤ t) :
+    ∃ z ∈ U, family.card*(U.card-t) ≤ U.card*(family.filter fun S => z ∉ S).card := by
+  classical
+  obtain ⟨z,hz,hmax⟩ := U.exists_max_image (fun x => (family.filter fun S => x ∉ S).card) hu
+  refine ⟨z,hz,Finset.card_mul_le_card_mul (fun (S : Finset I) x => x ∉ S) ?_ hmax⟩
+  intro S hS
+  have he : U.bipartiteAbove (fun (T : Finset I) x => x ∉ T) S = U \ S := by
+    ext x
+    simp [Finset.bipartiteAbove]
+  rw [he]
+  exact (Nat.sub_le_sub_left (hsize S hS) _).trans (Finset.le_card_sdiff S U)
+
 /-- The common vanishing sites may occupy any reserved fibers avoided by every candidate.
 The two disjoint anchor allocations and the common sites fit inside their joint capacity. -/
 theorem list_lower_reserved (D : I × J ↪ F) (a : I → F)
@@ -171,6 +186,41 @@ theorem list_lower (D : I × J ↪ F) (a : I → F)
   · exact hm
   · simpa [hpm] using htotal
 
+omit [Fintype I] in
+private theorem reserve_of_or (p m : I) (hpm : p≠m) (family : Finset (Finset I))
+    (avoid : ∀ S ∈ family, p∉S ∧ m∉S) (u v h : ℕ) (hu : u≤h) (hv : v≤h)
+    (hr : u+v+(h-1)≤2*h ∨ ∃ z : I, z≠p ∧ z≠m ∧ ∀ S ∈ family, z∉S) :
+    ∃ R : Finset I, p∈R ∧ m∈R ∧ (∀ S∈family, Disjoint S R) ∧ u+v+(h-1)≤R.card*h := by
+  classical
+  rcases hr with cap | ⟨z,hzp,hzm,hz⟩
+  · refine ⟨{p,m}, by simp, by simp, ?_, by simpa [hpm] using cap⟩
+    intro S hs
+    simpa [Finset.disjoint_insert_right, Finset.disjoint_singleton_right] using avoid S hs
+  · refine ⟨{z,p,m}, by simp, by simp, ?_, ?_⟩
+    · intro S hs
+      simpa [Finset.disjoint_insert_right, Finset.disjoint_singleton_right] using And.intro (hz S hs) (avoid S hs)
+    · simpa [hzp,hzm,hpm] using (show u+v+(h-1)≤3*h by omega)
+
+/-- From prescribed quotient agreements and anchor values to the canonical worst-center
+list size. Both anchors and all candidates use the same production received word. -/
+theorem list_lower_with_reserve (D : I × J ↪ F) (a : I → F)
+    (hpowers : ∀ x, D x ^ Fintype.card J = a x.1) (p m : I) (hpm : p ≠ m)
+    (P M : Finset F) (family : Finset (Finset I)) (q : Finset I → F[X]) (y : I → F)
+    (b t g : ℕ) (hq : ∀ S ∈ family, (q S).natDegree < b)
+    (hS : ∀ S ∈ family, S.card = t ∧ p ∉ S ∧ m ∉ S)
+    (hag : ∀ S ∈ family, ∀ i, i ≠ p → i ≠ m → ((q S).eval (a i) = y i ↔ i ∈ S))
+    (hanchor : ∀ S ∈ family, (q S).eval (a p) ∈ P ∨ (q S).eval (a m) ∈ M)
+    (hp : P.card * g ≤ Fintype.card J) (hm : M.card * g ≤ Fintype.card J)
+    (hreserve : P.card*g+M.card*g+(Fintype.card J-1) ≤ 2*Fintype.card J ∨
+      ∃ z : I, z ≠ p ∧ z ≠ m ∧ ∀ S ∈ family, z ∉ S) :
+    (family.card : ℕ∞) ≤ Lambda (ReedSolomon.code D (b*Fintype.card J) : Set (I × J → F))
+      (((Fintype.card (I × J) - (t*Fintype.card J + (Fintype.card J-1) + g) : ℕ) : ℝ)
+        / Fintype.card (I × J)) := by
+  obtain ⟨R,hpR,hmR,dis,total⟩ := reserve_of_or p m hpm family (fun S hs => (hS S hs).2)
+    _ _ _ hp hm hreserve
+  exact list_lower_reserved D a hpowers p m hpm R hpR hmR P M family q y b t g hq
+    (fun S hs => ⟨(hS S hs).1,dis S hs⟩) hag hanchor hp hm total
+
 /-- Monic locator of quotient roots indexed by a selected set. -/
 noncomputable def locator (a : I → F) (S : Finset I) : F[X] := ∏ i ∈ S, (X - C (a i))
 
@@ -244,6 +294,62 @@ theorem locator_list_lower (D : I × J ↪ F) (a : I ↪ F) (ha : ∀ i, a i ≠
   · exact hp
   · exact hm
   · simpa [hpm] using htotal
+
+/-- A common locator constant and the two filtered anchor-value sets suffice.
+Every counted member is a different actual Reed–Solomon evaluation word. -/
+theorem locator_list_lower_with_reserve (D : I × J ↪ F) (a : I ↪ F) (ha : ∀ i, a i ≠ 0)
+    (hpowers : ∀ x, D x ^ Fintype.card J = a x.1) (p m : I) (hpm : p ≠ m)
+    (P M : Finset F) (family : Finset (Finset I)) (c : F) (b g : ℕ) (hb : 0 < b)
+    (hS : ∀ S ∈ family, S.card = b+1 ∧ p ∉ S ∧ m ∉ S)
+    (hconst : ∀ S ∈ family, (locator a S).eval 0 = c)
+    (hanchor : ∀ S ∈ family, (locator a S).eval (a p) ∈ P ∨ (locator a S).eval (a m) ∈ M)
+    (hp : P.card*g ≤ Fintype.card J) (hm : M.card*g ≤ Fintype.card J)
+    (hreserve : P.card*g+M.card*g+(Fintype.card J-1) ≤ 2*Fintype.card J ∨
+      ∃ z : I, z ≠ p ∧ z ≠ m ∧ ∀ S ∈ family, z ∉ S) :
+    (family.card : ℕ∞) ≤ Lambda (ReedSolomon.code D (b*Fintype.card J) : Set (I × J → F))
+      (((Fintype.card (I × J) - ((b+1)*Fintype.card J + (Fintype.card J-1) + g) : ℕ) : ℝ)
+        / Fintype.card (I × J)) := by
+  obtain ⟨R,hpR,hmR,dis,total⟩ := reserve_of_or p m hpm family (fun S hs => (hS S hs).2)
+    _ _ _ hp hm hreserve
+  exact locator_list_lower_reserved D a ha hpowers p m hpm R hpR hmR P M family c b g hb
+    (fun S hs => ⟨(hS S hs).1,dis S hs⟩) hconst hanchor hp hm total
+
+/-- Reserving a commonly missed fiber leaves both anchors fully available. A count
+before restriction suffices for a strict lower bound on the actual scalar list. -/
+theorem locator_exceeds_by_avoidance (D : I × J ↪ F) (a : I ↪ F) (ha : ∀ i, a i ≠ 0)
+    (hpowers : ∀ x, D x ^ Fintype.card J = a x.1) (p m : I) (hpm : p ≠ m)
+    (P M : Finset F) (family : Finset (Finset I)) (c : F) (b g B : ℕ) (hb : 0 < b)
+    (hS : ∀ S ∈ family, S.card = b+1 ∧ p ∉ S ∧ m ∉ S)
+    (hconst : ∀ S ∈ family, (locator a S).eval 0 = c)
+    (hanchor : ∀ S ∈ family, (locator a S).eval (a p) ∈ P ∨ (locator a S).eval (a m) ∈ M)
+    (hp : P.card*g ≤ Fintype.card J) (hm : M.card*g ≤ Fintype.card J)
+    (hcount : (Fintype.card I-2)*B < family.card*(Fintype.card I-2-(b+1))) :
+    (B : ℕ∞) < Lambda (ReedSolomon.code D (b*Fintype.card J) : Set (I × J → F))
+      (((Fintype.card (I × J) - ((b+1)*Fintype.card J + (Fintype.card J-1) + g) : ℕ) : ℝ)
+        / Fintype.card (I × J)) := by
+  classical
+  let ordinary := ((univ : Finset I).erase p).erase m
+  have hord : ordinary.card = Fintype.card I-2 := by
+    simp [ordinary, card_erase_of_mem, hpm.symm]
+    omega
+  rw [← hord] at hcount
+  have hnonempty : ordinary.Nonempty := by
+    rw [← card_pos]
+    by_contra! he
+    simp [Nat.eq_zero_of_le_zero he] at hcount
+  obtain ⟨z,hz,havg⟩ := exists_avoided_fiber ordinary hnonempty family (b+1)
+    (fun S hs => (hS S hs).1.le)
+  let kept := family.filter fun S => z ∉ S
+  have hk : B < kept.card := by
+    by_contra! he
+    exact (not_lt_of_ge (havg.trans (Nat.mul_le_mul_left ordinary.card he))) hcount
+  have hsub : kept ⊆ family := filter_subset _ _
+  have hzmem := mem_erase.mp hz
+  have lower := locator_list_lower_with_reserve D a ha hpowers p m hpm P M kept c b g hb
+    (fun S hs => hS S (hsub hs)) (fun S hs => hconst S (hsub hs))
+    (fun S hs => hanchor S (hsub hs)) hp hm
+    (.inr ⟨z, (mem_erase.mp hzmem.2).1, hzmem.1, fun _ hs => (mem_filter.mp hs).2⟩)
+  exact (show (B : ℕ∞) < kept.card by exact_mod_cast hk).trans_le lower
 
 /-- Without restrictions on the anchor values, pigeonholing the quotient product
 still yields a concrete bad ball at the baseline lifted radius. -/
@@ -319,6 +425,9 @@ theorem cyclic_exceeds [Fintype F] {r h b B : ℕ} (hr : 2 ≤ r) (hh : 0 < h) (
     (fun _ hc _ => hc) _)
   simpa [Fintype.card_prod] using hbase
 
+#print axioms locator_exceeds_by_avoidance
+#print axioms exists_avoided_fiber
+#print axioms locator_list_lower_with_reserve
 #print axioms cyclic_exceeds
 #print axioms exceeds_of_product
 #print axioms locator_list_lower_reserved

@@ -255,7 +255,55 @@ def antipodal_bound(order, size, level, levels, deviations, limit, expectations)
               f"words={total} overlap={overlap[root]} gain={gain} first_failure<={errors}")
 
 
+def external_reserve_bounds():
+    """Two full anchor fibers, with the common vanisher on a third fiber."""
+    order, size, root, level = 128, 17, 16, 2
+    n = 2**30
+    h = n // order
+    pool = signature_pool(32, range(1, 4), 2, size, 150)
+    count = oriented_counter(order, size)
+    central = count((level,) * 32)
+    opposite = (root + size * (order // 2)) % order
+    overlap = uniform_coincidences(order, size, level)[root]
+    common = sum(central[r] + central[r + order] for r in (root, opposite)) - overlap
+
+    # The integer leaf sum is fixed by negation. Distinct weights give disjoint
+    # sets, even when their word values are supplied by opposite anchor fibers.
+    examples = (
+        (1, 13, ((48, 0, 4), (68, 1, 11), (60, 0, 7)),
+         1245773409, 1077692870, 922101604),
+        (2, 28, ((48, 0, 4), (68, 0, 16), (60, 1, 16), (66, 1, 10), (72, 0, 6)),
+         2539921351, 2197233550, 922447288),
+    )
+    for field, capacity, groups, expected_pool, expected_list, expected_error in examples:
+        used = [2, 2]
+        total = common
+        weights = [w for w, _, _ in groups]
+        require(len(set(weights)) == len(weights) and 64 not in weights, "overlapping weight classes")
+        for weight, anchor, number in groups:
+            r = (root, opposite)[anchor]
+            populations = []
+            for _, signature in pool:
+                if sum(signature) == weight:
+                    row = count(signature)
+                    populations.extend((row[r], row[r + order]))
+            require(number <= len(populations), "too few signature labels")
+            total += sum(sorted(populations, reverse=True)[:number])
+            used[anchor] += number
+        require(used == [capacity, capacity] and total == expected_pool, "selected anchor counts")
+        # Each 17-set misses precisely 109 of the 126 ordinary quotient points.
+        numerator = (order - 2 - size) * total
+        surviving = (numerator + order - 3) // (order - 2)
+        gain = h // capacity
+        errors = n - (size + 1) * h + 1 - gain
+        require(surviving == expected_list and surviving > field * n, "over-budget surviving family")
+        require(errors == expected_error, "error radius")
+        print(f"P{field} third-fiber reserve: bins={used}, pool={total}, "
+              f"words>={surviving}, gain={gain}, first_failure<={errors}")
+
+
 def main():
+    external_reserve_bounds()
     for order, size, level in ((8, 2, 1), (16, 4, 1), (16, 6, 2)):
         antipodal_test(order, size, level)
     antipodal_bound(64, 33, 5, range(3, 8), 3, 30,
