@@ -86,3 +86,7 @@ At $r=5$, $n=2^{30}$, and $2^{158}<p\le2^{159}$, use $5^3<2^7$. At most
 =1962994930484052976862162325308525<2^{111}
 \]
 split primes can have even one five-term additive zero sum. The exceptional fraction is below $2^{-11}$. Every other split prime in this band has the exact signed nonzero-frequency fifth moment $\sum_{b\ne0}\eta_b^5=-n^5$. The identities for an odd moment allow cancellation between positive and negative real periods.
+
+The finite-prime product bound is now formal over the actual subgroup. The theorem
+`split_prime_product_sq_le` has only the prime, splitting, positive dyadic exponent and odd relation length hypotheses. For every finite set of such primes it gives
+`(∏ p, p^(returnCount m n p))² ≤ (m+1)^(n^m)`, where the count uses field elements satisfying $x^n=1$. This proves the logarithmic estimate by monotonicity. The Lean kernel verifies the modular Fourier basis, lifting its vanishing eigenvectors to divisible integer columns, characteristic-zero nonvanishing and the integer Hadamard bound. [Kernel proof](../../../ArkLib/Research/ProximityGap/Frontier/OddReturnDeterminant.lean)

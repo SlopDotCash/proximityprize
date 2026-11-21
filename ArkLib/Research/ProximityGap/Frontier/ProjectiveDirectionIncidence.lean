@@ -18,22 +18,21 @@ variable {F I : Type*} [Field F] [DecidableEq F] [Fintype I] [DecidableEq I]
 
 /-- Pair incidence bound when every selected label supplies enough nonzero
 anchors. The class-size condition is needed only on those anchors. -/
-theorem nonzero_count (w V : I → F[X]) (B : Finset F) (S : F → Finset I) (a : F → F)
+theorem count_with_anchors (w V : I → F[X]) (B : Finset F) (S H : F → Finset I) (a : F → F)
     (D A s : ℕ) (hw : ∀ i, (w i).natDegree ≤ 1) (hV : ∀ i, (V i).natDegree ≤ s)
     (hsize : ∀ z ∈ B, A ≤ (S z).card)
     (hfit : ∀ z ∈ B, ∀ i ∈ S z, (w i).eval z = a z*(V i).eval z)
-    (hanchor : ∀ z ∈ B, A-D ≤ ((S z).filter fun i => (w i).eval z ≠ 0).card)
-    (hclass : ∀ z ∈ B, ∀ i ∈ S z, (w i).eval z ≠ 0 →
+    (hanchor : ∀ z ∈ B, A-D ≤ (H z).card) (hsub : ∀ z ∈ B, H z ⊆ S z)
+    (hclass : ∀ z ∈ B, ∀ i ∈ H z,
       (univ.filter fun j => w i*V j = w j*V i).card ≤ D) :
     B.card*(A-D)^2 ≤ Fintype.card I*(Fintype.card I-1)*(s+1) := by
   classical
-  let H (z : F) := (S z).filter fun i => (w i).eval z ≠ 0
   let pairs (z : F) := (H z ×ˢ S z).filter fun ij => w ij.1*V ij.2 ≠ w ij.2*V ij.1
   let R (z : F) (ij : I × I) := ij ∈ pairs z
   have hleft (z : F) (hz : z ∈ B) : (A-D)^2 ≤ (univ.offDiag.bipartiteAbove R z).card := by
     have hrow (i : I) (hi : i ∈ H z) :
         A-D ≤ ((S z).filter fun j => w i*V j ≠ w j*V i).card := by
-      have hsmall := hclass z hz i (mem_filter.mp hi).1 (mem_filter.mp hi).2
+      have hsmall := hclass z hz i hi
       have hcut : ((S z).filter fun j => w i*V j = w j*V i).card ≤ D :=
         (card_le_card (filter_subset_filter _ (subset_univ _))).trans hsmall
       have hsum : ((S z).filter fun j => w i*V j = w j*V i).card +
@@ -66,10 +65,25 @@ theorem nonzero_count (w V : I → F[X]) (B : Finset F) (S : F → Finset I) (a 
     obtain ⟨ht,hpair⟩ := mem_filter.mp (show t ∈ B.bipartiteBelow R ij from ht)
     obtain ⟨hi,hj⟩ := mem_product.mp (mem_filter.mp hpair).1
     apply (mem_roots hne).mpr
-    simp only [P,IsRoot,eval_sub,eval_mul,hfit t ht _ (mem_filter.mp hi).1,hfit t ht _ hj]
+    simp only [P,IsRoot,eval_sub,eval_mul,hfit t ht _ (hsub t ht hi),hfit t ht _ hj]
     ring
   simpa only [offDiag_card,card_univ,Nat.mul_sub,Nat.mul_one] using
     card_mul_le_card_mul R hleft hright
+
+/-- Pair incidence bound when every selected label supplies enough nonzero
+anchors. The class-size condition is needed only on those anchors. -/
+theorem nonzero_count (w V : I → F[X]) (B : Finset F) (S : F → Finset I) (a : F → F)
+    (D A s : ℕ) (hw : ∀ i, (w i).natDegree ≤ 1) (hV : ∀ i, (V i).natDegree ≤ s)
+    (hsize : ∀ z ∈ B, A ≤ (S z).card)
+    (hfit : ∀ z ∈ B, ∀ i ∈ S z, (w i).eval z = a z*(V i).eval z)
+    (hanchor : ∀ z ∈ B, A-D ≤ ((S z).filter fun i => (w i).eval z ≠ 0).card)
+    (hclass : ∀ z ∈ B, ∀ i ∈ S z, (w i).eval z ≠ 0 →
+      (univ.filter fun j => w i*V j = w j*V i).card ≤ D) :
+    B.card*(A-D)^2 ≤ Fintype.card I*(Fintype.card I-1)*(s+1) := by
+  classical
+  exact count_with_anchors w V B S (fun z => (S z).filter fun i => (w i).eval z ≠ 0) a
+    D A s hw hV hsize hfit hanchor (fun z _ => filter_subset _ (S z))
+    (fun z hz i hi => hclass z hz i (mem_filter.mp hi).1 (mem_filter.mp hi).2)
 
 /-- Zero multipliers add at most n−A+1 labels when every such support sees a
 nonzero received affine pencil. Only a nonzero multiplier incurs pair counting. -/
@@ -124,6 +138,45 @@ theorem anchors_of_nonzero (dom : I ↪ F) (Q : F[X]) (S : Finset I) (A D : ℕ)
 section MCA
 open Classical
 
+/-- Choose the scalar and anchor sites from one decoding witness after subtracting an affine head. -/
+theorem prepare_witness {I F : Type} [Fintype I] [DecidableEq I] [Field F] [DecidableEq F]
+    (dom : I ↪ F) (u₀ u₁ : I → F) (q₀ q₁ : F[X]) (V : I → F[X]) {D A : ℕ} {z : F}
+    (hq₀ : q₀.natDegree ≤ D) (hq₁ : q₁.natDegree ≤ D)
+    (hit : ∃ (S : Finset I) (P : F[X]) (c : F), A ≤ S.card ∧ P.natDegree ≤ D ∧
+      (∀ i ∈ S, P.eval (dom i) = u₀ i+z*u₁ i) ∧
+      ¬ pairJointAgreesOn (ReedSolomon.code dom (D+1) : Set (I → F)) S u₀ u₁ ∧
+      ∀ i ∈ S, (P-(q₀+C z*q₁)).eval (dom i) = c*(V i).eval z) :
+    let w := residualRow dom u₀ u₁ q₀ q₁
+    ∃ (S : Finset I) (a : F), A ≤ S.card ∧ (∀ i ∈ S, (w i).eval z = a*(V i).eval z) ∧
+      (a ≠ 0 → A-D ≤ (S.filter fun i => (w i).eval z ≠ 0).card) ∧ ∃ i ∈ S, w i ≠ 0 := by
+  classical
+  let w := residualRow dom u₀ u₁ q₀ q₁
+  change ∃ (S : Finset I) (a : F), A ≤ S.card ∧ (∀ i ∈ S, (w i).eval z = a*(V i).eval z) ∧
+    (a ≠ 0 → A-D ≤ (S.filter fun i => (w i).eval z ≠ 0).card) ∧ ∃ i ∈ S, w i ≠ 0
+  obtain ⟨S,P,c,hs,hp,hfold,hind,hdir⟩ := hit
+  let Q := P-(q₀+C z*q₁)
+  have heq (i : I) (hi : i ∈ S) : (w i).eval z = Q.eval (dom i) := by
+    simp only [w,residualRow,Q,eval_sub,eval_mul,eval_add,eval_C,eval_X,hfold i hi]
+    ring
+  have hnon : ∃ i ∈ S, w i ≠ 0 := by
+    by_contra! hnone
+    apply hind
+    refine ⟨ReedSolomon.evalOnPoints dom q₀,ReedSolomon.evalOnPoints_mem_code_of_natDegree_lt (by omega),
+      ReedSolomon.evalOnPoints dom q₁,ReedSolomon.evalOnPoints_mem_code_of_natDegree_lt (by omega),?_⟩
+    intro i hi
+    have hz₀ := congrArg (fun f : F[X] => f.coeff 0) (hnone i hi)
+    have hz₁ := congrArg (fun f : F[X] => f.coeff 1) (hnone i hi)
+    simp [w,residualRow] at hz₀ hz₁
+    exact ⟨(sub_eq_zero.mp hz₀).symm,(sub_eq_zero.mp hz₁).symm⟩
+  by_cases hQ : Q = 0
+  · exact ⟨S,0,hs,fun i hi => by simp [heq i hi,hQ],fun hn => (hn rfl).elim,hnon⟩
+  · refine ⟨S,c,hs,fun i hi => (heq i hi).trans (hdir i hi),fun _ => ?_,hnon⟩
+    have hd : Q.natDegree ≤ D := (natDegree_sub_le ..).trans (max_le hp
+      ((natDegree_add_le ..).trans (max_le hq₀ (natDegree_mul_le.trans (by simpa using hq₁)))))
+    have hS : (S.filter fun i => Q.eval (dom i) ≠ 0) = (S.filter fun i => (w i).eval z ≠ 0) :=
+      filter_congr fun i hi => by rw [heq i hi]
+    exact (anchors_of_nonzero dom Q S A D hs hQ hd).trans_eq (congrArg card hS)
+
 /-- Among arbitrary received rows, bound every selected scalar having a
 nonjoint support and one decoding polynomial in the stated direction. -/
 theorem captured_count {I F : Type} [Fintype I] [DecidableEq I] [Field F] [DecidableEq F]
@@ -144,33 +197,7 @@ theorem captured_count {I F : Type} [Fintype I] [DecidableEq I] [Field F] [Decid
     apply natDegree_add_le_of_degree_le
     · simp
     · exact natDegree_mul_le.trans (by simp)
-  have wit (z : F) (hz : z ∈ B) : ∃ (S : Finset I) (a : F), A ≤ S.card ∧
-      (∀ i ∈ S, (w i).eval z = a*(V i).eval z) ∧
-      (a ≠ 0 → A-D ≤ (S.filter fun i => (w i).eval z ≠ 0).card) ∧
-      (∃ i ∈ S, w i ≠ 0) := by
-    obtain ⟨S,P,c,hs,hp,hfold,hind,hdir⟩ := hcapture z hz
-    let Q := P-(q₀+C z*q₁)
-    have heq (i : I) (hi : i ∈ S) : (w i).eval z = Q.eval (dom i) := by
-      simp only [w,residualRow,Q,eval_sub,eval_mul,eval_add,eval_C,eval_X,hfold i hi]
-      ring
-    have hnon : ∃ i ∈ S, w i ≠ 0 := by
-      by_contra! hnone
-      apply hind
-      refine ⟨ReedSolomon.evalOnPoints dom q₀,ReedSolomon.evalOnPoints_mem_code_of_natDegree_lt (by omega),
-        ReedSolomon.evalOnPoints dom q₁,ReedSolomon.evalOnPoints_mem_code_of_natDegree_lt (by omega),?_⟩
-      intro i hi
-      have hz₀ := congrArg (fun f : F[X] => f.coeff 0) (hnone i hi)
-      have hz₁ := congrArg (fun f : F[X] => f.coeff 1) (hnone i hi)
-      simp [w,residualRow] at hz₀ hz₁
-      exact ⟨(sub_eq_zero.mp hz₀).symm,(sub_eq_zero.mp hz₁).symm⟩
-    by_cases hQ : Q = 0
-    · exact ⟨S,0,hs,fun i hi => by simp [heq i hi,hQ],fun hn => (hn rfl).elim,hnon⟩
-    · refine ⟨S,c,hs,fun i hi => (heq i hi).trans (hdir i hi),fun _ => ?_,hnon⟩
-      have hd : Q.natDegree ≤ D := (natDegree_sub_le ..).trans (max_le hp
-        ((natDegree_add_le ..).trans (max_le hq₀ (natDegree_mul_le.trans (by simpa using hq₁)))))
-      have hS : (S.filter fun i => Q.eval (dom i) ≠ 0) = (S.filter fun i => (w i).eval z ≠ 0) :=
-        filter_congr fun i hi => by rw [heq i hi]
-      exact (anchors_of_nonzero dom Q S A D hs hQ hd).trans_eq (congrArg card hS)
+  have wit := fun z hz => prepare_witness dom u₀ u₁ q₀ q₁ V hq₀ hq₁ (hcapture z hz)
   choose! S a hs hf ha hind using wit
   apply total_count w V B S a D A s hDA hw hV hs hf ha _ (fun z hz _ => hind z hz)
   intro z hz _ i hi hn
