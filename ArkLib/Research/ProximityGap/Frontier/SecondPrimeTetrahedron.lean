@@ -79,11 +79,13 @@ private theorem determinant : ∀ r i j, i ∈ labels r → j ∈ labels r → i
 
 private def dx (r : Fin 16) (i j : Fin 6) := val (first i) r-val (first j) r
 private def dy (r : Fin 16) (i j : Fin 6) := val (second j) r-val (second i) r
-private def representatives (r : Fin 16) (i : Fin 6) : Finset (Fin 6) :=
-  univ.filter fun j => dy r i j ≠ 0 ∧ ∀ k < j, dy r i k ≠ 0 →
-    dx r i j*dy r i k ≠ dx r i k*dy r i j
+/-- A neighboring edge lies in one of the owner's two faces. The opposite
+edge gives the third class of possible directions. -/
+private def face : Fin 6 → Fin 6 → Fin 3 :=
+  ![![0, 0, 1, 0, 1, 2], ![0, 0, 1, 0, 2, 1], ![0, 1, 0, 2, 0, 1], ![0, 0, 2, 0, 1, 1], ![0, 2, 0, 1, 0, 1], ![2, 0, 0, 1, 1, 0]]
 
-private theorem rep_card : ∀ r i, (representatives r i).card ≤ 3 := by decide
+private theorem face_det : ∀ (r : Fin 16) (i j k : Fin 6), i ≠ j → i ≠ k → j ≠ k →
+    face i j = face i k → dx r i j*dy r i k = dx r i k*dy r i j := by decide
 
 /-- At an owned point, the six edges supply at most three finite foreign
 directions. Multiple owners can occur only at one of the four vertex fibers. -/
@@ -96,21 +98,29 @@ theorem owned_limits (r : Fin 16) (i : Fin 6) :
   · exact (by decide : ∀ (r : Fin 16) (i : Fin 6),
       (univ.filter fun j : Fin 6 => val (first j) r = val (first i) r ∧
         val (second j) r = val (second i) r).card ≤ if r.val % 8 < 4 then 3 else 1) r i
-  · let slope (j : Fin 6) := dx r i j / dy r i j
-    suffices h : (univ.filter fun j : Fin 6 => dy r i j ≠ 0).image slope ⊆
-        (representatives r i).image slope from
-      (card_le_card h).trans ((card_image_le).trans (rep_card r i))
+  · classical
+    let S := univ.filter fun j : Fin 6 => dy r i j ≠ 0
+    let slope (j : Fin 6) := dx r i j / dy r i j
+    let pick (e : Fin 3) : F :=
+      if h : ∃ j ∈ S, face i j = e then slope h.choose else 0
+    suffices h : S.image slope ⊆ (univ : Finset (Fin 3)).image pick from
+      (card_le_card h).trans (card_image_le.trans (by simp))
     intro a ha
-    obtain ⟨j,hj,he⟩ := mem_image.mp ha
-    let fiber := univ.filter fun k : Fin 6 => dy r i k ≠ 0 ∧ slope k = a
-    have hn : fiber.Nonempty := ⟨j, mem_filter.mpr ⟨mem_univ _, (mem_filter.mp hj).2, he⟩⟩
-    let k := fiber.min' hn
-    have hk := (mem_filter.mp (fiber.min'_mem hn)).2
-    refine mem_image.mpr ⟨k, mem_filter.mpr ⟨mem_univ _, hk.1, ?_⟩, hk.2⟩
-    intro l hl hden hcross
-    have heq : slope l = slope k := ((div_eq_div_iff hk.1 hden).mpr hcross).symm
-    have hmem : l ∈ fiber := mem_filter.mpr ⟨mem_univ _, hden, heq.trans hk.2⟩
-    exact (not_lt_of_ge (fiber.min'_le l hmem)) hl
+    obtain ⟨j,hj,rfl⟩ := mem_image.mp ha
+    have he : ∃ k ∈ S, face i k = face i j := ⟨j,hj,rfl⟩
+    refine mem_image.mpr ⟨face i j, mem_univ _, ?_⟩
+    simp only [pick, dite_eq_left he]
+    have hk := he.choose_spec
+    have hdj := (mem_filter.mp hj).2
+    have hdk := (mem_filter.mp hk.1).2
+    by_cases hkj : he.choose = j
+    · rw [hkj]
+    apply (div_eq_div_iff hdk hdj).mpr
+    apply face_det _ _ _ _ _ _ hkj hk.2
+    · rintro h
+      exact hdk (by rw [← h]; simp [dy])
+    · rintro h
+      exact hdj (by rw [← h]; simp [dy])
 
 /-- The slot counts at roots, vertex fibers and owned ordinary sites place a
 sharp bound on the smallest active core of any over-budget six-edge allocation. -/
