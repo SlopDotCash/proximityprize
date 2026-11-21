@@ -20,7 +20,8 @@ open Polynomial Finset CoreDefinitions
 
 variable {F I J : Type} [Field F] [DecidableEq F] [Fintype I] [Fintype J]
 
-private theorem coset_equiv (D : I ↪ F) [ReedSolomon.Smooth D] :
+/-- Dividing each smooth evaluation site by its coset representative enumerates the subgroup. -/
+theorem coset_equiv (D : I ↪ F) [ReedSolomon.Smooth D] :
     ∃ e : I ≃ ReedSolomon.Smooth.H D, ∀ i,
       D i = (ReedSolomon.Smooth.a D : F) * ((e i : Fˣ) : F) := by
   classical
