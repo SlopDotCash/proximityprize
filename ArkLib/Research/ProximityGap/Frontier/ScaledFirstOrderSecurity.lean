@@ -5,6 +5,7 @@ SPDX-License-Identifier: MIT OR Apache-2.0
 import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.FirstOrder.AutomaticHybrid
 import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.PowerToLine
 import ArkLib.Data.CodingTheory.ReedSolomon.MutualCorrelatedAgreement.LineToAffine
+import ArkLib.Data.CodingTheory.ReedSolomon.Interleaved.AgreementBounds
 import ArkLib.Data.CodingTheory.HiddenDerivative.Interpolation.FirstOrder.ListBound
 import ArkLib.Data.CodingTheory.ReedSolomon.ListDecodability.Capacity.CodewordBound
 
@@ -194,12 +195,12 @@ private theorem weight_le_scaled {b : ℕ} (hb : 0 < b) (k μ M : ℕ) :
       have h := ih M
       nlinarith [Nat.mul_le_mul_left (μ+1) hb]
 
-private theorem list_of_slots {p b k A m M μ h C : ℕ} [Fact p.Prime]
+private theorem list_of_slots {F : Type*} [Field F] {b k A m M μ h C : ℕ}
     (hb : 0 < b) (hk : 2 ≤ k) (hkA : k < A) (hAn : A ≤ 128)
-    (hμ : μ < 128) (hcost : firstOrderListWeight k μ M ≤ C*(A-k))
+    (hμ : μ < 128) (hfield : ringChar F = 0 ∨ b*128 ≤ ringChar F) (hcost : firstOrderListWeight k μ M ≤ C*(A-k))
     (hslots : rowSlots 128 m M μ h < columnSlots k A m M μ h)
-    (dom : Fin (b*128) ↪ ZMod p) :
-    Code.Lambda (code dom (b*k) : Set (Fin (b*128) → ZMod p)) (1-(A:ℝ)/128) ≤
+    (dom : Fin (b*128) ↪ F) :
+    Code.Lambda (code dom (b*k) : Set (Fin (b*128) → F)) (1-(A:ℝ)/128) ≤
       ((C*(b*128):ℕ):ℕ∞) := by
   classical
   let g := ((A-k:ℕ):ℝ)/128
@@ -219,16 +220,17 @@ private theorem list_of_slots {p b k A m M μ h C : ℕ} [Fact p.Prime]
   apply lambda_le_ceil_of_closePolynomialSet_bound hg (by omega)
   intro f
   rw [h₁]
-  let T := @closePolynomialSet (ZMod p) _ (Classical.decEq _) _ dom f (b*k) (b*A)
+  let T := @closePolynomialSet (F) _ (Classical.decEq _) _ dom f (b*k) (b*A)
   have hbk : 2 ≤ b*k := by nlinarith
   have hdiff : 0 < b*A-b*k+1 := Nat.succ_pos _
-  have hnp : b*128 ≤ p := by simpa using Fintype.card_le_of_injective dom dom.injective
   have hlt : b*k < b*A := Nat.mul_lt_mul_of_pos_left hkA hb
   have hAn' := Nat.mul_le_mul_left b hAn
-  have hchar : ringChar (ZMod p) = 0 ∨ max (b*k-1) μ < ringChar (ZMod p) := by
-    right; rw [ZMod.ringChar_zmod_n]; omega
-  have bound (S : Finset (Polynomial (ZMod p))) (hST : (↑S : Set _) ⊆ T) : S.card ≤ C*(b*128) := by
-    have hpoint (P : Polynomial (ZMod p)) (hP : P ∈ S) :
+  have hchar : ringChar (F) = 0 ∨ max (b*k-1) μ < ringChar (F) := by
+    rcases hfield with hc | hc
+    · exact Or.inl hc
+    · exact Or.inr (by omega)
+  have bound (S : Finset (Polynomial (F))) (hST : (↑S : Set _) ⊆ T) : S.card ≤ C*(b*128) := by
+    have hpoint (P : Polynomial (F)) (hP : P ∈ S) :
         P.degree < b*k ∧ b*A ≤ ({i : Fin (b*128) | P.eval (dom i) = f i} : Set _).ncard := by
       have h := hST hP
       refine ⟨h.1, h.2.trans_eq ?_⟩
@@ -256,24 +258,55 @@ private theorem list_of_slots {p b k A m M μ h C : ℕ} [Fact p.Prime]
   exact_mod_cast h
 
 set_option maxRecDepth 100000 in
-/-- The same radii give a scalar list-size bound linear in n, even when the
-prime field is only large enough to contain the evaluation domain. -/
+/-- Linear list bounds over every field of characteristic zero or at least the block length. -/
+theorem four_field_list_bounds {F : Type*} [Field F] {b : ℕ} (hb : 0 < b)
+    (hfield : ringChar F = 0 ∨ b*128 ≤ ringChar F)
+    (dom : Fin (b*128) ↪ F) :
+    let bounded := fun (k : ℕ) (r : ℝ) (C : ℕ) =>
+      Code.Lambda (code dom (b*k) : Set (Fin (b*128) → F)) r ≤ ((C*(b*128):ℕ):ℕ∞)
+    bounded 64 (39/128) 173373 ∧ bounded 32 (67/128) 113975 ∧
+      bounded 16 (86/128) 58872 ∧ bounded 8 (99/128) 52349 := by
+  obtain ⟨h₁,h₂,h₃,h₄⟩ := four_slot_certificates
+  refine ⟨?_,?_,?_,?_⟩
+  · simpa only [Nat.cast_ofNat, show (1-(89:ℝ)/128) = 39/128 by norm_num] using
+      list_of_slots (C:=173373) hb (by decide) (by decide) (by decide) (by decide) hfield (by decide) h₁ dom
+  · simpa only [Nat.cast_ofNat, show (1-(61:ℝ)/128) = 67/128 by norm_num] using
+      list_of_slots (C:=113975) hb (by decide) (by decide) (by decide) (by decide) hfield (by decide) h₂ dom
+  · simpa only [Nat.cast_ofNat, show (1-(42:ℝ)/128) = 86/128 by norm_num] using
+      list_of_slots (C:=58872) hb (by decide) (by decide) (by decide) (by decide) hfield (by decide) h₃ dom
+  · simpa only [Nat.cast_ofNat, show (1-(29:ℝ)/128) = 99/128 by norm_num] using
+      list_of_slots (C:=52349) hb (by decide) (by decide) (by decide) (by decide) hfield (by decide) h₄ dom
+
+/-- At each prize rate and every prime field admitting the prescribed domain, the
+scalar list size is at most the indicated constant times the block length. -/
 theorem four_list_bounds {p b : ℕ} [Fact p.Prime] (hb : 0 < b)
     (dom : Fin (b*128) ↪ ZMod p) :
     let bounded := fun (k : ℕ) (r : ℝ) (C : ℕ) =>
       Code.Lambda (code dom (b*k) : Set (Fin (b*128) → ZMod p)) r ≤ ((C*(b*128):ℕ):ℕ∞)
     bounded 64 (39/128) 173373 ∧ bounded 32 (67/128) 113975 ∧
       bounded 16 (86/128) 58872 ∧ bounded 8 (99/128) 52349 := by
-  obtain ⟨h₁,h₂,h₃,h₄⟩ := four_slot_certificates
-  refine ⟨?_,?_,?_,?_⟩
-  · simpa only [Nat.cast_ofNat, show (1-(89:ℝ)/128) = 39/128 by norm_num] using
-      list_of_slots (C:=173373) hb (by decide) (by decide) (by decide) (by decide) (by decide) h₁ dom
-  · simpa only [Nat.cast_ofNat, show (1-(61:ℝ)/128) = 67/128 by norm_num] using
-      list_of_slots (C:=113975) hb (by decide) (by decide) (by decide) (by decide) (by decide) h₂ dom
-  · simpa only [Nat.cast_ofNat, show (1-(42:ℝ)/128) = 86/128 by norm_num] using
-      list_of_slots (C:=58872) hb (by decide) (by decide) (by decide) (by decide) (by decide) h₃ dom
-  · simpa only [Nat.cast_ofNat, show (1-(29:ℝ)/128) = 99/128 by norm_num] using
-      list_of_slots (C:=52349) hb (by decide) (by decide) (by decide) (by decide) (by decide) h₄ dom
+  apply four_field_list_bounds hb _ dom
+  right
+  simpa [ZMod.ringChar_zmod_n] using Fintype.card_le_of_injective dom dom.injective
+
+/-- Packing all rows into a rational function preserves the four linear bounds
+at every finite interleaving width and for every domain in a prime field. -/
+theorem four_interleaved_list_bounds {p b : ℕ} [Fact p.Prime] (hb : 0 < b)
+    (dom : Fin (b*128) ↪ ZMod p) (width : ℕ) :
+    let bounded := fun (k : ℕ) (r : ℝ) (C : ℕ) =>
+      Code.Lambda (Code.interleavedCodeSet (κ := Fin width)
+        (code dom (b*k) : Set (Fin (b*128) → ZMod p))) r ≤ ((C*(b*128):ℕ):ℕ∞)
+    bounded 64 (39/128) 173373 ∧ bounded 32 (67/128) 113975 ∧
+      bounded 16 (86/128) 58872 ∧ bounded 8 (99/128) 52349 := by
+  let φ := algebraMap (ZMod p) (RatFunc (ZMod p))
+  have hsize : b*128 ≤ p := by simpa using Fintype.card_le_of_injective dom dom.injective
+  have hchar : ringChar (RatFunc (ZMod p)) = p := ringChar.eq _ p
+  have hlarge : b*128 ≤ ringChar (RatFunc (ZMod p)) := hsize.trans_eq hchar.symm
+  obtain ⟨h₁,h₂,h₃,h₄⟩ := four_field_list_bounds hb (Or.inr hlarge) (dom.trans ⟨φ,φ.injective⟩)
+  exact ⟨(Lambda_interleaved_le_ratFunc dom _ width _).trans h₁,
+    (Lambda_interleaved_le_ratFunc dom _ width _).trans h₂,
+    (Lambda_interleaved_le_ratFunc dom _ width _).trans h₃,
+    (Lambda_interleaved_le_ratFunc dom _ width _).trans h₄⟩
 
 end ProximityGap.ScaledFirstOrderSecurity
 
@@ -282,3 +315,5 @@ end ProximityGap.ScaledFirstOrderSecurity
 #print axioms ProximityGap.ScaledFirstOrderSecurity.below_finite_johnson
 
 #print axioms ProximityGap.ScaledFirstOrderSecurity.four_list_bounds
+
+#print axioms ProximityGap.ScaledFirstOrderSecurity.four_interleaved_list_bounds
