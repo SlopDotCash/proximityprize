@@ -34,7 +34,7 @@ private theorem affine_degree {R : Type*} [CommRing R] [IsDomain R] {f : Polynom
 open Classical in
 /-- A nonlinear irreducible factor carries at most its scalar-value total degree
 in labels from any given base-field secant. -/
-theorem secant_population_le (fam : Family dom δ u) (φ : F →+* K)
+theorem secant_population_le {k : ℕ} (fam : BadScalarRichPointFamily dom k δ u) (φ : F →+* K)
     (f : Polynomial (Polynomial K[X])) (hf : Irreducible f) (hnl : 1 < f.natDegree) (p : F[X] × F[X]) :
     ((pointsOn fam p).filter fun z =>
       f.eval₂ (evalRingHom (C (φ z))) ((fam.q z).map φ) = 0).card ≤ Bivariate.totalDegree f := by
@@ -182,22 +182,20 @@ private theorem double_at_identity (f : Polynomial (Polynomial K[X])) (hf : Irre
   exact not_isUnit_X_sub_C x (isUnit_C.mp (isPrimitive_iff_isUnit_of_C_dvd.mp hp _ hfactor))
 
 open Classical in
-/-- At the second-prime predecessor every irreducible quadratic with discriminant
-equal to a parameter-only polynomial times a square carries at most 184 actual
-rich labels. This includes its exceptional scalar specializations. -/
-theorem parametric_discriminant_population_le (fam : Family dom δ u) (φ : F →+* K)
+/-- If a large set of sections meets the secant extraction criterion, an irreducible quadratic
+with parameter-only discriminant square class supports fewer than that many sections. -/
+theorem parametric_population_of_extraction {k : ℕ} (fam : BadScalarRichPointFamily dom k δ u) (φ : F →+* K)
     (f : Polynomial (Polynomial K[X])) (hf : Irreducible f) (hd : f.natDegree = 2)
     (hweight : Bivariate.totalDegree f ≤ 34) (hchar : (2 : K) ≠ 0)
     (s : K[X]) (V : Polynomial K[X])
     (hdisc : (f.coeff 1)^2 - 4*f.coeff 2*f.coeff 0 = s.map C * V^2)
-    (hn : Fintype.card I = 1073741824)
-    (ht : 357913943 ≤ ⌈(1 - δ) * (Fintype.card I : ℝ≥0)⌉₊) :
-    (fam.G.filter fun z => f.eval₂ (evalRingHom (C (φ z))) ((fam.q z).map φ) = 0).card ≤ 184 := by
+    {m : ℕ} (extract : SecantExtraction fam (m+1)) :
+    (fam.G.filter fun z => f.eval₂ (evalRingHom (C (φ z))) ((fam.q z).map φ) = 0).card ≤ m := by
   classical
   let pop := fam.G.filter fun z => f.eval₂ (evalRingHom (C (φ z))) ((fam.q z).map φ) = 0
-  change pop.card ≤ 184
+  change pop.card ≤ m
   by_contra! hpop
-  obtain ⟨M,hsub,hm⟩ := exists_subset_card_eq (show 185 ≤ pop.card by omega)
+  obtain ⟨M,hsub,hm⟩ := exists_subset_card_eq (show m + 1 ≤ pop.card by omega)
   let site (i : I) (j : ℕ) := (f.coeff j).map (evalRingHom (φ (dom i)))
   let L (i : I) : K[X] := C (φ (u 0 i)) + Polynomial.X*C (φ (u 1 i))
   let R (i : I) := site i 2*(L i)^2 + site i 1*L i + site i 0
@@ -226,7 +224,7 @@ theorem parametric_discriminant_population_le (fam : Family dom δ u) (φ : F �
     have he' := congrArg (fun w : K[X] => w.eval (φ (dom i))) hh
     simpa only [site,eval₂_add,eval₂_mul,eval₂_pow,eval₂_C,eval₂_X,coe_evalRingHom,
       eval_add,eval_mul,eval_pow,at_site,eval_map_apply,eval_zero] using he'
-  obtain ⟨p,_,h35⟩ := many_on_secant fam M (hsub.trans (filter_subset _ _)) hm U hn ht (by
+  obtain ⟨p,_,h35⟩ := extract M (hsub.trans (filter_subset _ _)) hm U (by
     intro i hi
     have hne : R i ≠ 0 := fun hh => hi (mem_filter.mpr ⟨mem_univ _,hh⟩)
     apply (root_bound φ (R i) hne ?_).trans (degR i)
@@ -265,6 +263,20 @@ theorem parametric_discriminant_population_le (fam : Family dom δ u) (φ : F �
     exact mem_filter.mpr ⟨hzp,(mem_filter.mp (hsub hzM)).2⟩
   have hcap := secant_population_le fam φ f hf (by omega) p
   exact (by omega : ¬35 ≤ 34) (h35.trans ((card_le_card hs).trans (hcap.trans hweight)))
+
+open Classical in
+/-- At the second-prime predecessor, the participating scalar square class has at most 184 labels. -/
+theorem parametric_discriminant_population_le (fam : Family dom δ u) (φ : F →+* K)
+    (f : Polynomial (Polynomial K[X])) (hf : Irreducible f) (hd : f.natDegree = 2)
+    (hweight : Bivariate.totalDegree f ≤ 34) (hchar : (2 : K) ≠ 0)
+    (s : K[X]) (V : Polynomial K[X])
+    (hdisc : (f.coeff 1)^2 - 4*f.coeff 2*f.coeff 0 = s.map C * V^2)
+    (hn : Fintype.card I = 1073741824)
+    (ht : 357913943 ≤ ⌈(1 - δ) * (Fintype.card I : ℝ≥0)⌉₊) :
+    (fam.G.filter fun z => f.eval₂ (evalRingHom (C (φ z))) ((fam.q z).map φ) = 0).card ≤ 184 := by
+  apply parametric_population_of_extraction fam φ f hf hd hweight hchar s V hdisc
+  intro M hM hm U
+  exact many_on_secant fam M hM hm U hn ht
 
 #print axioms secant_population_le
 #print axioms parametric_discriminant_population_le
