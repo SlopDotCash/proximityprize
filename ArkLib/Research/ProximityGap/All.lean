@@ -588,6 +588,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeManyHeadCeilings
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeNonlinearObstruction
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeParametricQuadratic
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimePrimitiveSurface
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeQuadraticFactor
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeQuarticInterpolation
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeQuarticWeightBound
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSectionResultant
@@ -639,6 +640,7 @@ import ArkLib.Research.ProximityGap.Frontier.SpurBadPrimeCeiling
 import ArkLib.Research.ProximityGap.Frontier.SpurBadPrimeChebotarev
 import ArkLib.Research.ProximityGap.Frontier.SpurSuccessiveMinimaCount
 import ArkLib.Research.ProximityGap.Frontier.SquareSpecialization
+import ArkLib.Research.ProximityGap.Frontier.SquarefreeCoordinateResultant
 import ArkLib.Research.ProximityGap.Frontier.SquarefreeRetentionFloor
 import ArkLib.Research.ProximityGap.Frontier.StackMaximizerDomination
 import ArkLib.Research.ProximityGap.Frontier.StepanovStructuredVacuous
