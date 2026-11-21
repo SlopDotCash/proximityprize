@@ -51,14 +51,16 @@ theorem chart_resultants (f : k[X][X][X]) (hi : Irreducible f) (hy : f.natDegree
 
 /-- At the lower neighbor of the named endpoint the original sum of received
 multiplicities obeys the geometric bound, with additive defect 402. -/
-theorem received_budget {F I : Type} [Field F] [DecidableEq F] [Fintype I]
+theorem received_budget_of_defect {F I : Type} [Field F] [DecidableEq F] [Fintype I]
     {dom : I ↪ F} {δ : ℝ≥0} {u : Code.WordStack F (Fin 2) I}
     (fam : Family dom δ u) (φ : F →+* k) (p : ℕ) [CharP k p]
     (hp : 1744830589 < p) (f : k[X][X][X]) (hi : Irreducible f)
     (hy : f.natDegree = 3) (hw : weight 67108863 f ≤ 290805098)
     (ht : WeightedSylvesterDegree.TotalDegreeLe f 34) (hproper : Proper f)
-    (hpop : 1431655733 ≤ (population fam φ f).card) :
-    3*totalOrder φ dom u f+35*67108863 ≤ 2*Fintype.card I+16*weight 67108863 f+402 := by
+    (defect : ℕ) (hcount : ∀ g : ℕ,
+      ((population fam φ f).card-161)*(2*(weight 67108863 f-67108863)-g) ≤
+        390*(6*weight 67108863 f-9*67108863-3-g) → 2*(weight 67108863 f-67108863) ≤ g+defect) :
+    3*totalOrder φ dom u f+35*67108863 ≤ 2*Fintype.card I+16*weight 67108863 f+2*defect := by
   classical
   let pmap : k →+* RatFunc k := RatFunc.C
   let : CharP (RatFunc k) p := charP_of_injective_ringHom pmap.injective p
@@ -71,7 +73,7 @@ theorem received_budget {F I : Type} [Field F] [DecidableEq F] [Fintype I]
   have h₃' : (3:RatFunc k) ≠ 0 := by simpa only [map_ofNat,map_zero] using pmap.injective.ne h₃
   let dom' := dom.trans (⟨φ,φ.injective⟩ : F ↪ k)
   let sites := Finset.univ.map dom'
-  obtain ⟨hl,a,ha,hg⟩ := PopulatedCubicChart.select fam φ h₃ f hi hy hw ht hpop sites
+  obtain ⟨hl,a,ha,hg⟩ := PopulatedCubicChart.select_inequality fam φ h₃ f hi hy hw ht sites
   let w := weight 67108863 f
   let C₀ := chart a w 67108863 (orient f)
   have hprim := PrimitiveIntegralSectionChart.primitive_of_original f hi (by omega) a 67108863
@@ -87,12 +89,27 @@ theorem received_budget {F I : Type} [Field F] [DecidableEq F] [Fintype I]
     (by omega) (by decide) hraw a dom' (fun i => φ (u 0 i)) (fun i => φ (u 1 i)) (by
       intro i h
       exact ha (h ▸ Finset.mem_map_of_mem dom' (Finset.mem_univ i))) hprim
-  have hbound := IntegralPolarDescent.order_budget C₀ w p hl (by dsimp [w]; omega)
+  have hbound := IntegralPolarDescent.order_budget_of_defect C₀ w p defect hl (by dsimp [w]; omega)
     (coordinate_weight a w 67108863 (orient f) hp₀)
-    (OriginalCubicResultants.chart_bounds f hy 67108863 a).1 hprim h₂' h₃' hval hhes hg D l r hsite
+    (OriginalCubicResultants.chart_bounds f hy 67108863 a).1 hprim h₂' h₃' hval hhes (fun c b hc hb => hcount _ (hg c b hc hb)) D l r hsite
   change totalOrder φ dom u f ≤ ∑ α ∈ D, r α at hs
   rw [hD] at hbound
   exact (Nat.add_le_add_right (Nat.mul_le_mul_left 3 hs) _).trans hbound
+
+/-- The named terminal population gives an additive defect of 402. -/
+theorem received_budget {F I : Type} [Field F] [DecidableEq F] [Fintype I]
+    {dom : I ↪ F} {δ : ℝ≥0} {u : Code.WordStack F (Fin 2) I}
+    (fam : Family dom δ u) (φ : F →+* k) (p : ℕ) [CharP k p]
+    (hp : 1744830589 < p) (f : k[X][X][X]) (hi : Irreducible f)
+    (hy : f.natDegree = 3) (hw : weight 67108863 f ≤ 290805098)
+    (ht : WeightedSylvesterDegree.TotalDegreeLe f 34) (hproper : Proper f)
+    (hpop : 1431655733 ≤ (population fam φ f).card) :
+    3*totalOrder φ dom u f+35*67108863 ≤ 2*Fintype.card I+16*weight 67108863 f+402 := by
+  apply received_budget_of_defect fam φ p hp f hi hy hw ht hproper 201
+  intro g H
+  have hN : 1342177085 ≤ (population fam φ f).card-161 := by omega
+  have h := (Nat.mul_le_mul_right _ hN).trans H
+  omega
 
 open _root_.ProximityGap
 open _root_.ProximityGap.SecondPrimeCubicOnly _root_.ProximityGap.TerminalCollinearHeadCount

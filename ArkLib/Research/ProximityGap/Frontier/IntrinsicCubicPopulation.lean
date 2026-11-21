@@ -199,16 +199,17 @@ open HalfPredecessorBadEventRichPointBridge HalfPredecessorLineCoreGeometry Seco
 
 /-- The order estimate is needed only on a proper, populated original cubic.
 Every other geometric and dimension condition here is derived from Q. -/
-theorem actual_cubic_population [DecidableEq F] (φ : F →+* K) {p : ℕ} [CharP K p] (hp : 276 < p)
+theorem actual_cubic_population_at [DecidableEq F] (φ : F →+* K) {p : ℕ} [CharP K p] (hp : 276 < p)
     (dom : I ↪ F) (δ : ℝ≥0) (u : Code.WordStack F (Fin 2) I)
     (hn : Fintype.card I = 1073741824) (ht : 357913943 ≤ ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊)
     (fam : BadScalarRichPointFamily dom 67108864 δ u) (Q f : K[X][X][X]) (hQ : Q ≠ 0)
     (hi : Irreducible f) (hd : f ∣ Q) (hf : f.natDegree = 3)
     (hs : ∀ j i a, ((Q.coeff j).coeff i).coeff a ≠ 0 → i+j ≤ 34)
     (hw : weight d f ≤ 290805098)
-    (hR : Proper f → 1431655733 ≤ (population fam φ f).card →
+    (cutoff : ℕ) (hc : 1200005270 < cutoff)
+    (hR : Proper f → cutoff ≤ (population fam φ f).card →
       3*(totalOrder φ dom u f:ℤ) ≤ 2*1073741824+16*(weight d f:ℤ)-35*67108863+532) :
-    (population fam φ f).card < 1431655733 := by
+    (population fam φ f).card < cutoff := by
   classical
   by_contra! hlarge
   have htotal := SecondPrimeSectionResultant.factor_triangle hQ hd hs
@@ -229,14 +230,27 @@ theorem actual_cubic_population [DecidableEq F] (φ : F →+* K) {p : ℕ} [Char
         change ((fam.q z).map φ).eval (φ (dom i)) = _
         rw [eval_map_apply]
         exact (congrArg φ (Finset.mem_filter.mp hi).2).trans (by simp only [map_add,map_mul]))
-    exact (by decide : ¬1431655733 ≤ 1200005270) (hlarge.trans hc)
+    exact (show ¬ cutoff ≤ 1200005270 by omega) (hlarge.trans hc)
   · have hflat := Classical.not_not.mp (show ¬¬_ from hproper)
     have he := local_generic f hi (by omega)
     have hh := ReverseHessianAffineSection.card_embedded_scalar_le_one ((RatFunc.C : K →+* RatFunc K).comp φ)
       (localPlane f) he.2 he.1 (by rw [local_degree,hf]; decide) (by rw [local_degree,hf]; decide)
       (by rw [local_degree,hf]; omega) 34 (flat_height f htotal) hp (flat_of_not_proper f hi (by omega) hflat) G
       (fun z hz => ⟨_,flat_root f (φ z) ((fam.q z).map φ) (hroot z hz)⟩)
-    exact (by decide : ¬1431655733 ≤ 1) (hlarge.trans hh)
+    exact (show ¬ cutoff ≤ 1 by omega) (hlarge.trans hh)
+
+/-- A uniform received-order estimate excludes the named terminal population. -/
+theorem actual_cubic_population [DecidableEq F] (φ : F →+* K) {p : ℕ} [CharP K p] (hp : 276 < p)
+    (dom : I ↪ F) (δ : ℝ≥0) (u : Code.WordStack F (Fin 2) I)
+    (hn : Fintype.card I = 1073741824) (ht : 357913943 ≤ ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊)
+    (fam : BadScalarRichPointFamily dom 67108864 δ u) (Q f : K[X][X][X]) (hQ : Q ≠ 0)
+    (hi : Irreducible f) (hd : f ∣ Q) (hf : f.natDegree = 3)
+    (hs : ∀ j i a, ((Q.coeff j).coeff i).coeff a ≠ 0 → i+j ≤ 34)
+    (hw : weight d f ≤ 290805098)
+    (hR : Proper f → 1431655733 ≤ (population fam φ f).card →
+      3*(totalOrder φ dom u f:ℤ) ≤ 2*1073741824+16*(weight d f:ℤ)-35*67108863+532) :
+    (population fam φ f).card < 1431655733 :=
+  actual_cubic_population_at φ hp dom δ u hn ht fam Q f hQ hi hd hf hs hw 1431655733 (by decide) hR
 
 end ArkLib.ProximityGap.Frontier.IntrinsicCubicPopulation
 

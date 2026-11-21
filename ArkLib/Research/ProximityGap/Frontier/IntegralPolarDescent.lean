@@ -133,8 +133,8 @@ set_option maxRecDepth 5000 in
 set_option maxHeartbeats 1000000 in
 /-- Lower bounds on the gcd for all nonzero integral polar pairs imply the absolute
 received-site order bound on the rational-function cubic. -/
-theorem order_budget [Infinite k] [Differential (RatFunc k)]
-    (C₀ : k[X][X][X]) (w p : ℕ) [CharP (RatFunc k) p]
+theorem order_budget_of_defect [Infinite k] [Differential (RatFunc k)]
+    (C₀ : k[X][X][X]) (w p defect : ℕ) [CharP (RatFunc k) p]
     (hw : 201326589 ≤ w) (hp : 6*w-9*67108863-3 < p)
     (hW : ∀ j, C₀.coeff j ≠ 0 → (C₀.coeff j).natDegree + 67108863*j ≤ w)
     (hf : (generic C₀).natDegree = 3) (hprim : (generic C₀).IsPrimitive)
@@ -145,11 +145,11 @@ theorem order_budget [Infinite k] [Differential (RatFunc k)]
       IntegralOrdinaryPolars.polarResultant C₀ (C c₂) ≠ 0 →
       2*(w-67108863) ≤ OrdinaryPolarGcdBudget.genericDegree
         (IntegralOrdinaryPolars.polarResultant C₀ (C c₁))
-        (IntegralOrdinaryPolars.polarResultant C₀ (C c₂)) + 201)
+        (IntegralOrdinaryPolars.polarResultant C₀ (C c₂)) + defect)
     (D : Finset (RatFunc k)) (l : RatFunc k → RatFunc k) (r : RatFunc k → ℕ)
     (hsite : ∀ α ∈ D, α′ = 0 ∧ (l α)′′ = 0 ∧ ∃ i, TruncatedJetMultipliers.Leader
       (ReceivedJetContact.shifted (generic C₀) α (l α)) (r α) i) :
-    3*(∑ α ∈ D, r α) + 35*67108863 ≤ 2*D.card + 16*w + 402 := by
+    3*(∑ α ∈ D, r α) + 35*67108863 ≤ 2*D.card + 16*w + 2*defect := by
   classical
   obtain ⟨c, _, hcr, hA, hAp⟩ := bounded_first C₀ w 67108863 p (by decide) (by omega)
     hW hp hf hprim h₂ h₃ hV ∅
@@ -168,7 +168,7 @@ theorem order_budget [Infinite k] [Differential (RatFunc k)]
       (IntegralOrdinaryPolars.polarResultant C₀ (C b)) = (GCDMonoid.gcd A B).natDegree := by
     exact (genericDegree_eq _ _).trans (congrArg
       (fun t : (RatFunc k)[X] => (GCDMonoid.gcd A t).natDegree) hBmap)
-  have hdg := hdg₀.trans_eq (congrArg (fun q : ℕ => q+201) hgcd)
+  have hdg := hdg₀.trans_eq (congrArg (fun q : ℕ => q+defect) hgcd)
   have hg : Bivariate.natWeightedDegree (generic C₀) 1 67108863 ≤ w := by
     apply Finset.sup_le
     intro j hj
@@ -184,6 +184,25 @@ theorem order_budget [Infinite k] [Differential (RatFunc k)]
   dsimp only [B] at hdg
   clear * - hbudget hweight hdg hw
   omega
+
+/-- The rich terminal chart has defect 201. -/
+theorem order_budget [Infinite k] [Differential (RatFunc k)]
+    (C₀ : k[X][X][X]) (w p : ℕ) [CharP (RatFunc k) p]
+    (hw : 201326589 ≤ w) (hp : 6*w-9*67108863-3 < p)
+    (hW : ∀ j, C₀.coeff j ≠ 0 → (C₀.coeff j).natDegree + 67108863*j ≤ w)
+    (hf : (generic C₀).natDegree = 3) (hprim : (generic C₀).IsPrimitive)
+    (h₂ : (2 : RatFunc k) ≠ 0) (h₃ : (3 : RatFunc k) ≠ 0)
+    (hV : (generic C₀).resultant (generic C₀).derivative 3 3 ≠ 0)
+    (hH : (generic C₀).resultant (ScalarHessianLocalOrder.hessian (generic C₀)) 3 7 ≠ 0)
+    (hpolar : ∀ c₁ c₂ : k, IntegralOrdinaryPolars.polarResultant C₀ (C c₁) ≠ 0 →
+      IntegralOrdinaryPolars.polarResultant C₀ (C c₂) ≠ 0 →
+      2*(w-67108863) ≤ OrdinaryPolarGcdBudget.genericDegree
+        (IntegralOrdinaryPolars.polarResultant C₀ (C c₁))
+        (IntegralOrdinaryPolars.polarResultant C₀ (C c₂)) + 201)
+    (D : Finset (RatFunc k)) (l : RatFunc k → RatFunc k) (r : RatFunc k → ℕ)
+    (hsite : ∀ α ∈ D, α′ = 0 ∧ (l α)′′ = 0 ∧ ∃ i, TruncatedJetMultipliers.Leader
+      (ReceivedJetContact.shifted (generic C₀) α (l α)) (r α) i) :
+    3*(∑ α ∈ D, r α) + 35*67108863 ≤ 2*D.card + 16*w + 402 := order_budget_of_defect C₀ w p 201 hw hp hW hf hprim h₂ h₃ hV hH hpolar D l r hsite
 
 end ArkLib.ProximityGap.Frontier.IntegralPolarDescent
 

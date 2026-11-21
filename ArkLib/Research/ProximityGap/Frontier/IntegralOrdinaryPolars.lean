@@ -161,6 +161,34 @@ theorem section_square (F : K[X][X][X]) (slope z : K) (q : K[X]) (hd : F.natDegr
 
 /-- Two actual ordinary polar resultants of a raw cubic in a chart with simple
 full-degree residuals force the terminal generic gcd. -/
+theorem supported_gcd_inequality (F : K[X][X][X]) (c₁ c₂ : K) (w : ℕ)
+    (hw : 201326589 ≤ w) (hd : F.natDegree ≤ 3)
+    (hW : ∀ j, F.coeff j ≠ 0 → (F.coeff j).natDegree+67108863*j ≤ w)
+    (hM : ∀ j, F.coeff j ≠ 0 → Bivariate.degreeX (F.coeff j)+j ≤ 34)
+    (h₁ : polarResultant F (C c₁) ≠ 0) (h₂ : polarResultant F (C c₂) ≠ 0)
+    (S : Finset K) (q : K → K[X])
+    (hroot : ∀ z ∈ S, (F.map (mapRingHom (evalRingHom z))).eval (q z) = 0)
+    (hdeg : ∀ z ∈ S, ((F.map (mapRingHom (evalRingHom z))).derivative.eval (q z)).natDegree =
+      w-67108863) :
+    let g := OrdinaryPolarGcdBudget.genericDegree (polarResultant F (C c₁)) (polarResultant F (C c₂))
+    S.card*(2*(w-67108863)-g) ≤ 390*(6*w-9*67108863-3-g) := by
+  dsimp only
+  rw [show (390:ℕ) = 195*2 by decide, mul_assoc, Nat.mul_comm 195 _]
+  apply OrdinaryPolarCappedGcd.gcd_budget _ _ h₁ h₂ _ 195 _
+    (coordinate_bound _ _ _ _ (by decide) (by omega) hW)
+    (coordinate_bound _ _ _ _ (by decide) (by omega) hW)
+    (scalar_bound _ _ 34 hM) (scalar_bound _ _ 34 hM) (by omega) S
+    (fun z => (F.map (mapRingHom (evalRingHom z))).derivative.eval (q z))
+  intro z hz
+  have hdeg' := hdeg z hz
+  have hn : (F.map (mapRingHom (evalRingHom z))).derivative.eval (q z) ≠ 0 := by
+    intro h
+    rw [h,natDegree_zero] at hdeg'
+    omega
+  exact ⟨hn,hdeg',section_square F c₁ z _ hd (hroot z hz) hn,
+    section_square F c₂ z _ hd (hroot z hz) hn⟩
+
+/-- A population at the terminal cutoff gives defect at most 201. -/
 theorem supported_gcd_lower (F : K[X][X][X]) (c₁ c₂ : K) (w : ℕ)
     (hw : 201326589 ≤ w) (hw' : w ≤ 290805098) (hd : F.natDegree ≤ 3)
     (hW : ∀ j, F.coeff j ≠ 0 → (F.coeff j).natDegree+67108863*j ≤ w)
@@ -172,19 +200,9 @@ theorem supported_gcd_lower (F : K[X][X][X]) (c₁ c₂ : K) (w : ℕ)
       w-67108863) :
     2*(w-67108863) ≤ OrdinaryPolarGcdBudget.genericDegree
       (polarResultant F (C c₁)) (polarResultant F (C c₂)) + 201 := by
-  apply OrdinaryPolarCappedGcd.production_gcd_lower _ _ h₁ h₂ w hw hw'
-    (coordinate_bound _ _ _ _ (by decide) (by omega) hW)
-    (coordinate_bound _ _ _ _ (by decide) (by omega) hW)
-    (scalar_bound _ _ 34 hM) (scalar_bound _ _ 34 hM) S hS
-    (fun z => (F.map (mapRingHom (evalRingHom z))).derivative.eval (q z))
-  intro z hz
-  have hdeg' := hdeg z hz
-  have hn : (F.map (mapRingHom (evalRingHom z))).derivative.eval (q z) ≠ 0 := by
-    intro h
-    rw [h,natDegree_zero] at hdeg'
-    omega
-  exact ⟨hn,hdeg',section_square F c₁ z _ hd (hroot z hz) hn,
-    section_square F c₂ z _ hd (hroot z hz) hn⟩
+  have h := supported_gcd_inequality F c₁ c₂ w hw hd hW hM h₁ h₂ S q hroot hdeg
+  have hh := (Nat.mul_le_mul_right _ hS).trans h
+  omega
 
 #print axioms supported_gcd_lower
 #print axioms section_square

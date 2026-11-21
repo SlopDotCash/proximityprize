@@ -168,12 +168,12 @@ theorem common_chart [Infinite K] {L : Type*} [Field L] (φ : K →+* L)
 /-- A raw irreducible cubic at terminal population supplies a common chart
 and the ordinary-polar gcd lower bound on that same transformed equation.
 All simple sections, scalar labels, and their received values are retained. -/
-theorem production_chart [Infinite K] (p₃ : (3:K) ≠ 0)
+theorem production_chart_inequality [Infinite K] (p₃ : (3:K) ≠ 0)
     (f : K[X][X][X]) (hi : Irreducible f) (hd : f.natDegree = 3)
-    (w : ℕ) (hw : 201326589 ≤ w) (hw' : w ≤ 290805098)
+    (w : ℕ) (hw : 201326589 ≤ w)
     (hW : ∀ j, f.coeff j ≠ 0 → Bivariate.degreeX (f.coeff j)+67108863*j ≤ w)
     (hM : WeightedSylvesterDegree.TotalDegreeLe f 34)
-    (G sites : Finset K) (hG : 1342177249 ≤ G.card) (q : K → K[X])
+    (G sites : Finset K) (q : K → K[X])
     (hq : ∀ z ∈ G, (q z).natDegree ≤ 67108863)
     (hroot : ∀ z ∈ G, f.eval₂ (evalRingHom (C z)) (q z) = 0)
     {L : Type*} [Field L] (φ : K →+* L) (tests : Finset L[X]) (htests : ∀ t ∈ tests, t ≠ 0) :
@@ -186,9 +186,9 @@ theorem production_chart [Infinite K] (p₃ : (3:K) ≠ 0)
         (change r 67108863 (q z)).eval (x-r)⁻¹ = (x-r)⁻¹^67108863*v ↔ (q z).eval x = v) ∧
       ∀ c₁ c₂ : K, IntegralOrdinaryPolars.polarResultant F (C c₁) ≠ 0 →
         IntegralOrdinaryPolars.polarResultant F (C c₂) ≠ 0 →
-        2*(w-67108863) ≤ OrdinaryPolarGcdBudget.genericDegree
-          (IntegralOrdinaryPolars.polarResultant F (C c₁))
-          (IntegralOrdinaryPolars.polarResultant F (C c₂)) + 201 := by
+        let g := OrdinaryPolarGcdBudget.genericDegree
+          (IntegralOrdinaryPolars.polarResultant F (C c₁)) (IntegralOrdinaryPolars.polarResultant F (C c₂))
+        (G.card-161)*(2*(w-67108863)-g) ≤ 390*(6*w-9*67108863-3-g) := by
   classical
   let mult (z : K) := f.derivative.eval₂ (evalRingHom (C z)) (q z) = 0
   let S := G.filter (fun z => ¬ mult z)
@@ -213,10 +213,42 @@ theorem production_chart [Infinite K] (p₃ : (3:K) ≠ 0)
       rw [fiber_orient,derivative_map,eval_map]; exact (mem_filter.mp hz).2)
   refine ⟨S,r,hs,by omega,hr,ht,hinj,h,?_⟩
   intro c₁ c₂ ha hb
-  apply IntegralOrdinaryPolars.supported_gcd_lower _ c₁ c₂ w hw hw' ((chart_natDegree ..).le.trans hdo)
+  apply le_trans (Nat.mul_le_mul_right _ (show G.card-161 ≤ S.card by omega))
+  apply IntegralOrdinaryPolars.supported_gcd_inequality _ c₁ c₂ w hw ((chart_natDegree ..).le.trans hdo)
     (coordinate_weight r w 67108863 (orient f) hw₀) (scalar_weight r w 67108863 34 (orient f) hm₀)
-    ha hb S (by omega) (fun z => change r 67108863 (q z))
+    ha hb S (fun z => change r 67108863 (q z))
     (fun z hz => (h z hz).1) (fun z hz => (h z hz).2.1)
+
+/-- At the terminal cutoff the same chart gives defect at most 201. -/
+theorem production_chart [Infinite K] (p₃ : (3:K) ≠ 0)
+    (f : K[X][X][X]) (hi : Irreducible f) (hd : f.natDegree = 3)
+    (w : ℕ) (hw : 201326589 ≤ w) (hw' : w ≤ 290805098)
+    (hW : ∀ j, f.coeff j ≠ 0 → Bivariate.degreeX (f.coeff j)+67108863*j ≤ w)
+    (hM : WeightedSylvesterDegree.TotalDegreeLe f 34)
+    (G sites : Finset K) (hG : 1342177249 ≤ G.card) (q : K → K[X])
+    (hq : ∀ z ∈ G, (q z).natDegree ≤ 67108863)
+    (hroot : ∀ z ∈ G, f.eval₂ (evalRingHom (C z)) (q z) = 0)
+    {L : Type*} [Field L] (φ : K →+* L) (tests : Finset L[X]) (htests : ∀ t ∈ tests, t ≠ 0) :
+    ∃ (S : Finset K) (r : K), S ⊆ G ∧ G.card ≤ S.card+161 ∧ r ∉ sites ∧
+      (∀ p ∈ tests, p.eval (φ r) ≠ 0) ∧ Function.Injective (fun x : K => (x-r)⁻¹) ∧
+      let F := chart r w 67108863 (orient f)
+      (∀ z ∈ S, (fiber F z).eval (change r 67108863 (q z)) = 0 ∧
+        ((fiber F z).derivative.eval (change r 67108863 (q z))).natDegree = w-67108863 ∧
+        (change r 67108863 (q z)).natDegree ≤ 67108863 ∧ ∀ x ∈ sites, ∀ v : K,
+        (change r 67108863 (q z)).eval (x-r)⁻¹ = (x-r)⁻¹^67108863*v ↔ (q z).eval x = v) ∧
+      ∀ c₁ c₂ : K, IntegralOrdinaryPolars.polarResultant F (C c₁) ≠ 0 →
+        IntegralOrdinaryPolars.polarResultant F (C c₂) ≠ 0 →
+        2*(w-67108863) ≤ OrdinaryPolarGcdBudget.genericDegree
+          (IntegralOrdinaryPolars.polarResultant F (C c₁))
+          (IntegralOrdinaryPolars.polarResultant F (C c₂)) + 201 := by
+  obtain ⟨S,r,hs,hN,hr,ht,hinj,hsec,hg⟩ := production_chart_inequality p₃ f hi hd w hw
+    hW hM G sites q hq hroot φ tests htests
+  refine ⟨S,r,hs,hN,hr,ht,hinj,hsec,?_⟩
+  intro c₁ c₂ h₁ h₂
+  have H := hg c₁ c₂ h₁ h₂
+  have hmin : 1342177085 ≤ G.card-161 := by omega
+  have h := (Nat.mul_le_mul_right _ hmin).trans H
+  omega
 
 #print axioms production_chart
 #print axioms common_chart
