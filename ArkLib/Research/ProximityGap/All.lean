@@ -298,6 +298,7 @@ import ArkLib.Research.ProximityGap.Frontier.FirstInteriorLevelDirectionBlind
 import ArkLib.Research.ProximityGap.Frontier.FirstOrderChargeFloor
 import ArkLib.Research.ProximityGap.Frontier.FirstOrderDegreeOneBoundary
 import ArkLib.Research.ProximityGap.Frontier.FirstOrderZeroCapJohnson
+import ArkLib.Research.ProximityGap.Frontier.FirstPrimeSepticCores
 import ArkLib.Research.ProximityGap.Frontier.FisherLevelLocked
 import ArkLib.Research.ProximityGap.Frontier.FisherRSListCap
 import ArkLib.Research.ProximityGap.Frontier.FloorAsymptoticRadius
