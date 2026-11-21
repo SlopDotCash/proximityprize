@@ -59,12 +59,14 @@ def packingBoundary (n k q m B : ℕ) : Boundary n :=
     some ⟨if count ≤ B then n - k + 1 else n - k, by split <;> omega⟩
   else none
 
-omit [DecidableEq I] in
+omit [DecidableEq F] [DecidableEq I] in
 /-- A returned packing cutoff is the rank answer on every injective domain of the supplied size. -/
 theorem packingBoundary_correct [Fintype I] [Nonempty I] [Fintype F]
     (D : I ↪ F) (ε : NNReal) (k m : ℕ) {e : Fin (Fintype.card I + 1)}
-    (result : packingBoundary (Fintype.card I) k (Fintype.card F) m (RankReview.budget F ε) = some e) :
+    (result : packingBoundary (Fintype.card I) k (Fintype.card F) m (RankReview.budget F ε) =
+      some e) :
     some e = RankReview.listAnswer D ε k m := by
+  classical
   unfold packingBoundary at result
   dsimp only at result
   split at result
@@ -81,7 +83,8 @@ theorem packingBoundary_correct [Fintype I] [Nonempty I] [Fintype F]
     intro δ _
     refine (ListSupportRank.lambda_le_floor_iff (K := F) (I := I) (A := Fin m → F)
       (ListInterpolationBoundary.words D k m) (δ : ℝ) ε).trans ?_
-    have spec := ListInterpolationBoundary.good_iff D hkp hk hm (Nat.le_of_lt_succ packed) hq (δ : ℝ)
+    have spec := ListInterpolationBoundary.good_iff D hkp hk hm
+      (Nat.le_of_lt_succ packed) hq (δ : ℝ)
     refine spec.trans ?_
     dsimp only
     rw [hc, ← NNReal.coe_lt_coe, NNReal.coe_div, NNReal.coe_natCast, NNReal.coe_natCast]
@@ -128,16 +131,18 @@ theorem listBoundary_eq [Fintype I] [Fintype F] (points : List I) (hp : ∀ i, i
 def twoCheckBoundary (n B : ℕ) : Boundary n :=
   if B = 0 then some 0 else if h : n ≤ B then none else some ⟨1, by omega⟩
 
-private theorem twoCheckBoundary_eq_scan {n k : ℕ} [Fintype I] [Nonempty I] [Fintype F]
+private theorem twoCheckBoundary_eq_scan {n k : ℕ} [Finite I] [Nonempty I] [Finite F]
     [SampleableType F] (E : Fin n ≃ I) (labels : List F) (hl : ∀ g, g ∈ labels)
-    (D : I ↪ F) (B : ℕ) (hn : n = k+2) :
+    (D : I ↪ F) (B : ℕ) (hn : n = k + 2) :
     twoCheckBoundary n B =
-      scan n (fun e => SimultaneousSupportGaussian.anchoredSafe E labels D k B (n-e.val)) := by
-  let safe (e : Fin (n+1)) := SimultaneousSupportGaussian.anchoredSafe E labels D k B (n-e.val)
+      scan n (fun e => SimultaneousSupportGaussian.anchoredSafe E labels D k B (n - e.val)) := by
+  let _ := Fintype.ofFinite I
+  let _ := Fintype.ofFinite F
+  let safe (e : Fin (n + 1)) := SimultaneousSupportGaussian.anchoredSafe E labels D k B (n - e.val)
   have card : Fintype.card I = n := (Fintype.card_congr E).symm.trans (Fintype.card_fin n)
   have npos : (0 : ℝ≥0) < n := by exact_mod_cast (show 0 < n by omega)
   have qnz : (Fintype.card F : ℝ≥0∞) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
-  have test (e : Fin (n+1)) : (!safe e) = true ↔ B < (if e.val = 0 then 1 else n) := by
+  have test (e : Fin (n + 1)) : (!safe e) = true ↔ B < (if e.val = 0 then 1 else n) := by
     have prob := SimultaneousSupportGaussian.anchoredSafe_iff E labels hl D k B e.val (by omega)
     have grid := epsMCA_eq_mcaError (ReedSolomon.code D k) ((e.val : ℝ≥0)/n)
     rw [TwoParityMca.profile D (card.trans hn), card] at grid
@@ -156,21 +161,21 @@ private theorem twoCheckBoundary_eq_scan {n k : ℕ} [Fintype I] [Nonempty I] [F
   unfold twoCheckBoundary
   split_ifs with hz hb
   · symm
-    change (0 : Fin (n+1)) ∈ Fin.find? _
+    change (0 : Fin (n + 1)) ∈ Fin.find? _
     exact Fin.mem_find?_iff.mpr ⟨(test 0).mpr (by simp [hz]), by simp⟩
   · symm
-    have never : ¬ ∃ e, (!safe e)=true := by
+    have never : ¬ ∃ e, (!safe e) = true := by
       rintro ⟨e, he⟩
       have h := (test e).mp he
       split_ifs at h <;> omega
     simp only [Fin.find?_eq_dite, never, dite_false]
-  · let one : Fin (n+1) := ⟨1, by omega⟩
+  · let one : Fin (n + 1) := ⟨1, by omega⟩
     symm
     change one ∈ Fin.find? _
     apply Fin.mem_find?_iff.mpr
     refine ⟨(test one).mpr (by simpa [one] using Nat.lt_of_not_ge hb), ?_⟩
     intro j hj hjbad
-    have zero : j.val=0 := by change j.val < 1 at hj; omega
+    have zero : j.val = 0 := by change j.val < 1 at hj; omega
     have h := (test j).mp hjbad
     simp [zero] at h
     omega
@@ -180,11 +185,13 @@ dimension, and scalar budget. -/
 def circuitsCovered (n k B : ℕ) : Bool :=
   BoundedChoose.capped n (k + 1) (B + 1) ≤ B
 
+omit [DecidableEq F] [DecidableEq I] in
 /-- A successful circuit count certificate makes the entire MCA grid safe on every domain. -/
 theorem circuitsCovered_correct [Fintype I] [Nonempty I] [Fintype F] [SampleableType F]
     (D : I ↪ F) (ε : ℝ≥0) (k : ℕ)
     (covered : circuitsCovered (Fintype.card I) k (RankReview.budget F ε) = true) :
     none = RankReview.mcaAnswer D ε k := by
+  classical
   apply correctBoundary_unique Fintype.card_pos _ (RankReview.mcaAnswer_correct D ε k)
   intro δ hδ
   simp only [iff_true]

@@ -6,9 +6,10 @@ import ArkLib.Research.ProximityGap.JointAdjacentFieldReview
 
 /-! # Comparing the two operational answers to the capacity radius
 
-The capacity radius has numerator `n - k`. An MCA failure occurs at least one
-step earlier or the entire grid is safe. For lists a single binomial test
-decides whether the first failure occurs above capacity at any tolerance below one.
+Arnon, Boneh and Fenzi call the relative minimum distance the capacity radius.
+Its error count is `n - k + 1`. Every finite MCA first failure occurs at least
+two errors earlier. At tolerance below one, one binomial comparison decides
+whether list decoding first fails at capacity or strictly below it.
 -/
 
 namespace ProximityPrize.CapacityBoundaryReview
@@ -53,7 +54,7 @@ theorem mca_ceiling (D : I ↪ F) [ReedSolomon.Smooth D] (ε : ℝ≥0)
   have hone := last.mp (plateau ▸ hgood)
   exact ((div_le_one hn).mpr (by exact_mod_cast Nat.le_of_lt_succ e.isLt)).not_gt hone
 
-/-- A list first fails at the minimum distance, one error beyond capacity,
+/-- A list first fails at the sponsor’s capacity radius (the minimum distance)
 exactly when the budget covers `choose n k`. -/
 theorem list_minimum_iff (D : I ↪ F) [ReedSolomon.Smooth D] (ε : ℝ≥0) (hε : ε < 1)
     {k m : ℕ} (hk : 0 < k) [NeZero m] (hr : hasPrizeRate (Fintype.card I) k) :
@@ -85,7 +86,7 @@ theorem list_minimum_iff (D : I ↪ F) [ReedSolomon.Smooth D] (ε : ℝ≥0) (h�
     ((RankReview.correctForEveryDomain D ε k hr).2 m (NeZero.pos m)) step)
 
 /-- When the list budget misses the binomial count, the first failure occurs
-at or below capacity at every positive width. This includes a zero budget. -/
+at least one error below capacity at every positive width. This includes a zero budget. -/
 theorem list_ceiling (D : I ↪ F) [ReedSolomon.Smooth D] (ε : ℝ≥0) {k m : ℕ}
     (hk : 0 < k) [NeZero m] (hr : hasPrizeRate (Fintype.card I) k)
     (hB : RankReview.budget F ε < (Fintype.card I).choose k) :
@@ -118,7 +119,7 @@ theorem list_ceiling (D : I ↪ F) [ReedSolomon.Smooth D] (ε : ℝ≥0) {k m : 
     exact (div_lt_div_iff_of_pos_right hn).mpr (by exact_mod_cast hlt)
 
 /-- At prize tolerance in fields below the sponsor ceiling, the MCA answer is
-either all-safe or at least one error below capacity. The binomial count decides
+either all-safe or at least two errors below capacity. The binomial count decides
 which alternative holds independently of the evaluation points. -/
 theorem prize_mca_dichotomy (D : I ↪ F) [ReedSolomon.Smooth D] {k : ℕ}
     (hk : 0 < k) (hr : hasPrizeRate (Fintype.card I) k) (hq : Fintype.card F < 2 ^ 256) :
