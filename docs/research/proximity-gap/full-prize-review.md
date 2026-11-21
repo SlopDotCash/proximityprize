@@ -2,6 +2,8 @@
 
 Lean proves an exact finite algebraic formula for **both operational thresholds** on every supplied smooth Reed–Solomon code at the four prize rates. The formulas use ranks of linear systems on the evaluation points to find the first failing integer error count. They can be prohibitively expensive to evaluate. Several production inputs have explicit numerical answers, while others still have only certified numerical bounds. [Universal theorem](../../../ArkLib/Research/ProximityGap/RankReview.lean) · [Numerical integration assessment](integration-assessment-2026-11-21.md)
 
+The [human-review manuscript](support-rank-thresholds.tex) gives self-contained proofs of the two rank tests, the complete length-128 benchmark, and the first designated prime’s half-rate ceiling of 313174699 errors. Build the PDF with `tectonic docs/research/proximity-gap/support-rank-thresholds.tex` from the repository root.
+
 ## Statement and endpoints
 
 `ProximityPrize.RankReview.correctForEveryDomain` proves `FullPrizeReview.correctForDomain` for any finite field of size $q$, any supplied smooth domain of length $n>0$, any nonnegative tolerance $ε$, every dimension $k$ realizing rate $1/2$, $1/4$, $1/8$ or $1/16$, and every positive list width $m$. For every real radius in $[0,1]$, it classifies affine-line MCA security and the worst interleaved closed-ball list size. The sponsor uses $2^{-128}$ as an example tolerance. The companion paper highlights $k\le 2^{40}$ and $q<2^{256}$. Its list challenge asks for the radius and explicitly permits inefficient decoding. [Lean specification](../../../ArkLib/Research/ProximityGap/FullPrizeContract.lean) · [Sponsor statement](https://proximityprize.org/) · [Arnon, Boneh and Fenzi, §1](https://eprint.iacr.org/2026/680)
