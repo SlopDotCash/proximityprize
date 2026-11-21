@@ -83,11 +83,11 @@ open ArkLib.ProximityGap.Frontier.SecondPrimeCoordinateWeight
 
 /-- The scalar and coordinate degrees of the transposed discriminant follow
 from the support of the parent interpolant, including after factorization. -/
-private theorem actual_discriminant_degrees (Q f : Factor K) (hQ : Q ≠ 0) (hdiv : f ∣ Q)
+private theorem actual_discriminant_degrees {w : ℕ} (Q f : Factor K) (hQ : Q ≠ 0) (hdiv : f ∣ Q)
     (hshape : ∀ j i a, ((Q.coeff j).coeff i).coeff a ≠ 0 →
-      i+j ≤ 34 ∧ a < 357913943) :
+      i+j ≤ 34 ∧ a ≤ w) :
     let P := (f.coeff 1)^2-4*f.coeff 2*f.coeff 0
-    Bivariate.degreeX (Bivariate.swap P) ≤ 66 ∧ (Bivariate.swap P).natDegree ≤ 715827884 := by
+    Bivariate.degreeX (Bivariate.swap P) ≤ 66 ∧ (Bivariate.swap P).natDegree ≤ 2 * w := by
   classical
   let P := (f.coeff 1)^2-4*f.coeff 2*f.coeff 0
   have ht := factor_totalDegree_le hQ hdiv (fun j i a h => (hshape j i a h).1)
@@ -95,17 +95,17 @@ private theorem actual_discriminant_degrees (Q f : Factor K) (hQ : Q ≠ 0) (hdi
     rcases Bivariate.coeff_totalDegree_le' f j with h | h
     · omega
     · simp [h]
-  have hWQ : weight 0 Q ≤ 357913942 := by
+  have hWQ : weight 0 Q ≤ w := by
     apply weight_le_of_coeff
     intro j i a h
     have := (hshape j i a h).2
     omega
-  have hW : weight 0 f ≤ 357913942 := by
+  have hW : weight 0 f ≤ w := by
     obtain ⟨g,hg⟩ := hdiv
     rw [hg] at hQ hWQ
     rw [weight_mul 0 f g (left_ne_zero_of_mul hQ) (right_ne_zero_of_mul hQ)] at hWQ
     omega
-  have degcoord (j : ℕ) : (Bivariate.swap (f.coeff j)).natDegree ≤ 357913942 := by
+  have degcoord (j : ℕ) : (Bivariate.swap (f.coeff j)).natDegree ≤ w := by
     rw [show (Bivariate.swap (f.coeff j)).natDegree = Bivariate.degreeX (f.coeff j) from
       Bivariate.natDegreeY_swap _]
     by_cases hj : f.coeff j = 0
@@ -119,28 +119,31 @@ private theorem actual_discriminant_degrees (Q f : Factor K) (hQ : Q ≠ 0) (hdi
     exact discriminant_height _ _ _ (coeffd 2 (by decide)) (coeffd 1 (by decide))
       (coeffd 0 (by decide)) (by decide) (by decide)
   · simp only [map_sub,map_pow,map_mul,map_ofNat]
-    exact discriminant_height _ _ _ (degcoord 2) (degcoord 1) (degcoord 0) (by decide) (by decide)
+    exact discriminant_height _ _ _ (degcoord 2) (degcoord 1) (degcoord 0) (by omega) (by omega)
 
-/-- An actual irreducible quadratic factor at the second-prime predecessor
-carries at most 263 distinct bad labels. The discriminant cases are exhaustive. -/
-theorem quadratic_population_le_263 (fam : Family dom δ u) (φ : F →+* K)
+open Classical in
+/-- A quadratic of total degree at most 34 has at most 263 moving square fibers.
+The remaining discriminant class is controlled by the same secant extraction as a line. -/
+theorem quadratic_population_of_extraction {k w : ℕ} (fam : BadScalarRichPointFamily dom k δ u) (φ : F →+* K)
     (Q f : Factor K) (hQ : Q ≠ 0) (hdiv : f ∣ Q) (hf : Irreducible f) (hd : f.natDegree = 2)
-    (hshape : ∀ j i a, ((Q.coeff j).coeff i).coeff a ≠ 0 → i+j ≤ 34 ∧ a < 357913943)
-    (hchar : ∀ i : ℕ, 0 < i → i ≤ 715827884 → (i : K) ≠ 0)
-    (hn : Fintype.card I = 1073741824)
-    (ht : 357913943 ≤ ⌈(1 - δ) * (Fintype.card I : ℝ≥0)⌉₊) :
-    (population fam φ f).card ≤ 263 := by
+    (hshape : ∀ j i a, ((Q.coeff j).coeff i).coeff a ≠ 0 → i+j ≤ 34 ∧ a ≤ w)
+    (hw : 0 < w) (hchar : ∀ i : ℕ, 0 < i → i ≤ 2 * w → (i : K) ≠ 0)
+    {m : ℕ} (extract : SecantExtraction fam (m+1)) :
+    (fam.G.filter fun z => f.eval₂ (evalRingHom (C (φ z))) ((fam.q z).map φ) = 0).card ≤
+      max m 263 := by
   classical
+  let pop := fam.G.filter fun z => f.eval₂ (evalRingHom (C (φ z))) ((fam.q z).map φ) = 0
+  change pop.card ≤ max m 263
   let P := (f.coeff 1)^2 - 4*f.coeff 2*f.coeff 0
   let D := Bivariate.swap P
   have hheight := actual_discriminant_degrees Q f hQ hdiv hshape
-  change Bivariate.degreeX D ≤ 66 ∧ D.natDegree ≤ 715827884 at hheight
+  change Bivariate.degreeX D ≤ 66 ∧ D.natDegree ≤ 2*w at hheight
   have back : P = Bivariate.swap D := (Bivariate.swap_swap_apply P).symm
   have param (s : K[X]) (V : Polynomial K[X]) (h : P = s.map C * V^2) :
-      (population fam φ f).card ≤ 263 := by
-    have hw := factor_totalDegree_le hQ hdiv (fun j i a h => (hshape j i a h).1)
-    have hc : (2 : K) ≠ 0 := hchar 2 (by decide) (by decide)
-    exact (parametric_discriminant_population_le fam φ f hf hd hw hc s V h hn ht).trans (by decide)
+      pop.card ≤ max m 263 := by
+    have htotal := factor_totalDegree_le hQ hdiv (fun j i a h => (hshape j i a h).1)
+    have hc : (2 : K) ≠ 0 := hchar 2 (by decide) (by omega)
+    exact (parametric_population_of_extraction fam φ f hf hd htotal hc s V h extract).trans (le_max_left _ _)
   by_cases hD : D = 0
   · apply param 0 0
     simpa [hD] using back
@@ -154,8 +157,8 @@ theorem quadratic_population_le_263 (fam : Family dom δ u) (φ : F →+* K)
   have hbound := (natDegree_le_of_dvd hHd hD).trans hheight.2
   have hres := SquarefreeCoordinateResultant.squarefree_resultant_ne_zero H hsq
     (Nat.pos_of_ne_zero hHz) (fun i hi hj => hchar i hi (hj.trans hbound))
-  let T := (population fam φ f).image φ
-  have hT : T.card = (population fam φ f).card := card_image_of_injective _ φ.injective
+  let T := pop.image φ
+  have hT : T.card = pop.card := card_image_of_injective _ φ.injective
   have hcap := square_specialization_bound_padded D E H T hD hEH.symm (Nat.pos_of_ne_zero hHz) hres (by
     intro z hz
     obtain ⟨a,ha,rfl⟩ := mem_image.mp hz
@@ -174,6 +177,20 @@ theorem quadratic_population_le_263 (fam : Family dom δ u) (φ : F →+* K)
     dsimp only [c] at *
     linear_combination -(4*(f.coeff 2).eval (C (φ a)))*hroot)
   omega
+
+/-- At the second-prime sixteenth-rate predecessor, both discriminant cases give at most 263. -/
+theorem quadratic_population_le_263 (fam : Family dom δ u) (φ : F →+* K)
+    (Q f : Factor K) (hQ : Q ≠ 0) (hdiv : f ∣ Q) (hf : Irreducible f) (hd : f.natDegree = 2)
+    (hshape : ∀ j i a, ((Q.coeff j).coeff i).coeff a ≠ 0 → i+j ≤ 34 ∧ a < 357913943)
+    (hchar : ∀ i : ℕ, 0 < i → i ≤ 715827884 → (i : K) ≠ 0)
+    (hn : Fintype.card I = 1073741824)
+    (ht : 357913943 ≤ ⌈(1 - δ) * (Fintype.card I : ℝ≥0)⌉₊) :
+    (population fam φ f).card ≤ 263 := by
+  apply quadratic_population_of_extraction (w := 357913942) (m := 184) fam φ Q f hQ hdiv hf hd
+    (fun j i a ha => ⟨(hshape j i a ha).1, Nat.le_of_lt_succ (hshape j i a ha).2⟩)
+    (by decide) hchar
+  intro M hM hm U
+  exact many_on_secant fam M hM hm U hn ht
 
 /-- The terminal population bound with the original numerical interface. -/
 theorem quadratic_population_le (fam : Family dom δ u) (φ : F →+* K)
