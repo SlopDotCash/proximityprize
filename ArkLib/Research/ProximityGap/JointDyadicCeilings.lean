@@ -4,6 +4,7 @@ SPDX-License-Identifier: MIT OR Apache-2.0
 -/
 import ArkLib.Research.ProximityGap.JointAdjacentFieldReview
 import ArkLib.Research.ProximityGap.Frontier.BlsScalarSubgroup
+import ArkLib.Research.ProximityGap.Frontier.BoundaryFullMass
 import ArkLib.Research.ProximityGap.Frontier.SmoothPowerMcaDescent
 
 /-! # Sharp dyadic lengths for the joint large-field answers
@@ -156,5 +157,75 @@ theorem bls_realizes {n k : ℕ} [NeZero n] (hr : hasPrizeRate n k)
   apply (JointAdjacentFieldReview.prize_rate_size_iff D hk (by simpa using hr)
     (by rw [ZMod.card]; decide)).mpr
   simpa only [Fintype.card_fin, ZMod.card] using fits_bls h
+
+set_option exponentiation.threshold 512 in
+set_option maxRecDepth 4096 in
+private theorem dense_count {n j : ℕ} (hn : 1024 ≤ n) (hj : 128 ≤ j)
+    (hc : 128 ≤ n - j) : 2 ^ 512 < n.choose j := by
+  have base : 2 ^ 512 < (1024 : ℕ).choose 128 := by
+    rw [Nat.choose_eq_descFactorial_div_factorial]
+    decide
+  have bound := base.trans_le (Nat.choose_le_choose 128 hn)
+  by_cases half : j ≤ n / 2
+  · exact bound.trans_le (choose_le_of_le_half hj half)
+  · rw [← Nat.choose_symm (show j ≤ n by omega)]
+    exact bound.trans_le (choose_le_of_le_half hc (by omega))
+
+set_option exponentiation.threshold 512 in
+omit [DecidableEq F] in
+/-- On every injective domain in this range, the worst-pair MCA probability
+is one as soon as at most `k+1` agreements are required. The worst list at
+`k` agreements contains more than the square of the field order. -/
+theorem dense_saturation [Nonempty I] (D : I ↪ F) {k m : ℕ} [NeZero m]
+    (hn : 1024 ≤ Fintype.card I) (hk : 128 ≤ k) (hc : 128 ≤ Fintype.card I - (k + 1))
+    (hq : Fintype.card F < 2 ^ 256) {δ : ℝ≥0}
+    (hδ : 1 - ((k + 1 : ℕ) : ℝ≥0) / Fintype.card I ≤ δ) :
+    epsMCA (F := F) ((ReedSolomon.code D k : Set (I → F)) ^⋈ (Fin m)) δ = 1 ∧
+      ((Fintype.card F ^ 2 : ℕ) : ℕ∞) < Lambda (ListInterpolationBoundary.words D k m)
+        (((Fintype.card I - k : ℕ) : ℝ) / Fintype.card I) := by
+  classical
+  have hn' : 0 < (Fintype.card I : ℝ≥0) := by exact_mod_cast Fintype.card_pos
+  have hkn : k + 1 ≤ Fintype.card I := by omega
+  have field : Fintype.card F ^ 2 < 2 ^ 512 := by
+    simpa only [← pow_mul] using Nat.pow_lt_pow_left hq (by decide : 2 ≠ 0)
+  let t : ℝ≥0 := 1 - ((k + 1 : ℕ) : ℝ≥0) / Fintype.card I
+  have size : (1 - t) * Fintype.card I = (k + 1 : ℕ) := by
+    have ratio := (div_le_one hn').mpr (show ((k + 1 : ℕ) : ℝ≥0) ≤ Fintype.card I by
+      exact_mod_cast hkn)
+    dsimp [t]
+    rw [tsub_tsub_cancel_of_le ratio, div_mul_cancel₀ _ hn'.ne']
+  constructor
+  · rw [epsMCA_interleaved_eq]
+    have atStep : epsMCA (F := F) (ReedSolomon.code D k : Set (I → F)) t = 1 := by
+      let _ : SampleableType F := SampleableType.ofFintype _
+      let eqv := (Fintype.equivFin I).symm
+      let x := eqv.toEmbedding.trans D
+      rw [ArkLib.ProximityGap.Frontier.MCAReindexThresholdEquiv.epsMCA_reindex_reedSolomon_eq
+        eqv x D (fun _ => rfl), epsMCA_eq_mcaError]
+      apply BoundaryFullMass.mcaError_eq_one x (by omega)
+      · rw [Fintype.card_fin, size]
+        exact_mod_cast Nat.lt_succ_self k
+      · rw [Fintype.card_fin, size, Nat.cast_add_one]
+      · exact (Nat.pow_le_pow_left (Nat.sub_le _ _) 2).trans_lt
+          (field.trans (dense_count hn (by omega) hc))
+    apply le_antisymm (epsMCA_le_one _ _)
+    rw [← atStep]
+    exact epsMCA_mono _ hδ
+  · rw [ListInterpolationBoundary.at_dimension_agreement D (by omega) (by omega) (NeZero.pos m)]
+    exact_mod_cast field.trans (dense_count hn hk (by omega))
+
+omit [DecidableEq F] in
+/-- All prize rates satisfy the full-mass test from length 2048, and the top
+three rates already satisfy it from length 1024. Smoothness is unnecessary. -/
+theorem prize_dense [Nonempty I] (D : I ↪ F) {k m : ℕ} [NeZero m]
+    (hr : hasPrizeRate (Fintype.card I) k) (hn : 1024 ≤ Fintype.card I)
+    (hsmall : 16 * k = Fintype.card I → 2048 ≤ Fintype.card I)
+    (hq : Fintype.card F < 2 ^ 256) {δ : ℝ≥0}
+    (hδ : 1 - ((k + 1 : ℕ) : ℝ≥0) / Fintype.card I ≤ δ) :
+    epsMCA (F := F) ((ReedSolomon.code D k : Set (I → F)) ^⋈ (Fin m)) δ = 1 ∧
+      ((Fintype.card F ^ 2 : ℕ) : ℕ∞) < Lambda (ListInterpolationBoundary.words D k m)
+        (((Fintype.card I - k : ℕ) : ℝ) / Fintype.card I) := by
+  apply dense_saturation D hn _ _ hq hδ
+  all_goals rcases hr with h | h | h | h <;> omega
 
 end ProximityPrize.JointDyadicCeilings

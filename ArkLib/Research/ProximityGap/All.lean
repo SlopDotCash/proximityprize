@@ -302,6 +302,7 @@ import ArkLib.Research.ProximityGap.Frontier.DyadicFrobeniusNorm
 import ArkLib.Research.ProximityGap.Frontier.DyadicGeomeanPrizeVsSqrtN
 import ArkLib.Research.ProximityGap.Frontier.DyadicLocatorSumBarrier
 import ArkLib.Research.ProximityGap.Frontier.DyadicLogWitness237
+import ArkLib.Research.ProximityGap.Frontier.DyadicFourCycleCount
 import ArkLib.Research.ProximityGap.Frontier.DyadicOddPencilCount
 import ArkLib.Research.ProximityGap.Frontier.DyadicParityLemma
 import ArkLib.Research.ProximityGap.Frontier.DyadicPeriodCeiling
@@ -422,6 +423,7 @@ import ArkLib.Research.ProximityGap.Frontier.HodgeSectionIncidence
 import ArkLib.Research.ProximityGap.Frontier.HodgeSectionLattice
 import ArkLib.Research.ProximityGap.Frontier.HodgeSectionVariance
 import ArkLib.Research.ProximityGap.Frontier.HorizontalJetObstruction
+import ArkLib.Research.ProximityGap.Frontier.HorizontalSectionDeviation
 import ArkLib.Research.ProximityGap.Frontier.I031ChainingBrick
 import ArkLib.Research.ProximityGap.Frontier.I031DilationOrbitReduction
 import ArkLib.Research.ProximityGap.Frontier.I031DistinctPeriodCount
@@ -3948,3 +3950,4 @@ import ArkLib.Research.ProximityGap.Support.KK25NearCapacityProof
 import ArkLib.Research.ProximityGap.Support.RateEliasCapacity
 import ArkLib.Research.ProximityGap.Support.UnifiedProducerWindowGlue
 import ArkLib.Research.ProximityGap.T3CeilingColumnZeroLaw
+import ArkLib.Research.ProximityGap.ToleranceCircuitCriterion

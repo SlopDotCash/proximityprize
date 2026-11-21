@@ -12,6 +12,13 @@ the [δ* programme guide](docs/wiki/deltastar-programme.md), the
 [live issues](https://github.com/SlopDotCash/proximityprize/issues), and the
 [Proximity Gap agent guide](docs/research/proximity-gap/AGENTS.md).
 
+For human review of the two grand challenges, start with the
+[threshold manuscript](docs/research/proximity-gap/support-rank-thresholds.tex) and
+[Lean reproduction guide](docs/research/proximity-gap/full-prize-review.md).
+Both operational cutoffs have exact finite rank formulas on every supplied smooth
+prize code. The [current results table](PROGRESS.md) lists the fields and rates
+with numerical cutoffs and identifies outstanding production cases.
+
 The campaign uses the complete upstream ArkLib library as its canonical foundation,
 including the original library overview below. Lean module and package names remain
 `ArkLib` for compatibility. Upstream implementations and dependency versions take
