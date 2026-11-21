@@ -1,0 +1,169 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[letterpaper,top=.91in,bottom=.85in,left=.98in,right=.98in,headheight=14pt,headsep=16pt]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,xcolor,hyperref,fancyhdr}
+\definecolor{ink}{HTML}{173F4D}
+\hypersetup{colorlinks=true,urlcolor=ink,linkcolor=ink,citecolor=ink,
+  pdftitle={Exact finite rank tests for Reed--Solomon proximity thresholds},
+  pdfsubject={Affine-line mutual correlated agreement and interleaved list decoding}}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape Reed--Solomon proximity thresholds}
+\fancyhead[R]{\small 21 November 2026}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{.25pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{.40em plus .05em minus .05em}
+\raggedbottom
+\newcommand{\F}{\mathbb F_q}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\nul}{\operatorname{null}}
+\newcommand{\src}[2]{\href{https://github.com/SlopDotCash/proximityprize/blob/#1/ArkLib/Research/ProximityGap/#2.lean}{\texttt{\detokenize{#2}}}}
+\newcommand{\rs}{\mathrm{RS}}
+\newcommand{\head}[1]{\vspace{.2em}{\large\bfseries\color{ink}#1}\par}
+\newcommand{\repo}{\href{https://github.com/SlopDotCash/proximityprize}{downstream Proximity Prize repository}}
+\begin{document}
+\thispagestyle{plain}
+{\small\color{ink}\sffamily AI-assisted research manuscript for human review\hfill 21 November 2026}\par
+\vspace{.6em}
+{\LARGE\bfseries Exact finite rank tests for\\[2pt] Reed--Solomon proximity thresholds\par}
+\vspace{.25em}
+{\large Affine-line mutual correlated agreement and interleaved list decoding\par}
+\vspace{.5em}
+\textbf{Abstract.}
+For a Reed--Solomon code with prescribed evaluation points, two finite matrix tests determine the first error count at which an affine-line mutual correlated agreement (MCA) budget or an interleaved list budget is exceeded. One test asks whether each of several sets of joint interpolation equations raises the rank of a common matrix. The other counts distinct compatible polynomial tuples by inclusion--exclusion. Both remove received words from the search. The tests are exact at every positive width and include small fields. At length 128 a 246-bit prime gives all eight numerical outcomes at the four prize rates. At length $2^{30}$ a separate four-polynomial construction gives a half-rate MCA failure at 313,174,699 errors. The general enumeration can be impractical on codes of cryptographic size.
+
+\section*{1.\quad Parameters and the operational endpoint}
+Let $D=(x_i)_{i\in I}$ be $n>0$ distinct elements of $\F$, and let $1\le k\le n$. Write $C=\rs(D,k)$ for evaluations of polynomials of degree $<k$. The sponsor specifies a multiplicative subgroup of power-of-two order and rate $k/n\in\{1/2,1/4,1/8,1/16\}$. The Lean smooth-domain interface also admits nonzero cosets and permutations of the coordinates. The matrix arguments below apply to any injective domain. The field need not be prime.
+
+Fix a tolerance $\varepsilon\ge0$, a positive interleaving width $m$, an error count $0\le e\le n$, and set $B=\lfloor q\varepsilon\rfloor$, $L=B+1$, $t=n-e$. A width-$m$ codeword consists of $m$ rows in $C$. A column is erroneous if at least one of its rows disagrees with the received column. List failure means that some closed ball contains at least $L$ distinct codewords. For MCA, $\gamma$ is drawn uniformly from $\F$ and the word tested is $u+\gamma v$, for fixed $u,v\in\F^I$. Section~2 gives the precise event. The companion paper explicitly selects the family of affine lines before stating the grand challenge. General affine spaces have additional generators and require a separate statement \cite{abf}.
+
+\textbf{Boundary theorem.} Apply the tests of Sections 2 and 3 and take for each the least failing $e$, if it exists. For all real $\delta\in[0,1]$ the associated budget holds exactly when $\delta<e/n$. If every grid count passes, every real radius through one passes. Indeed the closed test at $\delta$ uses $\lfloor n\delta\rfloor$ errors, and enlarging a ball or lowering a support threshold preserves failure. A first failure at zero leaves the safe set empty. For $e>0$ the supremum $e/n$ is excluded and the last safe grid count is $e-1$. Only the all-safe case has an attained largest safe real radius. For example the radius-one list contains $q^{km}$ words and exceeds the budget whenever $\varepsilon<1$.
+
+\newpage
+\section*{2.\quad A simultaneous rank test for bad scalars}
+For $S\subseteq I$, let $C|_S$ be the restrictions to $S$ of words in $C$. For fixed $u,v$, a scalar $\gamma$ is bad at $e$ errors precisely if there is an $S$ of size at least $t$ such that
+\[
+ (u+\gamma v)|_S\in C|_S,\qquad
+ (u|_S,v|_S)\notin (C|_S)^2.
+ \tag{1}
+\]
+Both clauses use the same witness $S$. A joint explanation on a different support leaves this witness valid. MCA failure means that one received pair has at least $L$ bad scalars, since the maximum bad probability is the maximum bad count divided by $q$.
+
+Choose $L$ distinct scalars $G\subseteq\F$ and one support $S_g$ of size at least $t$ for every $g\in G$. If $L>q$ there is no such choice and MCA passes. Construct a matrix $P_S$ on $n$ coordinates whose kernel is the set of rows $w$ satisfying $w|_S\in C|_S$. For $|S|\le k$ it has zero rows. Otherwise, take any $k$ anchors $A\subset S$ and for each $i\in S\setminus A$ use the linear equation
+\[
+  w_i-\sum_{j\in A}w_j\!
+       \prod_{a\in A\setminus\{j\}}
+       \frac{x_i-x_a}{x_j-x_a}=0 .
+ \tag{2}
+\]
+All denominators are units. Lagrange interpolation makes (2) necessary and sufficient. Stack the blocks $[\,P_{S_g}\ \ gP_{S_g}\,]$ over $g\in G$ into a matrix $M$ on $(u,v)$. Write $K_g=[\,0\ \ P_{S_g}\,]$.
+
+\head{Theorem 1.}
+MCA fails at $e$ errors if and only if there is a choice $(G,(S_g))$ for which, for every $g\in G$,
+\[
+ \rank \begin{bmatrix}M\\K_g\end{bmatrix}>\rank M .
+ \tag{3}
+\]
+
+\textit{Proof.} Put $V=\ker M$. Every point of $V$ satisfies all the folded equations. At $g$, condition $P_{S_g}v=0$ then implies $P_{S_g}u=0$ as well. Thus the points of $V$ with a joint explanation at $g$ form $J_g=V\cap\ker K_g$. Condition (3) is exactly $J_g\subsetneq V$. Any pair witnessing (1) for all $g$ lies outside all the $J_g$ and forces these strict inclusions.
+
+Conversely, a vector space over $\F$ is never covered by $1\le h\le q$ proper linear subspaces. If its dimension is $d\ge1$, their union has size at most $1+h(q^{d-1}-1)<q^d$, since all contain zero. In dimension zero there are no proper subspaces. Apply this observation to the $|G|\le q$ spaces $J_g$. A single point outside their union supplies the requisite common pair. Selecting any $B+1$ bad scalars in the forward direction completes the equivalence. \hfill$\square$
+
+For one grid count there are $\binom qL$ scalar sets and at most $(\sum_{s=t}^n\binom ns)^L$ support assignments per set. Each assignment needs at most $L+1$ ranks of matrices with $2n$ columns. With $s=\max(t,k+1)$ one can use exactly $s$ sites for every scalar. A bad support has a noninterpolating row $v$. Interpolate $v$ on any $k$ anchors and add one site where that interpolation disagrees. This $(k+1)$-subset detects noninterpolation. Enlarge it inside the original support to $s$ sites, preserving both parts of (1). If $s>n$, no such support exists.
+
+For $1\le B<q$, also fix two labels to $0,1$. Given two original labels $\alpha,\beta$, replace $(u,v)$ by $(u+\alpha v,(\beta-\alpha)v)$ and use parameter $(\gamma-\alpha)/(\beta-\alpha)$. This invertible change preserves folded words and joint interpolation on every support. The reduced enumeration uses $\binom{q-2}{B-1}$ scalar sets and $\binom ns^{B+1}$ assignments per set. For $B=0$ translating a single bad label to zero suffices.
+
+\newpage
+\section*{3.\quad Counting compatible interleaved lists}
+Choose $L$ labeled supports $S_1,\ldots,S_L$ of size exactly $t$. A candidate polynomial for label $a$ has $k$ coefficients. For each $a<b$ and $i\in S_a\cap S_b$, impose $f_a(x_i)=f_b(x_i)$ on one scalar row. The resulting matrix $A$ has $kL$ columns. These overlap conditions are sufficient for one received row to agree on every prescribed support: use the common prescribed value wherever at least one support covers a site and fill the other sites arbitrarily.
+
+Let $E$ be the set of unordered pairs of labels. For $T\subseteq E$ append to $A$ the $k$ coefficient equalities $f_a=f_b$ for each $\{a,b\}\in T$. Denote the enlarged matrix by $A_T$ and write $\nu_T=kL-\rank A_T$. Polynomial equality and codeword equality coincide by $k\le n$ and injectivity of $D$.
+
+\head{Theorem 2.}
+The list budget fails at $e$ errors if and only if, for at least one of the $\binom nt^L$ support assignments,
+\[
+  N(S_1,\ldots,S_L)
+     =\sum_{T\subseteq E}(-1)^{|T|}\,q^{m\nu_T}>0 .
+ \tag{4}
+\]
+
+\textit{Proof.} The overlap equations ensure that a single center can be chosen independently at every site and in every row. If all pairs in $T$ collide as interleaved words, the rows are independent elements of $\ker A_T$, giving exactly $q^{m\nu_T}$ labeled message tuples. Inclusion--exclusion over the pair-collision events counts exactly the distinct compatible tuples. Conversely, from a center with $L$ distinct words select any $t$ agreeing sites for each. Trimming its agreements preserves compatibility and distinctness. This gives a positive term count in (4). \hfill$\square$
+
+\head{Corollary 3.}
+If $\binom L2\le q$, (4) is positive precisely when $\nu_{\{a,b\}}<\nu_\varnothing$ for every pair. Indeed, if even one equality is forced in one row it is forced in every row. Otherwise the single-pair collision kernels are proper subspaces of $\ker A$. The covering argument of Section 2 supplies a scalar compatible tuple avoiding every collision. It extends to $m\ge1$ by adjoining zero rows. If $L=1$, the conditions are vacuous and there is a compatible tuple.
+
+At $\varepsilon=2^{-128}$ and $q<2^{256}$ this corollary always applies. Set $Q=2^{128}$. For $B=\lfloor q/Q\rfloor\ge1$, $B+1\le Q$ and $\binom{B+1}{2}\le BQ\le q$. The case $B=0$ is immediate. This replaces up to $2^{\binom L2}$ nullities per pattern by at most $1+\binom L2$. The $\binom nt^L$ support patterns still make direct computation prohibitive for many inputs. In particular the theorem by itself does not quantify the distance of a production threshold from the Johnson or capacity radius. The latter question motivates the concrete benchmarks below \cite{abf}.
+
+\newpage
+\section*{4.\quad A complete four-rate numerical benchmark}
+Take $p=65\cdot2^{239}+1$, a prime, and its subgroup of order $128$. Fix $\varepsilon=2^{-128}$ and any $m\ge1$. Then $B=65\cdot2^{111}$. The Proth certificate is $3^{(p-1)/2}\equiv-1\bmod p$. Table~1 gives the first failures. For example, at half rate and 62 errors MCA already fails, while every list remains within budget.
+\begin{center}
+\begin{tabular}{@{}lrrl@{}}\toprule
+Rate & Dimension & First list failure & First MCA failure\\\midrule
+$1/2$ &64&63&62\\
+$1/4$ &32&97&All grid counts pass\\
+$1/8$ &16&113&All grid counts pass\\
+$1/16$ &8&121&All grid counts pass\\\bottomrule
+\end{tabular}\\[4pt]
+{\small Table 1. Error counts on the same domain and in the same field.}
+\end{center}
+
+\textbf{List bounds.} At $t\ge k$ agreements, different interleaved words cannot share $k$ agreement sites with a center. Counting $k$-subsets gives at most $\lfloor\binom nk/\binom tk\rfloor$ words. For $k=64$, this is $\le B$ at $t=66$. Among the $\binom{128}{65}$ subsets of 65 sites, some $B+1$ have the same product since there are only 128 products and $\binom{128}{65}>128B$. Let $P_S=\prod_{i\in S}(X-x_i)$ and fix $S_0$ in that fiber. The distinct messages $(P_{S_0}-P_S)/X$ have degree $<64$ and agree with $P_{S_0}(x)/x$ on $S$. For $k=32,16,8$, already $\binom{128}{k}\le B$ at $t=k$, while all $p$ multiples of a locator on any $k-1$ sites agree with zero there. Scalar examples embed into all positive widths.
+
+\textbf{MCA upper bounds.} On a bad witness $S$ with $s\ge k+1$ sites, $v|_S$ fails interpolation. At least $\binom{s-1}{k}$ of its $(k+1)$-subsets detect this failure. To see this, the matrix of columns $(1,x,\ldots,x^{k-1},v(x))$ has rank $k+1$, and every $k$ columns are independent. Induct on $s$ from $s=k+1$. If deleting a column drops the rank, every $k$ remaining columns make a basis with it. Otherwise each deletion has at least $\binom{s-2}k$ bases, and each basis survives $s-k-1$ deletions. The resulting bound suffices. On each detecting subset at most one scalar can interpolate the fold. Consequently at $s\ge67$, $k=64$, the bad count is at most $\lfloor\binom{128}{65}/\binom{66}{64}\rfloor\le B$. The bound $\binom{128}{k+1}\le B$ suffices for all radii at the other three dimensions.
+
+\textbf{MCA lower bound.} Use the same product construction with 66-subsets in dimension 65. It yields $B+1$ polynomials $f$ of degree $\le64$ agreeing with one word $y$ on 66 sites, since $\binom{128}{66}>128B$. Their values are pairwise distinct at some $z\notin D$, by $64\binom{B+1}2<p-128$. Use the received rows $y(x)/(x-z)$ and $1/(x-z)$. At $\gamma=-f(z)$ the fold agrees with $(f(X)-f(z))/(X-z)$ on those sites. The second row cannot interpolate there in degree $<64$, because $(X-z)g(X)-1$ would have 66 roots while being nonzero at $z$. The distinct $\gamma$ give the required excess. Both half-rate boundaries $62/128$ and $63/128$ exceed the finite Johnson radius $1-\sqrt{63/128}$ and lie below the relative minimum distance $65/128$.
+
+\newpage
+\section*{5.\quad A half-rate ceiling at length \texorpdfstring{$2^{30}$}{2 to the 30}}
+For $p_1=365375409332725729550921208179070755120141565953$ take the order-$n$ subgroup, $n=2^{30}$, $k=n/2$ and $\varepsilon=2^{-128}$. Now $B=n$. A single received pair yields $n+1$ bad scalars at 313,174,699 errors. Thus the first failure is \emph{at most} $\lceil7n/24\rceil$. Safety at the preceding error count is open.
+
+Set $s=n/16=6h+4$ and let $\omega=357111556877444407914257742635116754287240874648$ have order 16. Index four polynomials by $i=0,1,2,3$, put $a=\omega^{4i}$, and set
+\[
+ f_i(Y)=(Y^6+aY^4+a^2Y^2+a^3)
+        ((a+\omega^2a^2)Y+\omega^5+\omega^3a^3).
+\]
+Direct substitution at $Y=\omega^j$ gives the classes of indices with equal value in Table~2. Each power fiber $\{x:x^s=\omega^j\}$ has exactly $s$ sites.
+\begin{center}\small
+\begin{tabular}{@{}ll@{\qquad}ll@{}}\toprule
+$j$ & Equal-value classes & $j$ & Equal-value classes\\\midrule
+$0,1,8$  & $123\mid0$ &3&$13\mid0\mid2$\\
+$2,5,10$ & $023\mid1$ &11&$02\mid1\mid3$\\
+$4,9,12$ & $013\mid2$ &15&$03\mid12$\\
+$6,13,14$& $012\mid3$ &7&$0\mid1\mid2\mid3$\\\bottomrule
+\end{tabular}\\[4pt]
+Table 2. For example, $123\mid0$ means $f_1=f_2=f_3\ne f_0$ on that fiber.
+\end{center}
+Choose $4h+3,h-1,h$ roots in fibers $7,3,11$, respectively, and let $H$ be their monic locator. This gives $s-2$ roots. Use four message pairs
+\[
+ (X V_i(X),V_i(X)),\qquad V_i(X)=H(X)f_i(X^s).
+\]
+Their degrees are at most $1+(s-2)+7s=k-1$. At locator roots receive $(0,0)$. On the triple fibers receive the value shared by three pairs. On nonroots in fibers 3 and 11 receive the indicated pair class, and split fiber 15 equally between its two classes. Reserve the remaining $2h+1$ sites of fiber 7. The joint agreement cores of the four pairs have sizes $760567124,760567125,760567124,760567125$. Indeed the triple fibers contribute $9s$ to each, all $s-2$ locator roots contribute, the appropriate single-pair fiber adds $s-h$ or $s-h+1$, and fiber 15 adds $s/2$.
+
+At an assigned nonroot site $x$, take a differing pair and use label $-x$. Its fold agrees there since all four polynomial pairs and the assigned value are of the form $(xv,v)$. At a reserved site the four values $v=V_i(x)$ are distinct. Choose $u_1$ outside them and $u_0\ne xu_1$. The four labels $(xv-u_0)/(u_1-v)$ are distinct. Avoid previous labels by excluding at most four values of $u_0$ per label, possible since $p_1>4(n+1)+1$. The number of labels is $n-(s-2)+3(2h+1)=n+1$. For each label use its pair's core plus the fresh position. A joint explanation would coincide with the designated pair on at least $k$ core sites and hence everywhere, contradicting the fresh discrepancy. There are at least $760567125=n-313174699$ witnessed agreements. This ceiling, approximately $0.291666667$, is strictly below the finite Johnson radius $1-\sqrt{(k-1)/n}\approx0.292893219$. Equivalently $(n-313174699)^2>n(k-1)$.
+
+\newpage
+\section*{6.\quad Interpretation, evidence and attribution}
+\small
+\textbf{Relation to known results.} The sponsor's companion paper develops the challenge from proximity gaps and correlated agreement and asks what happens between the Johnson and capacity radii on smooth domains \cite{abf}. Ben-Sasson et al.\ prove quantitative proximity-gap statements by analyzing a formal point of an affine space \cite{bciks}. Brakensiek, Gopi and Makam use higher-order MDS properties of evaluation matrices to establish list-decoding capacity for generic Reed--Solomon codes \cite{bgm}. Jeronimo reports asymptotic prime-field bounds with fixed slack from capacity and a polynomial number of exceptions \cite{jeronimo}. The tests here evaluate a specified finite domain and integer budget. Their conclusions require no genericity or random choice of its coordinates. The tools in Sections 2 and 3 are Lagrange interpolation, elementary finite-vector-space counting, and inclusion--exclusion. A concise analytic classification for all production domains would give substantially more information about closeness to capacity than a finite search.
+
+\textbf{Reproducibility.} The \repo{} contains the formal statements and the finite-field calculations. The following pinned code links identify the relevant declarations.
+\begin{itemize}\setlength\itemsep{2pt}\setlength\topsep{2pt}
+\item The universal theorem \texttt{correctForEveryDomain} is in \src{a62f136b45bdd13674d4445a56164402b047a78f}{RankReview}. The \texttt{numericalBoundaries} theorem in \src{a62f136b45bdd13674d4445a56164402b047a78f}{RankKnownDomain} identifies the rank answers with independently proved numerical thresholds by uniqueness.
+\item The \href{https://github.com/SlopDotCash/proximityprize/blob/0470eebb378fd29933b05b3d827aa483d61eebd2/ArkLib/Research/ProximityGap/Frontier/FirstPrimeSepticCores.lean}{first-prime witness module} proves \texttt{over\_budget} and \texttt{threshold\_le}. The Lean proof checks the literal prime, finite fibers, degree bounds, allocation and transfer to the bad-scalar event.
+\item The \href{https://github.com/SlopDotCash/proximityprize/blob/a62f136b45bdd13674d4445a56164402b047a78f/scripts/probes/probe_supplied_domain_rank_thresholds.py}{small-field reference program} compares both rank tests with exhaustive decoding over $\mathbb F_3$ and $\mathbb F_5$, including width two. An independent \href{https://github.com/SlopDotCash/proximityprize/blob/3c8f9fc757ad76861b893a159d42391a5785f623/docs/research/proximity-gap/syndrome-flat-list-profile.md}{syndrome-flat calculation} obtains entire list histograms at small redundancy. Neither computation enumerates the production thresholds in Section~5.
+\end{itemize}
+The formal development uses the pinned Lean toolchain. The reviewed rank theorem uses the standard foundational axioms of propositional extensionality, classical choice and quotient soundness. A separate verified replay of the universal theorem's dependencies accepted 32,729 declarations. The replay of the first-prime bound accepted 26,829. These checks concern the encoded statements. Independent human verification of the mathematical interpretation, references and text remains pending.
+
+\textbf{Authorship and status.} This AI-assisted draft draws on the contributors' public repository history. Human authorship, contribution attribution and any conflicts of interest await confirmation by the responsible researchers. Scientific peer review, acceptance, academic archiving and sponsor adjudication remain pending. The sponsor requires human verification and editing of AI-assisted submissions \cite{sponsor}.
+
+\begingroup\small
+\begin{thebibliography}{9}\setlength{\itemsep}{2pt}
+\bibitem{abf} G. Arnon, D. Boneh and G. Fenzi. \href{https://eprint.iacr.org/2026/680}{\emph{Open Problems in List Decoding and Correlated Agreement}}. IACR ePrint 2026/680, July revision, especially \S1 and Definition 4.3.
+\bibitem{bciks} E. Ben-Sasson, D. Carmon, Y. Ishai, S. Kopparty and S. Saraf. \href{https://eccc.weizmann.ac.il/report/2020/083/}{\emph{Proximity Gaps for Reed--Solomon Codes}}. FOCS 2020, 900--909.
+\bibitem{bgm} J. Brakensiek, S. Gopi and V. Makam. \href{https://arxiv.org/abs/2206.05256}{\emph{Generic Reed--Solomon Codes Achieve List-Decoding Capacity}}. arXiv:2206.05256.
+\bibitem{jeronimo} F. Granha Jeronimo. \href{https://arxiv.org/abs/2609.05870}{\emph{Algorithmic List Decoding at Capacity and Optimal Proximity Gaps for Reed--Solomon Codes}}. arXiv:2609.05870, 2026.
+\bibitem{sponsor} Ethereum Foundation. \href{https://proximityprize.org/}{\emph{The Proximity Prize}}. Preliminary challenges, submission guidelines and FAQ, accessed 21 November 2026.
+\end{thebibliography}
+\endgroup
+\end{document}
