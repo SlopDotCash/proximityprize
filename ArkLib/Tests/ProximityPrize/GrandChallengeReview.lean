@@ -93,10 +93,24 @@ private def threeSites : Fin 3 ↪ ZMod 3 where
 labels and a free third label, as well as the separate singleton case. -/
 run_cmd do
   let mca (budget : ℕ) :=
-    (RankExecutable.mcaBoundary (Equiv.refl (Fin 3)) [0, 1, 2] threeSites 1 budget).map Fin.val
+    (RankExecutable.scan 3 fun e => SimultaneousSupportGaussian.anchoredSafe
+      (Equiv.refl (Fin 3)) [0, 1, 2] threeSites 1 budget (3-e.val)).map Fin.val
   unless mca 2 == some 1 do
     throwError "At budget two, the three-site MCA test should first fail at one error."
   unless mca 0 == some 0 do
     throwError "At budget zero, the three-site MCA test should fail at zero errors."
+
+/-- The order-four subgroup of the field of order five. -/
+private def orderFour : Fin 4 ↪ ZMod 5 where
+  toFun := ![1, 2, 4, 3]
+  inj' := by decide
+
+/- The one-error jump has four bad labels and saturates the probability curve. -/
+run_cmd do
+  let boundary (budget : ℕ) :=
+    (RankExecutable.mcaBoundary (Equiv.refl (Fin 4)) [0, 1, 2, 3, 4] orderFour 2 budget).map Fin.val
+  unless boundary 0 == some 0 do throwError "The four-site code fails at zero errors for budget zero"
+  unless boundary 3 == some 1 do throwError "The four-site code fails at one error for budget three"
+  unless (boundary 4).isNone do throwError "The four-site code is safe at every radius for budget four"
 
 end ProximityPrize.Review
