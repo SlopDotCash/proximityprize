@@ -825,7 +825,6 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeFourHeadEndpoints
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeHeadDescent
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeHessianTransport
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeHyperbolaGrid
-import ArkLib.Research.ProximityGap.Frontier.SecondPrimeTetrahedron
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeIntrinsicArithmetic
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeJetMultiplication
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeJetSpecialization
@@ -864,6 +863,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSmoothSeed
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSylvesterFiberMass
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeTerminalCharge
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeTerminalKernel
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeTetrahedron
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeUnrestrictedJetBudget
 import ArkLib.Research.ProximityGap.Frontier.SectionNumeratorCharts
 import ArkLib.Research.ProximityGap.Frontier.SelfConsistencyCeiling
