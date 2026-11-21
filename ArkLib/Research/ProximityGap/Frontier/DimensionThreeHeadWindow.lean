@@ -5,6 +5,7 @@ Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and L
 import ArkLib.Research.ProximityGap.Frontier.DimensionMultiplierMCA
 import ArkLib.Research.ProximityGap.Frontier.UniversalCubicBudgetWindow
 import ArkLib.Research.ProximityGap.Frontier.ExceptionalHeadLocatorMass
+import ArkLib.Research.ProximityGap.Frontier.CircuitDensity
 
 /-! # Simultaneous dimension and budget intervals for three-head line-MCA
 
@@ -35,10 +36,10 @@ theorem eps_upper (dom : I ↪ F) (hn : Fintype.card I = n) {p d e : ℕ} [CharP
     (hp : 1744830589 < p) (hd : 0 < d) (hd' : d ≤ k) (hl : 671088640 ≤ e) (hu : e ≤ 715827881) :
     epsMCA (F := F) (ReedSolomon.code dom d : Set (I → F)) ((e : ℝ≥0)/n) ≤
       ((3*(e+1) : ℕ) : ℝ≥0∞)/(Fintype.card F : ℝ≥0∞) := by
-  have ha := TwoCorePackingThreshold.agreement_ceiling e (by dsimp [n]; omega)
+  have ha := TwoCorePackingThreshold.agreement_ceiling e (by change e ≤ 1073741824; omega)
   rw [Fintype.card_fin] at ha
   exact (DimensionMultiplierMCA.epsMCA_mono_dimension dom hd hd' _
-    (by rw [hn, ha]; dsimp [n,k]; omega)).trans
+    (by rw [hn, ha]; change 67108864 < 1073741824-e; omega)).trans
       (UniversalCubicBudgetWindow.eps_upper dom hn (.inl hp) hl hu)
 
 /-- All three heads fit when three times the agreement count is at most the
@@ -109,7 +110,7 @@ theorem classification (dom : I ↪ F) (hn : Fintype.card I = n) {p B d : ℕ} [
     by_contra! good
     apply hbad.not_ge
     apply (BoundarySecurityBudget.count_ratio_le_iff Fintype.card_pos (by decide : 0 < 2^128)).mp
-    exact hatt.trans (by simpa only [Nat.cast_pow, Nat.cast_ofNat] using good)
+    exact hatt.trans (by simpa only [t, tolerance, n, Nat.cast_pow, Nat.cast_ofNat] using good)
   have hprev : epsMCA (F := F) (ReedSolomon.code dom d : Set (I → F)) t₀ ≤ tolerance := by
     have hcount := eps_upper dom hn hp (by omega : 0 < d) hd' (e := e-1)
       (by dsimp [e]; omega) (by omega)
@@ -130,7 +131,45 @@ theorem classification (dom : I ↪ F) (hn : Fintype.card I = n) {p B d : ℕ} [
     exact hb.not_ge ((epsMCA_mono _ hδ).trans good)
   · intro hδ
     by_contra! bad
-    exact hδ.not_ge (heq ▸ mcaDeltaStar_le_of_bad _ _ bad)
+    have h := mcaDeltaStar_le_of_bad _ _ bad
+    rw [heq] at h
+    exact hδ.not_ge h
+
+/-- A repetition-code witness with at least two distinct received row pairs
+owns at least `n-e-1` unordered pairs of sites that determine its scalar.
+This gives a separate security bound below the three-head dimension range. -/
+theorem dimension_one_safe (dom : I ↪ F) (hn : Fintype.card I = n) {B e : ℕ}
+    (hB : Fintype.card F / 2^128 = B) (he : e+2 ≤ n)
+    (hcap : n.choose 2 < (B+1)*(n-e-1)) (width : ℕ) [NeZero width] :
+    epsMCA (F := F) ((ReedSolomon.code dom 1 : Set (I → F)) ^⋈ (Fin width))
+      ((e : ℝ≥0)/n) ≤ tolerance := by
+  classical
+  rw [epsMCA_interleaved_eq]
+  refine (epsMCA_le_of_badCount_le _ _ B ?_).trans ?_
+  swap
+  · simpa only [tolerance, Nat.cast_pow, Nat.cast_ofNat] using
+      (BoundarySecurityBudget.count_ratio_le_iff Fintype.card_pos (by decide : 0 < 2^128)).mpr hB.ge
+  intro u
+  have hc := CircuitDensity.mca_count_mul_le dom 1 (n-e) ((e : ℝ≥0)/n)
+    (u 0) (u 1) (by omega) (fun S hs => by
+      rw [hn, tsub_mul, one_mul, div_mul_cancel₀ _ (by norm_num [n]), ← Nat.cast_tsub] at hs
+      exact_mod_cast hs)
+  rw [hn, Nat.choose_one_right] at hc
+  by_contra! hbig
+  exact (not_lt_of_ge ((Nat.mul_le_mul_right (n-e-1) hbig).trans hc)) hcap
+
+/-- The last grid point certified by the unordered-pair bound at dimension one. -/
+theorem dimension_one_safe_through (dom : I ↪ F) (hn : Fintype.card I = n) {B : ℕ}
+    (hB : Fintype.card F / 2^128 = B) (hsize : n.choose 2 / (B+1) + 2 ≤ n)
+    (width : ℕ) [NeZero width] :
+    epsMCA (F := F) ((ReedSolomon.code dom 1 : Set (I → F)) ^⋈ (Fin width))
+      (((n-2-n.choose 2/(B+1) : ℕ) : ℝ≥0)/n) ≤ tolerance := by
+  have arith (m c : ℕ) (hc : c+2 ≤ m) :
+      m-2-c+2 ≤ m ∧ m-(m-2-c)-1 = c+1 := by omega
+  obtain ⟨he, ht⟩ := arith _ _ hsize
+  apply dimension_one_safe dom hn hB he _ width
+  rw [ht]
+  exact Nat.lt_mul_div_succ _ (by omega)
 
 /-- In prime fields the budget and upper field-size tests suffice. -/
 theorem prime_classification {p B d : ℕ} [Fact p.Prime] (dom : I ↪ ZMod p) (hn : Fintype.card I = n)
@@ -141,6 +180,7 @@ theorem prime_classification {p B d : ℕ} [Fact p.Prime] (dom : I ↪ ZMod p) (
       ∀ δ : ℝ≥0, epsMCA (F := ZMod p) ((ReedSolomon.code dom d : Set (I → ZMod p)) ^⋈ (Fin width)) δ ≤ tolerance ↔ δ < t := by
   exact classification dom hn (p := p) (by omega) (by simpa only [ZMod.card] using hB) hl hu hd hd' hfit width
 
+#print axioms dimension_one_safe_through
 #print axioms exact_eps
 #print axioms prime_classification
 end ArkLib.ProximityGap.Frontier.DimensionThreeHeadWindow

@@ -11,7 +11,7 @@ For every $e_{\min}\le e\le e_{\max}$ the exact worst-case two-row MCA numerator
 \]
 the first failing Hamming error count is $\lfloor B/3\rfloor$, and the operational real threshold is $\lfloor B/3\rfloor/n$. In particular one may take $B=\lfloor|\mathbb F|/2^{128}\rfloor$. At rate $1/16$ the lower budget endpoint is $15n/8+3$. According to $n\bmod3=0,1,2$, the upper endpoints are $2n+8$, $2n+9$, $2n+10$, respectively. This is a written extension of the [terminal cubic proof](second-prime-terminal-cubic.md). The bounds below identify which estimates are uniform as $n$ increases.
 
-## The dimension range at length $2^{30}$
+## The dimension range at the production length
 
 Set $n=2^{30}$, $B=\lfloor p/2^{128}\rfloor$ and $j=\lfloor B/3\rfloor$.
 For $2{,}013{,}265{,}923\le B\le2{,}147{,}483{,}648$, every injective
@@ -37,6 +37,14 @@ smaller positive dimension. The same argument gives exact worst error
 $3(e+1)/|\mathbb F|$ for $671{,}088{,}640\le e\le715{,}827{,}881$ if
 $3(n-e)\le n+2k$, the characteristic exceeds $1{,}744{,}830{,}589$,
 and $\binom{3(e+1)}2\le |\mathbb F|$.
+
+Dimension one stays safe farther. A bad scalar at $t=n-e$ agreements
+determines at least $t-1$ unordered pairs of sites, and each such pair
+determines a unique scalar. Hence $\binom n2<(B+1)(n-e-1)$ suffices for
+security. This gives safety through
+$e=n-2-\lfloor\binom n2/(B+1)\rfloor$, ranging from $787{,}410{,}670$ at
+the smallest budget to $805{,}306{,}367$ at the largest. [Circuit incidence
+bound](../../../ArkLib/Research/ProximityGap/Frontier/CircuitDensity.lean)
 
 ## Reducing the upper count to a large cubic
 
