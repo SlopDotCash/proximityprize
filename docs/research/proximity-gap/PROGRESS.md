@@ -1279,3 +1279,34 @@ operator norms are below $14\sqrt n$. Applying the matrix bound to
 indicator vectors yields the displayed inequality. Translation cancels in $a-b$,
 and scaling contributes the common sign $\chi(c)$. These finite numerical inequalities
 were computed outside Lean. [Certified transform](../../../scripts/probes/probe_sponsor_paley_spectrum.cpp)
+
+**Fourier energy of a weighted code domain.** Let $D=t+cH$, write
+$S_{xy}=\chi(x-y)$ on $D$, and for complex weights $z$ put
+$\widehat z(r)=\sum_{x\in D}z_x e^{2\pi irx/p}$. For nonzero squares $R$ and
+nonsquares $N$, let $E_U=\sum_{r\in U}|\widehat z(r)|^2$. Parseval gives
+$E_R+E_N=p\|z\|_2^2-|\sum z_x|^2$. The quadratic Gauss sum at either prime gives
+$E_R-E_N=\sqrt p\,z^*Sz$. Thus the Fourier matrix with rows from $R$ scaled by
+$\sqrt{2/p}$ and the zero row scaled by $1/\sqrt p$ has Gram matrix $I+S/\sqrt p$
+on $D$. The two certificates give distortion below $2^{-60}$ on every such support.
+For $z_x=e^{-2\pi it'x/p}$ on $H$, this bounds the signed quadratic partition of
+the energies of *all* translated additive periods. Bounding the largest individual
+period remains open. This deduction uses the classical quadratic Gauss sum evaluation
+and the computed operator norm. [Paley Fourier matrix](https://arxiv.org/abs/2011.02907)
+
+A fractional linear map sends the signed matrix on its non-poles to the original
+matrix up to a common sign and row and column signs. The same two operator bounds
+therefore hold on subsets of a common projective image of $H$ in the finite field.
+[Character identity](../../../ArkLib/Research/ProximityGap/Frontier/PaleyCosetCancellation.lean)
+
+There is a limit to covering arbitrary sparse pairs by these images. The ordered
+cross ratios of four distinct elements of $H$ occupy fewer than $n^3$ values,
+since multiplying through by the inverse of the first entry fixes it to one.
+Given $t$ selected finite points whose quadruples avoid these values, at most
+$t+t(t-1)(t-2)n^3$ next points are forbidden. For each ordered triple and
+cross ratio the fourth point is unique on the projective line. The set of
+forbidden cross ratios already includes every ordering of an $H$ quadruple.
+At either prime this bound is below $p$ for $t<2^{22}$. Consequently there
+exists a set of $2^{22}$ points meeting every projective image in at most three.
+Split it into two equal parts to obtain a sparse pair on which these local matrix
+bounds alone give no cancellation. This counting argument concerns the coverage
+of the proof method and makes no claim about the sign of that pair's discrepancy.
