@@ -579,6 +579,7 @@ import ArkLib.Research.ProximityGap.Frontier.PrimeFieldLimitSet
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldMultiplierHeight
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldPeriodAlignment
 import ArkLib.Research.ProximityGap.Frontier.PrimitiveIntegralSectionChart
+import ArkLib.Research.ProximityGap.Frontier.PrimitiveReceivedInterpolation
 import ArkLib.Research.ProximityGap.Frontier.Prize407EntropyPinSynthesis
 import ArkLib.Research.ProximityGap.Frontier.PrizeConditionalPinCapstone
 import ArkLib.Research.ProximityGap.Frontier.PrizeEquivalencePin
