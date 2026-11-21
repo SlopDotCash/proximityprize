@@ -65,6 +65,7 @@ import ArkLib.Research.ProximityGap.Frontier.ApolarDividedLocator
 import ArkLib.Research.ProximityGap.Frontier.ApolarDividedPolynomial
 import ArkLib.Research.ProximityGap.Frontier.ApolarDividedReversal
 import ArkLib.Research.ProximityGap.Frontier.ApolarEndpointExact
+import ArkLib.Research.ProximityGap.Frontier.ApolarEndpointPuncture
 import ArkLib.Research.ProximityGap.Frontier.ApolarFiberInterpolation
 import ArkLib.Research.ProximityGap.Frontier.ApolarFixedFactors
 import ArkLib.Research.ProximityGap.Frontier.ApolarFixedPencil
@@ -390,8 +391,10 @@ import ArkLib.Research.ProximityGap.Frontier.P8ListDecodingFaceNoLever
 import ArkLib.Research.ProximityGap.Frontier.PackingCoverSharpReach
 import ArkLib.Research.ProximityGap.Frontier.PackingDeflationBandAntitone
 import ArkLib.Research.ProximityGap.Frontier.PackingFloorTwoPowLower
+import ArkLib.Research.ProximityGap.Frontier.PaleyAffineSecondMoment
 import ArkLib.Research.ProximityGap.Frontier.PaleyBilinearDiscrepancy
 import ArkLib.Research.ProximityGap.Frontier.PaleyCosetCancellation
+import ArkLib.Research.ProximityGap.Frontier.PaleyListInterpolation
 import ArkLib.Research.ProximityGap.Frontier.PaleyShiftListRecovery
 import ArkLib.Research.ProximityGap.Frontier.PaleyTranslateInterpolation
 import ArkLib.Research.ProximityGap.Frontier.PencilAutocorrEnergyMaxBridge
@@ -517,6 +520,7 @@ import ArkLib.Research.ProximityGap.Frontier.SliceRankDiagonalVacuous
 import ArkLib.Research.ProximityGap.Frontier.SmoothDeepMcaThreshold
 import ArkLib.Research.ProximityGap.Frontier.SmoothDomainMcaEquivalence
 import ArkLib.Research.ProximityGap.Frontier.SmoothFermatCapacity
+import ArkLib.Research.ProximityGap.Frontier.SmoothPowerEndpoint
 import ArkLib.Research.ProximityGap.Frontier.SmoothPowerMcaDescent
 import ArkLib.Research.ProximityGap.Frontier.SmoothRationalFiberObstruction
 import ArkLib.Research.ProximityGap.Frontier.SpanCriterionGeneral

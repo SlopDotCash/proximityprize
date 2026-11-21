@@ -1080,6 +1080,12 @@ Here is the general count. Write $M_t=|\{x\in H:ax+t\in H\}|$ and let $T$ be a s
 
 The same injection now gives a kernel-checked bound over every finite field, with no fourth-energy-floor assumption. For every nonzero slope, $n^2+n\sum_{t\in T}M_t(M_t-1)\le E_2(H)$. In fact the off-diagonal weighted bound is $\sum_{r\ne0}r_H(r)r_H(ar)$, with $r_H$ the signed difference profile. Dilation permutes all residues, so $2uv\le u^2+v^2$ bounds its full mixed energy by $E_2(H)$. The zero difference contributes exactly $n^2$. Hence any independent energy bound $E_2(H)\le Cn^{2+\alpha}$ excludes a positive fraction of successful coordinate-dependent shifts when $|T|=o(n^{1-\alpha})$, by Cauchy–Schwarz. Shift transversality remains a hypothesis. [General weighted bound](../../../ArkLib/Research/ProximityGap/Frontier/AffineMultiplierOverlap.lean)
 
+### An unconditional half-rate bound beyond unique decoding by puncturing
+
+For every finite field and every injective Reed–Solomon domain of length $n$ and dimension $k$, let $M$ be the actual bad-scalar count at $e$ errors. For $c<e$, $k+1\le n-e$ and $n-c=k+2(e-c)$, Lean proves $M\binom ec\le\binom nc U(n-c,e-c)$, where $U$ is the exact unrestricted endpoint numerator above. The proof retains a noninterpolable $(k+1)$-subset while shrinking an MCA witness to exactly $n-e$ sites. Erasing any $c$ of its other sites gives a witness on the punctured code, and counting these incidences proves the inequality. At $n=4h=2^{30}$, $k=2h$, $e=h+1$ and $c=2$, this gives **$M\le48h-60=12884901828$** for every row pair, with no condition on a locator or an affine decoder head. The number exceeds the two named budgets $n$ and $2n$, so their smooth-domain threshold brackets stay open. Both the general theorem and the numerical consequence passed Lean and the two admission gates with only its standard axioms. [Puncturing theorem and production bound](../../../ArkLib/Research/ProximityGap/Frontier/ApolarEndpointPuncture.lean)
+
+The local multiplicity has an explicit obstruction on the named smooth domain. Partition $H=\mu_{4h}$ into four $h$-power fibers. For either named prime these are the full fibers in the whole field. Puncturing two points in one fiber leaves three complete fibers, and the power-fiber rows attain the $3h$ local upper. If the two points lie in different fibers, two complete fibers remain; each omitted point is also a bad label because every other site of its fiber is still present. Thus the *independent* local worst-case counts are at least $3h$ for $4\binom h2$ pairs and $2h+2$ for $6h^2$ pairs. Their sum divided by $\binom{h+1}2$ is at least $36h-24+24/(h+1)$. Even replacing each local bound with its exact domain-specific maximum cannot make this double count certify either named budget. Different punctures may require different row pairs in this lower calculation. [Full and singly erased power fibers](../../../ArkLib/Research/ProximityGap/Frontier/PowerFiberEndpoint.lean)
+
 ### Named prime fields, half rate, one error beyond unique decoding
 
 At $n=4h=2^{30}$, $k=2h$ and $e=h+1=268435457$, one explicit stack on the smooth subgroup in **each named production field** has exactly **$3h+2=805306370$ MCA-bad scalars**. Its unique projective degree-$h$ apolar locator at every nonzero parameter is $Y^h$. For every bad scalar $t$, the divided polynomial at zero is $t/G_C(0)\ne0$, so the domain-vanisher divisibility used at the predecessor fails even as an ordinary point evaluation. For an arbitrary atomic support with $|E|=s+2$, Lean proves that all nonzero errors are roots or all are missed, and proves the replacement polynomial identity $G_EW_f+c=f\sum_y w_y G_{E\setminus\{y\}}$ with $c=\lambda(fY^{s+1})$. Its pinned axiom audit was standard. An independent exhaustive verifier considered all 28,048,800 size-nine error supports for $\mathrm{RS}(32,16)$ over $\mathbb F_{97}$, recovered exactly 26 scalars, and checked each original no-joint witness. The production count is a written proof. It stays within both budgets. [Three-coset family and exact proof](apolar-successor-three-cosets.md) · [Kernel-checked first-defect identity](../../../ArkLib/Research/ProximityGap/Frontier/ApolarSuccessorDefect.lean) · [Exhaustive verifier](../../../scripts/probes/probe_apolar_successor_three_cosets.cpp)
@@ -1246,6 +1252,55 @@ coordinates their off-domain translates have full affine hull over the prime fie
 [Shift-list equivalences and MCA proof](../../../ArkLib/Research/ProximityGap/Frontier/PaleyShiftListRecovery.lean) ·
 [Affine-hull theorem](../../../ArkLib/Research/ProximityGap/Frontier/PaleyTranslateInterpolation.lean)
 
+In particular the classical quadratic-character conjecture is equivalent to the
+following list bound. For every $0<\epsilon<1$ there is $\gamma>0$ such that,
+for all sufficiently large primes and every $|A|>p^\epsilon$, each sign has
+at most $p^{\epsilon/2}$ shifts with signed excess greater than
+$|A|p^{-\gamma}$. For the forward direction apply the conjecture at exponent
+$\epsilon/2$, taking $B$ to be the entire list of shifts of one sign if it
+exceeds that size. In the reverse direction, for every $|B|>p^\epsilon$
+the relative discrepancy is bounded by $p^{-\gamma}+p^{-\epsilon/2}$.
+For sufficiently large $p$ this gives the conjectured power saving with
+exponent $\tfrac12\min(\gamma,\epsilon/2)$. Rounding the excess threshold
+down to an integer preserves the two lists.
+
+**Why the usual list-decoding interpolant stops at this grid.** Write $m=|A|$,
+$d=(p-1)/2$ and $L_A(X)=\prod_{a\in A}(X-a)$. Assume $1\le m\le d$ and
+let $Q$ be the nonzero squares. In coordinates $(X,T)=(X,Y-X)$ the allowed
+points above $a$ are $(a,t)$ with $t\in Q-a$. If $\deg_T H<d$, grid
+vanishing is equivalent to $L_A\mid H$. Indeed, each specialization $H(a,T)$
+has $d$ distinct roots, so every coefficient vanishes on $A$. Lean proves
+this equivalence for any field and any common list. At any order $s$, Lean
+also proves that $(X-a)^s\mid H(X,t)$ at every allowed $(a,t)$ if and only
+if $L_A^s\mid H$, under the same parameter-degree condition. This follows by
+applying the Vandermonde argument to the first $s$ Hasse derivative evaluations.
+[Sheared interpolation theorem](../../../ArkLib/Research/ProximityGap/Frontier/PaleyListInterpolation.lean)
+
+For larger degrees the following written argument treats multiplicity $s\ge1$,
+where multiplicity means
+membership in the $s$th power of the ideal of the point. For a nonzero
+interpolant $H$, extract the largest common power $L_A^e$. If $e<s$, the
+quotient has a nonzero slice at some $a\in A$. At each of the $d$ allowed
+points of that slice its vanishing order is at least $s-e$, since locally
+$L_A$ is $X-a$ times a unit. Thus $\deg_T H\ge(s-e)d$ and $\deg_X H\ge em$.
+In the original coordinates the same argument gives total degree at least
+$em+(s-e)d\ge sm$. When $e\ge s$, the factor $L_A^s$ already has degree $sm$.
+The strict degree test for a word with at most $m$ agreements cannot force
+its polynomial identity by this total-degree argument.
+
+Even allowing $\deg_T H=d$ gives $\deg_X H\ge sm-1$ in sheared coordinates.
+The only case left to check is $e=s-1$. The quotient on each nonzero row
+is then a scalar multiple of $(T+a)^d-1$. If there are $z$ nonzero rows,
+factor out the $m-z$ remaining row factors $X-a$. The surviving $z$ row
+polynomials are linearly independent. Their coefficients of powers $T^d$
+through $T^{d-z+1}$ form a Vandermonde matrix up to nonzero row and column
+scalars, since $z\le d<p$. A polynomial of $X$-degree $k$ has row span of
+dimension at most $k+1$. Restoring the extracted factors gives
+$(s-1)m+(m-z)+(z-1)=sm-1$. Equality is attained by interpolating the
+polynomials $(T+a)^d-1$ in $a$ and multiplying by $L_A^{s-1}$.
+With that degree the strict root count guarantees an identity at perfect
+agreement. Paley discrepancy requires control of agreement just above half.
+
 **Classical Paley results.** At the second designated production prime the order-$2^{30}$
 generator $g$ is a nonsquare. Simultaneous scaling by $g$ makes $S(A,B)=0$ for every pair
 of unions of its cosets. For two geometric intervals in arbitrary such cosets,
@@ -1268,6 +1323,27 @@ Thus $17q^{1+4\delta}\le ar^2$ suffices for a relative saving $q^{-\delta}$.
 For arbitrary balanced sets of size $p^\epsilon$ below the square-root threshold, the
 uniform saving remains open. [Lean estimates](../../../ArkLib/Research/ProximityGap/Frontier/PaleyBilinearDiscrepancy.lean) ·
 [Kim–Yip–Yoo, Conjecture 2.12](https://arxiv.org/html/2309.09124v3#S2.SS4)
+
+**Every pair of sets under almost every relative affine placement.** Fix arbitrary
+$A,B$ in a finite field of size $q$ and a nontrivial multiplicative character
+$\chi$. Put $a=|A|$, $b=|B|$, and $S(A,B)=\sum_{x\in A,y\in B}\chi(x+y)$.
+There is an exact identity
+$$
+\sum_{u\ne0,\,v}|S(A,uB+v)|^2=ab(q-a)(q-b).
+$$
+To see it, $W(y)=\sum_{x\in A}\chi(x+y)$ has mean zero and
+$\sum_y|W(y)|^2=a(q-a)$ by character orthogonality. Under a uniformly
+random invertible affine map, each point of $B$ has a uniform image and
+each pair of distinct points has a uniform ordered pair of distinct images.
+Expansion of the square gives the identity, with all $q(q-1)$ maps counted.
+For $a,b>q^\epsilon$ and $0<\delta<\epsilon$, the fraction of placements
+with $|S(A,uB+v)|\ge q^{-\delta}ab$ is below $q^{-2(\epsilon-\delta)}$.
+This includes arbitrary sparse shapes. The prescribed map $u=1,v=0$ can
+belong to the exceptional set. Lean checked the identity and the exceptional
+count for all nonnegative thresholds. Independent kernel replay with
+`con-leche --verified` accepted the exports of both affine theorems (14,466
+declarations) and both common-list interpolation theorems (13,638 declarations).
+[Affine second moment](../../../ArkLib/Research/ProximityGap/Frontier/PaleyAffineSecondMoment.lean)
 
 **Two graphs on the joint prize instance.** In the classical Paley graph, the subgraph
 induced on the 128 code coordinates is 67-regular and its ordered signed sum is 896.
@@ -1472,6 +1548,14 @@ The same method bounds the numerator by $2N$ at $5N/8$ errors on **every injecti
 The polynomial-multiplier version of the jet interpolation bound raises the first-bad lower endpoint to **677728038** by handling every selected scalar directly. The actual derivative-numerator divisibility statement and the earlier degree-seven kernel dimension have now also been kernel-checked. [Polynomial multiplier proof](second-prime-intrinsic-cubic.md) · [Exact arithmetic](../../../scripts/probes/probe_second_prime_intrinsic_cubic.py) · [Implicit derivative divisibility](../../../ArkLib/Research/ProximityGap/Frontier/ImplicitDerivativeBidegree.lean) · [Dimension theorem](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeDegreeSevenDimension.lean)
 
 The projective resultant of the cubic and its reverse second derivative has a universal leading-coefficient factor. Removing its intersection at infinity lowers the degree available for affine singularities. The corresponding integer certificate proves a first-bad lower bound of **678536753**. [Normalized Hessian proof](second-prime-normalized-hessian.md) · [Exact verifier](../../../scripts/probes/probe_second_prime_normalized_hessian.py)
+
+### Three full quintic fibers on a prescribed smooth subgroup
+
+At length 16, a subgroup contains three disjoint fibers of size five of one degree-five rational map exactly in characteristics **3, 17 and 31**. Exhaustive cyclotomic integer arithmetic covers every characteristic through 15,981 Galois orbits. With the omitted site fixed, the three characteristics have respectively two, one and one unordered fiber partitions. Over the prime field of order 17 an explicit received pair has exactly 15 bad scalars at dimension eight and four errors. Direct interpolation on every witness set verified that count, which attains the universal upper bound on this particular smooth subgroup. The calculation classifies the rational construction at length 16. [Proof and exact counts](rate-half-apolar-endpoint.md#three-complete-quintic-fibers-on-the-sixteenth-roots-of-unity) · [Reproducible arithmetic](../../../scripts/probes/probe_mu16_quintic_fibers.py)
+
+### Exact endpoint on every prescribed multiplicative coset when the fiber size divides its length
+
+Let $n=k+2e$ with $k,e>0$ and $e+1$ dividing $n$. For **every** prescribed multiplicative coset $D=b\mu_n$ of size $n$ in a finite field of order $q$, one received pair has bad-scalar set exactly $D$ at $e$ errors. Hence the worst-case probability is $n/q$. Each $(e+1)$-st power fiber through a site stays inside this particular coset. The same quotient pair therefore supplies all $n$ labels, and the unrestricted endpoint theorem caps every pair at $n$. For example, at length $2^{30}$ take $e=2^{28}-1$ and dimension $2^{29}+2$; the result holds on each of the two named subgroups at this dimension. [Lean proof](../../../ArkLib/Research/ProximityGap/Frontier/SmoothPowerEndpoint.lean)
 
 ## A projective list-to-MCA bound on the same Reed–Solomon code
 
