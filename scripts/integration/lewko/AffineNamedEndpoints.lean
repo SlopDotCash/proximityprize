@@ -3,7 +3,7 @@ Copyright (c) 2026 Proximity Prize Contributors. All rights reserved.
 SPDX-License-Identifier: MIT OR Apache-2.0
 -/
 import MathCollab.IncidenceSharper
-import ArkLib.Research.ProximityGap.Frontier.AffineListIncidences
+import ArkLib.Research.ProximityGap.Frontier.QuadraticListIncidences
 import ArkLib.Research.ProximityGap.Frontier._PrizeShapePrimeP30
 import ArkLib.Research.ProximityGap.Frontier._PrizeShapePrimeP30Second
 
@@ -58,6 +58,33 @@ theorem affine_list_budget (dom : I ↪ ZMod P) (hn : Fintype.card I = 107374182
   · exact graph (by rw [ringChar.eq (ZMod P) P]; decide)
 end Second
 
+/-- Every prime at or above the eight-length 128-bit budget meets its actual list
+budget at 44,429 agreements for dimension three, on any evaluation domain. -/
+theorem quadratic_eight {p : ℕ} [Fact p.Prime] (hb : 8589934592 ≤ p / 2 ^ 128)
+    (dom : I ↪ ZMod p) (hn : Fintype.card I = 1073741824) (width : ℕ) :
+    Lambda (interleavedCodeSet (κ := Fin width) (ReedSolomon.code dom 3 : Set (I → ZMod p)))
+      ((1073697395 : ℝ) / 1073741824) ≤ (p / 2 ^ 128 : ℕ) := by
+  have actual : (2 ^ 128 : ℕ) ≤ p := by omega
+  apply le_trans (QuadraticListIncidences.eight_lengths dom hn ?_ ?_ width)
+  · exact_mod_cast hb
+  · rw [Nat.card_eq_fintype_card, ZMod.card]
+    exact (show (8589934593 : ℕ).choose 2 ≤ 2 ^ 128 by norm_num [Nat.choose_two_right]).trans actual
+  · exact graph (by rw [ringChar.eq (ZMod p) p]; omega)
+
+/-- The analogous sixty-four-length prime-field bound needs 26,412 agreements. -/
+theorem quadratic_sixty_four {p : ℕ} [Fact p.Prime] (hb : 68719476736 ≤ p / 2 ^ 128)
+    (dom : I ↪ ZMod p) (hn : Fintype.card I = 1073741824) (width : ℕ) :
+    Lambda (interleavedCodeSet (κ := Fin width) (ReedSolomon.code dom 3 : Set (I → ZMod p)))
+      ((1073715412 : ℝ) / 1073741824) ≤ (p / 2 ^ 128 : ℕ) := by
+  have actual : (2 ^ 128 : ℕ) ≤ p := by omega
+  apply le_trans (QuadraticListIncidences.sixty_four_lengths dom hn ?_ ?_ width)
+  · exact_mod_cast hb
+  · rw [Nat.card_eq_fintype_card, ZMod.card]
+    exact (show (68719476737 : ℕ).choose 2 ≤ 2 ^ 128 by norm_num [Nat.choose_two_right]).trans actual
+  · exact graph (by rw [ringChar.eq (ZMod p) p]; omega)
+
+#print axioms quadratic_eight
+#print axioms quadratic_sixty_four
 #print axioms First.affine_list_budget
 #print axioms Second.affine_list_budget
 end ProximityGap.AffineNamedEndpoints
