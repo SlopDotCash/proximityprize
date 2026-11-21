@@ -314,6 +314,7 @@ import ArkLib.Research.ProximityGap.Frontier.GaussianEnergyBoundMuNDepthThree
 import ArkLib.Research.ProximityGap.Frontier.GaussianEnergyBoundMuNDepthTwo
 import ArkLib.Research.ProximityGap.Frontier.GenericCountSigmaUniform
 import ArkLib.Research.ProximityGap.Frontier.GenericCountTransversal
+import ArkLib.Research.ProximityGap.Frontier.GenericDifferentialFunctionField
 import ArkLib.Research.ProximityGap.Frontier.GenericSuperDiagonalLower
 import ArkLib.Research.ProximityGap.Frontier.GeometricIncompleteSumNoGo
 import ArkLib.Research.ProximityGap.Frontier.GeometricWordLocator
@@ -335,6 +336,7 @@ import ArkLib.Research.ProximityGap.Frontier.ImprimitiveSpikeStructure
 import ArkLib.Research.ProximityGap.Frontier.IncidenceDevL2Offset
 import ArkLib.Research.ProximityGap.Frontier.InterleavedListProjection
 import ArkLib.Research.ProximityGap.Frontier.InverseTaylorFlat
+import ArkLib.Research.ProximityGap.Frontier.InverseTaylorNumeratorHeight
 import ArkLib.Research.ProximityGap.Frontier.IsSidonSetProperties
 import ArkLib.Research.ProximityGap.Frontier.Issue407FiniteObstructionBridge
 import ArkLib.Research.ProximityGap.Frontier.Issue407SaturatedIncidence
@@ -367,6 +369,7 @@ import ArkLib.Research.ProximityGap.Frontier.MobiusSeamCoordinateSupply
 import ArkLib.Research.ProximityGap.Frontier.MobiusStepanov
 import ArkLib.Research.ProximityGap.Frontier.MomentFullEnergyDeepNoGo
 import ArkLib.Research.ProximityGap.Frontier.MomentMethodPrizeDepthNoGo
+import ArkLib.Research.ProximityGap.Frontier.MovingCubicVanishingBranch
 import ArkLib.Research.ProximityGap.Frontier.MuNIteratedDoubling
 import ArkLib.Research.ProximityGap.Frontier.MultEmptyFiberBelowBand
 import ArkLib.Research.ProximityGap.Frontier.MultUniformAgreementSizeCap
@@ -589,6 +592,7 @@ import ArkLib.Research.ProximityGap.Frontier.Sweep_A49_DyadicRigidityEngine
 import ArkLib.Research.ProximityGap.Frontier.Sweep_A50_SpectrumGeneratingFunction
 import ArkLib.Research.ProximityGap.Frontier.SymmetricTowerBracket
 import ArkLib.Research.ProximityGap.Frontier.SyndromeMotion
+import ArkLib.Research.ProximityGap.Frontier.TerminalCubicBudget
 import ArkLib.Research.ProximityGap.Frontier.ThornerZamanInstance
 import ArkLib.Research.ProximityGap.Frontier.ThornerZamanS128
 import ArkLib.Research.ProximityGap.Frontier.ThreeGapPositionalRigidity
