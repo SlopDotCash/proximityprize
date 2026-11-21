@@ -93,6 +93,7 @@ import ArkLib.Research.ProximityGap.Frontier.ApolarPrimitiveKernel
 import ArkLib.Research.ProximityGap.Frontier.ApolarReciprocalCharts
 import ArkLib.Research.ProximityGap.Frontier.ApolarRootTransition
 import ArkLib.Research.ProximityGap.Frontier.ApolarSmoothProduct
+import ArkLib.Research.ProximityGap.Frontier.ApolarSmoothProductObstruction
 import ArkLib.Research.ProximityGap.Frontier.ApolarSparseInterpolation
 import ArkLib.Research.ProximityGap.Frontier.ApolarSparseRankBound
 import ArkLib.Research.ProximityGap.Frontier.ApolarSparseSpecialization
