@@ -20,12 +20,12 @@ variable {dom : I ↪ F} {δ : ℝ≥0} {u : WordStack F (Fin 2) I}
 
 /-- Across a collapsed cluster the covered sites contribute at most one scalar each.
 Uncovered sites contribute at most one scalar per head. -/
-theorem cluster_budget {k : ℕ} (fam : BadScalarRichPointFamily dom k δ u)
+theorem cluster_image_budget {k : ℕ} (fam : BadScalarRichPointFamily dom k δ u)
     (a b : LineParameter F) (hab : a ≠ b) (H : Finset (LineParameter F))
     (valid : ∀ g ∈ H, g ∈ lineParameters fam)
     (col : ∀ g ∈ H, lineDeterminant a b g = 0) (cover : fam.G ⊆ H.biUnion (pointsOn fam)) :
     let U := H.biUnion fun g => jointCore dom (u 0) (u 1) g.1 g.2
-    fam.G.card ≤ U.card + H.card * Uᶜ.card := by
+    fam.G.card ≤ (U.image (fun i => primitiveScalarAt a b (dom i))).card + H.card * Uᶜ.card := by
   classical
   let _ := Fintype.ofFinite F
   let D (g : LineParameter F) := jointCore dom (u 0) (u 1) g.1 g.2
@@ -60,7 +60,18 @@ theorem cluster_budget {k : ℕ} (fam : BadScalarRichPointFamily dom k δ u)
   have tail : (H.biUnion (fun s => Uᶜ.image (key s))).card ≤ H.card * Uᶜ.card :=
     card_biUnion_le.trans ((sum_le_sum (fun s _ => card_image_le (s := Uᶜ) (f := key s))).trans_eq
       (by simp))
-  exact (card_le_card labels).trans ((card_union_le ..).trans (Nat.add_le_add card_image_le tail))
+  exact (card_le_card labels).trans ((card_union_le ..).trans (Nat.add_le_add_left tail _))
+
+/-- A collapsed cluster has at most one label per covered site and one per head per hole. -/
+theorem cluster_budget {k : ℕ} (fam : BadScalarRichPointFamily dom k δ u)
+    (a b : LineParameter F) (hab : a ≠ b) (H : Finset (LineParameter F))
+    (valid : ∀ g ∈ H, g ∈ lineParameters fam)
+    (col : ∀ g ∈ H, lineDeterminant a b g = 0) (cover : fam.G ⊆ H.biUnion (pointsOn fam)) :
+    let U := H.biUnion fun g => jointCore dom (u 0) (u 1) g.1 g.2
+    fam.G.card ≤ U.card + H.card * Uᶜ.card := by
+  classical
+  have h := cluster_image_budget fam a b hab H valid col cover
+  exact h.trans (Nat.add_le_add_right card_image_le _)
 
 omit [DecidableEq I] in
 /-- A genuine received pair can exceed the first named budget at the successor by at
