@@ -39,3 +39,16 @@ Consider a noncollinear saturated quartet of row degree at most seven on the 32-
 The exclusion holds over the complex numbers as well. The full $28\times24$ incidence matrix after subtracting head zero has rank at least 23 in characteristic 65537. For each layout, a nonzero 23-minor in that field therefore lifts to a nonzero cyclotomic integer. Its conjugates have absolute value at most $4^{23}$ since each row has at most sixteen unit entries. The norm bound $4^{23\cdot16}=2^{736}$ transfers the exclusion to every splitting prime above that bound. The direct runs cover both named primes, which are smaller.
 
 Neither search assumes the bad scalar directions are pairwise distinct. Both screen the weaker necessary condition of having two scalar splines with the prescribed pair agreements. An asymmetric quartet, or one with just a single involution, remains possible. [Order-four symmetry probe](../../../scripts/probes/probe_quarter_32_symmetries.py)
+
+## Affine exponent symmetries over the complex numbers
+
+In characteristic zero the degree-seven rank obstruction extends to every subgroup of order four of the full affine permutation group of the cyclotomic exponents, provided the subgroup acts faithfully on the four head labels. These permutations are $i\mapsto ai+b$ on $\mathbb Z/32$, with $a$ odd. In particular the symmetry can involve a Galois action on the primitive root as well as an ordinary rotation.
+
+The probe constructs all 512 affine permutations, enumerates the order-four subgroups, and groups them under conjugation. There are five cyclic classes and six Klein four classes. A faithful cyclic label action is a four-cycle up to vertex relabelling. A Klein four subgroup has four possible embeddings up to vertex relabelling, as above. For each of the resulting 29 cases the program enumerates invariant four-site hole sets. At each ordinary orbit it assigns a vertex pair and propagates it by the group, discarding inconsistent stabilizers. Every edge may have at most seven sites and opposite edges must have the same size. Gaussian elimination on the full 24-column incidence matrix over $\mathbb F_{65537}$ prunes a branch as soon as the rank reaches 23. No admissible layout has rank below 23.
+
+A complex solution would give one for the canonical representative of its subgroup. Indeed multiplication of the exponents by a unit acts on the cyclotomic coefficients by Galois conjugation, and index translation scales each polynomial coefficient by a nonzero power of the primitive root. Both preserve the ranks over the complex numbers. Reduction at 65537 cannot increase the rank of the resulting cyclotomic matrix, contradicting the calculation. The norm bound $2^{736}$ in the preceding section also applies to all these conjugates. Reduction at 65537 alone does not settle the extra Galois symmetry cases at the smaller named primes. Run the following commands to reproduce the characteristic-zero screen. [Affine symmetry probe](../../../scripts/probes/probe_quarter_32_affine_symmetries.cpp)
+
+```sh
+c++ -O3 -std=c++17 scripts/probes/probe_quarter_32_affine_symmetries.cpp -o /tmp/quarter-affine-symmetries
+/tmp/quarter-affine-symmetries
+```
