@@ -259,6 +259,7 @@ import ArkLib.Research.ProximityGap.Frontier.DecouplingDecayCrossingDepth
 import ArkLib.Research.ProximityGap.Frontier.DeepBandCensusMarginRatio
 import ArkLib.Research.ProximityGap.Frontier.DeepBandOrbitCountDescent
 import ArkLib.Research.ProximityGap.Frontier.DeepListMcaTransfer
+import ArkLib.Research.ProximityGap.Frontier.DegreeTenDeficitWindow
 import ArkLib.Research.ProximityGap.Frontier.DelsarteLPNoGo
 import ArkLib.Research.ProximityGap.Frontier.DeltaStarConditionalEntropyPin
 import ArkLib.Research.ProximityGap.Frontier.DeltaStarEqEdge
