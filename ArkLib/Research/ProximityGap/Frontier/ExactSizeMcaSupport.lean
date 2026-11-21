@@ -18,7 +18,7 @@ namespace ProximityGap.ExactSizeMcaSupport
 open Code Finset ProjectiveQuotientSupport SimultaneousSupportRank
 open scoped NNReal ENNReal
 
-variable {I F : Type} [Fintype I] [Nonempty I] [DecidableEq I] [Field F] [Fintype F]
+variable {I F : Type} [Fintype I] [Nonempty I] [Field F] [Fintype F]
 
 omit [Fintype I] [Nonempty I] [Fintype F] in
 private theorem circuit (D : I ↪ F) (k : ℕ) (u : I → F) (S : Finset I)
@@ -102,7 +102,8 @@ theorem error_one_eq_grid (D : I ↪ F) (k : ℕ) :
   · rw [gridPt_mul_card, Nat.floor_natCast]
     omega
 
-private theorem supports_of_events [DecidableEq F] (D : I ↪ F) (k : ℕ) (δ : ℝ≥0)
+omit [Fintype F] in
+private theorem supports_of_events [Finite F] (D : I ↪ F) (k : ℕ) (δ : ℝ≥0)
     (G : Finset F) (x : (I → F) × (I → F))
     (hx : ∀ g : G, mcaEvent (ReedSolomon.code D k : Set (I → F)) δ x.1 x.2 (g : F)) :
     ∃ S : G → Finset I,
@@ -111,6 +112,7 @@ private theorem supports_of_events [DecidableEq F] (D : I ↪ F) (k : ℕ) (δ :
         jointSpace (ReedSolomon.code D k) (S g)) <
         Module.finrank F (space (ReedSolomon.code D k) G S) := by
   classical
+  let _ := Fintype.ofFinite F
   choose T hT hfold hbad using fun (g : G) => (event_iff D k δ x.1 x.2 (g : F)).mp (hx g)
   refine ⟨T, hT, ?_⟩
   have hspace : x ∈ space (ReedSolomon.code D k) G T := by
@@ -126,7 +128,7 @@ private theorem supports_of_events [DecidableEq F] (D : I ↪ F) (k : ℕ) (δ :
   exact hbad g ((pairJointAgreesOn_iff_quotientSupport (ReedSolomon.code D k) (T g) x.1 x.2).mpr hj)
 
 /-- The exact support-rank criterion uses one support cardinality at each radius. -/
-theorem canonical_failure_iff [DecidableEq F] [SampleableType F]
+theorem canonical_failure_iff [SampleableType F]
     (D : I ↪ F) (k B : ℕ) (δ : ℝ≥0) :
     (B : ℝ≥0∞) / Fintype.card F <
         CoreDefinitions.mcaError (CoreDefinitions.AffineLineGenerator F) (ReedSolomon.code D k)
@@ -150,7 +152,7 @@ theorem canonical_failure_iff [DecidableEq F] [SampleableType F]
 
 /-- Simultaneously put a selected bad label at zero and, when the budget is positive,
 a second selected label at one, preserving all bad events by affine reparametrization. -/
-private theorem anchor_labels [DecidableEq F] (C : Submodule F (I → F)) (δ : ℝ≥0)
+private theorem anchor_labels (C : Submodule F (I → F)) (δ : ℝ≥0)
     (G : Finset F) (B : ℕ) (hG : G.card = B + 1) (u v : I → F)
     (hbad : ∀ g : G, mcaEvent (C : Set (I → F)) δ u v (g : F)) :
     ∃ H : Finset F, H.card = B + 1 ∧ 0 ∈ H ∧ (0 < B → 1 ∈ H) ∧
@@ -176,7 +178,7 @@ private theorem anchor_labels [DecidableEq F] (C : Submodule F (I → F)) (δ : 
 
 /-- The canonical test can enumerate only sets containing zero and, for positive budgets,
 one. All support assignments have the same explicitly determined size. -/
-theorem anchored_failure_iff [DecidableEq F] [SampleableType F]
+theorem anchored_failure_iff [SampleableType F]
     (D : I ↪ F) (k B : ℕ) (δ : ℝ≥0) :
     (B : ℝ≥0∞) / Fintype.card F <
         CoreDefinitions.mcaError (CoreDefinitions.AffineLineGenerator F) (ReedSolomon.code D k)
@@ -187,6 +189,7 @@ theorem anchored_failure_iff [DecidableEq F] [SampleableType F]
           ∀ g, Module.finrank F ↥(space (ReedSolomon.code D k) G S ⊓
             jointSpace (ReedSolomon.code D k) (S g)) <
             Module.finrank F (space (ReedSolomon.code D k) G S) := by
+  classical
   constructor
   · intro h
     obtain ⟨G, hG, S, hs, hd⟩ := (SimultaneousSupportRank.canonical_failure_iff _ _ _).mp h
