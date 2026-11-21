@@ -381,6 +381,7 @@ import ArkLib.Research.ProximityGap.Frontier.MobiusStepanov
 import ArkLib.Research.ProximityGap.Frontier.MomentFullEnergyDeepNoGo
 import ArkLib.Research.ProximityGap.Frontier.MomentMethodPrizeDepthNoGo
 import ArkLib.Research.ProximityGap.Frontier.MovingCubicVanishingBranch
+import ArkLib.Research.ProximityGap.Frontier.Mu32CubicList
 import ArkLib.Research.ProximityGap.Frontier.MuNIteratedDoubling
 import ArkLib.Research.ProximityGap.Frontier.MultEmptyFiberBelowBand
 import ArkLib.Research.ProximityGap.Frontier.MultUniformAgreementSizeCap
