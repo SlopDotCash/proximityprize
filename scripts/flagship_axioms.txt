@@ -10,6 +10,19 @@ ArkLib.Research.ProximityGap.Frontier.UniversalCubicThreshold ArkLib.ProximityGa
 ArkLib.Research.ProximityGap.Frontier.UniversalCubicBudgetWindow ArkLib.ProximityGap.Frontier.UniversalCubicBudgetWindow.prime_classification
 ArkLib.Research.ProximityGap.Frontier.UniversalCubicBudgetWindow ArkLib.ProximityGap.Frontier.UniversalCubicBudgetWindow.prime_exact_eps
 
+# Smooth-field and executable equality for the second-budget MCA boundary
+ArkLib.Research.ProximityGap.Frontier.SecondBudgetCharacteristic ArkLib.ProximityGap.Frontier.SecondBudgetCharacteristic.smooth
+ArkLib.Research.ProximityGap.SecondBudgetSmoothReview ProximityPrize.SecondBudgetSmoothReview.classification
+ArkLib.Research.ProximityGap.SecondBudgetSmoothReview ProximityPrize.SecondBudgetSmoothReview.rank_answer
+ArkLib.Research.ProximityGap.SecondPrimeRankReview ProximityPrize.SecondPrimeRankReview.formulaValue
+ArkLib.Research.ProximityGap.SecondPrimeRankReview ProximityPrize.SecondPrimeRankReview.interleaved_safe_iff
+ArkLib.Research.ProximityGap.SecondPrimeRankReview ProximityPrize.SecondPrimeRankReview.executableValue
+
+# Both grand challenges at all four rates in a single length-32 budget interval
+ArkLib.Research.ProximityGap.Frontier.FourRateBudget32 ProximityGap.FourRateBudget32.mca_threshold
+ArkLib.Research.ProximityGap.Frontier.FourRateBudget32 ProximityGap.FourRateBudget32.list_threshold
+ArkLib.Research.ProximityGap.Frontier.FourRatePrime152 ProximityGap.FourRatePrime152.thresholds
+
 # All power fibers and the actual second-prime quadratic population cap
 ArkLib.Research.ProximityGap.Frontier.PaddedPowerSpecialization ProximityGap.PaddedPowerSpecialization.power_fiber_count
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeQuadraticFactor ProximityGap.SecondPrimeQuadraticFactor.quadratic_population_le_263
