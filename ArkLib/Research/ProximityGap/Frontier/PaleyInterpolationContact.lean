@@ -53,6 +53,35 @@ private theorem shiftedCoeff (A U : Finset K) (D j : ℕ) (b : K) :
   simp only [powerSum, Polynomial.sum_comp, mul_comp, C_comp, pow_comp, add_comp, X_comp,
     add_assoc, ← C_add, finsetSum_coeff, coeff_C_mul, coeff_X_add_C_pow, sum_mul, mul_assoc]
 
+/-- The shifted powers cancel their top coefficients through the first nonzero
+Lagrange moment. The degree formula includes constant polynomials. -/
+theorem powerSum_degree {p : ℕ} [Fact p.Prime] (A : Finset (ZMod p)) {D : ℕ}
+    (ha : 1 < A.card) (hlo : A.card-1 ≤ D) (hhi : D < p) :
+    (powerSum A A D).natDegree = D-(A.card-1) ∧ powerSum A A D ≠ 0 := by
+  let t := D-(A.card-1)
+  have hcoeff (j : ℕ) : (powerSum A A D).coeff j =
+      (∑ u ∈ A, Lagrange.nodalWeight A id u * u^(D-j)) * D.choose j := by
+    simpa using shiftedCoeff A A D j 0
+  have hm {j : ℕ} (hj : D-j < A.card) :
+      (∑ u ∈ A, Lagrange.nodalWeight A id u * u^(D-j)) =
+        (if D-j = A.card-1 then 1 else 0) := by simpa using nodalWeight_shift_moment A 0 hj
+  have htop : (powerSum A A D).coeff t ≠ 0 := by
+    have hidx : D-t = A.card-1 := by dsimp [t]; omega
+    rw [hcoeff, hm (by omega)]
+    simp only [hidx, ↓reduceIte, one_mul, Ne, ZMod.natCast_eq_zero_iff]
+    intro hdiv
+    have htf : D.choose t ∣ D.factorial := ⟨t.factorial * (D-t).factorial, by
+      rw [← mul_assoc, Nat.choose_mul_factorial_mul_factorial (show t ≤ D by dsimp [t]; omega)]⟩
+    exact (not_le.mpr hhi) ((Fact.out : p.Prime).dvd_factorial.mp (hdiv.trans htf))
+  refine ⟨natDegree_eq_of_le_of_coeff_ne_zero (natDegree_le_iff_coeff_eq_zero.mpr ?_) htop, ?_⟩
+  · intro j hj
+    change t < j at hj
+    have hj' : D-j < A.card-1 := by dsimp [t] at hj; omega
+    rw [hcoeff, hm (by omega)]
+    simp [hj'.ne]
+  · intro heq
+    exact htop (by rw [heq, coeff_zero])
+
 variable [Fintype K]
 
 /-- Actual minority support at `b` yields contact to order `k+1` away from the pole and

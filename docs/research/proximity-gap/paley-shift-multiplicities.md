@@ -35,7 +35,7 @@ At a nonzero $b+u$, this follows by multiplying the sign of the coefficient in $
 
 **Multiplicity.** The normalized derivative matrix of a single shifted power has rank at most one over $\mathbb F_p(X)$. The matrix of $G_b$ therefore has rank at most $e$. Entries of the remaining matrix are divisible by $(X-b)^{\nu-i-j}$, where $\nu\ge2h$. Expanding by complementary minors gives order at least $r(\nu-2h+r-1)$ for $r=x-e\ge0$. Indeed, a nonzero summand must use at least $r$ rows of the remaining matrix. A size-$k$ minor uses distinct row and column indices, giving order at least $k(\nu-2h+k-1)$, which increases weakly for $k\ge0$. The four parity cases give the following values. [Lean proof of the weighted divisibility lemma](../../../ArkLib/Research/ProximityGap/Frontier/PaleyDefectMinor.lean)
 
-| $a$ | $z_b$ | $|W_A(b)|$ | Lower bound on the order |
+| $a$ | $z_b$ | $\lvert W_A(b)\rvert$ | Lower bound on the order |
 |---|---:|---:|---:|
 | even | 0 | $2r$ | $r^2$ |
 | even | 1 | $2r-1$ | $r(r-1)$ |
@@ -51,7 +51,7 @@ $$
  V\operatorname{diag}\big(2c_u(b+u)^D\big)_{u\in E}V^{\mathsf T},\qquad
  V_{iu}=(b+u)^{-i}.
 $$
-The $e$ nodes are distinct nonzero field elements and $e\le y$. The first $e$ rows give an invertible Vandermonde matrix. Thus $V^{\mathsf T}$ is surjective, the middle map is invertible, and $V$ is injective. In particular $|W_A(b)|=a-z_b-2\operatorname{rank}J_{<y,<y}(b)$. The rank and the multiplicity both recover the magnitude. The two signs need additional information.
+The $e$ nodes are distinct nonzero field elements and $e\le y$. The first $e$ rows give an invertible Vandermonde matrix. Thus $V^{\mathsf T}$ is surjective, the middle map is invertible, and $V$ is injective. In particular $|W_A(b)|=a-z_b-2\operatorname{rank}J_{<y,<y}(b)$. The rank and the multiplicity both recover the magnitude. The exact rank identity has a Lean proof. [Rank theorem](../../../ArkLib/Research/ProximityGap/Frontier/PaleyShiftRank.lean)
 
 ## Which root estimate would settle arbitrary placements?
 
@@ -69,4 +69,4 @@ For any larger $A,B$, independent uniform $m$-subsets sample each pair with prob
 
 ## Reproduction
 
-Run `python3 -O scripts/probes/probe_paley_shift_multiplicities.py`. The program computes the determinant by polynomial arithmetic modulo $p$ and independently computes the proposed product from Euler's criterion. It also compares the minority counts with Gaussian elimination at every shift. The fixtures cover 1,765 coordinate sets and 21,889 shifts at primes from 5 through 97. The degree, contact and multiplicity arguments above give the proof for all admissible sets. The general local divisibility step also has a Lean proof. [Exact verifier](../../../scripts/probes/probe_paley_shift_multiplicities.py)
+Run `python3 -O scripts/probes/probe_paley_shift_multiplicities.py`. The program computes the determinant by polynomial arithmetic modulo $p$ and independently computes the proposed product from Euler's criterion. It also compares the minority counts with Gaussian elimination at every shift. The fixtures cover 1,765 coordinate sets and 21,889 shifts at primes from 5 through 97. Lean verifies the complete factorization and the exact root order at every field element for all admissible sets, including the degree-zero case. [End-to-end Lean proof](../../../ArkLib/Research/ProximityGap/Frontier/PaleyShiftFactorization.lean) [Exact verifier](../../../scripts/probes/probe_paley_shift_multiplicities.py)
