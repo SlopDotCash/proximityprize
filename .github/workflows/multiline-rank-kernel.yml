@@ -6,6 +6,7 @@ on:
     paths:
       - ArkLib/Research/ProximityGap/Frontier/_IncidenceDependencyArithmetic.lean
       - ArkLib/Research/ProximityGap/Frontier/_PencilCycleShortening.lean
+      - ArkLib/Research/ProximityGap/Frontier/_RichPencilCycleBudget.lean
       - ArkLib/Research/ProximityGap/Frontier/_ActiveErrorAffineCollapse.lean
       - docs/research/proximity-gap/multiline-relation-shortening.md
       - ArkLib/Research/ProximityGap.lean
@@ -123,4 +124,17 @@ jobs:
           result = re.search(r"'ProximityGap\.PencilCycleShortening\.pencilCycle_jumps_mem' depends on axioms:\s*\[([^\]]*)\]", text)
           assert result is not None
           assert {axiom.strip() for axiom in result[1].split(',')} <= {'propext', 'Classical.choice', 'Quot.sound'}
+      - name: Check rich pencil cycle budgets and audit axioms
+        run: |
+          set -o pipefail
+          lake env lean ArkLib/Research/ProximityGap/Frontier/_RichPencilCycleBudget.lean | tee rich-pencil-axioms.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          text = Path('rich-pencil-axioms.log').read_text()
+          results = re.findall(r"'ProximityGap\.RichPencilCycleBudget\.([^']+)' depends on axioms:\s*\[([^\]]*)\]", text)
+          assert {name for name, _ in results} == {'adjacent_exception_mass_le', 'distance_le_twice_radius_of_cycle', 'distance_le_twice_radius_of_affine_cycle'}
+          assert len(results) == 3
+          for name, axioms in results:
+              assert {axiom.strip() for axiom in axioms.split(',')} <= {'propext', 'Classical.choice', 'Quot.sound'}, name
           PY

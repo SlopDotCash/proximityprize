@@ -2723,6 +2723,7 @@ import ArkLib.Research.ProximityGap.Frontier._ResonanceWorstFrequencyMuCapstone
 import ArkLib.Research.ProximityGap.Frontier._RhoAntitoneFailsThinPrime
 import ArkLib.Research.ProximityGap.Frontier._RhoCharZeroSlackVacuousAtPrize
 import ArkLib.Research.ProximityGap.Frontier._RhoDecomposition
+import ArkLib.Research.ProximityGap.Frontier._RichPencilCycleBudget
 import ArkLib.Research.ProximityGap.Frontier._RingHomBadScalarMono
 import ArkLib.Research.ProximityGap.Frontier._RudnevDilutionFixedSavingStall
 import ArkLib.Research.ProximityGap.Frontier._RungListBridge
