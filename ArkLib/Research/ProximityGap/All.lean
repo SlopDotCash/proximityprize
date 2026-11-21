@@ -34,6 +34,7 @@ import ArkLib.Research.ProximityGap.Connections.SmoothDomainMCAWitness
 import ArkLib.Research.ProximityGap.CurveUDRBound
 import ArkLib.Research.ProximityGap.DG25Sampling
 import ArkLib.Research.ProximityGap.Decision
+import ArkLib.Research.ProximityGap.DesignatedPrimeJohnson
 import ArkLib.Research.ProximityGap.EtaAutocorrInvolutionPaired
 import ArkLib.Research.ProximityGap.EtaInvolutionFixedPointReal
 import ArkLib.Research.ProximityGap.EtaNormSqRealShiftForm
