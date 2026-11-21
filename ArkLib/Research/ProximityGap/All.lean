@@ -281,6 +281,7 @@ import ArkLib.Research.ProximityGap.Frontier.EquivariancePinN12
 import ArkLib.Research.ProximityGap.Frontier.EvenDirectionDescent
 import ArkLib.Research.ProximityGap.Frontier.EvenWitnessReverseCollapse
 import ArkLib.Research.ProximityGap.Frontier.ExactHistogramSquares
+import ArkLib.Research.ProximityGap.Frontier.ExactSizeMcaSupport
 import ArkLib.Research.ProximityGap.Frontier.ExplainableAmalgamation
 import ArkLib.Research.ProximityGap.Frontier.F6CliffInstantiationJohnson
 import ArkLib.Research.ProximityGap.Frontier.Face1JohnsonRadiusCap
