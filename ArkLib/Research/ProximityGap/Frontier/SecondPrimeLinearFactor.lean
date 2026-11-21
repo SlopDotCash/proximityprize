@@ -24,7 +24,7 @@ private abbrev Family (dom : I ↪ F) (δ : ℝ≥0) (u : WordStack F (Fin 2) I)
 /-- The 35 lowest-miss labels have more than the polynomial degree in common among
 each triple. The incidence hypotheses count fit labels off the identity sites and
 missed labels on them. -/
-private theorem many_on_secant (fam : Family dom δ u) (M : Finset F)
+theorem many_on_secant (fam : Family dom δ u) (M : Finset F)
     (hM : M ⊆ fam.G) (hm : M.card = 185) (U : Finset I)
     (hn : Fintype.card I = 1073741824)
     (ht : 357913943 ≤ ⌈(1 - δ) * (Fintype.card I : ℝ≥0)⌉₊)
@@ -116,13 +116,14 @@ private abbrev Factor (K : Type) [Field K] := Polynomial (Polynomial K[X])
 
 /-- Evaluating first at the scalar and then at the domain coordinate commutes with
 specializing the coordinate coefficients before evaluating the scalar. -/
-private theorem at_site (A : Polynomial K[X]) (x z : K) :
+theorem at_site (A : Polynomial K[X]) (x z : K) :
     (A.eval (C z)).eval x = (A.map (evalRingHom x)).eval z := by
   symm
   simpa using (eval_map_apply (p := A) (evalRingHom x) (C z))
 
 omit [Fintype F] [DecidableEq F] in
-private theorem root_bound {S : Finset F} (φ : F →+* K) (p : K[X]) (hn : p ≠ 0)
+/-- A nonzero polynomial over an extension vanishes at at most its degree in base labels. -/
+theorem root_bound {S : Finset F} (φ : F →+* K) (p : K[X]) (hn : p ≠ 0)
     (hroot : ∀ z ∈ S, p.eval (φ z) = 0) : S.card ≤ p.natDegree := by
   classical
   by_contra! hgt

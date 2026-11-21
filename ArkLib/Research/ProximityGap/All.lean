@@ -266,6 +266,7 @@ import ArkLib.Research.ProximityGap.Frontier.DistinctPeriodMomentLaw
 import ArkLib.Research.ProximityGap.Frontier.DistinctPeriodSecondMoment
 import ArkLib.Research.ProximityGap.Frontier.DividedDifferenceDeflation
 import ArkLib.Research.ProximityGap.Frontier.DyadicGeomeanPrizeVsSqrtN
+import ArkLib.Research.ProximityGap.Frontier.DyadicParityLemma
 import ArkLib.Research.ProximityGap.Frontier.DyadicPeriodCeiling
 import ArkLib.Research.ProximityGap.Frontier.DyadicSidonTriple
 import ArkLib.Research.ProximityGap.Frontier.E2GenuineQuadStrictExcess
@@ -303,6 +304,7 @@ import ArkLib.Research.ProximityGap.Frontier.FirstInteriorLevelDirectionBlind
 import ArkLib.Research.ProximityGap.Frontier.FirstOrderChargeFloor
 import ArkLib.Research.ProximityGap.Frontier.FirstOrderDegreeOneBoundary
 import ArkLib.Research.ProximityGap.Frontier.FirstOrderZeroCapJohnson
+import ArkLib.Research.ProximityGap.Frontier.FirstPrimeQuarterSuccessor
 import ArkLib.Research.ProximityGap.Frontier.FirstPrimeSepticCores
 import ArkLib.Research.ProximityGap.Frontier.FisherLevelLocked
 import ArkLib.Research.ProximityGap.Frontier.FisherRSListCap
@@ -439,6 +441,7 @@ import ArkLib.Research.ProximityGap.Frontier.PaleyBilinearDiscrepancy
 import ArkLib.Research.ProximityGap.Frontier.PaleyCodingCosets
 import ArkLib.Research.ProximityGap.Frontier.PaleyCosetCancellation
 import ArkLib.Research.ProximityGap.Frontier.PaleyListInterpolation
+import ArkLib.Research.ProximityGap.Frontier.PaleyProjectiveMoment
 import ArkLib.Research.ProximityGap.Frontier.PaleyShiftListRecovery
 import ArkLib.Research.ProximityGap.Frontier.PaleyTranslateInterpolation
 import ArkLib.Research.ProximityGap.Frontier.PaleyTranslationEnergy
@@ -532,6 +535,7 @@ import ArkLib.Research.ProximityGap.Frontier.ReciprocalAverageEnergy
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalChartMCA
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalChartMoments
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalEnergyFailure
+import ArkLib.Research.ProximityGap.Frontier.ReciprocalFiberLists
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalSubsetSeparation
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalTupleEnergy
 import ArkLib.Research.ProximityGap.Frontier.RecursiveListPacking
@@ -562,6 +566,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeKernelCapacity
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeLinearFactor
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeLinearSaturation
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeNonlinearObstruction
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeParametricQuadratic
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimePrimitiveSurface
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeQuarticInterpolation
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeQuarticWeightBound
@@ -613,6 +618,7 @@ import ArkLib.Research.ProximityGap.Frontier.SplitPrimeSixthDensity
 import ArkLib.Research.ProximityGap.Frontier.SpurBadPrimeCeiling
 import ArkLib.Research.ProximityGap.Frontier.SpurBadPrimeChebotarev
 import ArkLib.Research.ProximityGap.Frontier.SpurSuccessiveMinimaCount
+import ArkLib.Research.ProximityGap.Frontier.SquareSpecialization
 import ArkLib.Research.ProximityGap.Frontier.SquarefreeRetentionFloor
 import ArkLib.Research.ProximityGap.Frontier.StackMaximizerDomination
 import ArkLib.Research.ProximityGap.Frontier.StepanovStructuredVacuous
@@ -663,6 +669,8 @@ import ArkLib.Research.ProximityGap.Frontier.TameConjugateSeparation
 import ArkLib.Research.ProximityGap.Frontier.TameCubicPowerSeries
 import ArkLib.Research.ProximityGap.Frontier.TerminalCollinearHeadCount
 import ArkLib.Research.ProximityGap.Frontier.TerminalCubicBudget
+import ArkLib.Research.ProximityGap.Frontier.TerminalFactorCoverage
+import ArkLib.Research.ProximityGap.Frontier.TerminalLinearComponent
 import ArkLib.Research.ProximityGap.Frontier.ThornerZamanInstance
 import ArkLib.Research.ProximityGap.Frontier.ThornerZamanS128
 import ArkLib.Research.ProximityGap.Frontier.ThreeGapPositionalRigidity
