@@ -14,6 +14,8 @@ The capacity radius has $n-k$ errors. MCA is constant from $n-k-1$ errors throug
 
 At 128-bit tolerance with $q<2^{256}$, Lean also settles the literal MCA maximum separately at each dimension $0<k<n$. A greatest safe real radius exists exactly when $\binom{n}{k+1}\le\lfloor q/2^{128}\rfloor$, and its value is one. Below that budget the support-rank test gives the operational first failure. [Single-rate field criterion and attained maximum](../../../ArkLib/Research/ProximityGap/JointAdjacentFieldReview.lean)
 
+Under the same field-size and tolerance assumptions, the largest possible smooth length for simultaneous radius-one MCA safety and first list failure at minimum distance is **128** at rates $1/2,1/4,1/8$ and **256** at rate $1/16$. The BLS12-381 scalar field realizes every eligible dyadic length up to each ceiling, at every positive interleaving width. Above each ceiling, every such field and smooth domain already fails MCA at $n-k-1$ errors and exceeds the list budget at $n-k$ errors. Earlier failure is possible. [Sharp length ceilings and field realization](../../../ArkLib/Research/ProximityGap/JointDyadicCeilings.lean)
+
 ## How the formulas determine the answer
 
 At $e$ errors put $t=n-e$, $B=\lfloor εq\rfloor$ and $L=B+1$. Either challenge fails as soon as one of the following tests succeeds. The tests examine supports and finite-field linear equations. Their inputs contain the actual evaluation points. [Answer definitions and correctness](../../../ArkLib/Research/ProximityGap/RankReview.lean)
