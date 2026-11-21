@@ -78,6 +78,11 @@ SPOT = {
 }
 
 
+def require(condition, detail):
+    if not condition:
+        raise AssertionError(detail)
+
+
 def primes_one_mod(p_mod, limit):
     sieve = bytearray(b"\x01") * (limit + 1)
     sieve[:2] = b"\x00\x00"
@@ -92,7 +97,7 @@ def order_element(p, n):
     for candidate in range(2, p):
         generator = pow(candidate, (p - 1) // n, p)
         if pow(generator, n // 2, p) == p - 1:
-            assert pow(generator, n, p) == 1
+            require(pow(generator, n, p) == 1, (p, n, generator))
             return generator
     raise AssertionError(f"no element of order {n} modulo {p}")
 
@@ -170,7 +175,7 @@ def ceiling_triple_sums(n, xs, p):
 def census(n, p):
     generator = order_element(p, n)
     xs = [pow(generator, exponent, p) for exponent in range(n)]
-    assert len(set(xs)) == n
+    require(len(set(xs)) == n, (p, n, "domain elements are not distinct"))
     powers = [[pow(x, exponent, p) for x in xs] for exponent in range(n)]
     pair_inv, triple_data = pencil_context(n, xs, powers, p)
     ceiling = bad_scalars(n, xs, powers, pair_inv, triple_data, 3, 2, T_CEIL, p)
@@ -189,7 +194,7 @@ def census(n, p):
 
 def check_spectrum_closed_form(n, xs, ceiling, p):
     direct = ceiling_triple_sums(n, xs, p)
-    assert ceiling == direct, (p, len(ceiling), len(direct))
+    require(ceiling == direct, (p, len(ceiling), len(direct)))
 
 
 def main():
@@ -200,8 +205,8 @@ def main():
         xs, ceiling, maximum, winners, diagonal_max = census(N8, p)
         check_spectrum_closed_form(N8, xs, ceiling, p)
         expected_ceiling = 16 if p == 17 else 40
-        assert len(ceiling) == expected_ceiling, (p, len(ceiling))
-        assert maximum == 9 and winners == G328_WINNERS, (p, maximum, winners)
+        require(len(ceiling) == expected_ceiling, (p, len(ceiling)))
+        require(maximum == 9 and winners == G328_WINNERS, (p, maximum, winners))
     print("n=8 reproduction: ceiling 40 (p=41,257) and 16 (p=17); "
           f"below-ceiling max 9 at {G328_WINNERS}")
 
@@ -209,50 +214,51 @@ def main():
     for p, (expected_ceiling, expected_max, *rest) in SPOT.items():
         xs, ceiling, maximum, winners, diagonal_max = census(N16, p)
         check_spectrum_closed_form(N16, xs, ceiling, p)
-        assert len(ceiling) == expected_ceiling, (p, len(ceiling), expected_ceiling)
-        assert maximum == expected_max, (p, maximum, expected_max)
+        require(len(ceiling) == expected_ceiling, (p, len(ceiling), expected_ceiling))
+        require(maximum == expected_max, (p, maximum, expected_max))
         if rest:
-            assert winners == rest[0], (p, winners)
+            require(winners == rest[0], (p, winners))
         if p >= 1201:
-            assert diagonal_max <= 1, (p, diagonal_max)
+            require(diagonal_max <= 1, (p, diagonal_max))
 
     prize_exp = 128
     prize_k = 21
     prize_p = prize_k * (2 ** prize_exp) + 1
-    assert prize_k % 2 == 1 and prize_k < 2 ** prize_exp
-    assert pow(5, (prize_p - 1) // 2, prize_p) == prize_p - 1
+    require(prize_k % 2 == 1 and prize_k < 2 ** prize_exp, (prize_k, prize_exp))
+    require(pow(5, (prize_p - 1) // 2, prize_p) == prize_p - 1, (prize_p,))
     xs, ceiling, maximum, winners, diagonal_max = census(N16, prize_p)
     check_spectrum_closed_form(N16, xs, ceiling, prize_p)
-    assert len(ceiling) == 464 and maximum == 97 and winners == FOUR
-    assert diagonal_max <= 1
+    require(len(ceiling) == 464 and maximum == 97 and winners == FOUR,
+            (len(ceiling), maximum, winners))
+    require(diagonal_max <= 1, (prize_p, diagonal_max))
     print(f"n=16 spot checks pass (incl. prize-scale p = 21*2^128+1: "
           f"ceiling 464, below max 97, maximizers {FOUR})")
 
     # 3. Full scan over every prime p = 1 (mod 16) in [17, LIMIT].
     primes = primes_one_mod(16, LIMIT)
-    assert primes[0] == 17 and len(primes) == 279
+    require(primes[0] == 17 and len(primes) == 279, (primes[:1], len(primes)))
     ceiling_profile = {}
     below_profile = {}
     for index, p in enumerate(primes):
         xs, ceiling, maximum, winners, diagonal_max = census(N16, p)
-        assert diagonal_max <= 1, (p, diagonal_max)
+        require(diagonal_max <= 1, (p, diagonal_max))
         ceiling_profile[p] = len(ceiling)
         below_profile[p] = (maximum, winners)
         if index % 25 == 0:
             print(f"  scanned {index + 1}/{len(primes)} primes (last p={p})", flush=True)
 
     for p in primes:
-        assert ceiling_profile[p] == CEILING_EXCEPTIONS.get(p, 464), (p, ceiling_profile[p])
+        require(ceiling_profile[p] == CEILING_EXCEPTIONS.get(p, 464), (p, ceiling_profile[p]))
         maximum, winners = below_profile[p]
-        assert maximum == BELOW_EXCEPTIONS.get(p, 97), (p, maximum)
+        require(maximum == BELOW_EXCEPTIONS.get(p, 97), (p, maximum))
         if p != 17:
             expected = BELOW_TWO_WINNERS.get(p, FOUR)
-            assert winners == expected, (p, winners)
+            require(winners == expected, (p, winners))
 
     ceiling_split = sorted((p, c) for p, c in ceiling_profile.items() if c != 464)
     below_split = sorted((p, c) for p, c in below_profile.items() if c[0] != 97)
-    assert [p for p, _ in ceiling_split] == sorted(CEILING_EXCEPTIONS)
-    assert len(below_split) == 2
+    require([p for p, _ in ceiling_split] == sorted(CEILING_EXCEPTIONS), ceiling_split)
+    require(len(below_split) == 2, below_split)
     print(f"scan: {len(primes)} primes p = 1 (mod 16) in [17, {LIMIT}]")
     print(f"ceiling (x^3,x^2) t=3: 464 outside the {len(ceiling_split)}-prime set "
           f"{[p for p, _ in ceiling_split]}")
