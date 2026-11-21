@@ -8,6 +8,10 @@ $6^{-g}/(k-1)$, where $2g=(k-1)(k-2)$, has the following property. Each $p$ in t
 \]
 Consequently the proposed bound $C\sqrt{|H|\log(p/|H|)}$ for every prime and every multiplicative subgroup without a size restriction is false for every fixed $C$. The constructed subgroup has order $(p-1)/k$. This construction does not control its smoothness. The sparse prime-field workbench restricts $|H|^2\le p$. Its dyadic specialization additionally prescribes a power-of-two order. [Formal workbench quantifier](../../../ArkLib/Research/ProximityGap/Frontier/ShawFlatnessSubfieldCounterexample.lean) · [Workbench's quarter-power regime](../../../ArkLib/Research/ProximityGap/PROXIMITY_PRIZE_WORKBENCH.lean)
 
+## Sharp limsup at every fixed index
+
+For each fixed integer $d>2$, Mit'kin's 1982 theorem gives infinitely many primes $p\equiv1\pmod{2d}$ and nonzero multipliers $b$ with $|S_b|\ge(d-1-\eta)\sqrt p$, for every fixed $\eta>0$. For $H=(\mathbb F_p^\times)^d$, the identity $S_b=1+d\eta_b(H)$ gives $|\eta_b(H)|\ge((d-1-\eta)\sqrt p-1)/d$. The usual Weil upper bound for $S_b$ gives the reverse limsup inequality. Thus the limsup of $\max_{b\ne0}|\eta_b(H)|/\sqrt p$ along these congruence classes is exactly $(d-1)/d$. The positive-density statement above gives a different quantitative guarantee. The subgroups in this fixed-index argument eventually have $|H|^2>p$, and their orders need not be powers of two. The primary paper is saved locally as `research/mitkin-character-sums-polynomials-1982.pdf`. [Mit'kin, theorem part 2](https://www.mathnet.ru/php/archive.phtml?jrnid=mzm&option_lang=eng&paperid=6067&wshow=paper)
+
 ## The two finite identities
 
 Put $S_b=\sum_{x\in\mathbb F_p}e^{2\pi i b x^k/p}=1+k\eta_b(H)$ and let $C_k$ be the smooth projective Fermat curve $X^k+Y^k+Z^k=0$. In the odd-degree case it is isomorphic to $X^k+Y^k=Z^k$. Orthogonality gives
