@@ -137,7 +137,8 @@ theorem sum_weighted_sample_rows (H T : Finset F) (hH : IsMulSubgroup H) (hT : T
 /-- The fourth-moment constant supplied by the campaign's finite-field Stepanov estimate. -/
 def fourthConstant (q : ℕ) : ℕ := if 3251 ≤ q then 11 else 17
 
-private theorem fourth_moment (hF : ringChar F ≠ 2) (T : Finset F)
+/-- The integer-valued fourth moment for an arbitrary sample of at most fourth-root size. -/
+theorem fourth_moment (hF : ringChar F ≠ 2) (T : Finset F)
     (hsmall : T.card ^ 4 ≤ Fintype.card F) :
     ∑ x : F, (shiftedCharSum (quadraticChar F) T x) ^ 4 ≤
       (fourthConstant (Fintype.card F) : ℤ) * (T.card : ℤ) ^ 2 * Fintype.card F := by
@@ -229,10 +230,10 @@ theorem subgroup_sum_fourth_le (hF : ringChar F ≠ 2) (A H : Finset F)
     _ = _ := by simp only [D, Finset.card_product, Nat.cast_mul]; ring
 
 /-- A relative power saving whenever `K C q^(1+4δ) ≤ |A||H| r²`. -/
-theorem subgroup_power_saving (hF : ringChar F ≠ 2) (A H : Finset F)
-    (hH : IsMulSubgroup H) (hA : (0 : F) ∉ A) (K : ℕ)
-    (hK : ∀ x : F, (A ∩ coset H x).card ≤ K) (r : ℕ) (δ : ℝ)
-    (hr : 0 < r) (hrH : r ≤ H.card) (hsmall : r ^ 4 ≤ Fintype.card F)
+theorem power_saving_of_fourth_estimate (A H : Finset F) (K r : ℕ) (δ : ℝ)
+    (hr : 0 < r)
+    (hbound : (∑ a ∈ A, ∑ b ∈ H, quadraticChar F (a-b))^4 * (r : ℤ)^2 ≤
+      ((A.card : ℤ) * H.card)^3 * K * fourthConstant (Fintype.card F) * Fintype.card F)
     (hsize : (K : ℝ) * fourthConstant (Fintype.card F) *
         (Fintype.card F : ℝ) ^ (1 + 4*δ) ≤ (A.card : ℝ) * H.card * (r : ℝ)^2) :
     |((∑ a ∈ A, ∑ b ∈ H, quadraticChar F (a - b) : ℤ) : ℝ)| ≤
@@ -246,7 +247,7 @@ theorem subgroup_power_saving (hF : ringChar F ≠ 2) (A H : Finset F)
   have hr₀ : (0 : ℝ) < r := by exact_mod_cast hr
   have hfour : (S : ℝ)^4 * (r : ℝ)^2 ≤ m^3 * K * C * q := by
     dsimp only [S, m, C, q]
-    exact_mod_cast subgroup_sum_fourth_le hF A H hH hA K hK r hr hrH hsmall
+    exact_mod_cast hbound
   have ht : (K : ℝ) * C * (q*(q^δ)^4) ≤ m*(r : ℝ)^2 := by
     change (K : ℝ) * C * q^((1 : ℝ) + 4*δ) ≤ m*(r : ℝ)^2 at hsize
     rwa [Real.rpow_add hq, Real.rpow_one, mul_comm (4 : ℝ) δ,
@@ -265,12 +266,25 @@ theorem subgroup_power_saving (hF : ringChar F ≠ 2) (A H : Finset F)
     _ ≤ m^3 * (m*(r : ℝ)^2) := mul_le_mul_of_nonneg_left ht (pow_nonneg hm _)
     _ = _ := by ring
 
-/-- At the prescribed placement, occupancy at most `K` gives a power saving when both
-sizes are at least `q^(1/4+ε)` and `q^ε ≥ 4 C(q) K`. The sample size is the floor of
-the real fourth root of the field order. -/
-theorem subgroup_quarter_power_saving (hF : ringChar F ≠ 2) (A H : Finset F)
+/-- The subgroup fourth moment gives an explicit relative power saving. -/
+theorem subgroup_power_saving (hF : ringChar F ≠ 2) (A H : Finset F)
     (hH : IsMulSubgroup H) (hA : (0 : F) ∉ A) (K : ℕ)
-    (hK : ∀ x : F, (A ∩ coset H x).card ≤ K) (ε : ℝ) (hε : 0 < ε)
+    (hK : ∀ x : F, (A ∩ coset H x).card ≤ K) (r : ℕ) (δ : ℝ)
+    (hr : 0 < r) (hrH : r ≤ H.card) (hsmall : r ^ 4 ≤ Fintype.card F)
+    (hsize : (K : ℝ) * fourthConstant (Fintype.card F) *
+        (Fintype.card F : ℝ) ^ (1 + 4*δ) ≤ (A.card : ℝ) * H.card * (r : ℝ)^2) :
+    |((∑ a ∈ A, ∑ b ∈ H, quadraticChar F (a - b) : ℤ) : ℝ)| ≤
+      (Fintype.card F : ℝ)^(-δ) * ((A.card : ℝ) * H.card) :=
+  power_saving_of_fourth_estimate A H K r δ hr
+    (subgroup_sum_fourth_le hF A H hH hA K hK r hr hrH hsmall) hsize
+
+/-- Sampling at the floor of the real fourth root gives a relative power saving from
+a uniform family of finite fourth-moment estimates at the supplied coordinates. -/
+theorem quarter_power_saving_of_fourth_estimates (A H : Finset F) (K : ℕ)
+    (hbound : ∀ r : ℕ, 0 < r → r ≤ H.card → r^4 ≤ Fintype.card F →
+      (∑ a ∈ A, ∑ b ∈ H, quadraticChar F (a-b))^4 * (r : ℤ)^2 ≤
+        ((A.card : ℤ) * H.card)^3 * K * fourthConstant (Fintype.card F) * Fintype.card F)
+    (ε : ℝ) (hε : 0 < ε)
     (ha : (Fintype.card F : ℝ)^(1/4+ε) ≤ A.card)
     (hh : (Fintype.card F : ℝ)^(1/4+ε) ≤ H.card)
     (hc : 4 * (fourthConstant (Fintype.card F) : ℝ) * K ≤ (Fintype.card F : ℝ)^ε) :
@@ -300,7 +314,7 @@ theorem subgroup_quarter_power_saving (hF : ringChar F ≠ 2) (A H : Finset F)
     exact_mod_cast h
   have htH : t ≤ H.card := le_trans (Real.rpow_le_rpow_of_exponent_le hq (by linarith)) hh
   have hrH : r ≤ H.card := by exact_mod_cast hr_le.trans htH
-  apply subgroup_power_saving hF A H hH hA K hK r (ε/4) hr hrH hrsmall
+  apply power_saving_of_fourth_estimate A H K r (ε/4) hr (hbound r hr hrH hrsmall)
   change (K : ℝ) * fourthConstant (Fintype.card F) * q^(1+4*(ε/4)) ≤ _
   let v := q^ε
   have hv : 0 < v := Real.rpow_pos_of_pos hqpos _
@@ -320,6 +334,18 @@ theorem subgroup_quarter_power_saving (hF : ringChar F ≠ 2) (A H : Finset F)
       apply mul_le_mul _ hrr (sq_nonneg _) (by positivity)
       exact mul_le_mul ha' hh' (by positivity) (by positivity)
     _ = _ := by ring
+
+/-- Quarter-scale cancellation under the pointwise occupancy bound. -/
+theorem subgroup_quarter_power_saving (hF : ringChar F ≠ 2) (A H : Finset F)
+    (hH : IsMulSubgroup H) (hA : (0 : F) ∉ A) (K : ℕ)
+    (hK : ∀ x : F, (A ∩ coset H x).card ≤ K) (ε : ℝ) (hε : 0 < ε)
+    (ha : (Fintype.card F : ℝ)^(1/4+ε) ≤ A.card)
+    (hh : (Fintype.card F : ℝ)^(1/4+ε) ≤ H.card)
+    (hc : 4 * (fourthConstant (Fintype.card F) : ℝ) * K ≤ (Fintype.card F : ℝ)^ε) :
+    |((∑ a ∈ A, ∑ b ∈ H, quadraticChar F (a-b) : ℤ) : ℝ)| ≤
+      (Fintype.card F : ℝ)^(-(ε/4)) * ((A.card : ℝ) * H.card) :=
+  quarter_power_saving_of_fourth_estimates A H K
+    (subgroup_sum_fourth_le hF A H hH hA K hK) ε hε ha hh hc
 
 /-- Half the trivial bound on a prescribed transversal, using the entire subgroup as
 the fourth-moment sample. Both named production fields meet the size assumptions with

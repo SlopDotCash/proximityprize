@@ -35,7 +35,8 @@ theorem four_mul_floor (w : ℤ) : 4 * (w ^ 2 / 4) = w ^ 2 - w % 2 := by
   · rw [hk, show (2*k+1)^2 = 4*(k^2+k)+1 by ring]
     omega
 
-private theorem sum_shift_sq (hp : p ≠ 2) (A : Finset (ZMod p)) :
+/-- Exact second moment of the integer character sums over all field shifts. -/
+theorem sum_shift_sq (hp : p ≠ 2) (A : Finset (ZMod p)) :
     ∑ b : ZMod p, shiftSum A b ^ 2 = (A.card : ℤ) * p - A.card ^ 2 := by
   have h := ArkLib.ProximityGap.Frontier.R16LegendreCosetFace.sum_sq_shiftedQuadSum
     (F := ZMod p) (by rwa [ZMod.ringChar_zmod_n]) (A.map (Equiv.neg _).toEmbedding)
