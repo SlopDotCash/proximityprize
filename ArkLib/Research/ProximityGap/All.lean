@@ -614,6 +614,7 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetTwoThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarterPairTripleSignatures
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateApolarBracket
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateDoubleInterpolation
+import ArkLib.Research.ProximityGap.Frontier.QuarterRateFreshPairExtension
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateQuadraticSafety
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateSaturatedCores
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor
@@ -781,6 +782,7 @@ import ArkLib.Research.ProximityGap.Frontier.SmoothManyHeadMass
 import ArkLib.Research.ProximityGap.Frontier.SmoothManyLinePhase
 import ArkLib.Research.ProximityGap.Frontier.SmoothPowerEndpoint
 import ArkLib.Research.ProximityGap.Frontier.SmoothPowerMcaDescent
+import ArkLib.Research.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow
 import ArkLib.Research.ProximityGap.Frontier.SmoothQuinticSeventeen
 import ArkLib.Research.ProximityGap.Frontier.SmoothRationalFiberObstruction
 import ArkLib.Research.ProximityGap.Frontier.SmoothSeventeenExtension
