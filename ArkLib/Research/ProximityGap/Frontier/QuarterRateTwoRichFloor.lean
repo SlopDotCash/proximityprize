@@ -3,7 +3,7 @@ Copyright (c) 2026 Proximity Prize Contributors. All rights reserved.
 SPDX-License-Identifier: MIT OR Apache-2.0
 -/
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateDoubleInterpolation
-import ArkLib.Research.ProximityGap.Frontier.QuarterRateSaturatedCores
+import ArkLib.Research.ProximityGap.Frontier.QuarterRateFreshPairExtension
 
 /-! # The first-prime rate-quarter predecessor and the extended two-head probability -/
 
@@ -52,16 +52,21 @@ theorem family_cap (fam : BadScalarRichPointFamily dom 268435456 δ u) {e t : �
   have h2 := TwoLargeCoreCount.line_occupancy_le fam (hn.trans hsum.symm) ht hb
   omega
 
-/-- At the saturated step, the exact two-head construction and this upper bound
-differ by at most the 16 possible scalar-only exceptions. -/
+/-- The maximal numerator at the saturated step is bounded by the exact two-head count. -/
+theorem saturated_exact_cap (fam : BadScalarRichPointFamily dom 268435456 δ u)
+    (hn : Fintype.card I = 1073741824) (ht : ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊ = 626349397)
+    (hchar : ∀ i : ℕ, 0 < i → i ≤ 2505397586 → (i:F) ≠ 0) : fam.G.card ≤ 894784856 := by
+  by_contra! large
+  obtain ⟨a,ha,b,hb,hab,h₁,h₂⟩ := QuarterRateDoubleInterpolation.asymmetric_heavy_pair fam hn
+    (e:=447392427) (by decide) (by decide) ht hchar (by decide : 511 ≤ 150000000)
+    (by decide : 150000000 ≤ 223696214) (by omega) (by omega) (by omega)
+  exact QuarterRateFreshPairExtension.impossible_asymmetric fam hn ht large ha hb hab h₁ h₂
+
+/-- Compatibility with the upper estimate retaining all sixteen possible vertical exceptions. -/
 theorem saturated_cap (fam : BadScalarRichPointFamily dom 268435456 δ u)
     (hn : Fintype.card I = 1073741824) (ht : ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊ = 626349397)
-    (hchar : ∀ i : ℕ, 0 < i → i ≤ 2505397586 → (i:F) ≠ 0) : fam.G.card ≤ 894784872 := by
-  by_contra! large
-  obtain ⟨a,ha,b,hb,hab,h₁,h₂⟩ := QuarterRateDoubleInterpolation.heavy_pair fam hn
-    (e:=447392427) (by decide) (by decide) ht hchar (by decide : 511 ≤ 223696214) (by decide)
-    (by omega) (by omega)
-  exact QuarterRateSaturatedCores.impossible_pair fam hn ht (by omega) ha hb hab h₁ h₂
+    (hchar : ∀ i : ℕ, 0 < i → i ≤ 2505397586 → (i:F) ≠ 0) : fam.G.card ≤ 894784872 :=
+  (saturated_exact_cap fam hn ht hchar).trans (by decide)
 
 /-- The exact two-head probability for every supplied injective domain in the range. -/
 theorem exact_mass (dom : I ↪ F) (hn : Fintype.card I = 1073741824) {e : ℕ}
@@ -83,18 +88,34 @@ theorem exact_mass (dom : I ↪ F) (hn : Fintype.card I = 1073741824) {e : ℕ}
     exact family_cap fam hn (by omega) (by omega) hu ht hchar
   · exact TwoHeadLinearBudget.errors dom (by omega) (by omega) (by omega)
 
-/-- All received pairs still meet this numerator bound at the next grid count. -/
+/-- The upper and lower constructions match at the saturated predecessor as well. -/
+theorem exact_through_saturation (dom : I ↪ F) (hn : Fintype.card I = 1073741824) {e : ℕ}
+    (he : 402653184 ≤ e) (hu : e ≤ 447392427)
+    (hchar : ∀ i : ℕ, 0 < i → i ≤ 2505397586 → (i:F) ≠ 0) :
+    epsMCA (F := F) (ReedSolomon.code dom 268435456 : Set (I → F)) ((e : ℝ≥0) / Fintype.card I)
+      = ((2*(e+1) : ℕ) : ℝ≥0∞) / Fintype.card F := by
+  by_cases last : e = 447392427
+  · subst e
+    apply le_antisymm
+    · rw [hn]
+      apply epsMCA_le_of_badCount_le _ _ 894784856
+      intro u
+      let fam := canonicalBadScalarRichPointFamily dom (447392427/1073741824) u (by decide : 1 ≤ 268435456)
+      apply saturated_exact_cap fam hn _ hchar
+      rw [hn]
+      change ⌈(1-((447392427 : ℕ) : ℝ≥0)/((1073741824 : ℕ) : ℝ≥0))*((1073741824 : ℕ) : ℝ≥0)⌉₊ = _
+      rw [tsub_mul,one_mul,div_mul_cancel₀ _ (by norm_num),← Nat.cast_tsub,Nat.ceil_natCast]
+    · exact TwoHeadLinearBudget.errors dom (by omega) (by omega) (by omega)
+  · exact exact_mass dom hn he (by omega) hchar
+
+/-- All received pairs meet the previously published upper bound at saturation. -/
 theorem saturated_upper (dom : I ↪ F) (hn : Fintype.card I = 1073741824)
     (hchar : ∀ i : ℕ, 0 < i → i ≤ 2505397586 → (i:F) ≠ 0) :
     epsMCA (F := F) (ReedSolomon.code dom 268435456 : Set (I → F)) (447392427/1073741824) ≤
       (894784872 : ℝ≥0∞)/Fintype.card F := by
-  apply epsMCA_le_of_badCount_le _ _ 894784872
-  intro u
-  let fam := canonicalBadScalarRichPointFamily dom (447392427/1073741824) u (by decide : 1 ≤ 268435456)
-  apply saturated_cap fam hn _ hchar
-  rw [hn]
-  change ⌈(1-((447392427 : ℕ) : ℝ≥0)/((1073741824 : ℕ) : ℝ≥0))*((1073741824 : ℕ) : ℝ≥0)⌉₊ = _
-  rw [tsub_mul, one_mul, div_mul_cancel₀ _ (by norm_num), ← Nat.cast_tsub, Nat.ceil_natCast]
+  have hp := exact_through_saturation dom hn (by decide : 402653184 ≤ 447392427) (le_refl _) hchar
+  rw [hn] at hp
+  exact hp.le.trans (ENNReal.div_le_div_right (by norm_num) _)
 
 open ArkLib.ProximityGap.PrizeShapePrimeP30 P1RateQuarterCanonicalCodeBridge P1RateQuarterScaleArithmetic
 local instance : Fact P.Prime := ⟨prime_P⟩
@@ -115,6 +136,20 @@ theorem named_bracket :
   exact upper.trans (natCast_div_le_inv_of_mul_le (Q:=2^128) (by decide) prime_P.pos (by decide))
 
 /-- The field-order budget on a prime field automatically gives the characteristic bound. -/
+theorem prime_budget_through_saturation {p B : ℕ} [Fact p.Prime] (dom : I ↪ ZMod p)
+    (hn : Fintype.card I = 1073741824) (hB : p / 2^128 = B)
+    (hl : 805306370 ≤ B) (hu : B ≤ 894784857) (width : ℕ) [NeZero width] :
+    let r : ℝ≥0 := ((B/2 : ℕ) : ℝ≥0)/1073741824
+    mcaDeltaStar (F := ZMod p) ((ReedSolomon.code dom 268435456 : Set (I → ZMod p)) ^⋈ (Fin width))
+      (epsStar : ℝ≥0∞) = r ∧
+    ∀ δ : ℝ≥0, epsMCA (F := ZMod p) ((ReedSolomon.code dom 268435456 : Set (I → ZMod p)) ^⋈ (Fin width))
+      δ ≤ (epsStar : ℝ≥0∞) ↔ δ < r := by
+  apply QuarterRateQuadraticSafety.budget_window_of_mass dom hn (by simpa only [ZMod.card] using hB) hl (by omega) _ width
+  apply exact_through_saturation dom hn (by omega) (by omega)
+  intro i hi hj hz
+  exact (show ¬p ≤ i by omega) (Nat.le_of_dvd hi ((CharP.cast_eq_zero_iff (ZMod p) p i).mp hz))
+
+/-- The field-order budget on a prime field automatically gives the characteristic bound. -/
 theorem prime_budget_window {p B : ℕ} [Fact p.Prime] (dom : I ↪ ZMod p)
     (hn : Fintype.card I = 1073741824) (hB : p / 2^128 = B)
     (hl : 805306370 ≤ B) (hu : B ≤ 894784855) (width : ℕ) [NeZero width] :
@@ -122,12 +157,11 @@ theorem prime_budget_window {p B : ℕ} [Fact p.Prime] (dom : I ↪ ZMod p)
     mcaDeltaStar (F := ZMod p) ((ReedSolomon.code dom 268435456 : Set (I → ZMod p)) ^⋈ (Fin width))
       (epsStar : ℝ≥0∞) = r ∧
     ∀ δ : ℝ≥0, epsMCA (F := ZMod p) ((ReedSolomon.code dom 268435456 : Set (I → ZMod p)) ^⋈ (Fin width))
-      δ ≤ (epsStar : ℝ≥0∞) ↔ δ < r := by
-  apply QuarterRateQuadraticSafety.budget_window_of_mass dom hn (by simpa only [ZMod.card] using hB) hl (by omega) _ width
-  apply exact_mass dom hn (by omega) (by omega)
-  intro i hi hj hz
-  exact (show ¬p ≤ i by omega) (Nat.le_of_dvd hi ((CharP.cast_eq_zero_iff (ZMod p) p i).mp hz))
+      δ ≤ (epsStar : ℝ≥0∞) ↔ δ < r :=
+  prime_budget_through_saturation dom hn hB hl (by omega) width
 
+#print axioms exact_through_saturation
+#print axioms prime_budget_through_saturation
 #print axioms prime_budget_window
 #print axioms family_cap
 #print axioms saturated_cap

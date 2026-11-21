@@ -577,6 +577,7 @@ import ArkLib.Research.ProximityGap.Frontier.PeriodOrbitQuotientReduction
 import ArkLib.Research.ProximityGap.Frontier.PinnedBandReaching
 import ArkLib.Research.ProximityGap.Frontier.PinnedScalarMultDivision
 import ArkLib.Research.ProximityGap.Frontier.PinnedScalarRatioImage
+import ArkLib.Research.ProximityGap.Frontier.PlanarQuartetMass
 import ArkLib.Research.ProximityGap.Frontier.PlasticDyadicPeriod
 import ArkLib.Research.ProximityGap.Frontier.PlateauThreeHeadPredecessor
 import ArkLib.Research.ProximityGap.Frontier.PoissonAveragedMGF
@@ -638,6 +639,7 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetTwoThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarterPairTripleSignatures
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateApolarBracket
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateDoubleInterpolation
+import ArkLib.Research.ProximityGap.Frontier.QuarterRateFreshPairExtension
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateJohnsonSafety
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateQuadraticSafety
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateSaturatedCores
@@ -741,6 +743,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeManyHeadCeilings
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeMobiusSections
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeNonlinearObstruction
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeParametricQuadratic
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimePlanarQuartet
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimePolynomialJetColumns
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimePrimitiveSurface
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeProperCubic
@@ -808,6 +811,7 @@ import ArkLib.Research.ProximityGap.Frontier.SmoothManyHeadMass
 import ArkLib.Research.ProximityGap.Frontier.SmoothManyLinePhase
 import ArkLib.Research.ProximityGap.Frontier.SmoothPowerEndpoint
 import ArkLib.Research.ProximityGap.Frontier.SmoothPowerMcaDescent
+import ArkLib.Research.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow
 import ArkLib.Research.ProximityGap.Frontier.SmoothQuinticSeventeen
 import ArkLib.Research.ProximityGap.Frontier.SmoothRationalFiberObstruction
 import ArkLib.Research.ProximityGap.Frontier.SmoothSeventeenExtension
