@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <iostream>
 #include <set>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -124,6 +125,7 @@ struct Basis {
 using Placement = std::vector<std::pair<int, int>>;  // (site, edge number)
 struct Orbit {
     int size;
+    uint32_t sites;
     std::vector<Placement> options;
 };
 
@@ -138,7 +140,8 @@ std::vector<Orbit> domain_orbits(const Group& group, const std::array<Perm, 4>& 
             site[j] = (a*i+b) % 32;
             seen[site[j]] = true;
         }
-        Orbit orbit{static_cast<int>(std::set<int>(site.begin(), site.end()).size()), {}};
+        Orbit orbit{static_cast<int>(std::set<int>(site.begin(), site.end()).size()), 0, {}};
+        for (int index : site) orbit.sites |= uint32_t(1) << index;
         for (auto [h, k] : edges) {
             std::set<std::pair<int, int>> placement;
             for (int j = 0; j < 4; ++j) {
@@ -155,45 +158,106 @@ std::vector<Orbit> domain_orbits(const Group& group, const std::array<Perm, 4>& 
 }
 
 int64_t count_survivors(const std::vector<Orbit>& ordinary, size_t i, const Basis& basis,
-                        std::array<int, 6> counts, const Field& field) {
-    if (i == ordinary.size())
-        return counts[0] == counts[5] && counts[1] == counts[4] && counts[2] == counts[3];
+                        std::array<int, 6> counts, const Field& field,
+                        std::array<uint32_t, 6> masks, bool emit,
+                        const std::vector<std::array<int, 6>>& relabel, uint32_t stabilizer) {
+    if (i == ordinary.size()) {
+        if (counts[0] != counts[5] || counts[1] != counts[4] || counts[2] != counts[3]) return 0;
+        if (emit) {
+            std::cout << "layout";
+            for (auto m : masks) std::cout << ' ' << m;
+            std::cout << '\n';
+        }
+        return 1;
+    }
     int64_t total = 0;
     for (const auto& placement : ordinary[i].options) {
+        int first_edge = placement.front().second;
+        bool canonical = true;
+        uint32_t next_stabilizer = 0;
+        for (size_t j = 0; j < relabel.size(); ++j) if (stabilizer >> j & 1) {
+            int alternative = relabel[j][first_edge];
+            if (alternative < first_edge) { canonical = false; break; }
+            if (alternative == first_edge) next_stabilizer |= uint32_t(1) << j;
+        }
+        if (!canonical) continue;
         auto sizes = counts;
         for (auto [site, e] : placement) ++sizes[e];
         if (*std::max_element(sizes.begin(), sizes.end()) > 7) continue;
+        int minimum = std::max(sizes[0], sizes[5]) + std::max(sizes[1], sizes[4]) + std::max(sizes[2], sizes[3]);
+        if (minimum > 14) continue;
         auto updated = basis;
         for (auto [site, e] : placement) {
             updated.add(field.rows[site][e], field);
             if (updated.rank >= 23) break;
         }
-        if (updated.rank < 23) total += count_survivors(ordinary, i+1, updated, sizes, field);
+        if (updated.rank < 23) {
+            auto selected = masks;
+            for (auto [site, e] : placement) selected[e] |= uint32_t(1) << site;
+            total += count_survivors(ordinary, i+1, updated, sizes, field, selected, emit, relabel, next_stabilizer);
+        }
     }
     return total;
 }
 
-int64_t census(Group group, std::array<Perm, 4> perms, const Field& field) {
+int64_t census(Group group, std::array<Perm, 4> perms, const Field& field, bool emit = false) {
     auto orbits = domain_orbits(group, perms);
+    std::vector<std::array<int, 6>> relabel;
+    Perm perm = identity_perm;
+    do {
+        if (!std::all_of(perms.begin(), perms.end(), [&](Perm h) { return compose(perm, h) == compose(h, perm); }))
+            continue;
+        std::array<int, 6> label{};
+        for (int e = 0; e < 6; ++e) {
+            auto [a, b] = edges[e];
+            Edge f = std::minmax(perm[a], perm[b]);
+            label[e] = static_cast<int>(std::find(edges.begin(), edges.end(), f)-edges.begin());
+        }
+        relabel.push_back(label);
+    } while (std::next_permutation(perm.begin(), perm.end()));
+    std::vector<Affine> centralizer;
+    for (int a = 1; a < 32; a += 2) for (int b = 0; b < 32; ++b) {
+        Affine f{a, b};
+        if (std::all_of(group.begin(), group.end(), [&](Affine h) { return compose(f, h) == compose(h, f); }))
+            centralizer.push_back(f);
+    }
     int64_t total = 0;
     for (int mask = 1; mask < (1 << orbits.size()); ++mask) {
         int holes = 0;
+        uint32_t sites = 0;
         std::vector<Orbit> ordinary;
         for (size_t j = 0; j < orbits.size(); ++j) {
-            if (mask >> j & 1) holes += orbits[j].size;
+            if (mask >> j & 1) {
+                holes += orbits[j].size;
+                sites |= orbits[j].sites;
+            }
             else ordinary.push_back(orbits[j]);
         }
         if (holes != 4) continue;
+        bool canonical = true;
+        for (auto [a, b] : centralizer) {
+            uint32_t alternative = 0;
+            for (int i = 0; i < 32; ++i)
+                if (sites >> i & 1) alternative |= uint32_t(1) << ((a*i+b) % 32);
+            if (alternative < sites) { canonical = false; break; }
+        }
+        if (!canonical) continue;
         std::sort(ordinary.begin(), ordinary.end(), [](const Orbit& a, const Orbit& b) {
-            return a.options.size() < b.options.size();
+            if (a.options.size() != b.options.size()) return a.options.size() < b.options.size();
+            return a.size > b.size;
         });
-        total += count_survivors(ordinary, 0, Basis{}, {}, field);
+        total += count_survivors(ordinary, 0, Basis{}, {}, field, {}, emit, relabel, (uint32_t(1) << relabel.size())-1);
     }
     return total;
 }
+bool geometric(Affine g) {
+    return g.first == 1 || g.first == 31;
+}
 }  // namespace
 
-int main() {
+int main(int argc, char** argv) {
+    bool nonfaithful = argc == 2 && std::string(argv[1]) == "--nonfaithful";
+    if (argc != 1 && !nonfaithful) return 2;
     Field field;
     int cyclic_classes = 0, klein_classes = 0;
     for (auto group : subgroup_classes()) {
@@ -202,25 +266,41 @@ int main() {
         if (order_four != group.end()) {
             ++cyclic_classes;
             auto f = *order_four, square = compose(f, f);
-            Perm r{1, 2, 3, 0};
-            auto n = census({identity, f, square, compose(f, square)},
-                            {identity_perm, r, compose(r, r), compose(r, compose(r, r))}, field);
-            std::cout << "cyclic " << f.first << ' ' << f.second << " survivors " << n << '\n';
-            if (n) return 1;
+            std::vector<Perm> actions{{1, 2, 3, 0}};
+            if (nonfaithful) {
+                if (geometric(square)) continue;
+                actions = {identity_perm, {1, 0, 2, 3}, {1, 0, 3, 2}};
+            }
+            for (auto r : actions) {
+                auto n = census({identity, f, square, compose(f, square)},
+                                {identity_perm, r, compose(r, r), compose(r, compose(r, r))}, field, nonfaithful);
+                std::cout << "cyclic " << f.first << ' ' << f.second << " survivors " << n << '\n';
+                if (n && !nonfaithful) return 1;
+            }
         } else {
             ++klein_classes;
             std::vector<Affine> generators;
             for (auto g : group) if (g != identity) generators.push_back(g);
             auto f = generators[0], g = generators[1];
             constexpr Perm single{1, 0, 2, 3}, dbl{2, 3, 0, 1};
-            for (auto [t, r] : std::array<std::pair<Perm, Perm>, 4>{{
-                     {dbl, {1, 0, 3, 2}}, {dbl, {2, 1, 0, 3}},
-                     {single, {0, 1, 3, 2}}, {single, {1, 0, 3, 2}}}}) {
+            std::vector<std::pair<Perm, Perm>> actions{
+                {dbl, {1, 0, 3, 2}}, {dbl, {2, 1, 0, 3}}, {single, {0, 1, 3, 2}}, {single, {1, 0, 3, 2}}};
+            if (nonfaithful) {
+                actions.clear();
+                for (Perm swap : {single, dbl}) {
+                    if (!geometric(f)) actions.emplace_back(identity_perm, swap);
+                    if (!geometric(g)) actions.emplace_back(swap, identity_perm);
+                    if (!geometric(compose(f, g))) actions.emplace_back(swap, swap);
+                }
+                // Each Klein class contains at least one geometric involution.
+                assert(geometric(f) || geometric(g) || geometric(compose(f, g)));
+            }
+            for (auto [t, r] : actions) {
                 auto n = census({identity, f, g, compose(f, g)},
-                                {identity_perm, t, r, compose(t, r)}, field);
+                                {identity_perm, t, r, compose(t, r)}, field, nonfaithful);
                 std::cout << "Klein " << f.first << ' ' << f.second << ' '
                           << g.first << ' ' << g.second << " survivors " << n << '\n';
-                if (n) return 1;
+                if (n && !nonfaithful) return 1;
             }
         }
     }
