@@ -402,6 +402,7 @@ import ArkLib.Research.ProximityGap.Frontier.PoissonAveragedMGF
 import ArkLib.Research.ProximityGap.Frontier.PowMapFiberCard
 import ArkLib.Research.ProximityGap.Frontier.PowerFiberEndpoint
 import ArkLib.Research.ProximityGap.Frontier.PowerFiberProduction
+import ArkLib.Research.ProximityGap.Frontier.PowerPencilCurveCount
 import ArkLib.Research.ProximityGap.Frontier.PowerSumLogConvexSpacing
 import ArkLib.Research.ProximityGap.Frontier.PowerSumMaxBracket
 import ArkLib.Research.ProximityGap.Frontier.PowerSumRatioMeanFloor
@@ -409,7 +410,9 @@ import ArkLib.Research.ProximityGap.Frontier.PowerSumRatioMonotone
 import ArkLib.Research.ProximityGap.Frontier.PrescribedProductList
 import ArkLib.Research.ProximityGap.Frontier.PrescribedProductThreshold
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldCapacityGap
+import ArkLib.Research.ProximityGap.Frontier.PrimeFieldCapacityWindow
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldDoublingChain
+import ArkLib.Research.ProximityGap.Frontier.PrimeFieldEntropyPhase
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldMultiplierHeight
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldPeriodAlignment
 import ArkLib.Research.ProximityGap.Frontier.Prize407EntropyPinSynthesis
@@ -478,6 +481,7 @@ import ArkLib.Research.ProximityGap.Frontier.SharpApolarMCA
 import ArkLib.Research.ProximityGap.Frontier.ShawFlatnessSubfieldCounterexample
 import ArkLib.Research.ProximityGap.Frontier.ShawValueBracketCenter
 import ArkLib.Research.ProximityGap.Frontier.ShawValueCapstone
+import ArkLib.Research.ProximityGap.Frontier.ShiftedPowerCurveCount
 import ArkLib.Research.ProximityGap.Frontier.SidonDepthFiveNoWrapNonSharp
 import ArkLib.Research.ProximityGap.Frontier.SidonDepthFiveNonSharp
 import ArkLib.Research.ProximityGap.Frontier.SidonDepthFourNonSharp
