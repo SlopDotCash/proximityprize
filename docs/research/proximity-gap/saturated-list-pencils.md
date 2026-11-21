@@ -63,7 +63,7 @@ must vary at every site. The five cropped power-fiber witnesses above share
 a factor with $2^{26}-1$ roots. Even adding arbitrary new messages with the
 same values at these sites keeps their rate-$1/8$ list under budget through
 746,721,448 errors. This conclusion allows every center and every interleaving
-width. The unrestricted first failing counts remain open. [Affine-slice
+width. Independent verified kernel replay accepted 28,288 declarations for the general theorem and all three numerical specializations. The unrestricted first failing counts remain open. [Affine-slice
 list theorem and numerical bounds](../../../ArkLib/Research/ProximityGap/Frontier/SharedSiteListBound.lean)
 
 ## What a low-dimensional list can contribute
