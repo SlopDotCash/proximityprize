@@ -976,25 +976,26 @@ because $\log_2(p/128)>128$. The uniform prime-field logarithmic estimate remain
 [Kernel-checked results](../../../ArkLib/Research/ProximityGap/Frontier/PrizeInstancePaleySpectrum.lean) ·
 [Exact induced-graph calculation](../../../scripts/probes/probe_paley_joint_prize_domain.py)
 
-**Arbitrary subsets of one production coset.** At the first named prime let $H$ have order
+**Arbitrary subsets of one production coset.** At either named prime let $H$ have order
 $n=2^{30}$. For all $A,B$ in a common affine copy $t+cH$, $c\ne0$, the exact-arithmetic
 certificate gives
 $$
-\left|\sum_{a\in A,b\in B}\chi(a-b)\right|\le449676\sqrt{|A||B|}.
+\left|\sum_{a\in A,b\in B}\chi(a-b)\right|\le K\sqrt{|A||B|},\qquad K_1=449676,\quad K_2=448831.
 $$
 In particular, for sets of size at least $2^{20}$ the relative discrepancy is below
 $0.429$. This covers arbitrary choices of the two subsets *within* the specified copy.
 
 To reproduce the certificate, compile the spectrum probe with C++17 and GMP, then
-run it with arguments `first 128 4`. For a generator $g$, the signed matrix on $H$
+run it with arguments `first 128 4` and `second 128 4`. For a generator $g$, the signed matrix on $H$
 has entries $\chi(g)^i v_{j-i}$ with $v_l=\chi(1-g^l)$. Multiplying the rows by signs
 preserves singular values, giving the magnitudes of the discrete Fourier transform of
 $v$. Split the exponents into 128 residue classes. At each frequency modulo $2^{23}$
 sum the certified magnitudes across the classes before maximizing. The row phases in
 the full transform have modulus one. Each radix-two transform uses fixed-point integer
 arithmetic, with GMP square-root enclosures for its roots of unity and error below one
-per row. The largest upper bound occurs at residue 66,773. The direct row sum
-$-30929$ agrees with the independent character scan. Applying the matrix bound to
+per row. The largest upper bounds occur at residues 66,773 and 3,625,762, respectively. The row sums
+$-30929$ and $-1441$ at one agree with the independent character scans. Both certified
+operator norms are below $14\sqrt n$. Applying the matrix bound to
 indicator vectors yields the displayed inequality. Translation cancels in $a-b$,
 and scaling contributes the common sign $\chi(c)$. These finite numerical inequalities
 were computed outside Lean. [Certified transform](../../../scripts/probes/probe_sponsor_paley_spectrum.cpp)
