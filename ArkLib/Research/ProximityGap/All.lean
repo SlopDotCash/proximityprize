@@ -986,6 +986,7 @@ import ArkLib.Research.ProximityGap.Frontier.ThreeGapPositionalRigidity
 import ArkLib.Research.ProximityGap.Frontier.ThreeHeadDeficitWindow
 import ArkLib.Research.ProximityGap.Frontier.ThreeHeadDeterminantCover
 import ArkLib.Research.ProximityGap.Frontier.ThreeHeadPrime38
+import ArkLib.Research.ProximityGap.Frontier.ThreeHeadRootScore
 import ArkLib.Research.ProximityGap.Frontier.ThreeHeadThresholdCurve
 import ArkLib.Research.ProximityGap.Frontier.ThreeRegimePrimeThreshold
 import ArkLib.Research.ProximityGap.Frontier.ThreeWordAgreement
