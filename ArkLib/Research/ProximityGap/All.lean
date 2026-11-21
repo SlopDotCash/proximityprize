@@ -496,6 +496,7 @@ import ArkLib.Research.ProximityGap.Frontier.ManyLineGridPhase
 import ArkLib.Research.ProximityGap.Frontier.MixedTopFitBudgetIncompatibility
 import ArkLib.Research.ProximityGap.Frontier.MobiusSeamCoordinateSupply
 import ArkLib.Research.ProximityGap.Frontier.MobiusStepanov
+import ArkLib.Research.ProximityGap.Frontier.MobiusSubgroupBound
 import ArkLib.Research.ProximityGap.Frontier.MomentFullEnergyDeepNoGo
 import ArkLib.Research.ProximityGap.Frontier.MomentMethodPrizeDepthNoGo
 import ArkLib.Research.ProximityGap.Frontier.MonicRawPolynomialQuotient
