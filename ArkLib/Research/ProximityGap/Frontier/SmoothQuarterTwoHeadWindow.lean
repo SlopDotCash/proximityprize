@@ -34,6 +34,33 @@ theorem characteristic (D : I ↪ F) [ReedSolomon.Smooth D] (hn : Fintype.card I
   by_contra! small
   exact hl.not_ge ((Nat.pow_le_pow_right hp.pos deg).trans (Nat.pow_le_pow_left small 5))
 
+/-- The full grid-point probability curve through the saturated predecessor in
+every smooth prize-size field, with no lower bound on the scalar budget. -/
+theorem full_grid_mass (D : I ↪ F) [ReedSolomon.Smooth D] (hn : Fintype.card I = 1073741824)
+    (hq : Fintype.card F < 2^256) {e : ℕ} (he : e ≤ 447392427) (m : ℕ) [NeZero m] :
+    epsMCA (F := F) ((ReedSolomon.code D 268435456 : Set (I → F)) ^⋈ (Fin m)) ((e : ℝ≥0)/1073741824) =
+      ((if e<402653184 then e+1 else 2*(e+1) : ℕ) : ℝ≥0∞)/Fintype.card F := by
+  have hnR : (Fintype.card I : ℝ≥0)=1073741824 := by exact_mod_cast hn
+  rw [epsMCA_interleaved_eq,← hnR]
+  by_cases low : e<402653184
+  · rw [ite_eq_left low]
+    exact ApolarAllFieldPlateau.preunique_mass D (a:=402653184) (by decide) (by omega) (by omega) low
+  · rw [ite_eq_right low]
+    have hp := SmoothCubicCharacteristic.characteristic D hn hq
+    apply QuarterRateTwoRichFloor.exact_through_saturation D hn (by omega) he
+    intro i hi hj hz
+    exact (by omega : ¬ringChar F ≤ i) (Nat.le_of_dvd hi ((CharP.cast_eq_zero_iff F (ringChar F) i).mp hz))
+
+/-- The exact budget criterion for safety at the last computed quarter-rate grid point. -/
+theorem predecessor_good_iff (D : I ↪ F) [ReedSolomon.Smooth D] (hn : Fintype.card I = 1073741824)
+    (hq : Fintype.card F < 2^256) (m : ℕ) [NeZero m] :
+    epsMCA (F := F) ((ReedSolomon.code D 268435456 : Set (I → F)) ^⋈ (Fin m)) (447392427/1073741824) ≤
+      (epsStar : ℝ≥0∞) ↔ 894784856 ≤ Fintype.card F/2^128 := by
+  have h := full_grid_mass D hn hq (e:=447392427) (by decide) m
+  change epsMCA (F:=F) _ (447392427/1073741824) = ((894784856:ℕ):ℝ≥0∞)/Fintype.card F at h
+  rw [h,PrizeShapeRateHalfBracket.epsStar_coe_eq_natCast_inv,← one_div]
+  exact BoundarySecurityBudget.count_ratio_le_iff Fintype.card_pos (by decide)
+
 /-- Closed-ball security at every positive interleaving width is equivalent to a
 strict real-radius inequality for each budget in the window. -/
 theorem classification (D : I ↪ F) [ReedSolomon.Smooth D] (hn : Fintype.card I = 1073741824)
@@ -44,12 +71,11 @@ theorem classification (D : I ↪ F) [ReedSolomon.Smooth D] (hn : Fintype.card I
       (epsStar : ℝ≥0∞) = r ∧
     ∀ δ : ℝ≥0, epsMCA (F := F) ((ReedSolomon.code D 268435456 : Set (I → F)) ^⋈ (Fin m))
       δ ≤ (epsStar : ℝ≥0∞) ↔ δ < r := by
-  have hp := characteristic D hn (by omega) (by omega)
   apply QuarterRateQuadraticSafety.budget_window_of_mass D hn hB hl (by omega) _ m
-  apply QuarterRateTwoRichFloor.exact_through_saturation D hn (by omega) (by omega)
-  intro i hi hj hz
-  exact (by omega : ¬ ringChar F ≤ i)
-    (Nat.le_of_dvd hi ((CharP.cast_eq_zero_iff F (ringChar F) i).mp hz))
+  have h := full_grid_mass D hn (by omega) (e:=B/2-1) (by omega) 1
+  have hnR : (Fintype.card I : ℝ≥0)=1073741824 := by exact_mod_cast hn
+  rw [epsMCA_interleaved_eq,ite_eq_right (by omega : ¬B/2-1<402653184),← hnR] at h
+  exact h
 
 /-- The spike regime, the plateau, and the budget-dependent two-head regime
 give one formula on every smooth production-length field through the last budget. -/
@@ -94,6 +120,8 @@ theorem rank_answer (D : I ↪ F) [ReedSolomon.Smooth D] (hn : Fintype.card I = 
   simpa only [max_eq_right (by omega : 402653184 ≤ B/2),min_eq_right (by omega : B/2≤B)] using
     complete_rank_answer D hn hB hu
 
+#print axioms full_grid_mass
+#print axioms predecessor_good_iff
 #print axioms complete_curve
 #print axioms complete_rank_answer
 #print axioms classification

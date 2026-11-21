@@ -44,7 +44,7 @@ secants above the requested population cutoff. -/
 theorem asymmetric_heavy_pair (fam : BadScalarRichPointFamily dom 268435456 δ u)
     {e t L M : ℕ} (hn : Fintype.card I=n) (hsum : e+t=n) (hmin : t₀ ≤ t)
     (ht : ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊=t)
-    (hchar : ∀ i : ℕ, 0 < i → i ≤ 2505397586 → (i:F) ≠ 0)
+    (hchar : ∀ i : ℕ, 0 < i → i ≤ 1968526676 → (i:F) ≠ 0)
     (hL : 511 ≤ L) (hLM : L ≤ M) (hcubic : 805306416 < fam.G.card)
     (hmax : 16+3*M < fam.G.card)
     (hbig : 16+(e+1)+2*L < fam.G.card) :
@@ -137,11 +137,11 @@ theorem asymmetric_heavy_pair (fam : BadScalarRichPointFamily dom 268435456 δ u
     have hv := factor_totalDegree_le hQ (fi.2.2.trans hPQ) (fun _ _ _ h => by have := (shape h).2.1;omega)
     have linear : f.val.natDegree=1 := by
       by_contra non
-      have hh := SecondPrimeQuadraticFactor.quadratic_population_of_extraction (m:=511) (w:=1252698793)
+      have hh := SecondPrimeQuadraticFactor.quadratic_population_weighted (m:=511) (w:=1252698793) (d:=268435455)
         fam φ Q f hQ (fi.2.2.trans hPQ) fi.1 (by omega) (fun j i a h => by
           have := shape h
           dsimp [d,t₀] at this
-          exact ⟨by omega,by omega⟩) (by decide) hchar extract
+          exact ⟨by omega,by omega⟩) (by decide) (by decide) hchar extract
       rw [peq f] at hh
       omega
     obtain ⟨a,ha,hs⟩ := linear_factor_is_head_of_extraction (m:=511) fam φ f fi.1 linear hv extract (by rw [peq f];omega)
@@ -194,7 +194,7 @@ secants above the requested population cutoff. -/
 theorem heavy_pair (fam : BadScalarRichPointFamily dom 268435456 δ u)
     {e t L : ℕ} (hn : Fintype.card I=n) (hsum : e+t=n) (hmin : t₀ ≤ t)
     (ht : ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊=t)
-    (hchar : ∀ i : ℕ, 0 < i → i ≤ 2505397586 → (i:F) ≠ 0)
+    (hchar : ∀ i : ℕ, 0 < i → i ≤ 1968526676 → (i:F) ≠ 0)
     (hL : 511 ≤ L) (hLe : L ≤ e+1) (hcubic : 805306416 < fam.G.card)
     (hbig : 16+(e+1)+2*L < fam.G.card) :
     ∃ a ∈ lineParameters fam, ∃ b ∈ lineParameters fam,

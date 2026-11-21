@@ -55,6 +55,31 @@ Allocate the two signs of a signature, a single sign, or neither according to th
 
 Subtracting $(m+1)h-1+g$ from $n$ gives the two error counts. The verifier also exhausts all five-subsets of the ordinary roots at quotient order 16, compares every joint signature including zero counts to direct enumeration, and evaluates a two-anchor list on every point of the order-128 subgroup over $\mathbb F_{257}$. [Exact integer recurrence and small reconstruction](../../../scripts/probes/probe_signed_two_anchor_lists.py)
 
+## Fourteen budgets on arbitrary smooth domains
+
+The same two-anchor argument works over every finite field admitting a smooth domain of length $2^{30}$. For a quotient generator $z$ one has $z^{32}=-1$. The identities for $N(j)=(1-z^j)(1-z^{64-j})$ are $N(2j)=N(j)N(32-j)$ and $(1+z^j)(1+z^{64-j})=N(32-j)$. Induction down the tree proves all 62 signed factor identities directly in the field. Every smooth domain at this length is a permuted multiplicative coset of the full subgroup. Scaling the polynomial variable preserves the degree bound, and permuting coordinates carries the center and its entire list to the supplied domain. [Uniform norm proof and allocations](../../../ArkLib/Research/ProximityGap/Frontier/UniversalSignedListNorms.lean) · [Smooth-domain theorem](../../../ArkLib/Research/ProximityGap/Frontier/SmoothSignedListProfile.lean)
+
+Each row gives a closed half-rate ball with at least the stated population, at every positive interleaving width. It bounds the first-failure error count whenever the integer budget is strictly below that population.
+
+| Signed anchor values | Distinct words at least | Errors at most |
+|---:|---:|---:|
+| 1 | 190,925,896 | 486,539,265 |
+| 2 | 381,851,792 | 494,927,873 |
+| 3 | 569,069,736 | 497,724,076 |
+| 4 | 756,287,680 | 499,122,177 |
+| 5 | 919,784,685 | 499,961,038 |
+| 6 | 1,083,281,690 | 500,520,279 |
+| 7 | 1,246,778,696 | 500,919,736 |
+| 8 | 1,410,275,701 | 501,219,329 |
+| 9 | 1,567,784,637 | 501,452,346 |
+| 10 | 1,725,293,574 | 501,638,760 |
+| 11 | 1,879,266,419 | 501,791,280 |
+| 12 | 2,033,239,265 | 501,918,380 |
+| 13 | 2,187,212,111 | 502,025,926 |
+| 14 | 2,341,184,957 | 502,118,109 |
+
+The sixth and thirteenth allocations raise the kernel-checked population guarantees at the two designated budgets to **1,083,281,690** and **2,187,212,111**. The proofs apply to every smooth domain at the same field order and length, including arbitrary coset representatives and coordinate orderings. Independent replay of the earlier named-domain bounds in [PR #634](https://github.com/SlopDotCash/proximityprize/pull/634) accepted all 25,902 transitive declarations.
+
 ## Why agreement incidence alone stops at the first quarter-rate successor
 
 At first-prime rate $1/4$ the current universal safe count is $n/2+1$. At the next count, an abstract family respecting all pairwise agreement constraints can already have **$2(n-5)>n$** members. Take $q=536870909$, a prime congruent to one modulo four. Paley's type-II construction gives a Hadamard matrix of order $v=2(q+1)=n-4$. Normalize its first row to be all positive. Each other row and its negative has balanced positive support of size $v/2$. For different nonopposite rows, orthogonality gives exactly $v/4$ joint positives. Opposite rows have disjoint supports. Extending each support with four unused coordinates gives the required $n$-site family, each block of size $n/2-2$ and each overlap at most $n/4-1=k-1$. The verifier checks primality by trial division. Any stronger safe result here must use restrictions on Reed–Solomon agreement families beyond block size and pairwise intersections. Whether such a family is realizable by actual words remains open. [Paley, *On Orthogonal Matrices* (1933)](https://doi.org/10.1002/sapm1933121311)
