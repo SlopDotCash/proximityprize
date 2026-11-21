@@ -270,28 +270,32 @@ $(T\cdot C')^2\le T^2(C')^2$ and Lemmas 1 and 2. $\qquad\blacksquare$
 **Lemma 4 (ramification budget).** For simple sections with pairwise
 distinct scalars outside $E_h$,
 $$
-\sum_\sigma c_\sigma\ \le\ 4\,\beta_X\,\beta_\Gamma .
+\sum_\sigma c_\sigma\ \le\ 2\,\beta_X(\beta_\Gamma-1)\ \le\ 2\,\beta_X\,\beta_\Gamma .
 $$
 
-*Proof.* Let $q\in\widetilde C_\sigma\cap\operatorname{Supp}R$ with image
-$\mathrm{pt}$ on the line $\ell_\gamma=\mathbb P^1\times\{\gamma\}$. The
-divisor $\varphi^*\mathrm{Br}-R$ is effective by (1) and does not contain
-$\widetilde C_\sigma$, and $\widetilde C_\sigma\to\ell_\gamma$ is an
-isomorphism, so
-$(R\cdot\widetilde C_\sigma)_q\le(\mathrm{Br}\cdot\ell_\gamma)_{\mathrm{pt}}$.
-
-This local number is at least two. Otherwise $\mathrm{Br}$ is smooth at
-$\mathrm{pt}$ and transversal to $\ell_\gamma$. By purity of the branch locus
-and Abhyankar's lemma, $S'$ is regular above $\mathrm{pt}$ and $\nu$ is, in
-formal coordinates, $(u,z)\mapsto(u,z^e)$ at the image of $q$, with $e\ge2$
-because $q\in\operatorname{Supp}R$. The preimage of a line transversal to the
-branch divisor is a single smooth branch of degree $e$ over it. A component
-mapping isomorphically to the line cannot pass through such a point.
-
+*Proof.* The cover is tame, so every prime divisor $D$ of $S'$ over
+$\mathrm{Br}$ has coefficient $e_D$ in $\nu^*\mathrm{Br}$ and $e_D-1$ in $R'$.
+Hence $R'=\nu^*\mathrm{Br}-B'$ with $B'$ the reduced preimage of
+$\mathrm{Br}$, and
+$$
+R=\varphi^*\mathrm{Br}-\pi^*B'-Z .
+$$
+Let $q\in\widetilde C_\sigma$ with image $\mathrm{pt}$ on the line
+$\ell_\gamma=\mathbb P^1\times\{\gamma\}$. If $\mathrm{pt}\notin\mathrm{Br}$
+then $q\notin\operatorname{Supp}R$. If $\mathrm{pt}\in\mathrm{Br}$ then $q$
+lies in the support of the effective divisor $\pi^*B'$, which does not
+contain $\widetilde C_\sigma$, so $(\pi^*B'\cdot\widetilde C_\sigma)_q>0$. As
+$\widetilde C_\sigma\to\ell_\gamma$ is an isomorphism,
+$(\varphi^*\mathrm{Br}\cdot\widetilde C_\sigma)_q=(\mathrm{Br}\cdot\ell_\gamma)_{\mathrm{pt}}$.
 Therefore
-$c_\sigma\le2\sum_{\mathrm{pt}}\bigl((\mathrm{Br}\cdot\ell_\gamma)_{\mathrm{pt}}-1\bigr)
-=2\bigl(\beta_\Gamma-\#(\mathrm{Br}\cap\ell_\gamma)\bigr)$. Let
-$\mathrm{Br}'$ be $\mathrm{Br}$ without its horizontal lines and
+$(R\cdot\widetilde C_\sigma)_q<(\mathrm{Br}\cdot\ell_\gamma)_{\mathrm{pt}}$.
+The left side is an integer, because $R$ is an integral divisor on a smooth
+surface. Summing over the points of the line,
+$$
+c_\sigma\ \le\ \sum_{\mathrm{pt}}\bigl((\mathrm{Br}\cdot\ell_\gamma)_{\mathrm{pt}}-1\bigr)
+=\beta_\Gamma-\#(\mathrm{Br}\cap\ell_\gamma).
+$$
+Let $\mathrm{Br}'$ be $\mathrm{Br}$ without its horizontal lines and
 $\psi:\widetilde{\mathrm{Br}'}\to\mathbb P^1_\Gamma$ the projection of its
 normalization. The deficiency $\beta_\Gamma-\#(\mathrm{Br}\cap\ell_\gamma)$
 equals the ramification of $\psi$ above $\gamma$ plus
@@ -299,14 +303,21 @@ $\sum(\text{branches}-1)$ over the points of $\mathrm{Br}'$ on the line.
 Each component of $\psi$ has degree at most $\beta_\Gamma$, below the
 characteristic, so it is separable. Summing over $\gamma$, Riemann–Hurwitz
 and $\text{branches}-1\le\delta$ give at most
-$2p_a(\mathrm{Br}')+2\beta_\Gamma-2\le2\beta_X\beta_\Gamma$, since
+$2p_a(\mathrm{Br}')+2\beta_\Gamma-2=2\beta_X'(\beta_\Gamma-1)$, since
 $p_a(\mathrm{Br}')=(\beta_X'-1)(\beta_\Gamma-1)$ with $\beta_X'\le\beta_X$.
 Distinct scalars use distinct lines. $\qquad\blacksquare$
 
+On the quartic del Pezzo surface the four singular conic fibres give four
+sections with distinct scalars and $c_\sigma=1$, while $\beta_X=\beta_\Gamma=2$.
+The bound $2\beta_X(\beta_\Gamma-1)=4$ is attained. An earlier version of this
+note proved the lemma with the constant four.
+
 *Proof of Theorem A.* By Lemmas 3 and 4,
 $\bigl(1-\tfrac1b\bigr)^2\sum_\sigma|J(\sigma)|\le(h-1)\sum_\sigma c_\sigma
-\le4(h-1)\beta_X\beta_\Gamma$, and (2) bounds the two branch degrees.
-$\qquad\blacksquare$
+\le2(h-1)\beta_X\beta_\Gamma$, and (2) bounds the two branch degrees. This is
+half of the stated bound. Theorem A, Corollary B and Theorem C are kept in
+their original form, which the Lean file and the tables below use; each holds
+with its incidence term halved. $\qquad\blacksquare$
 
 ## The general version
 
@@ -455,20 +466,23 @@ $\qquad\blacksquare$
 **Lemma 7 (height budget).** For simple sections with pairwise distinct
 scalars outside $E_h$,
 $$
-\sum_\sigma c^1_\sigma\ \le\ C^*:=4\beta_X\beta_\Gamma+b\bigl(W(h-b)+h(W-bd)\bigr).
+\sum_\sigma c^1_\sigma\ \le\ C':=2\beta_X\beta_\Gamma+b\bigl(W(h-b)+h(W-bd)\bigr)
+\ \le\ C^*:=4\beta_X\beta_\Gamma+b\bigl(W(h-b)+h(W-bd)\bigr).
 $$
 
 *Proof.* Each blow-up centre lies over one scalar, so it lies on at most one
 of the disjoint sections and lowers that self-intersection by one. Hence
 $\sum c^1_\sigma\le\sum c_\sigma+K$ with $K$ the number of blow-ups, and
 Lemma 4 bounds the first sum. The indeterminacy points of $Y$ are the common
-points of its polar divisor $P_Y$ and the zero divisor $Z_a$ of $Y-a$, for any
-constant $a$. Separating two effective divisors without common components
-takes at most $Z_a\cdot P_Y$ blow-ups, since a blow-up at a common point of
-multiplicities $m,m'$ lowers this number by $\min(m,m')^2$. For general $a$
-the divisor $Z_a$ moves without fixed components, so it is nef. As $f_bY$ is
-integral, $P_Y\le\varphi^*\operatorname{div}(f_b)$, and
-$Z_a\le\varphi^*\operatorname{div}F(X,\Gamma,a)$ by the Taylor expansion used
+points of its polar divisor $P_Y$ and the zero divisor $Z_A$ of $Y-A$, for any
+polynomial $A(X)$ of degree at most $d$. Separating two effective divisors
+without common components takes at most $Z_A\cdot P_Y$ blow-ups, since a
+blow-up at a common point of multiplicities $m,m'$ lowers this number by
+$\min(m,m')^2$. The polynomial sections form a linear system without base
+points on $\mathbb F_d$, so for general $A$ the divisor $Z_A$ moves without
+fixed components and is nef. As $f_bY$ is integral,
+$P_Y\le\varphi^*\operatorname{div}(f_b)$, and
+$Z_A\le\varphi^*\operatorname{div}F(X,\Gamma,A)$ by the Taylor expansion used
 in Lemma 1. Both pullbacks are nef, so
 $K\le\varphi^*\mathcal O(W,h)\cdot\varphi^*\mathcal O(W-bd,h-b)
 =b\,(W(h-b)+h(W-bd))$. $\qquad\blacksquare$
@@ -527,6 +541,45 @@ $N(t'^2-nd')\le n(t'-d')$. $\qquad\blacksquare$
 
 At the terminal cubic of the second named prime, $\bar c=2^{24}$ and
 $\bar n=2^{23}$ give **at most 48,038** sections, and 99,313 for the quartic.
+
+**Theorem D′ (averaged form).** Let $C'$ be as in Lemma 7 and suppose
+$t^2>nd$. A family of sections with pairwise distinct scalars and at least $t$
+agreements each has at most
+$$
+(2b-2)h_\Gamma+\Bigl\lfloor\frac{h\,n\,(2t+n)+2C'(t+n)}{t^2-nd}\Bigr\rfloor
+$$
+members.
+
+*Proof.* Remove the scalars whose horizontal line lies in the zero set of the
+discriminant. There are at most $(2b-2)h_\Gamma$ of them, and they include
+$E_h$ and every scalar carrying a section that is not simple. Let $N$
+sections remain, with regular incidence sets $J_\sigma$ and
+$S=\sum_\sigma|J_\sigma|$. A site serves at most $h$ sections at agreements
+that are not at a core site or have $G_x(\gamma,\ell_x(\gamma))=0$, and by
+Lemma 8 a section has at most $c_\sigma\le c^1_\sigma$ further agreements
+outside $J_\sigma$. With Lemma 7,
+$$
+S\ \ge\ Nt-hn-C'.
+$$
+Two sections with different tangent heads satisfy
+$|J_\sigma\cap J_\tau|\le d+c^1_\sigma+c^1_\tau$, by the two polynomial
+identities in the proof of Theorem D. Sections with the same tangent head lie
+on one affine head, so each section has at most $h-1$ such partners, and for
+those $|J_\sigma\cap J_\tau|\le n$. Counting pairs of sections through each
+site,
+$$
+\frac{S^2}{n}\ \le\ \sum_{\sigma,\tau}|J_\sigma\cap J_\tau|
+\ \le\ Nn+N^2d+2NC'+N(h-1)n .
+$$
+If $Nt\le hn+C'$ the claim holds. Otherwise insert the lower bound for $S$
+and divide by $N$:
+$N(t^2-nd)\le2t(hn+C')+n(hn+2C')$. $\qquad\blacksquare$
+
+The averaged form needs no cut-offs and uses the sharper constant of Lemma 4.
+It gives at most **19,433** sections on the terminal second-prime cubic and
+41,542 on the quartic. For the multiplicity-three example above it gives
+25,522, 79,953, 168,073, 289,882 and 445,379 sections at value degrees two
+through six. [Windows obtained from it](tangent-head-windows.md)
 
 *A multiplicity-three example.* At the first named prime and rate $1/4$ the
 last error count below the known attack is $e=480946858$, so $t=592794966$,
