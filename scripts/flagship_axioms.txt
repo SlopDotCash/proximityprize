@@ -33,6 +33,7 @@ ArkLib.Research.ProximityGap.Frontier.DimensionRaiseMCA ArkLib.ProximityGap.Fron
 ArkLib.Research.ProximityGap.Frontier.TerminalDimensionThreshold ArkLib.ProximityGap.Frontier.TerminalDimensionThreshold.prime_classification
 ArkLib.Research.ProximityGap.Frontier.TerminalDimensionThreshold ArkLib.ProximityGap.Frontier.TerminalDimensionThreshold.second_prime
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeFourHeadEndpoints ArkLib.ProximityGap.Frontier.SecondPrimeFourHeadEndpoints.ceilings
+ArkLib.Research.ProximityGap.Frontier.SecondPrimePlanarQuartet ArkLib.ProximityGap.Frontier.SecondPrimePlanarQuartet.quarter
 ArkLib.Research.ProximityGap.Frontier.SmoothCosetFourHeadMass ArkLib.ProximityGap.Frontier.SmoothCosetFourHeadMass.operational_ceiling
 
 # Smooth-field and executable equality for the second-budget MCA boundary
@@ -256,7 +257,12 @@ ArkLib.Research.ProximityGap.Frontier.DegreeTenDeficitWindow ArkLib.ProximityGap
 
 # Quarter-rate saturated core and expanded first-prime interval
 ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor ArkLib.ProximityGap.Frontier.QuarterRateTwoRichFloor.named_bracket
-ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor ArkLib.ProximityGap.Frontier.QuarterRateTwoRichFloor.exact_mass
-ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor ArkLib.ProximityGap.Frontier.QuarterRateTwoRichFloor.prime_budget_window
+ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor ArkLib.ProximityGap.Frontier.QuarterRateTwoRichFloor.exact_through_saturation
+ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor ArkLib.ProximityGap.Frontier.QuarterRateTwoRichFloor.prime_budget_through_saturation
+
+# Smooth extension fields in the quarter-rate two-head interval
+ArkLib.Research.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow ArkLib.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow.classification
+ArkLib.Research.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow ArkLib.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow.rank_answer
+
 ArkLib.Research.ProximityGap.Frontier.PrimitiveReceivedInterpolation ArkLib.ProximityGap.Frontier.PrimitiveReceivedInterpolation.raw_primitive_section
 ArkLib.Research.ProximityGap.Frontier.DegreeTenDeficitWindow ArkLib.ProximityGap.Frontier.DegreeTenDeficitWindow.primitive_two_head_bracket
