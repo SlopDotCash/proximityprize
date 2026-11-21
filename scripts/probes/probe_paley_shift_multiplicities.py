@@ -104,6 +104,37 @@ def determinant(jets, width, p):
     return poly_det([jets[i:i + width] for i in range(width)], p)
 
 
+def polynomial_power(poly, exponent, p):
+    result = [1]
+    for _ in range(exponent):
+        result = multiply(result, poly, p)
+    return result
+
+
+def check_signed_factors(sites, rows, central, p):
+    a, d = len(sites), (p - 1) // 2
+    x, y = a // 2, (a + 1) // 2
+    h = [0, p - 1] + [0] * (p - 2) + [1]  # X^p - X
+    parity = (x * y + x * (x - 1) // 2 - y * (y - 1) // 2) % 2
+    numerator = multiply(polynomial_power(h, y, p), central, p)
+    if parity:
+        numerator = [(-c) % p for c in numerator]
+    for sign in (1, -1):
+        signed = determinant(jet_polynomials(sites, d + a - 1, y, sign, p), y, p)
+        side = signed
+        for u in sites:
+            power = [comb(d, j) * pow(u, d - j, p) % p for j in range(d + 1)]
+            side = multiply(side, add_signed(power, [1], sign, p), p)
+            if a % 2:
+                side = multiply(side, [u, 1], p)
+        require(side == numerator, (p, sites, sign, "complementary determinants"))
+        product = [signed[-1]]
+        for b, row in enumerate(rows):
+            exponent = (sum(row) + sign) ** 2 // 4
+            product = multiply(product, polynomial_power([-b, 1], exponent, p), p)
+        require(product == signed, (p, sites, sign, "signed factorization"))
+
+
 def check_domain(sites, p, check_defects):
     a = len(sites)
     x, d = a // 2, (p - 1) // 2
@@ -124,6 +155,8 @@ def check_domain(sites, p, check_defects):
         require(field_rank(local, p) == min(row.count(1), row.count(-1)),
                 (p, sites, b, "rank"))
     require(central == product, (p, sites, "central factorization"))
+
+    check_signed_factors(sites, rows, central, p)
 
     sums = sorted(sum(row) for row in rows)
     signed_maximum = max(sum(sums[-a:]), -sum(sums[:a]))
@@ -160,7 +193,7 @@ def main():
         for sites in domains:
             counts[1] += check_domain(sites, p, p > 13)
             counts[0] += 1
-    print(f"{counts[0]} full polynomial factorizations; {counts[1]} exact shift ranks")
+    print(f"{counts[0]} central and {2 * counts[0]} signed factorizations; {counts[1]} exact shift ranks")
 
     p, a, b, size = 65537, 256, 256, 64
     numerator = b*b*(a - 2*size)**2 + 4*b*size*((p - 1)//2 + 1 - size)
