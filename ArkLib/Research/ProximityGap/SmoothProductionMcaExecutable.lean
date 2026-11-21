@@ -16,18 +16,18 @@ open scoped NNReal
 
 /-- Exact first failure when a proved two-head or three-head budget window applies. -/
 def knownCount (k B : ℕ) : Option ℕ :=
-  let a := (n-k)/2
+  let a := (n - k) / 2
   if k = 268435456 ∧ B ≤ 894784857 then some (first 402653184 B)
-  else if k = 67108864 ∧ 1565873494 ≤ B ∧ B ≤ 2147483648 then some (max 671088640 (B/3))
-  else if 2 ≤ k ∧ k+2*a = n ∧ n < 3*a ∧ B/2 < n ∧
-      DoubleQuadraticThreshold.agreements n k ≤ n-B/2+1 then some (first a B)
+  else if k = 67108864 ∧ 1565873494 ≤ B ∧ B ≤ 2147483648 then some (max 671088640 (B / 3))
+  else if 2 ≤ k ∧ k + 2 * a = n ∧ n < 3 * a ∧ B / 2 < n ∧
+      DoubleQuadraticThreshold.agreements n k ≤ n - B / 2 + 1 then some (first a B)
   else none
 
 variable {F I : Type} [Field F] [DecidableEq F] [Fintype I] [Nonempty I] [Fintype F]
 
 /-- Every successful integer test equals the support-rank answer for any smooth domain. -/
 theorem knownCount_correct (D : I ↪ F) [ReedSolomon.Smooth D]
-    (hn : Fintype.card I = n) {k B e : ℕ} (hB : Fintype.card F / 2^128 = B)
+    (hn : Fintype.card I = n) {k B e : ℕ} (hB : Fintype.card F / 2 ^ 128 = B)
     (h : knownCount k B = some e) :
     (RankReview.mcaAnswer D (prizeThreshold : ℝ≥0) k).map Fin.val = some e := by
   classical
@@ -54,13 +54,13 @@ theorem knownCount_correct (D : I ↪ F) [ReedSolomon.Smooth D]
 on the supplied coordinates and field otherwise. -/
 def answer [DecidableEq I] (E : Fin n ≃ I) (labels : Unit → List F) (D : I ↪ F)
     (k q : ℕ) : Option ℕ :=
-  let B := q / 2^128
+  let B := q / 2 ^ 128
   (knownCount k B).orElse fun _ => (RankExecutable.mcaBoundaryWith E labels D k B).map Fin.val
 
 private theorem search_eq [DecidableEq I] [SampleableType F] {len : ℕ} (E : Fin len ≃ I)
     (hn : Fintype.card I = len) (labels : Unit → List F) (hl : ∀ x, x ∈ labels ())
     (D : I ↪ F) (k : ℕ) :
-    (RankExecutable.mcaBoundaryWith E labels D k (Fintype.card F / 2^128)).map Fin.val =
+    (RankExecutable.mcaBoundaryWith E labels D k (Fintype.card F / 2 ^ 128)).map Fin.val =
       (RankReview.mcaAnswer D (prizeThreshold : ℝ≥0) k).map Fin.val := by
   subst len
   rw [← RankExecutable.prizeBudget F, RankExecutable.mcaBoundaryWith_eq E labels hl]
@@ -73,7 +73,7 @@ theorem answer_correct [DecidableEq I] [SampleableType F] (E : Fin n ≃ I)
   classical
   have hn : Fintype.card I = n := (Fintype.card_congr E).symm.trans (Fintype.card_fin n)
   dsimp only [answer]
-  cases h : knownCount k (Fintype.card F / 2^128) with
+  cases h : knownCount k (Fintype.card F / 2 ^ 128) with
   | some e => exact (knownCount_correct D hn rfl h).symm
   | none => exact search_eq E hn labels hl D k
 
