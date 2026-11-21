@@ -15,6 +15,7 @@ ArkLib.Research.ProximityGap.Frontier.DimensionRaiseMCA ArkLib.ProximityGap.Fron
 ArkLib.Research.ProximityGap.Frontier.TerminalDimensionThreshold ArkLib.ProximityGap.Frontier.TerminalDimensionThreshold.prime_classification
 ArkLib.Research.ProximityGap.Frontier.TerminalDimensionThreshold ArkLib.ProximityGap.Frontier.TerminalDimensionThreshold.second_prime
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeFourHeadEndpoints ArkLib.ProximityGap.Frontier.SecondPrimeFourHeadEndpoints.ceilings
+ArkLib.Research.ProximityGap.Frontier.SmoothCosetFourHeadMass ArkLib.ProximityGap.Frontier.SmoothCosetFourHeadMass.operational_ceiling
 
 # Smooth-field and executable equality for the second-budget MCA boundary
 ArkLib.Research.ProximityGap.Frontier.SecondBudgetCharacteristic ArkLib.ProximityGap.Frontier.SecondBudgetCharacteristic.smooth
