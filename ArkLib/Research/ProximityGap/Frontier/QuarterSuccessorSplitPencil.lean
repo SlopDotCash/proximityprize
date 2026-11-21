@@ -3,7 +3,7 @@ Copyright (c) 2026 Proximity Prize Contributors. All rights reserved.
 SPDX-License-Identifier: MIT OR Apache-2.0
 -/
 import ArkLib.Research.ProximityGap.Frontier.SmoothFourHeadFibers
-import ArkLib.Research.ProximityGap.Frontier.FourHeadWitness
+import ArkLib.Research.ProximityGap.Frontier.ThreeHeadRootScore
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeQuarticInterpolation
 
 /-! # The first unresolved quarter-rate step and three disjoint full fibers -/
@@ -24,8 +24,6 @@ theorem root_deficits (L D R direction u : ℕ) (bad : 1073741824<L) (pos : 1≤
     (deg : 3*direction≤D)
     (count : 6*(626349396-1)+L+178956965*u+2*D+3*R ≤ 3*1073741824+6*268435455) :
     direction=1 ∧ D=3 ∧ R=0 ∧ u=0 ∧ L≤1073741826 := by omega
-
-private def project : Fin 4 → Fin 3 := ![0,1,2,0]
 
 /-- Three degree-bounded polynomials with the full pair-fiber pattern supply at
 least n+2+6j actual bad labels after trading three ordinary sites for holes per step. -/
@@ -56,72 +54,33 @@ theorem pencil_mass_interval {I F : Type} [Fintype I] [Nonempty I] [DecidableEq 
     have hpos := card_pos.mpr (show (univ.filter fun y => col y=3).Nonempty from ⟨x,mem_filter.mpr ⟨mem_univ _,bad⟩⟩)
     change _ = 0 at h
     omega
-  let A : FourHeadWitness.CoreAllocation dom 268435456 (((447392428+j : ℕ) : ℝ≥0)/1073741824) := {
-    head := fun h => f (project h)
-    background := fun x => (f (owner (col x))).eval (dom x)
-    ordinary := select ordinaryClasses
-    special := univ.filter (fun x => col x=7)
-    core := fun h => select (coreClasses (project h))
-    degree_head := fun j => (degree_le_natDegree).trans_lt (by exact_mod_cast (show (f (project j)).natDegree<268435456 from (degree _).trans_lt (by decide)))
-    degree_first := fun j => by
-      have h := natDegree_mul_le (p:=(Polynomial.X : F[X])) (q:=f (project j))
-      rw [natDegree_X] at h
-      have bound := h.trans_lt (show 1 + (f (project j)).natDegree<268435456 by have := degree (project j);omega)
-      exact degree_le_natDegree.trans_lt (WithBot.coe_lt_coe.mpr bound)
-    disjoint := disjoint_left.mpr (fun x ho hs => by
-      have hm := (mem_filter.mp ho).2
-      rw [(mem_filter.mp hs).2] at hm
-      exact (by decide : (7:Fin 8)∉ordinaryClasses) hm)
-    core_disjoint := fun h => disjoint_left.mpr (fun x hc hs => by
-      have hm := (mem_filter.mp hc).2
-      rw [(mem_filter.mp hs).2] at hm
-      exact (by decide : ∀ i, (7:Fin 8)∉coreClasses i) _ hm)
-    core_agrees := fun j x hx => by
-      apply (pairs x _ _).2
-      rw [← hf]
-      exact (by decide : ∀ i c, c∈coreClasses i → c≠3 → coincide (coarse c) i (owner c))
-        _ _ (mem_filter.mp hx).2 (no_three x)
-    core_rank := fun _ => by rw [ccard];omega
-    core_size := fun _ => by
-      rw [ccard,hn]
-      change (1-((447392428+j : ℕ) : ℝ≥0)/1073741824)*1073741824 ≤ ((626349395-j+1 : ℕ) : ℝ≥0)
-      rw [tsub_mul,one_mul,div_mul_cancel₀ _ (by norm_num)]
-      rw [tsub_le_iff_right]
-      exact_mod_cast (show 1073741824 ≤ (626349395-j)+1+(447392428+j) by omega)
-    ordinary_mismatch := fun x hx => by
-      let j := miss (col x)
-      have hj : project j.castSucc=j := (by decide : ∀ j:Fin 3, project j.castSucc=j) j
-      refine ⟨j.castSucc,?_⟩
-      rw [hj]
-      exact fun h => (by decide : ∀ c, c∈ordinaryClasses → ¬coincide (coarse c) (miss c) (owner c)) _
-        (mem_filter.mp hx).2 (hf x ▸ (pairs x _ _).1 h) }
-  have ocard : A.ordinary.card=1073741823-3*j := (scard ordinaryClasses).trans (by
-    norm_num [ordinaryClasses,weight,Finset.sum_insert];omega)
-  have spec : A.special.card=1+3*j := hc 7
-  have roots (x : ↥A.special) : (univ.image fun h => (A.head h).eval (dom x.val)).card=3 := by
-    let v (j : Fin 3) := (f j).eval (dom x.val)
-    have hx : raw x.val=3 := by rw [← hf,(mem_filter.mp x.property).2];rfl
-    have inj : Function.Injective v := by
-      intro i j h
-      have h' := (pairs x.val i j).1 h
-      rw [hx] at h'
-      exact (by decide : ∀ i j, coincide 3 i j → i=j) _ _ h'
-    have eq : (univ.image (fun h => (A.head h).eval (dom x.val)))=univ.image v := by
-      ext z
-      simp only [mem_image,mem_univ,true_and]
-      constructor
-      · rintro ⟨h,rfl⟩; exact ⟨project h,rfl⟩
-      · rintro ⟨j,rfl⟩
-        exact ⟨j.castSucc,congrArg v ((by decide : ∀ t:Fin 3,project t.castSucc=t) j)⟩
-    rw [eq,card_image_of_injective _ inj,card_univ,Fintype.card_fin]
-  have count : A.count=1073741826+6*j := by
-    simp only [FourHeadWitness.CoreAllocation.count,ocard,roots,sum_const,card_univ,Fintype.card_coe,spec]
-    change 1073741823-3*j+(1+3*j)*3=1073741826+6*j
-    omega
-  have room : 4 < Fintype.card F := lt_trans (by nlinarith [Nat.zero_le j] : 4 < (1073741826+6*j)^2) fieldRoom
-  obtain ⟨u,G,hG,hit⟩ := FourHeadWitness.exists_bad_scalar_set_of_values A room (by rw [count];simpa [pow_two] using fieldRoom)
-  have mass := MCAWitnessSpread.epsMCA_ge_card_div_of_mcaEvent_set _ _ u G hit
-  rwa [hG,count] at mass
+  have count : 1073741823-3*j+3*(1+3*j)=1073741826+6*j := by omega
+  rw [← count] at fieldRoom ⊢
+  apply ThreeHeadRootScore.colored_mass dom 268435456 _ col f _ _ (626349395-j)
+  · intro i; have := degree i; omega
+  · omega
+  · rw [hn]
+    change (1-((447392428+j : ℕ) : ℝ≥0)/1073741824)*1073741824 ≤ ((626349395-j+1 : ℕ) : ℝ≥0)
+    rw [tsub_mul,one_mul,div_mul_cancel₀ _ (by norm_num),tsub_le_iff_right]
+    exact_mod_cast (show 1073741824 ≤ (626349395-j)+1+(447392428+j) by omega)
+  · exact ccard
+  · exact (scard ordinaryClasses).trans (by norm_num [ordinaryClasses,weight,Finset.sum_insert];omega)
+  · exact hc 7
+  · intro x i hi
+    apply (pairs x _ _).2
+    rw [← hf]
+    exact (by decide : ∀ i c, c∈coreClasses i → c≠3 → coincide (coarse c) i (owner c))
+      _ _ hi (no_three x)
+  · intro x hx h
+    exact (by decide : ∀ c, c∈ordinaryClasses → ¬coincide (coarse c) (miss c) (owner c))
+      _ hx (hf x ▸ (pairs x _ _).1 h)
+  · intro x hx i i' h
+    have eq := (pairs x i i').1 h
+    rw [← hf,hx] at eq
+    exact (by decide : ∀ i i', coincide 3 i i' → i=i') _ _ eq
+  · rw [count] at fieldRoom
+    exact lt_trans (by nlinarith [Nat.zero_le j] : 4 < (1073741826+6*j)^2) fieldRoom
+  · exact fieldRoom
 
 /-- Three degree-bounded polynomials with the full pair-fiber pattern supply at
 least n+2 actual bad labels in a single received stack at the successor step. -/

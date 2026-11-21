@@ -7,7 +7,10 @@ numerical consequences and the production arithmetic are kernel-checked in
 [HodgeSectionIncidence.lean](../../../ArkLib/Research/ProximityGap/Frontier/HodgeSectionIncidence.lean),
 and the step from the Hodge index inequality to Lemma 3 in
 [HodgeSectionLattice.lean](../../../ArkLib/Research/ProximityGap/Frontier/HodgeSectionLattice.lean),
-with every geometric fact an explicit hypothesis. The lattice inequalities are
+with every geometric fact an explicit hypothesis. The counting half of
+Theorem D′, from the tangent-head data to the population bound, is
+kernel-checked in
+[TangentHeadCount.lean](../../../ArkLib/Research/ProximityGap/Frontier/TangentHeadCount.lean). The lattice inequalities are
 checked on an explicit surface, where they are attained, by
 [the exact probe](../../../scripts/probes/probe_section_incidence_hodge.py).
 Nothing here is an end-to-end Lean theorem about `epsMCA`.
@@ -618,6 +621,17 @@ $\deg M\le d$, sections exist for **every** scalar. All their agreements at
 core sites are at the roots of $M$, which are totally ramified. The count of
 Theorem C is then $N(t-d)\le hn$. This example shows that sections cannot be
 bounded without using agreements, and that Lemma U is needed.
+
+**Heights in the same example.** Take $\kappa$ even and $d=1$ there. The fibre
+of the scalar projection over a root $\gamma_j$ of $H$ is $C_+ + C_-$ with
+$y=\pm(X-\gamma_j)$. The two components meet once at $X=\gamma_j$ and with
+multiplicity $(\kappa-2)/2$ over $X=\infty$, where the branch curve is smooth
+and tangent to the fibre line. So $c_\sigma=\kappa/2$, in agreement with the
+local formula in the proof of Lemma 4. The tangent slope is
+$V_\sigma=-1+cH'(\gamma_j)G(X)/(2(X-\gamma_j))$, of height $\kappa-1$. The
+difference $(\kappa-2)/2$ comes from the indeterminacy of $Y$ at the point of
+the section over $X=\infty$. The second term of $C'$ in Lemma 7 therefore
+cannot be dropped.
 
 **A pair inequality.** The same computation with
 $C_\sigma'-C_\tau'+\mu\bigl(\sum_{\Delta_1}\Lambda_x'-\sum_{\Delta_2}\Lambda_x'\bigr)$,

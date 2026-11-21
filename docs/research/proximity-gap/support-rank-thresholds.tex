@@ -318,12 +318,14 @@ At 694,116,763 errors every closed ball still has at most 1,660,990,722 codeword
 
 \textbf{MCA.} A single received pair that exceeds budget at $e$ errors places the supremum at or below $e/n$. The witnessed ceilings for the four rates on the first prime and the two lower rates on the second satisfy $(n-e)^2>nd$. The two remaining intervals contain $J$. The inequalities and the whole-step list bound are verified in \src{922284c9987474bd5e1df32a12cd27610b4ffe92}{DesignatedPrimeJohnson}.
 
+\textbf{The unresolved quarter-rate count.} On the first prime, let $D=268{,}435{,}454$. At 447,392,428 errors a line exceeds budget exactly when there exist polynomials $P,Q$ for which $P$, $Q$ and $P-Q$ each have degree $D$ and their three root sets are disjoint $D$-element subsets of the evaluation domain. Any such failure has worst-case mass $(n+2)/q$. Deriving the completely split fibers uses one uncovered coordinate and three exact overlaps of size $D$. Existence on this particular subgroup remains open. See the \href{https://github.com/SlopDotCash/proximityprize/blob/a02856495cec86860a159750a210d2a19f5e32ca/ArkLib/Research/ProximityGap/Frontier/QuarterSuccessorSplitCriterion.lean}{split-pencil equivalence}.
+
 Three of the eight MCA endpoints on these two fields have numerical values in the current proof. All eight list endpoints and the five other MCA endpoints still require a matching safety bound and failure witness at adjacent counts, or an evaluation of the exact rank criterion. The comparison with Johnson answers a different question from finding those integers.
 
 \newpage
 \section*{5.3.\quad A uniform gap below capacity on smooth domains}
 
-For every supplied smooth domain over a field of order $q<2^{256}$, the two thresholds are bounded away from the sponsor's capacity $(n-k+1)/n$. The bounds hold across extension fields and at every positive interleaving width. In the table, $h$ is the minimum code length for the adjacent conclusion.
+Fix a supplied smooth domain over a field of order $q<2^{256}$ and tolerance $\varepsilon=2^{-128}$. Each bound in the table applies when the length $n$ is at least the adjacent value of $h$. It then bounds both thresholds below the sponsor's capacity $(n-k+1)/n$ at every positive interleaving width, including over extension fields.
 
 \begin{center}
 \begin{tabular}{@{}lrrrr@{}}

@@ -20,9 +20,17 @@ note and does not use the Hodge index theorem. The
 [exact-arithmetic certificate](../../../scripts/probes/probe_tangent_head_windows.py)
 checks both interpolants, the head tests and every degree allocation in each
 window, and reproduces the three committed weighted totals as a regression
-test. Lean checks the counting step of Theorem D′ and sample integer values in
-[HodgeSectionLattice.lean](../../../ArkLib/Research/ProximityGap/Frontier/HodgeSectionLattice.lean).
-Lean does not check these three windows.
+test. Lean constructs both interpolants on the received rows in each window
+and checks the Johnson-type conditions, the rich-head determinant tests and
+every degree allocation, in
+[TangentHeadWindows.lean](../../../ArkLib/Research/ProximityGap/Frontier/TangentHeadWindows.lean).
+The counting half of Theorem D′ is kernel-checked in
+[TangentHeadCount.lean](../../../ArkLib/Research/ProximityGap/Frontier/TangentHeadCount.lean):
+from rational tangent data of total height at most $C'$ that take the received
+values on the regular agreements, with at most $m$ sections on any affine
+head, Lean derives $M(t^2-nd)\le2t(mn+C')+n(mn+2C')$. The geometric half,
+which produces that data on the normalized cover, is a written argument. In
+the window certificate the cap enters as the definition of a price.
 
 ## The cap
 

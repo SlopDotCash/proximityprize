@@ -11,7 +11,8 @@ open scoped NNReal ENNReal
 namespace ArkLib.ProximityGap.Frontier.SmoothFourHeadFibers
 open SmoothFourHeadColored
 
-private theorem partition_fibers {I J : Type} [Fintype J] [DecidableEq J] [Nonempty J]
+/-- Partition a finite set into labeled parts of prescribed sizes. -/
+theorem partition_fibers {I J : Type} [Fintype J] [DecidableEq J] [Nonempty J]
     (s : Finset I) (w : J → ℕ) (h : s.card = ∑ j, w j) :
     ∃ f : I → J, ∀ j, (s.filter (fun x => f x = j)).card = w j := by
   classical
