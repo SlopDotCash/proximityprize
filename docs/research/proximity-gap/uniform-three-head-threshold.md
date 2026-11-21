@@ -25,7 +25,7 @@ positive interleaving width and each message dimension $k$ satisfying
 The good real radii are exactly $0\le\delta<j/n$. The sufficient lower
 dimension decreases from $67{,}108{,}863$ at the first budget to $2$ at
 the last. This covers $4{,}503{,}599{,}694{,}479{,}355$ integer
-budget–dimension pairs. Prime fields in the displayed budget range automatically meet the characteristic bound. [Simultaneous dimension and budget theorem](../../../ArkLib/Research/ProximityGap/Frontier/DimensionThreeHeadWindow.lean)
+budget–dimension pairs. Prime fields in the displayed budget range automatically meet the characteristic bound. On smooth domains the order of the evaluation subgroup supplies this bound over every finite field. [Simultaneous dimension and budget theorem](../../../ArkLib/Research/ProximityGap/Frontier/DimensionThreeHeadWindow.lean)
 
 To see the bound, set $t=n-j$. At $k\ge3$ the three-head construction
 requires $3(t-k)\le n-k$, equivalently $3t\le n+2k$. For $k=2$ the
@@ -51,7 +51,7 @@ subfield supplies a root of order $2^{30}$. On the entire subgroup the
 budget is $2{,}039{,}086{,}914$. The first bad count is $679{,}695{,}638$
 at all $12{,}910{,}498$ dimensions from $54{,}198{,}367$ through $2^{26}$.
 At dimension one the same field and domain remain safe through
-$791{,}036{,}486$ errors. [Quartic extension and smooth domain](../../../ArkLib/Research/ProximityGap/Frontier/QuarticFieldProductionThreshold.lean)
+$791{,}036{,}486$ errors. Independent verified kernel replay accepted 46,245 declarations for the general finite-field computation and 46,574 for the concrete quartic example together with the exact grid error. [Quartic extension and smooth domain](../../../ArkLib/Research/ProximityGap/Frontier/QuarticFieldProductionThreshold.lean)
 
 ## Reducing the upper count to a large cubic
 

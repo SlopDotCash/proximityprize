@@ -6,6 +6,7 @@ import ArkLib.Research.ProximityGap.Frontier.DimensionRaiseMCA
 import ArkLib.Research.ProximityGap.Frontier.UniversalCubicBudgetWindow
 import ArkLib.Research.ProximityGap.Frontier.ExceptionalHeadLocatorMass
 import ArkLib.Research.ProximityGap.Frontier.CircuitDensity
+import ArkLib.Research.ProximityGap.Frontier.SmoothCubicCharacteristic
 
 /-! # Simultaneous dimension and budget intervals for three-head line-MCA
 
@@ -135,6 +136,18 @@ theorem classification (dom : I ↪ F) (hn : Fintype.card I = n) {p B d : ℕ} [
     rw [heq] at h
     exact hδ.not_ge h
 
+/-- The domain order supplies the required characteristic on every smooth
+domain throughout the budget and dimension interval. -/
+theorem smooth_classification (dom : I ↪ F) [ReedSolomon.Smooth dom] (hn : Fintype.card I = n)
+    {B d : ℕ} (hB : Fintype.card F / 2^128 = B) (hl : 2013265923 ≤ B) (hu : B ≤ 2147483648)
+    (hd : 2 ≤ d) (hd' : d ≤ k) (hfit : 3*(n-B/3) ≤ n+2*d) (width : ℕ) [NeZero width] :
+    let t := ((B/3 : ℕ) : ℝ≥0)/n
+    mcaDeltaStar (F := F) ((ReedSolomon.code dom d : Set (I → F)) ^⋈ (Fin width)) tolerance = t ∧
+      ∀ δ : ℝ≥0, epsMCA (F := F) ((ReedSolomon.code dom d : Set (I → F)) ^⋈ (Fin width)) δ ≤ tolerance ↔ δ < t := by
+  have hq := Nat.lt_mul_div_succ (Fintype.card F) (by decide : 0 < 2^128)
+  have hp := SmoothCubicCharacteristic.characteristic dom hn (by omega)
+  exact classification dom hn (p := ringChar F) (by omega) hB hl hu hd hd' hfit width
+
 /-- A repetition-code witness with at least two distinct received row pairs
 owns at least `n-e-1` unordered pairs of sites that determine its scalar.
 This gives a separate security bound below the three-head dimension range. -/
@@ -172,6 +185,7 @@ theorem dimension_one_safe_through (dom : I ↪ F) (hn : Fintype.card I = n) {B 
   exact Nat.lt_mul_div_succ _ (by omega)
 
 #print axioms dimension_one_safe_through
+#print axioms smooth_classification
 #print axioms exact_eps
 #print axioms classification
 end ArkLib.ProximityGap.Frontier.DimensionThreeHeadWindow
