@@ -277,6 +277,7 @@ import ArkLib.Research.ProximityGap.Frontier.DilationDoublingLevelSet
 import ArkLib.Research.ProximityGap.Frontier.DilationDoublingMassHalf
 import ArkLib.Research.ProximityGap.Frontier.DilationDoublingMassNoCompose
 import ArkLib.Research.ProximityGap.Frontier.DilationRealSignCocycle
+import ArkLib.Research.ProximityGap.Frontier.DimensionMultiplierMCA
 import ArkLib.Research.ProximityGap.Frontier.DimensionRaiseMCA
 import ArkLib.Research.ProximityGap.Frontier.DiscriminantSquareClass
 import ArkLib.Research.ProximityGap.Frontier.DistinctPeriodMomentLaw
@@ -464,6 +465,7 @@ import ArkLib.Research.ProximityGap.Frontier.ListSupportRank
 import ArkLib.Research.ProximityGap.Frontier.LiuZhouSplitRecursion
 import ArkLib.Research.ProximityGap.Frontier.LogRatioTowerBoundedIncrement
 import ArkLib.Research.ProximityGap.Frontier.LogRatioTowerExpForm
+import ArkLib.Research.ProximityGap.Frontier.LowDimensionCubicPlateau
 import ArkLib.Research.ProximityGap.Frontier.LowDimensionThreeLinePhase
 import ArkLib.Research.ProximityGap.Frontier.MGFGeneralToConvergenceHub
 import ArkLib.Research.ProximityGap.Frontier.MGFToConvergenceHub
@@ -603,6 +605,7 @@ import ArkLib.Research.ProximityGap.Frontier.PseudocyclicDefectSum
 import ArkLib.Research.ProximityGap.Frontier.PuncturedFiberAgreement
 import ArkLib.Research.ProximityGap.Frontier.PuncturedFourWordProfile
 import ArkLib.Research.ProximityGap.Frontier.Q1ArisingFamilyDescent
+import ArkLib.Research.ProximityGap.Frontier.QuadraticCubicWindowExample
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetFourRates
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetTwoThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarterPairTripleSignatures
