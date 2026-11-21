@@ -2,6 +2,8 @@
 
 Take the first prime $p=365375409332725729550921208179070755120141565953$, $n=2^{30}$, $k=n/2$ and the order-$n$ evaluation subgroup from `_PrizeShapePrimeP30.lean`. Two received rows give **$n+1$ distinct MCA-bad scalars at $e=313174699=\lceil7n/24\rceil$ errors**. The security budget is $\lfloor p/2^{128}\rfloor=n$. Hence the operational supremum is at most $313174699/1073741824$. The previous sixteen-fiber construction gave $318767104$ errors. [Previous ceiling](rate-half-sixteen-fiber-ceiling.md)
 
+Lean constructs the two received rows on the actual order-$2^{30}$ subgroup. The four joint agreement cores have 760567124, 760567125, 760567124 and 760567125 coordinates. Each of the $n+1$ distinct scalar labels supplies a further agreement outside its core. The theorems `FirstPrimeSepticCores.over_budget` and `threshold_le` give failure in the canonical MCA event and the resulting upper bound on the operational supremum. Whether an earlier error count already fails remains open. [Formal construction](../../../ArkLib/Research/ProximityGap/Frontier/FirstPrimeSepticCores.lean) · [Simultaneous distinct-label argument](../../../ArkLib/Research/ProximityGap/Frontier/FourHeadWitness.lean)
+
 ## The four degree-seven polynomials
 
 Let $s=n/16$ and $\omega=g^s$ for the certified subgroup generator $g$. At index $i=0,1,2,3$ write $a=\omega^{4i}$ and use

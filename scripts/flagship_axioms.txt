@@ -4,6 +4,10 @@
 # All names verified against source namespaces — a rename or deletion here is a
 # hard CI failure, not a skip (update this list in the same PR as the rename).
 
+# Literal half-rate failure and operational ceiling at the first production prime
+ArkLib.Research.ProximityGap.Frontier.FirstPrimeSepticCores ProximityGap.FirstPrimeSepticCores.over_budget
+ArkLib.Research.ProximityGap.Frontier.FirstPrimeSepticCores ProximityGap.FirstPrimeSepticCores.threshold_le
+
 # Finite list thresholds from rounded agreement and error-set packing
 ArkLib.Research.ProximityGap.Frontier.RecursiveListPacking ProximityGap.RecursiveListPacking.list_bound
 ArkLib.Research.ProximityGap.Frontier.RecursiveListPacking ProximityGap.RecursiveListPacking.four_rates_128
