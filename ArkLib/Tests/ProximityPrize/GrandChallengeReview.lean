@@ -3,10 +3,10 @@ Copyright (c) 2026 Proximity Prize Contributors. All rights reserved.
 Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and LICENSE.
 Authors: Proximity Prize Contributors
 -/
+import ArkLib.Research.ProximityGap.Frontier.BudgetOneProduction
 import ArkLib.Research.ProximityGap.Frontier.FourRateSmoothMca128
 import ArkLib.Research.ProximityGap.Frontier.SharpApolarMCA
 import ArkLib.Research.ProximityGap.RankExecutable
-import ArkLib.Research.ProximityGap.Frontier.BudgetOneProduction
 
 /-! Compile-time review of numerical thresholds for affine-line MCA and worst-center lists. -/
 set_option autoImplicit false
@@ -14,6 +14,20 @@ set_option autoImplicit false
 namespace ProximityPrize.Review
 open ProximityGap ProximityGap.GrandChallenges Code
 open scoped NNReal ENNReal
+
+/- The 129-bit field has 128-bit budget one. The arithmetic branch also covers
+the last budget admitted by the staircase bound in each dimension. -/
+section
+open ProximityGap.BudgetOneProduction
+
+run_cmd do
+  let first (k B : ℕ) := (RankExecutable.mcaBoundaryWith (Equiv.refl (Fin (2 ^ 30)))
+    (fun _ => panic! "The spike window requested field enumeration") domain k B).map Fin.val
+  for k in [2^29, 2^28, 2^27, 2^26] do
+    let last := (2^30 - k) / 3 + 1
+    unless [first k 0, first k 1, first k last] == [some 0, some 1, some last] do
+      throwError "Incorrect exact MCA count in the spike window"
+end
 
 /-- The numerical list answers written independently of the library table. -/
 theorem lists128 (j : Fin 4) (m : ℕ) (hm : 0 < m) (δ : ℝ) :
