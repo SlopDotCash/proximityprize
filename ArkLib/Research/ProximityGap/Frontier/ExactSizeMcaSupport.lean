@@ -150,14 +150,16 @@ theorem canonical_failure_iff [SampleableType F]
     rw [hS]
     exact le_max_left _ _
 
+omit [Fintype F] in
 /-- Simultaneously put a selected bad label at zero and, when the budget is positive,
 a second selected label at one, preserving all bad events by affine reparametrization. -/
-private theorem anchor_labels (C : Submodule F (I → F)) (δ : ℝ≥0)
+private theorem anchor_labels [Finite F] (C : Submodule F (I → F)) (δ : ℝ≥0)
     (G : Finset F) (B : ℕ) (hG : G.card = B + 1) (u v : I → F)
     (hbad : ∀ g : G, mcaEvent (C : Set (I → F)) δ u v (g : F)) :
     ∃ H : Finset F, H.card = B + 1 ∧ 0 ∈ H ∧ (0 < B → 1 ∈ H) ∧
       ∃ x : (I → F) × (I → F), ∀ g : H, mcaEvent (C : Set (I → F)) δ x.1 x.2 (g : F) := by
   classical
+  let _ := Fintype.ofFinite F
   obtain ⟨a, ha, b, hba, hb⟩ :
       ∃ a ∈ G, ∃ b, b ≠ a ∧ (0 < B → b ∈ G) := by
     by_cases h : 0 < B
