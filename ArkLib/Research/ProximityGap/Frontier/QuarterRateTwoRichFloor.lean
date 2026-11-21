@@ -21,7 +21,7 @@ theorem family_cap (fam : BadScalarRichPointFamily dom 268435456 δ u) {e t : �
     (hn : Fintype.card I = 1073741824) (hsum : e+t = 1073741824)
     (he : 442128987 ≤ e) (hu : e ≤ 447392426)
     (ht : ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊ = t)
-    (hchar : ∀ i : ℕ, 0 < i → i ≤ 2505397586 → (i:F) ≠ 0) :
+    (hchar : ∀ i : ℕ, 0 < i → i ≤ 1968526676 → (i:F) ≠ 0) :
     fam.G.card ≤ 2*(e+1) := by
   classical
   by_contra! large
@@ -55,7 +55,7 @@ theorem family_cap (fam : BadScalarRichPointFamily dom 268435456 δ u) {e t : �
 /-- The maximal numerator at the saturated step is bounded by the exact two-head count. -/
 theorem saturated_exact_cap (fam : BadScalarRichPointFamily dom 268435456 δ u)
     (hn : Fintype.card I = 1073741824) (ht : ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊ = 626349397)
-    (hchar : ∀ i : ℕ, 0 < i → i ≤ 2505397586 → (i:F) ≠ 0) : fam.G.card ≤ 894784856 := by
+    (hchar : ∀ i : ℕ, 0 < i → i ≤ 1968526676 → (i:F) ≠ 0) : fam.G.card ≤ 894784856 := by
   by_contra! large
   obtain ⟨a,ha,b,hb,hab,h₁,h₂⟩ := QuarterRateDoubleInterpolation.asymmetric_heavy_pair fam hn
     (e:=447392427) (by decide) (by decide) ht hchar (by decide : 511 ≤ 150000000)
@@ -65,13 +65,13 @@ theorem saturated_exact_cap (fam : BadScalarRichPointFamily dom 268435456 δ u)
 /-- Compatibility with the upper estimate retaining all sixteen possible vertical exceptions. -/
 theorem saturated_cap (fam : BadScalarRichPointFamily dom 268435456 δ u)
     (hn : Fintype.card I = 1073741824) (ht : ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊ = 626349397)
-    (hchar : ∀ i : ℕ, 0 < i → i ≤ 2505397586 → (i:F) ≠ 0) : fam.G.card ≤ 894784872 :=
+    (hchar : ∀ i : ℕ, 0 < i → i ≤ 1968526676 → (i:F) ≠ 0) : fam.G.card ≤ 894784872 :=
   (saturated_exact_cap fam hn ht hchar).trans (by decide)
 
 /-- The exact two-head probability for every supplied injective domain in the range. -/
 theorem exact_mass (dom : I ↪ F) (hn : Fintype.card I = 1073741824) {e : ℕ}
     (he : 402653184 ≤ e) (hu : e ≤ 447392426)
-    (hchar : ∀ i : ℕ, 0 < i → i ≤ 2505397586 → (i:F) ≠ 0) :
+    (hchar : ∀ i : ℕ, 0 < i → i ≤ 1968526676 → (i:F) ≠ 0) :
     epsMCA (F := F) (ReedSolomon.code dom 268435456 : Set (I → F)) ((e : ℝ≥0) / Fintype.card I)
       = ((2*(e+1) : ℕ) : ℝ≥0∞) / Fintype.card F := by
   by_cases old : e ≤ 442128987
@@ -91,7 +91,7 @@ theorem exact_mass (dom : I ↪ F) (hn : Fintype.card I = 1073741824) {e : ℕ}
 /-- The upper and lower constructions match at the saturated predecessor as well. -/
 theorem exact_through_saturation (dom : I ↪ F) (hn : Fintype.card I = 1073741824) {e : ℕ}
     (he : 402653184 ≤ e) (hu : e ≤ 447392427)
-    (hchar : ∀ i : ℕ, 0 < i → i ≤ 2505397586 → (i:F) ≠ 0) :
+    (hchar : ∀ i : ℕ, 0 < i → i ≤ 1968526676 → (i:F) ≠ 0) :
     epsMCA (F := F) (ReedSolomon.code dom 268435456 : Set (I → F)) ((e : ℝ≥0) / Fintype.card I)
       = ((2*(e+1) : ℕ) : ℝ≥0∞) / Fintype.card F := by
   by_cases last : e = 447392427
@@ -110,7 +110,7 @@ theorem exact_through_saturation (dom : I ↪ F) (hn : Fintype.card I = 10737418
 
 /-- All received pairs meet the previously published upper bound at saturation. -/
 theorem saturated_upper (dom : I ↪ F) (hn : Fintype.card I = 1073741824)
-    (hchar : ∀ i : ℕ, 0 < i → i ≤ 2505397586 → (i:F) ≠ 0) :
+    (hchar : ∀ i : ℕ, 0 < i → i ≤ 1968526676 → (i:F) ≠ 0) :
     epsMCA (F := F) (ReedSolomon.code dom 268435456 : Set (I → F)) (447392427/1073741824) ≤
       (894784872 : ℝ≥0∞)/Fintype.card F := by
   have hp := exact_through_saturation dom hn (by decide : 402653184 ≤ 447392427) (le_refl _) hchar
@@ -130,7 +130,7 @@ theorem named_bracket :
   apply latticeBoundary_le_mcaDeltaStar_of_predecessor_good (a:=447392428) (by decide) (by decide : 447392428 ≤ N)
   have upper := saturated_upper canonicalDomain (Fintype.card_fin _) (by
     intro i hi hj hz
-    have big : 2505397586 < P := by decide
+    have big : 1968526676 < P := by decide
     exact (lt_of_le_of_lt hj big).not_ge (Nat.le_of_dvd hi ((CharP.cast_eq_zero_iff (ZMod P) P i).mp hz)))
   rw [ZMod.card] at upper
   exact upper.trans (natCast_div_le_inv_of_mul_le (Q:=2^128) (by decide) prime_P.pos (by decide))
