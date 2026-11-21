@@ -278,6 +278,7 @@ import ArkLib.Research.ProximityGap.Frontier.DiscriminantSquareClass
 import ArkLib.Research.ProximityGap.Frontier.DistinctPeriodMomentLaw
 import ArkLib.Research.ProximityGap.Frontier.DistinctPeriodSecondMoment
 import ArkLib.Research.ProximityGap.Frontier.DividedDifferenceDeflation
+import ArkLib.Research.ProximityGap.Frontier.DyadicCharacterCirculant
 import ArkLib.Research.ProximityGap.Frontier.DyadicGeomeanPrizeVsSqrtN
 import ArkLib.Research.ProximityGap.Frontier.DyadicParityLemma
 import ArkLib.Research.ProximityGap.Frontier.DyadicPeriodCeiling
@@ -446,6 +447,7 @@ import ArkLib.Research.ProximityGap.Frontier.MultUniformAgreementSizeCap
 import ArkLib.Research.ProximityGap.Frontier.MultUpperAgreementBinom
 import ArkLib.Research.ProximityGap.Frontier.NAShaoFloorBridge
 import ArkLib.Research.ProximityGap.Frontier.NVMDyadicTowerObstruction
+import ArkLib.Research.ProximityGap.Frontier.NamedCharacterBlocks
 import ArkLib.Research.ProximityGap.Frontier.NearRamanujanFromDCSaddle
 import ArkLib.Research.ProximityGap.Frontier.NearRamanujanFromSaddle
 import ArkLib.Research.ProximityGap.Frontier.NegSymCountDiagonalFloor
@@ -802,6 +804,7 @@ import ArkLib.Research.ProximityGap.Frontier.WF407_T371_01_CensusMomentDepth
 import ArkLib.Research.ProximityGap.Frontier.WF407_T389_03_PhaseInert
 import ArkLib.Research.ProximityGap.Frontier.WF407_T400_05_defect
 import ArkLib.Research.ProximityGap.Frontier.WeightedHessianResultant
+import ArkLib.Research.ProximityGap.Frontier.WeightedResultantInitial
 import ArkLib.Research.ProximityGap.Frontier.WeightedSylvesterDegree
 import ArkLib.Research.ProximityGap.Frontier.WickMGFFromTermwise
 import ArkLib.Research.ProximityGap.Frontier.WickMomentCapability
