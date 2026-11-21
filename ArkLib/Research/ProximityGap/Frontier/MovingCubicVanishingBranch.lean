@@ -42,24 +42,20 @@ abbrev genericEquation (f : k[X][X]) : (RatFunc k)[X] :=
   f.map (algebraMap k[X] (RatFunc k))
 
 set_option backward.isDefEq.respectTransparency false in
-/-- Pure field statement of the vanishing branch. The function field, compatible
-derivations, algebraic coefficients, and polynomial representation are all constructed. -/
-theorem polynomial_generic_root {p : ℕ} [CharP k p] (hp : p.Prime) (f : k[X][X])
-    (hirr : Irreducible (genericEquation f)) (hpos : f.natDegree ≠ 0)
-    (hf : f.natDegree ≤ 3) (hcharY : f.natDegree < p) (t d : ℕ)
-    (ht : Polynomial.Bivariate.degreeX f ≤ t) (hd : d < p)
-    (hchar : 10*d*t+t+3*d < p)
+/-- The generic root obtains a compatible differential in any separable value degree.
+When the recursive numerator lies in the defining ideal, its coordinate derivative
+of the corresponding order vanishes. -/
+theorem exists_generic_flat_differential (f : k[X][X]) [Fact (Irreducible (genericEquation f))]
+    (hJf : f.derivative ≠ 0) (d : ℕ)
     (hdiv : genericEquation f ∣ genericEquation (coordinateNumerator f d)) :
-    ∃ q : (AdjoinRoot (genericEquation f))[X], q.natDegree ≤ d ∧
-      q.eval (AdjoinRoot.of (genericEquation f) RatFunc.X) = AdjoinRoot.root (genericEquation f) ∧
-      ∀ j, IsAlgebraic k (q.coeff j) := by
+    ∃ D : Differential (AdjoinRoot (genericEquation f)), letI := D
+      (∀ a : k, (algebraMap k (AdjoinRoot (genericEquation f)) a)′ = 0) ∧
+      (AdjoinRoot.of (genericEquation f) RatFunc.X)′ = 1 ∧
+      (Differential.deriv^[d+1]) (AdjoinRoot.root (genericEquation f)) = 0 := by
   let g := genericEquation f
   let L := AdjoinRoot g
-  let _ : Fact (Irreducible g) := ⟨hirr⟩
   let _ : Differential k[X] := coordinateDifferential
   let _ : Differential (RatFunc k) := fractionDifferential k[X] (RatFunc k)
-  have hJf : f.derivative ≠ 0 := fun h => hpos
-    (PositiveCharacteristicHeightDescent.natDegree_eq_zero_of_derivative_eq_zero f hcharY h)
   have hJ : g.derivative ≠ 0 := by
     change (f.map _).derivative ≠ 0
     rw [derivative_map]
@@ -104,6 +100,35 @@ theorem polynomial_generic_root {p : ℕ} [CharP k p] (hp : p.Prime) (f : k[X][X
   have hy : (Differential.deriv^[d+1]) y = 0 :=
     (mul_eq_zero.mp ((numerator_aeval f y hfroot d).symm.trans hN)).resolve_left
       (pow_ne_zero _ hjroot)
+  exact ⟨adjointDifferential g hJ, hk, hx, hy⟩
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Pure field statement of the vanishing branch. The function field, compatible
+derivations, algebraic coefficients, and polynomial representation are all constructed. -/
+theorem polynomial_generic_root {p : ℕ} [CharP k p] (hp : p.Prime) (f : k[X][X])
+    (hirr : Irreducible (genericEquation f)) (hpos : f.natDegree ≠ 0)
+    (hf : f.natDegree ≤ 3) (hcharY : f.natDegree < p) (t d : ℕ)
+    (ht : Polynomial.Bivariate.degreeX f ≤ t) (hd : d < p)
+    (hchar : 10*d*t+t+3*d < p)
+    (hdiv : genericEquation f ∣ genericEquation (coordinateNumerator f d)) :
+    ∃ q : (AdjoinRoot (genericEquation f))[X], q.natDegree ≤ d ∧
+      q.eval (AdjoinRoot.of (genericEquation f) RatFunc.X) = AdjoinRoot.root (genericEquation f) ∧
+      ∀ j, IsAlgebraic k (q.coeff j) := by
+  let g := genericEquation f
+  let L := AdjoinRoot g
+  let _ : Fact (Irreducible g) := ⟨hirr⟩
+  have hJf : f.derivative ≠ 0 := fun h => hpos
+    (PositiveCharacteristicHeightDescent.natDegree_eq_zero_of_derivative_eq_zero f hcharY h)
+  obtain ⟨D,hk,hx,hy⟩ := exists_generic_flat_differential f hJf d hdiv
+  let _ : Differential L := D
+  let x : L := AdjoinRoot.of g RatFunc.X
+  let y : L := AdjoinRoot.root g
+  have hX : algebraMap k[X] L Polynomial.X = x := rfl
+  have hfroot : aeval y f = 0 := by
+    have he : aeval y (genericEquation f) = aeval y f := by
+      rw [aeval_def, aeval_def, genericEquation, eval₂_map]
+      rfl
+    exact he.symm.trans (AdjoinRoot.eval₂_root g)
   have heval : (aeval x).toRingHom = algebraMap k[X] L := by
     ext a
     · change (aeval x) (C a) = algebraMap k L a
