@@ -874,6 +874,7 @@ import ArkLib.Research.ProximityGap.Frontier.SixSplitPencil
 import ArkLib.Research.ProximityGap.Frontier.SixteenCosetListLower
 import ArkLib.Research.ProximityGap.Frontier.SixteenFiberMass
 import ArkLib.Research.ProximityGap.Frontier.SixteenthSaturatedHeads
+import ArkLib.Research.ProximityGap.Frontier.SixthDegreeThreeHeadWindow
 import ArkLib.Research.ProximityGap.Frontier.SixthMomentAntipodalShape
 import ArkLib.Research.ProximityGap.Frontier.SixthMomentMultiplicativeRectangle
 import ArkLib.Research.ProximityGap.Frontier.SixthMomentSignatureBridge
