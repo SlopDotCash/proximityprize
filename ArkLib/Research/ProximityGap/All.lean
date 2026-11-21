@@ -304,6 +304,7 @@ import ArkLib.Research.ProximityGap.Frontier.EvenWitnessReverseCollapse
 import ArkLib.Research.ProximityGap.Frontier.ExactHistogramSquares
 import ArkLib.Research.ProximityGap.Frontier.ExactSizeMcaSupport
 import ArkLib.Research.ProximityGap.Frontier.ExceptionalHeadLayout
+import ArkLib.Research.ProximityGap.Frontier.ExceptionalHeadLocatorMass
 import ArkLib.Research.ProximityGap.Frontier.ExceptionalHeadMass
 import ArkLib.Research.ProximityGap.Frontier.ExplainableAmalgamation
 import ArkLib.Research.ProximityGap.Frontier.F6CliffInstantiationJohnson
@@ -363,6 +364,7 @@ import ArkLib.Research.ProximityGap.Frontier.GenericSuperDiagonalLower
 import ArkLib.Research.ProximityGap.Frontier.GeometricIncompleteSumNoGo
 import ArkLib.Research.ProximityGap.Frontier.GeometricWordLocator
 import ArkLib.Research.ProximityGap.Frontier.GradedAntipodalVanishingLower
+import ArkLib.Research.ProximityGap.Frontier.HalfRadiusListMcaSeparation
 import ArkLib.Research.ProximityGap.Frontier.HalfRateUnrestrictedJetBudget
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorJetInterpolation
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorJetRank
@@ -422,6 +424,7 @@ import ArkLib.Research.ProximityGap.Frontier.LinearBudgetQuadraticInterpolation
 import ArkLib.Research.ProximityGap.Frontier.LinearFieldBudgetLimit
 import ArkLib.Research.ProximityGap.Frontier.LinearFieldBudgetRadius
 import ArkLib.Research.ProximityGap.Frontier.LinearFieldHalfDistancePlateau
+import ArkLib.Research.ProximityGap.Frontier.LinearFieldProjectionBudget
 import ArkLib.Research.ProximityGap.Frontier.LinearPencilFreshLabels
 import ArkLib.Research.ProximityGap.Frontier.ListAtBinomialExtremalTwo
 import ArkLib.Research.ProximityGap.Frontier.ListBudgetOne
@@ -509,6 +512,7 @@ import ArkLib.Research.ProximityGap.Frontier.PeriodOrbitQuotientReduction
 import ArkLib.Research.ProximityGap.Frontier.PinnedBandReaching
 import ArkLib.Research.ProximityGap.Frontier.PinnedScalarMultDivision
 import ArkLib.Research.ProximityGap.Frontier.PinnedScalarRatioImage
+import ArkLib.Research.ProximityGap.Frontier.PlasticDyadicPeriod
 import ArkLib.Research.ProximityGap.Frontier.PoissonAveragedMGF
 import ArkLib.Research.ProximityGap.Frontier.PolynomialJetConstraintSpace
 import ArkLib.Research.ProximityGap.Frontier.PolynomialLocalOrder
@@ -635,6 +639,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicWindowCount
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicWitness
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeDegreeSevenDimension
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeExceptionalCeilings
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeExceptionalHeadCeilings
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeHeadDescent
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeHessianTransport
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeIntrinsicArithmetic
@@ -698,6 +703,8 @@ import ArkLib.Research.ProximityGap.Frontier.SmoothDeepMcaThreshold
 import ArkLib.Research.ProximityGap.Frontier.SmoothDomainMcaEquivalence
 import ArkLib.Research.ProximityGap.Frontier.SmoothFermatCapacity
 import ArkLib.Research.ProximityGap.Frontier.SmoothFourHeadAssembly
+import ArkLib.Research.ProximityGap.Frontier.SmoothFourHeadColored
+import ArkLib.Research.ProximityGap.Frontier.SmoothLinearFieldEnvelope
 import ArkLib.Research.ProximityGap.Frontier.SmoothManyHeadMass
 import ArkLib.Research.ProximityGap.Frontier.SmoothPowerEndpoint
 import ArkLib.Research.ProximityGap.Frontier.SmoothPowerMcaDescent
@@ -769,6 +776,7 @@ import ArkLib.Research.ProximityGap.Frontier.TamePowerSeriesOrbit
 import ArkLib.Research.ProximityGap.Frontier.TameResultantOrders
 import ArkLib.Research.ProximityGap.Frontier.TerminalCollinearHeadCount
 import ArkLib.Research.ProximityGap.Frontier.TerminalCubicBudget
+import ArkLib.Research.ProximityGap.Frontier.TerminalCubicBudgetWindow
 import ArkLib.Research.ProximityGap.Frontier.TerminalDomainSecurity
 import ArkLib.Research.ProximityGap.Frontier.TerminalFactorCoverage
 import ArkLib.Research.ProximityGap.Frontier.TerminalLinearComponent
