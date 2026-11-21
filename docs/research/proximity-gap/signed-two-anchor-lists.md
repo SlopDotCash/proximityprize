@@ -47,6 +47,8 @@ The rows below give exact single-anchor populations. For the overlap we discard 
 | First | 545,514,807 | 545,514,807 | 8,242,560 | 1,082,787,054 | 2,796,202 |
 | Second | 1,035,846,314 | 1,193,490,135 | 45,511,668 | 2,183,824,781 | 1,290,555 |
 
+A separate Lean certificate counts the 33-root selections for each leaf signature before fixing the exponent. On the common 31-node layout the populations of $A,B,C,D$ are **12,219,257,340**, **10,463,808,348**, **10,463,808,348**, and **10,080,571,912**. Negating roots exchanges the sibling occupancies and preserves the number selected. Among the twelve intersections with original signature $A,B,C$ and rotated signature $A,B,C,D$, the nonzero counts are $237308948$ for $(A,A)$, $556624096$ for each of $(B,B),(C,C)$, and $52922120$ for each of $(B,C),(C,B)$. Each entry follows by checking 43 finite tables against the dyadic recurrence and extracting the size-33 digit in radix $2^{64}$. The aggregate counts are intermediate inputs to the signed list bound. [Common mask space and rotation](../../../ArkLib/Research/ProximityGap/Frontier/QuotientMaskSelections.lean) · [Kernel-checked tables](../../../ArkLib/Research/ProximityGap/Frontier/QuotientSignatureTables.lean)
+
 Subtracting $(m+1)h-1+g$ from $n$ gives the two error counts. The verifier also exhausts all five-subsets of the ordinary roots at quotient order 16, compares every joint signature including zero counts to direct enumeration, and evaluates a two-anchor list on every point of the order-128 subgroup over $\mathbb F_{257}$. [Exact integer recurrence and small reconstruction](../../../scripts/probes/probe_signed_two_anchor_lists.py)
 
 ## Why agreement incidence alone stops at the first quarter-rate successor
