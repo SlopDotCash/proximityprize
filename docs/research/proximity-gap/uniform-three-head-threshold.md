@@ -11,6 +11,48 @@ For every $e_{\min}\le e\le e_{\max}$ the exact worst-case two-row MCA numerator
 \]
 the first failing Hamming error count is $\lfloor B/3\rfloor$, and the operational real threshold is $\lfloor B/3\rfloor/n$. In particular one may take $B=\lfloor|\mathbb F|/2^{128}\rfloor$. At rate $1/16$ the lower budget endpoint is $15n/8+3$. According to $n\bmod3=0,1,2$, the upper endpoints are $2n+8$, $2n+9$, $2n+10$, respectively. This is a written extension of the [terminal cubic proof](second-prime-terminal-cubic.md). The bounds below identify which estimates are uniform as $n$ increases.
 
+## The dimension range at the production length
+
+Let $n=2^{30}$ and let $q$ be the size of a finite field of characteristic
+above $1{,}744{,}830{,}589$. Set $B=\lfloor q/2^{128}\rfloor$ and
+$j=\lfloor B/3\rfloor$. For $2{,}013{,}265{,}923\le B\le2{,}147{,}483{,}648$, every injective
+domain of length $n$ over the field has first failing count $j$ at each
+positive interleaving width and each message dimension $k$ satisfying
+\[
+  \max\!\left(2,\left\lceil\frac{2n-3j}{2}\right\rceil\right)
+       \le k\le 2^{26}.
+\]
+The good real radii are exactly $0\le\delta<j/n$. The sufficient lower
+dimension decreases from $67{,}108{,}863$ at the first budget to $2$ at
+the last. This covers $4{,}503{,}599{,}694{,}479{,}355$ integer
+budget–dimension pairs. Prime fields in the displayed budget range automatically meet the characteristic bound. On smooth domains the order of the evaluation subgroup supplies this bound over every finite field. [Simultaneous dimension and budget theorem](../../../ArkLib/Research/ProximityGap/Frontier/DimensionThreeHeadWindow.lean)
+
+To see the bound, set $t=n-j$. At $k\ge3$ the three-head construction
+requires $3(t-k)\le n-k$, equivalently $3t\le n+2k$. For $k=2$ the
+affine construction requires $3(t-1)\le n$, which follows from the
+same dimension condition because $n\equiv1\pmod 3$. Averaged projection
+then puts more than $B$ bad scalars at $j$. At $j-1$, dimension
+monotonicity transfers the known safe bound from $2^{26}$ to every
+smaller positive dimension. The same argument gives exact worst error
+$3(e+1)/|\mathbb F|$ for $671{,}088{,}640\le e\le715{,}827{,}881$ if
+$3(n-e)\le n+2k$, the characteristic exceeds $1{,}744{,}830{,}589$,
+and $\binom{3(e+1)}2\le |\mathbb F|$.
+
+Dimension one stays safe farther. A bad scalar at $t=n-e$ agreements
+determines at least $t-1$ unordered pairs of sites, and each such pair
+determines a unique scalar. Hence $\binom n2<(B+1)(n-e-1)$ suffices for
+security. This gives safety through
+$e=n-2-\lfloor\binom n2/(B+1)\rfloor$, ranging from $787{,}410{,}670$ at
+the smallest budget to $805{,}306{,}367$ at the largest. [Circuit incidence
+bound](../../../ArkLib/Research/ProximityGap/Frontier/CircuitDensity.lean)
+
+For a smooth extension-field example, take $q=912680550401^4$. The prime
+subfield supplies a root of order $2^{30}$. On the entire subgroup the
+budget is $2{,}039{,}086{,}914$. The first bad count is $679{,}695{,}638$
+at all $12{,}910{,}498$ dimensions from $54{,}198{,}367$ through $2^{26}$.
+At dimension one the same field and domain remain safe through
+$791{,}036{,}486$ errors. Independent verified kernel replay accepted 46,245 declarations for the general finite-field computation and 46,574 for the concrete quartic example together with the exact grid error. [Quartic extension and smooth domain](../../../ArkLib/Research/ProximityGap/Frontier/QuarticFieldProductionThreshold.lean)
+
 ## Reducing the upper count to a large cubic
 
 Prove the upper bound for all $5n/8\le e\le e_{\max}$ by selecting $3(e+1)+1$ alleged MCA-bad labels with one degree-at-most-$(k-1)$ witness each. They all have at least $n-e\ge t_0$ agreements. The first-order monomial support $0\le j\le4$, $0\le i\le34-j$, $0\le a<t_0-jd$ gives $165t_0-320d-35n=55(3t_0-n)+320\ge45$ more coefficients than received-line conditions. Thus a nonzero interpolant $Q$ of total $(Z,Y)$-degree at most 34 and value degree at most four contains every selected point $(z,q_z)$ over $\overline{\mathbb F}(X)$.
