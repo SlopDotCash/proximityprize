@@ -81,4 +81,16 @@ at one error. The two further tests exercise failure at zero and safety at every
 #guard (RankExecutable.listBoundary [0, 1] orderTwo 2 1 3 1 0).map Fin.val == some 0
 #guard (RankExecutable.listBoundary [0, 1] orderTwo 2 1 3 1 3).isNone
 
+/-- All three sites over the field of order three. -/
+private def threeSites : Fin 3 ↪ ZMod 3 where
+  toFun := ![0, 1, 2]
+  inj' := by decide
+
+/- At one error the repetition code has three bad scalars. This exercises the fixed
+labels and a free third label, as well as the separate singleton case. -/
+#guard (RankExecutable.mcaBoundary (Equiv.refl (Fin 3)) [0, 1, 2] threeSites 1 2).map
+  Fin.val == some 1
+#guard (RankExecutable.mcaBoundary (Equiv.refl (Fin 3)) [0, 1, 2] threeSites 1 0).map
+  Fin.val == some 0
+
 end ProximityPrize.Review
