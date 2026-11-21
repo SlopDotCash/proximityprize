@@ -123,14 +123,18 @@ def parity_rows(domain, k, q, support):
 
 
 def mca_failure(domain, k, q, t, budget):
-    # At most k prescribed values always interpolate, so such supports are joint.
     n = len(domain)
-    choices = [
-        parity_rows(domain, k, q, support)
-        for size in range(max(t, k + 1), n + 1)
-        for support in combinations(range(n), size)
-    ]
-    for labels in combinations(range(q), budget + 1):
+    if budget >= q:
+        return False
+    # Keep one inconsistent interpolation circuit and pad to the required size.
+    choices = [parity_rows(domain, k, q, support)
+               for support in combinations(range(n), max(t, k + 1))]
+    # An affine parameter change sends one bad scalar to 0 and a second to 1.
+    if budget == 0:
+        label_sets = [(0,)]
+    else:
+        label_sets = ((0, 1, *others) for others in combinations(range(2, q), budget - 1))
+    for labels in label_sets:
         for pattern in product(choices, repeat=len(labels)):
             folded = [r + [g * v for v in r] for g, rows in zip(labels, pattern) for r in rows]
             base_rank = rank(folded, q)
