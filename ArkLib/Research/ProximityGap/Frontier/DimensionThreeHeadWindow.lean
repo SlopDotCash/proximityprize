@@ -3,7 +3,8 @@ Copyright (c) 2026 Proximity Prize Contributors. All rights reserved.
 Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and LICENSE.
 -/
 import ArkLib.Research.ProximityGap.Frontier.DimensionMultiplierMCA
-import ArkLib.Research.ProximityGap.Frontier.ThreeHeadThresholdCurve
+import ArkLib.Research.ProximityGap.Frontier.UniversalCubicBudgetWindow
+import ArkLib.Research.ProximityGap.Frontier.ExceptionalHeadLocatorMass
 
 /-! # Simultaneous dimension and budget intervals for three-head line-MCA
 
@@ -20,6 +21,13 @@ namespace ArkLib.ProximityGap.Frontier.DimensionThreeHeadWindow
 open _root_.ProximityGap _root_.ProximityGap.MCAThresholdLedger TerminalDomainSecurity
 
 variable {F I : Type} [Field F] [Fintype F] [DecidableEq F] [Fintype I] [Nonempty I] [DecidableEq I]
+
+/-- The least dimension satisfying the three-head construction at an error
+count is an explicit rounded half-integer, with a minimum value of two. -/
+theorem packing_iff (e d : ℕ) (he : e ≤ n) :
+    (2 ≤ d ∧ 3*(n-e) ≤ n+2*d) ↔ max 2 ((2*n-3*e+1)/2) ≤ d := by
+  rw [max_le_iff]
+  omega
 
 /-- The numerator cap holds for all smaller positive dimensions, independent of
 whether the three-head lower construction fits at that dimension. -/

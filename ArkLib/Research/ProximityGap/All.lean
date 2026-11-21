@@ -276,6 +276,7 @@ import ArkLib.Research.ProximityGap.Frontier.DilationDoublingLevelSet
 import ArkLib.Research.ProximityGap.Frontier.DilationDoublingMassHalf
 import ArkLib.Research.ProximityGap.Frontier.DilationDoublingMassNoCompose
 import ArkLib.Research.ProximityGap.Frontier.DilationRealSignCocycle
+import ArkLib.Research.ProximityGap.Frontier.DimensionThreeHeadWindow
 import ArkLib.Research.ProximityGap.Frontier.DiscriminantSquareClass
 import ArkLib.Research.ProximityGap.Frontier.DistinctPeriodMomentLaw
 import ArkLib.Research.ProximityGap.Frontier.DistinctPeriodSecondMoment

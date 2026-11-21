@@ -11,6 +11,33 @@ For every $e_{\min}\le e\le e_{\max}$ the exact worst-case two-row MCA numerator
 \]
 the first failing Hamming error count is $\lfloor B/3\rfloor$, and the operational real threshold is $\lfloor B/3\rfloor/n$. In particular one may take $B=\lfloor|\mathbb F|/2^{128}\rfloor$. At rate $1/16$ the lower budget endpoint is $15n/8+3$. According to $n\bmod3=0,1,2$, the upper endpoints are $2n+8$, $2n+9$, $2n+10$, respectively. This is a written extension of the [terminal cubic proof](second-prime-terminal-cubic.md). The bounds below identify which estimates are uniform as $n$ increases.
 
+## The dimension range at length $2^{30}$
+
+Set $n=2^{30}$, $B=\lfloor p/2^{128}\rfloor$ and $j=\lfloor B/3\rfloor$.
+For $2{,}013{,}265{,}923\le B\le2{,}147{,}483{,}648$, every injective
+prime-field domain of length $n$ has first failing count $j$ at each
+positive interleaving width and each message dimension $k$ satisfying
+\[
+  \max\!\left(2,\left\lceil\frac{2n-3j}{2}\right\rceil\right)
+       \le k\le 2^{26}.
+\]
+The good real radii are exactly $0\le\delta<j/n$. The sufficient lower
+dimension decreases from $67{,}108{,}863$ at the first budget to $2$ at
+the last. This covers $4{,}503{,}599{,}694{,}479{,}355$ integer
+budget–dimension pairs. The prime-field conclusion applies when a prime
+has that budget. [Simultaneous dimension and budget theorem](../../../ArkLib/Research/ProximityGap/Frontier/DimensionThreeHeadWindow.lean)
+
+To see the bound, set $t=n-j$. At $k\ge3$ the three-head construction
+requires $3(t-k)\le n-k$, equivalently $3t\le n+2k$. For $k=2$ the
+affine construction requires $3(t-1)\le n$, which follows from the
+same dimension condition because $n\equiv1\pmod 3$. Averaged projection
+then puts more than $B$ bad scalars at $j$. At $j-1$, dimension
+monotonicity transfers the known safe bound from $2^{26}$ to every
+smaller positive dimension. The same argument gives exact worst error
+$3(e+1)/|\mathbb F|$ for $671{,}088{,}640\le e\le715{,}827{,}881$ if
+$3(n-e)\le n+2k$, the characteristic exceeds $1{,}744{,}830{,}589$,
+and $\binom{3(e+1)}2\le |\mathbb F|$.
+
 ## Reducing the upper count to a large cubic
 
 Prove the upper bound for all $5n/8\le e\le e_{\max}$ by selecting $3(e+1)+1$ alleged MCA-bad labels with one degree-at-most-$(k-1)$ witness each. They all have at least $n-e\ge t_0$ agreements. The first-order monomial support $0\le j\le4$, $0\le i\le34-j$, $0\le a<t_0-jd$ gives $165t_0-320d-35n=55(3t_0-n)+320\ge45$ more coefficients than received-line conditions. Thus a nonzero interpolant $Q$ of total $(Z,Y)$-degree at most 34 and value degree at most four contains every selected point $(z,q_z)$ over $\overline{\mathbb F}(X)$.
