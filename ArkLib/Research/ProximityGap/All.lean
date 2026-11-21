@@ -713,6 +713,7 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor
 import ArkLib.Research.ProximityGap.Frontier.QuarterSlopePowerBarrier
 import ArkLib.Research.ProximityGap.Frontier.QuarterSlopeReconstruction
 import ArkLib.Research.ProximityGap.Frontier.QuarterSplitFiberSymmetry
+import ArkLib.Research.ProximityGap.Frontier.QuarterSplitPencilProduct
 import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorCoreGeometry
 import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorFirstFailures
 import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorMovingObstruction
@@ -4001,6 +4002,7 @@ import ArkLib.Research.ProximityGap.ResolutionWitness
 import ArkLib.Research.ProximityGap.SecondBudgetSmoothReview
 import ArkLib.Research.ProximityGap.SecondPrimeRankReview
 import ArkLib.Research.ProximityGap.SmoothCapacityGap
+import ArkLib.Research.ProximityGap.SmoothEighthListBoundary
 import ArkLib.Research.ProximityGap.SmoothPrizeCapacityTable
 import ArkLib.Research.ProximityGap.SolutionDisproof
 import ArkLib.Research.ProximityGap.SubsetSumErdosHeilbronn
