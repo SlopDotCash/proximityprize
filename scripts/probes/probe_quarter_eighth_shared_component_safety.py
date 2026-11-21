@@ -14,8 +14,12 @@ class Instance:
     first_total: int
     second_y: int
     second_total: int
-    # Each row lists Jacobian exponent, jet multiplicity, scalar cap, and 4 beta.
+    # Each row lists the Jacobian exponent, jet multiplicity, scalar cap and scaled beta.
     parameters: tuple
+    first_order: int = 3
+    second_order: int = 6
+    beta_denominator: int = 4
+    polar_basis: bool = False
 
 
 CASES = (
@@ -28,6 +32,16 @@ CASES = (
         (6, 512, 6240000, 4), (7, 256, 11080000, 5),
         (8, 256, 21400000, 5), (11, 256, 48650000, 7),
         (16, 512, 112670000, 11))),
+    Instance(4, N - 503316473, 7, 61782767, 14, 52, (
+        (8, 512, 875357, 5), (9, 512, 937129, 9), (13, 512, 1521079, 16),
+        (21, 1024, 3297251, 25), (40, 2048, 10619523, 35), (160, 4096, 129818250, 55)),
+        first_order=4, second_order=7, beta_denominator=8, polar_basis=True),
+    Instance(8, N - 662710815, 11, 223, 21, 71, (
+        (6, 512, 1715762, 2), (7, 512, 1006775, 7), (7, 512, 1061943, 9),
+        (8, 256, 1450854, 11), (10, 512, 2061144, 15), (16, 512, 3277236, 29),
+        (23, 1024, 5762120, 40), (31, 1024, 11733517, 41), (56, 2048, 31784582, 56),
+        (140, 4096, 195144344, 64)),
+        first_order=4, second_order=7, beta_denominator=8, polar_basis=True),
 )
 
 
@@ -41,10 +55,10 @@ def interpolant_surplus(d, t, mu, b, h):
     return columns - rows
 
 
-def component_cap(b, d, t, m, row):
-    a, mu, s, beta4 = row
-    reserve = Fraction(beta4, 4)
-    W = 3 * t - 1
+def component_cap(b, d, t, m, case, row):
+    a, mu, s, beta = row
+    reserve = Fraction(beta, case.beta_denominator)
+    W = case.first_order * t - 1
     assert b * d <= W and a * (b - 1) >= b and mu * t >= W
     A = 8 - Fraction(4, a)
     B = Fraction(5 * t, d) - 18 * b - 1
@@ -60,7 +74,16 @@ def component_cap(b, d, t, m, row):
     H = 2 * b * m - b * b
     y = ceil_div(a * (W - d), d)
     v = max(b * a + b - 1, y)
-    assert (s + 1) * reserve * N > a * H * (v + 1) * a * (D + W)
+    ambient = (v + 1) * a * (D + W)
+    loss = a * H * ambient
+    if case.polar_basis:
+        # Independent multiples of the component, then of one coprime ordinary polar.
+        component = (v - b + 1) * (a * (D + W) - W)
+        polar = b * a * D
+        assert 0 <= component + polar <= ambient and m <= a * m <= a * H
+        loss = m * component + a * m * polar + a * H * (ambient - component - polar)
+    assert a * H <= s + 1
+    assert (s + 1) * reserve * N > loss
     nonsimple = (2 * b - 1) * m - b * b
     return b * s + max(m * jmax, m * y + nonsimple)
 
@@ -69,8 +92,8 @@ def check(case):
     t, h, m = case.agreements, case.first_total, case.second_total
     d, e = N // case.rate_denominator - 1, N - t
     bmax, companion_y = case.first_y, case.second_y
-    surpluses = (interpolant_surplus(d, t, 3, bmax, h),
-                 interpolant_surplus(d, t, 6, companion_y, m))
+    surpluses = (interpolant_surplus(d, t, case.first_order, bmax, h),
+                 interpolant_surplus(d, t, case.second_order, companion_y, m))
     assert min(surpluses) > 0 and h >= bmax and m >= companion_y
     first_core = t - 511
     assert 4 * first_core > N + 4 * d
@@ -81,16 +104,17 @@ def check(case):
     caps = [0, e // 512 + 1]
     assert caps[1] >= nlines
     for b, row in enumerate(case.parameters, start=2):
-        caps.append(component_cap(b, d, t, m, row))
+        caps.append(component_cap(b, d, t, m, case, row))
     assert len(caps) == bmax + 1
     slots = [0]
     for c in range(1, bmax + 1):
         slots.append(max(slots[c - i] + caps[i] for i in range(1, c + 1)))
+    three_collinear = case.polar_basis and 3 * first_core > N + 2 * d
     bounds = []
     for c in range(bmax + 1):
         residual = (bmax - c) * (m - c) + (companion_y - c) * (h - c)
         for j in range(c + 1):
-            if j <= 3:
+            if j <= 2 or (j == 3 and not three_collinear):
                 heads = j * (e + 1)
             else:
                 union = ceil_div(j * first_core**2, first_core + (j - 1) * d)
