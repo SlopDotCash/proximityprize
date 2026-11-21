@@ -357,6 +357,7 @@ import ArkLib.Research.ProximityGap.Frontier.GenericSuperDiagonalLower
 import ArkLib.Research.ProximityGap.Frontier.GeometricIncompleteSumNoGo
 import ArkLib.Research.ProximityGap.Frontier.GeometricWordLocator
 import ArkLib.Research.ProximityGap.Frontier.GradedAntipodalVanishingLower
+import ArkLib.Research.ProximityGap.Frontier.HalfRateUnrestrictedJetBudget
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorJetInterpolation
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorJetRank
 import ArkLib.Research.ProximityGap.Frontier.HeightGateNormBound
