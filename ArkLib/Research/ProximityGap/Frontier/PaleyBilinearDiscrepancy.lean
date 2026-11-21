@@ -18,7 +18,7 @@ nontrivial multiplicative character at `a + b` over `A × B`. The second moment 
 complement. This gives the dense range of the classical Paley graph conjecture at every
 `δ > 0` for which `q^(1 + 2δ) ≤ |A||B|`. For the quadratic character,
 the campaign's Stepanov fourth moment gives a power saving by sampling any `1 ≤ r ≤ |B|` with
-`r⁴ ≤ q` and `17q^(1 + 4δ) ≤ |A|r²`. The conjecture for arbitrary small sets over prime fields remains open.
+`r⁴ ≤ q` and `17q^(1 + 4δ) ≤ |A|r²`. The arbitrary small-set case over prime fields remains open.
 -/
 
 namespace ArkLib.ProximityGap.Frontier.PaleyBilinearDiscrepancy
@@ -291,13 +291,13 @@ theorem quadratic_sum_sampled_power_saving (hF : ringChar F ≠ 2) (A B : Finset
   exact hsample.trans ((mul_le_mul_of_nonneg_left hpow (by positivity :
     (0 : ℝ) ≤ B.card)).trans_eq (by ring))
 
-end ArkLib.ProximityGap.Frontier.PaleyBilinearDiscrepancy
+#print axioms mulChar_sum_sq_le
+#print axioms mulChar_sum_power_saving
+#print axioms bilinear_sum_sq_le
+#print axioms bilinear_sum_power_saving
+#print axioms quadratic_sum_fourth_le
+#print axioms quadratic_sum_fourth_power_saving
+#print axioms quadratic_sum_sampled_fourth_le
+#print axioms quadratic_sum_sampled_power_saving
 
-#print axioms ArkLib.ProximityGap.Frontier.PaleyBilinearDiscrepancy.mulChar_sum_sq_le
-#print axioms ArkLib.ProximityGap.Frontier.PaleyBilinearDiscrepancy.mulChar_sum_power_saving
-#print axioms ArkLib.ProximityGap.Frontier.PaleyBilinearDiscrepancy.bilinear_sum_sq_le
-#print axioms ArkLib.ProximityGap.Frontier.PaleyBilinearDiscrepancy.bilinear_sum_power_saving
-#print axioms ArkLib.ProximityGap.Frontier.PaleyBilinearDiscrepancy.quadratic_sum_fourth_le
-#print axioms ArkLib.ProximityGap.Frontier.PaleyBilinearDiscrepancy.quadratic_sum_fourth_power_saving
-#print axioms ArkLib.ProximityGap.Frontier.PaleyBilinearDiscrepancy.quadratic_sum_sampled_fourth_le
-#print axioms ArkLib.ProximityGap.Frontier.PaleyBilinearDiscrepancy.quadratic_sum_sampled_power_saving
+end ArkLib.ProximityGap.Frontier.PaleyBilinearDiscrepancy

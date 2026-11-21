@@ -1,10 +1,11 @@
 /-
 Copyright (c) 2026 Proximity Prize Contributors. All rights reserved.
-SPDX-License-Identifier: MIT OR Apache-2.0
+Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and LICENSE.
+Authors: Proximity Prize Contributors
 -/
 import ArkLib.Research.ProximityGap.Frontier._PrizeShapePrimeP30Second
 import Mathlib.NumberTheory.LegendreSymbol.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
 
 /-!
 # Paley discrepancy for unions of cosets at the second prize prime

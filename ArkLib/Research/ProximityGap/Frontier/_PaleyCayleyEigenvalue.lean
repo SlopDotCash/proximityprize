@@ -6,17 +6,15 @@ Authors: ArkLib Contributors
 import Mathlib
 
 /-!
-# Cayley / circulant spectral-gap NO-GO (N17) — the prize is the eigenvalue (#407/#444)
+# Additive characters of the generalized Paley Cayley operator
 
-**Negative guardrail (exotic-math sweep).** This file proves the route *"bound the prize sup-norm
-`M(n) = max_{b≠0}‖η_b‖` by a spectral-gap / Poincaré / log-Sobolev (LSI) constant of the
-generalized Paley graph `Cay(F_p, μ_n)`"* is **structurally circular**: that constant *is itself a
-function of the prize quantity*. The additive characters are the eigenvectors of the Cayley
-adjacency operator, their eigenvalues are exactly the incomplete subgroup character sums `η_b`, and
-the second-largest eigenvalue `λ₂` is *by definition* `M(n)`. So any spectral-gap statement
-**consumes** `M(n)` as an input; it cannot **produce** the `√(log)` cancellation. It does **not**
-close the prize — the `L^∞` / `√(log)` core (the BGK / Paley-graph wall) survives. See #407, #444,
-and the ~22-lens + 18-domain exotic sweep (all reduce to BGK).
+For the graph on the additive group of a prime field with multiplicative connection
+set `μ_n`, convolution has the subgroup periods as eigenvalues. An independent upper
+bound on the absolute nonprincipal spectrum would therefore bound these periods.
+The classical Paley discrepancy conjecture concerns multiplicative character sums
+over arbitrary pairs of vertex sets. Its precise statement appears in
+Kim–Yip–Yoo, Conjecture 2.12, and the distinction is recorded in
+`_wf9B7_PrizeBGKReductionDirections.lean`.
 
 ## The math
 
@@ -34,29 +32,19 @@ Proof: `χ_b(y + x) = ψ(b·(y+x)) = ψ(b·y)·ψ(b·x) = χ_b(y)·ψ(b·x)` by 
 multiplicativity (`AddChar.map_add_eq_mul`); pulling the `y`-only factor out of the `Σ_{x∈G}` leaves
 exactly `η_b`. (Only character additivity is needed — not primitivity of `ψ`.)
 
-Consequently the **entire spectrum** of `A` is `{η_b : b ∈ F}`. The trivial eigenvalue is at the
+For a primitive additive character on a finite field, the **entire spectrum** of `A` is `{η_b : b ∈ F}`. The trivial eigenvalue is at the
 principal frequency `b = 0` (where `η_0 = |G| = n`, the graph degree). The **second eigenvalue** is
 
 > `secondEigenvalue ψ G := max_{b≠0} ‖η_b‖`   (`secondEigenvalue`),
 
 which is — verbatim, `rfl` after unfolding — the prize sup-norm `M(n)` (`secondEigenvalue_eq_M`).
-Hence (`spectralGap_circular`): `M(n)` and `λ₂` are the **same number**. Any Cheeger / Poincaré /
-LSI / mixing-time constant is a function of the spectral gap `n − λ₂`, i.e. a function of `M(n)`;
-proving the prize *via* such a constant therefore requires knowing `M(n)` first — circular.
-
-## Honesty (project §6)
-
-This is a **NEGATIVE** brick. The genuine content is the **eigen-equation**
-`cayley_eigenvalue_eq_eta` (the additive characters diagonalize the Cayley operator with eigenvalue
-the incomplete subgroup sum — exact, axiom-clean) and the definitional identification of `λ₂` with
-the prize `M(n)`. It records that the spectral-gap route consumes the prize; it proves nothing about
-the size of `M(n)`. The `√(n log(p/n))` core is untouched and OPEN.
+`spectralGap_circular` identifies the two expressions for the absolute spectral gap.
+Estimating either expression still requires a bound on the largest nonprincipal period.
 
 ## References
-- #407 / #444 — the Proximity Prize sup-norm `M(n)` grand challenge.
-- The exotic-math sweep (RMT / matrix-Bernstein, pseudospectrum, …): all reduce to BGK.
-- Liu–Zhou, *generalized Paley graphs*: `B = max_{b≠0}‖η_b‖` IS the non-principal eigenvalue of
-  `Cay(F_q, μ_n)`; `B ≤ 2√n ⟺ Ramanujan` = the (open) Paley Graph Conjecture.
+- Liu–Zhou, *Eigenvalues of Cayley graphs*, for the character description of the spectrum.
+- Kim–Yip–Yoo, *Diophantine tuples and multiplicative structure of shifted multiplicative
+  subgroups*, [§2.4](https://arxiv.org/html/2309.09124v3#S2.SS4), for classical discrepancy.
 - In-tree substrate: `SubgroupGaussSumSecondMoment.eta`, `Frontier/_CoherenceIdentity` (`M`).
 -/
 
@@ -90,8 +78,7 @@ noncomputable def cayley (ψ : AddChar F ℂ) (G : Finset F) (f : F → ℂ) : F
 
 The single load-bearing step is additive-character multiplicativity
 `AddChar.map_add_eq_mul`; the rest is pulling the `x`-free factor `χ_b(y)` out of the finite sum.
-This diagonalizes the Cayley operator: the spectrum of `A` is exactly `{η_b : b ∈ F}`, so every
-eigenvalue of the Paley graph IS an incomplete subgroup character sum. -/
+For a primitive additive character on a finite field, these eigenvectors form the full character basis. -/
 theorem cayley_eigenvalue_eq_eta (ψ : AddChar F ℂ) (G : Finset F) (b y : F) :
     cayley ψ G (chi ψ b) y = eta ψ G b * chi ψ b y := by
   unfold cayley chi eta
@@ -117,10 +104,8 @@ noncomputable def M (ψ : AddChar F ℂ) (G : Finset F)
     (hb : (Finset.univ.filter (fun b : F => b ≠ 0)).Nonempty) : ℝ :=
   (Finset.univ.filter (fun b : F => b ≠ 0)).sup' hb (fun b => ‖eta ψ G b‖)
 
-/-- The **second eigenvalue** `λ₂` of the Cayley / Paley adjacency operator: the largest
-eigenvalue magnitude over the **non**-principal frequencies `b ≠ 0`. Since the spectrum is
-`{η_b}` (`cayley_eigenvalue_eq_eta`) and the principal eigenvalue is at `b = 0`
-(`eta_zero_eq_degree`), this is the standard `λ₂` controlling every spectral-gap / mixing constant. -/
+/-- The largest period magnitude over nonzero frequencies. For a primitive character
+this gives the absolute nonprincipal spectral radius of the Cayley operator. -/
 noncomputable def secondEigenvalue (ψ : AddChar F ℂ) (G : Finset F)
     (hb : (Finset.univ.filter (fun b : F => b ≠ 0)).Nonempty) : ℝ :=
   (Finset.univ.filter (fun b : F => b ≠ 0)).sup' hb (fun b => ‖eta ψ G b‖)
@@ -131,15 +116,8 @@ theorem secondEigenvalue_eq_M (ψ : AddChar F ℂ) (G : Finset F)
     (hb : (Finset.univ.filter (fun b : F => b ≠ 0)).Nonempty) :
     secondEigenvalue ψ G hb = M ψ G hb := rfl
 
-/-- **The spectral-gap circularity (N17).** The Cayley / Paley second eigenvalue `λ₂` *equals* the
-prize quantity `M(n)`. Any spectral-gap / Poincaré / LSI / mixing-time constant is a function of the
-gap `n − λ₂` (degree minus second eigenvalue) = `n − M(n)`; hence proving `M(n) ≤ C√(n log(p/n))`
-*via* such a constant first requires knowing `M(n)`. The route **consumes** the prize — it cannot
-produce the cancellation. (The principal eigenvalue `η_0 = n` is recorded in `eta_zero_eq_degree`.)
-
-This is the identity at the heart of the no-go: `λ₂` and `M(n)` are not merely comparable, they are
-the *same number*, so the spectral gap `n − λ₂` is a relabelling of the prize, not a tool to bound
-it. -/
+/-- The degree minus the largest period magnitude equals the degree minus the
+absolute nonprincipal spectral radius when the base character is primitive. -/
 theorem spectralGap_circular (ψ : AddChar F ℂ) (G : Finset F)
     (hb : (Finset.univ.filter (fun b : F => b ≠ 0)).Nonempty) :
     -- the (degree − second eigenvalue) spectral gap is exactly (degree − prize sup-norm):
