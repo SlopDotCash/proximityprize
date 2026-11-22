@@ -817,6 +817,7 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor
 import ArkLib.Research.ProximityGap.Frontier.QuarterRootScoreSymmetry
 import ArkLib.Research.ProximityGap.Frontier.QuarterSlopePowerBarrier
 import ArkLib.Research.ProximityGap.Frontier.QuarterSlopeReconstruction
+import ArkLib.Research.ProximityGap.Frontier.QuarterSplitBranchOrders
 import ArkLib.Research.ProximityGap.Frontier.QuarterSplitFiberSymmetry
 import ArkLib.Research.ProximityGap.Frontier.QuarterSplitMonodromy
 import ArkLib.Research.ProximityGap.Frontier.QuarterSplitPencilProduct
