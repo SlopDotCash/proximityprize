@@ -205,6 +205,90 @@ circuits can witness a bad scalar at any radius. Interleaving stability transfer
 scalar counts to all positive widths. The \href{https://github.com/SlopDotCash/proximityprize/blob/797227d570944e033c0af8fc9fff22e4be8f7e7c/ArkLib/Research/ProximityGap/Frontier/FourRateBudget32.lean}{uniform Lean classification} proves the corresponding predicates at every real radius.
 
 \newpage
+\section*{4.3.\quad When a list cutoff equals Johnson}
+Fix $\varepsilon=2^{-128}$. For which prize-rate pairs $(n,k)$ does some supplied smooth code
+over a field of size $q<2^{256}$ have its first list failure exactly at
+$J=1-\sqrt{(k-1)/n}$, simultaneously at all positive interleaving widths?
+The \href{https://github.com/SlopDotCash/proximityprize/blob/7414125df9ddb8fb4682c9baa619de520ed4bae7/ArkLib/Research/ProximityGap/JohnsonEqualityClassification.lean}{Lean classification}
+gives the complete set:
+\[
+          k=1 \qquad\text{or}\qquad k=2\text{ and }n\in\{4,16\}.
+\]
+The grid condition from Section~5.2 gives necessity. For $k=1$, the BLS12-381 scalar
+field at lengths $2,4,8,16$ first exceeds the list budget at radius one. For $n=4,k=2$,
+the prime $11\cdot2^{125}+1$ has budget one. Distinct affine words differ on at
+least three sites, so one error is safe. A center can agree with each of two distinct
+words at two sites, so two errors fail. These are the
+\href{https://github.com/SlopDotCash/proximityprize/blob/7414125df9ddb8fb4682c9baa619de520ed4bae7/ArkLib/Research/ProximityGap/JohnsonEqualityExamples.lean}{first two families of witnesses}.
+
+\textbf{The sixteen-point witness.} Work over $F=\mathrm{GF}(17^{32})$ at dimension two.
+Its prime subfield supplies the order-16 multiplicative subgroup $D=\mathbb F_{17}^{\times}$,
+and $\lfloor 17^{32}/2^{128}\rfloor=6$. Index the sites by $0\le i,j\le3$, with
+$x_{ij}=1+i+4j$, and take the received value to be $i$. The four constant polynomials
+$0,1,2,3$ each match one row. The four polynomials $X-1-4j$ each match one column.
+They give eight distinct messages with four agreements. Embedding this coordinate
+in any positive interleaving width preserves all eight.
+
+At eleven errors, suppose seven distinct words each agree with a center on five or
+more sites. Choose five sites for each. Two different affine words can agree together
+on at most one site, also for interleaved words, by using a coordinate on which
+their messages differ. If $d_x$ counts selected words at site $x$, then
+\[
+  21=\binom72\ \ge\ \sum_x\binom{d_x}2
+     \ \ge\ \sum_x(2d_x-3)=2\cdot35-3\cdot16=22 .
+\]
+Thus the \href{https://github.com/SlopDotCash/proximityprize/blob/7414125df9ddb8fb4682c9baa619de520ed4bae7/ArkLib/Research/ProximityGap/JohnsonPrimePowerList.lean}{first list failure}
+is at twelve errors, $12/16=J$. On this very same domain the
+\href{https://github.com/SlopDotCash/proximityprize/blob/7414125df9ddb8fb4682c9baa619de520ed4bae7/ArkLib/Research/ProximityGap/JohnsonPrimePowerDomain.lean}{first MCA failure}
+occurs at six errors, $6/16=3/8$. At either cutoff the closed test already fails.
+
+\newpage
+\section*{4.4.\quad MCA equality and simultaneous equality}
+At $\varepsilon=2^{-128}$ and $q<2^{256}$ the following table describes all possibilities.
+Each affirmative entry means that some smooth code at those parameters realizes the
+indicated equality at every positive width. The last column requires a single supplied code.
+\begin{center}
+\begin{tabular}{@{}lccc@{}}\toprule
+Prize parameters & List at $J$ & MCA at $J$ & Both at $J$\\\midrule
+$k=1$ & Yes & Yes & Yes\\
+$(n,k)=(4,2)$ & Yes & No & No\\
+$(n,k)=(16,2)$ & Yes & Yes & No\\
+All other prize parameters & No & No & No\\\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{A sixteen-point MCA witness.} Take the prime $p=111\cdot2^{128}+1$ and its
+order-16 subgroup, with generator $g$. The budget is 111. At five agreements, every
+bad scalar has a five-site folded support with at least six triples that admit no
+joint explanation. A triple of this kind supports at most one fold scalar. The
+\href{https://github.com/SlopDotCash/proximityprize/blob/520ef4d923f79a2115c32b0d3f6a56ab425226cf/ArkLib/Research/ProximityGap/SixteenMcaJohnson.lean}{circuit-density bound}
+therefore gives at most $\lfloor\binom{16}{3}/6\rfloor=93$ bad scalars.
+
+Choose the two received rows $u(x)=x^3+g/x$, $v(x)=x^2$. For four distinct subgroup
+elements $a,b,c,d$ with $abcd=g$, put $z=-(a+b+c+d)$. For a suitable affine
+polynomial $f$, coefficient comparison gives
+\[
+                 X\bigl(u(X)+zv(X)-f(X)\bigr)
+                    =(X-a)(X-b)(X-c)(X-d).
+\]
+The folded word has four agreements, while $x^2$ cannot be affine at three distinct
+sites. A \href{https://github.com/SlopDotCash/proximityprize/blob/520ef4d923f79a2115c32b0d3f6a56ab425226cf/ArkLib/Research/ProximityGap/Frontier/JohnsonQuarticMca.lean}{finite-field certificate}
+enumerates the four-element subsets and gives 112 distinct $z$. Thus the first
+failing count is twelve, precisely $16J$. At length four the MCA errors at counts
+one and two are equal, excluding first failure at two.
+
+\textbf{Why the sixteen-point witnesses need different fields.} Each distinct
+dimension-two list word with four agreements accounts for six coordinate pairs.
+No pair can occur twice. The list size at Johnson is at most
+$\binom{16}{2}/\binom{4}{2}=20$. A budget $B\ge20$ therefore keeps this ball safe.
+For $B<20$, the two-head construction at eleven errors gives at least
+$\min(q,24)>B$ bad scalars on one received pair. Thus only dimension one can have
+both cutoffs at Johnson on one code. There the BLS witness is MCA-safe through one
+and first exceeds its list budget at one. Lean verifies the
+\href{https://github.com/SlopDotCash/proximityprize/blob/520ef4d923f79a2115c32b0d3f6a56ab425226cf/ArkLib/Research/ProximityGap/JohnsonMcaRealization.lean}{MCA classification}
+and the \href{https://github.com/SlopDotCash/proximityprize/blob/520ef4d923f79a2115c32b0d3f6a56ab425226cf/ArkLib/Research/ProximityGap/JointJohnsonEquality.lean}{joint classification}.
+
+\newpage
 \section*{5.\quad A half-rate ceiling at length \texorpdfstring{$2^{30}$}{2 to the 30}}
 For $p_1=365375409332725729550921208179070755120141565953$ take the order-$n$ subgroup, $n=2^{30}$, $k=n/2$ and $\varepsilon=2^{-128}$. Now $B=n$. A single received pair yields $n+1$ bad scalars at 313,174,699 errors. The first failure lies in $[268{,}435{,}457,313{,}174{,}699]$. Safety at $313{,}174{,}698$ remains open.
 

@@ -10,6 +10,8 @@ At the second designated prime and length $n=2^{30}$, the first failing MCA erro
 
 The determinant argument also applies to a supplied nonlinear component past Johnson. At rate $1/8$ and **696,254,464 errors**, an irreducible nonlinear component of total scalar/value degree at most 25 and coordinate weight at most 754,974,719 supports at most **140,161** selected labels. This is 2,137,701 steps beyond the first integer above Johnson. The assertion concerns witnesses on that component. At this radius the full MCA event already admits attacks using affine heads. [Eighth-rate attack](eighth-transverse-mobius.md)
 
+Using two interpolants after greedy affine-head removal raises the half-rate lower bound to **310,285,001**. [Residual surfaces and the fixed-row triangle count](half-core-weighted-jets.md)
+
 ## A determinant bound for the tangents
 
 Use the notation of the logarithmic height argument. Write $b\ge2$ for the value degree of a primitive irreducible component, $m$ for its actual total scalar/value degree, $W$ for its coordinate weight and $d$ for the maximum witness degree. Of its labels, at most $G+2bm$ are put aside, where $G=(2b-2)m-b(b-1)$. Each retained label supplies a rational tangent $(R_i,V_i)$ over the coordinate function field with $R_i=q_i-z_iV_i$. After a common change of coordinate, its denominator has degree $c_i$ and both numerators have degree at most $d+c_i$. On at least $t-\ell_i$ sites the denominator is a unit and $(R_i,V_i)$ evaluates to the received pair. We have
