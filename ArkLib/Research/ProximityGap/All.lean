@@ -1087,6 +1087,7 @@ import ArkLib.Research.ProximityGap.Frontier.TameBranchDerivative
 import ArkLib.Research.ProximityGap.Frontier.TameBranchPolarOrders
 import ArkLib.Research.ProximityGap.Frontier.TameConjugateSeparation
 import ArkLib.Research.ProximityGap.Frontier.TameCubicPowerSeries
+import ArkLib.Research.ProximityGap.Frontier.TameLogarithmicDVR
 import ArkLib.Research.ProximityGap.Frontier.TamePowerSeriesOrbit
 import ArkLib.Research.ProximityGap.Frontier.TameResultantOrders
 import ArkLib.Research.ProximityGap.Frontier.TangentHeadCount
