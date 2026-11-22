@@ -46,8 +46,18 @@ Counts signature_counts(const Field &field, const std::vector<mpz_class> &factor
     counts.histograms.resize(order);
     if (size == 4)
         counts.excess.resize(order);
-    // For a prescribed product, the exponents of the prefix determine the final one.
-    // Strict increase excludes both the anchor exponent zero and repeated roots.
+    // Two final roots have a prescribed product. Sort these pairs by their first
+    // exponent so that each prefix can skip every overlapping or unordered pair.
+    struct RootPair {
+        unsigned first;
+        mpz_class locator;
+    };
+    std::vector<std::vector<RootPair>> pairs(order);
+    if (size >= 2) {
+        for (unsigned i = 1; i < order; ++i)
+            for (unsigned j = i + 1; j < order; ++j)
+                pairs[(i + j) % order].push_back({i, (factors[i] * factors[j]) % field.p});
+    }
     for (unsigned product = 0; product < order; ++product) {
         std::vector<mpz_class> values;
         values.reserve(choose(order - 1, size) / order + 100);
@@ -57,6 +67,14 @@ Counts signature_counts(const Field &field, const std::vector<mpz_class> &factor
                 unsigned final = (product + order - sum % order) % order;
                 if (final > last)
                     values.emplace_back((value * factors[final]) % field.p);
+                return;
+            }
+            if (left == 2) {
+                const auto &suffix = pairs[(product + order - sum % order) % order];
+                auto begin = std::upper_bound(suffix.begin(), suffix.end(), last,
+                    [](unsigned exponent, const RootPair &pair) { return exponent < pair.first; });
+                for (auto it = begin; it != suffix.end(); ++it)
+                    values.emplace_back((value * it->locator) % field.p);
                 return;
             }
             for (unsigned next = last + 1; next + left <= order; ++next)
@@ -217,29 +235,61 @@ void small_control() {
 }
 } // namespace
 
-int main() {
+int main(int argc, char **argv) {
+    if (argc > 2 || (argc == 2 && std::string(argv[1]) != "--order-256")) {
+        std::cerr << "usage: " << argv[0] << " [--order-256]\n";
+        return 2;
+    }
+    const unsigned order = argc == 2 ? 256 : 128;
     small_control();
     for (const std::string name : {"first", "second"}) {
         Field field = sponsor_field(name);
-        auto factors = locator_factors(field, 128);
+        auto factors = locator_factors(field, order);
         std::array<Counts, 5> counts{};
         for (unsigned k = 1; k <= 4; ++k) {
             counts[k] = signature_counts(field, factors, k);
             std::cout << name << " size " << k << " subsets " << counts[k].subsets
-                      << " energy " << counts[k].energy << " largest " << counts[k].largest << '\n';
+                      << " energy " << counts[k].energy << " largest " << counts[k].largest << std::endl;
         }
-        require(counts[4].energy == 11202567 && counts[4].largest == 6, "production energy");
         Word heavy = 0;
         for (const auto &bucket : counts[4].excess)
             heavy += bucket.size();
-        require(heavy == 39141, "four-pair heavy signatures");
         Word excess = largest_five_excess(field, factors, counts[4]);
-        require(excess == 32, "five-pair locator excess");
-        auto caps = population_caps(counts, 127, excess);
+        std::cout << "four-subset heavy signatures " << heavy << " five-subset excess " << excess << std::endl;
+        auto caps = population_caps(counts, order - 1, excess);
         std::cout << "caps";
         for (Word cap : caps)
             std::cout << ' ' << cap;
         std::cout << '\n';
+        if (order == 256) {
+            Word h = field.n / order;
+            const std::array<Word, 5> energies{0, 255, 32385, 2757301, 179380071};
+            for (unsigned m = 1; m <= 4; ++m)
+                require(counts[m].energy == energies[m], "order-256 signature energy");
+            require(heavy == 330581 && excess == 32, "order-256 excess census");
+            const std::array<Word, 10> expected{
+                1, 1, 1, 2, 6, 108, 4590, 155998, 2562572, 72606206};
+            require(caps == expected, "order-256 population cap");
+            const std::array<Word, 10> expected_list{
+                1, 1, 14, 31, 100, 1928, 87916, 3223958, 57541389, 1786112669};
+            Word total = 0;
+            std::cout << "full quotient list caps";
+            for (unsigned m = 0; m <= 9; ++m) {
+                Word list_cap = (((255 - m) * h + 1) * caps[m]) / ((19 - m) * h);
+                // The empty support is unique and the prescribed product determines a singleton.
+                if (m <= 1)
+                    list_cap = 1;
+                require(list_cap == expected_list[m], "order-256 received-list cap");
+                std::cout << ' ' << list_cap;
+                if (m <= 8)
+                    total += list_cap;
+            }
+            require(total == 60855338, "order-256 low-degree sum");
+            std::cout << " total through eight " << total << std::endl;
+            continue;
+        }
+        require(counts[4].energy == 11202567 && counts[4].largest == 6, "production energy");
+        require(heavy == 39141 && excess == 32, "order-128 excess census");
         const std::array<Word, 10> expected{1, 1, 1, 2, 6, 57, 1206, 19022, 160036, 2258285};
         require(caps == expected && 255 * caps[9] == 575862675, "production cap");
         Word orientations = (choose(256, 2) - 128) / choose(6, 2);
@@ -262,5 +312,15 @@ int main() {
         Word eight_agreement_bound = 19 * h - 1 + (255 * h + 1) * eight_cap / (budget + 1);
         require(field.n - eight_agreement_bound == (name == "first" ? 991230678U : 992640364U),
                 "eight-singleton restricted radius");
+        require(237 * caps[9] == 535213545 && 237 * caps[8] == 37928532
+                && 237 * caps[7] == 4508214 && 237 * eight_cap == 670811436,
+                "degree-18 baseline partition");
+        for (Word cap : {caps[9], eight_cap}) {
+            Word agreement = 19 * h - 1 + (237 * h + 1) * cap / (budget + 1);
+            Word error_floor = cap == caps[9]
+                ? (name == "first" ? 991959372U : 993004711U)
+                : (name == "first" ? 991429692U : 992739871U);
+            require(field.n - agreement == error_floor, "baseline partition radius");
+        }
     }
 }

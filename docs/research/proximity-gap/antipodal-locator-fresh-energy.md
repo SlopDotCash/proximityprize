@@ -1,8 +1,8 @@
 # Extra agreements for degree-18 locators with antipodal pairs
 
-At rate $1/16$ on either named length-$2^{30}$ domain, fix a numerator in the order-256 degree-18 locator construction. For **every received word**, at most **721,759,140** candidates whose 18 roots include at most eight unpaired roots reach $20h-1=83,886,079$ agreements, where $h=2^{22}$. This is below both designated list budgets, already at an agreement count below the published over-budget witnesses. Nine-pair families can have more than $2^{30}$ distinct candidates before imposing these additional agreements. The restriction to a received ball is essential here. [Named list witnesses](sixteenth-locator-union.md) · [Higher-degree locator construction and signed-support certificate](dyadic-locator-degree-caps.md)
+At rate $1/16$ on either named length-$2^{30}$ domain, fix a numerator in the order-256 degree-18 locator construction. For **every received word**, at most **670,811,436** candidates whose 18 roots include at most eight unpaired roots reach $20h-1=83,886,079$ agreements, where $h=2^{22}$. This is below both designated list budgets, already at an agreement count below the published over-budget witnesses. Nine-pair families can have more than $2^{30}$ distinct candidates before imposing these additional agreements. The restriction to a received ball is essential here. [Named list witnesses](sixteenth-locator-union.md) · [Higher-degree locator construction and signed-support certificate](dyadic-locator-degree-caps.md)
 
-More generally, fix the set of roots which occur without their antipodes. With two such roots the upper bound is **40,809,180**, and with four it is **4,850,610**. The fixed numerator prescribes the first sum. The named-field four-term sum certificate implies that all orientations having at most four unpaired roots share at most one possibility for that fixed sum. The pure-pair cap of 575,862,675 therefore also covers the union of these three cases. If the prescribed sum is nonzero, the bound for their union is 40,809,180. The five-term certificate below extends these same two bounds through six unpaired roots. Families with ten or more unpaired roots remain outside the result. [Four-term sum certificate](dyadic-locator-degree-caps.md#degree-19-on-the-order-256-quotient)
+More generally, fix the set of roots which occur without their antipodes. With two such roots the upper bound is **37,928,532**, and with four it is **4,508,214**. The fixed numerator prescribes the first sum. The named-field four-term sum certificate implies that all orientations having at most four unpaired roots share at most one possibility for that fixed sum. The pure-pair cap of 535,213,545 therefore also covers the union of these three cases. If the prescribed sum is nonzero, the bound for their union is 37,928,532. The five-term certificate below extends these same two bounds through six unpaired roots. Families with ten or more unpaired roots remain outside the result. [Four-term sum certificate](dyadic-locator-degree-caps.md#degree-19-on-the-order-256-quotient)
 
 ## The signature of a fresh agreement
 
@@ -83,11 +83,60 @@ $$
 $$
 Indeed $18h+r+(256h-r)C_9/(B+1)$ increases with $r$. For $B=2^{30}$ and $2^{31}$ the last term is respectively $2,249,463$ and $1,124,731$. Thus an over-budget family with at most six unpaired roots would require **at least 991,800,586 and 992,925,318 errors** on the first and second named domains, respectively. Replacing $C_9$ by $C'$ in the same formula gives **991,230,678 and 992,640,364 errors** as the respective lower bounds when up to eight unpaired roots are allowed. These bounds apply to the indicated locator families.
 
-Build the two probes with a C++17 compiler and GMP, then run them from any directory. The five-term verifier processes the fields sequentially and keeps one 64-bit key per multiset orbit, using less than 300 MB for the keys. For each fixed product exponent modulo 128, the locator verifier enumerates the prefixes of the sorted subsets and obtains the final root exponent by subtraction. It sorts the full reduced field values of the locator, checks the total mass against $\binom{127}{j}$, and squares the run lengths. An independent enumeration of all $2^{15}$ subsets of $\mathbb F_{17}^{\times}\setminus\{1\}$ checks the small energies and every derived cap through nine roots.
+## Accounting for the center's baseline coordinates
+
+On any quotient of order $q$ and fiber size $h$, let $m$ be the locator degree. Fix one numerator, multiplier and received word. Of the $qh-r$ coordinates where $H$ is nonzero, let $b$ be the number where the center equals the baseline $H(x)P(y)/y$. A candidate can match there at most $\min(b,mh)$ times. Only the remaining $qh-r-b$ coordinates can contribute fresh matches. If the family has at most $C$ fresh matches per coordinate, then
+$$
+ N_t\big(t-r-\min(b,mh)\big)\le(qh-r-b)C.
+$$
+Suppose $mh+r<t\le qh$. On $b\le mh$ the ratio $(qh-r-b)/(t-r-b)$ increases weakly with $b$, since $qh\ge t$. On $b\ge mh$ its denominator stays fixed and the numerator decreases. The resulting upper bound is its value at $b=mh$. The finite-set theorem `list_capacity` formalizes this incidence step. [Lean proof](../../../ArkLib/Research/ProximityGap/Frontier/LocatorAgreementIncidence.lean)
+
+This ratio in turn increases weakly with $r$, giving
+$$
+ N_t\le\left\lfloor\frac{((q-m-1)h+1)C}{t-(m+1)h+1}\right\rfloor
+ \qquad (r\le h-1,\enspace t>(m+1)h-1).
+$$
+
+At $q=256$, $m=18$ and $t=20h-1$, each per-coordinate cap above is smaller than $h$, so the bound simplifies to $237C$. Thus at most **670,811,436** words with up to eight unpaired roots reach this agreement, improving the preceding $255C'$ bound. Through six unpaired roots the cap becomes **535,213,545**. For a nonzero prescribed first sum and at most six unpaired roots, the cap is **37,928,532** since the largest possible per-coordinate count is $\max(C_8,C_7,42C_6)=160036$. For an over-budget family the same inequality bounds $t$ by $19h-1+\lfloor(237h+1)C/(B+1)\rfloor$. This also holds when $t\le 19h-1$. The respective error floors for the first and second fields are **991,959,372 and 993,004,711** through six unpaired roots, and **991,429,692 and 992,739,871** through eight.
+
+## All root configurations at degrees zero through nine on the order-256 quotient
+
+For each of the two named fields, every received word has at most **60,855,338** candidates in the union of degrees zero through eight at $20h-1$ agreements, with $h=2^{22}$. Each degree may use a separate fixed monic numerator and nonzero common multiplier of degree at most $h-1$. Every $m$-subset $T\subseteq\mu_{256}$ is eligible. At degree nine alone the bound is **1,786,112,669**, below the second field's $2^{31}$ budget. [Dyadic quotient classification](dyadic-locator-degree-caps.md#locators-on-every-dyadic-quotient-through-order-128)
+
+To see this, retain the whole normalized support $R=T/y$ at a fresh match with $y=x^h$. Here $1\notin R$, and the two components of its signature are $(-1)^mP(0)y^{-m}$ and $L_T(y)y^{-m}$. Both are prescribed and nonzero. For any fixed $x$ the map $T\mapsto R$ is injective. The exact census on $\mu_{256}\setminus\{1\}$ gives the following counts on each prime.
+
+| Size $j$ | Subsets | $E_j$ | $M_j$ |
+|---:|---:|---:|---:|
+| 1 | 255 | 255 | 1 |
+| 2 | 32,385 | 32,385 | 1 |
+| 3 | 2,731,135 | 2,757,301 | 2 |
+| 4 | 172,061,505 | 179,380,071 | 6 |
+
+There are 330,581 four-root signatures of multiplicity greater than two. Convolving their positive excess $(n_4-2)_+$ with singletons as above gives maximum charge 32. Thus $M_5\le\lfloor(2\cdot255+32)/5\rfloor=108$. The same disjoint-split inequalities and product-class rearrangement on 256 classes give the remaining bounds $C_m\ge M_m$ in the table.
+
+At $t=20h-1$, the baseline-coordinate bound above gives $N_m\le\lfloor((255-m)h+1)C_m/((19-m)h)\rfloor$. The empty support is unique and the prescribed product determines a singleton.
+
+| Degree $m$ | Signature cap $C_m$ | Received-list cap $N_m$ at $20h-1$ |
+|---:|---:|---:|
+| 0 | 1 | 1 |
+| 1 | 1 | 1 |
+| 2 | 1 | 14 |
+| 3 | 2 | 31 |
+| 4 | 6 | 100 |
+| 5 | 108 | 1,928 |
+| 6 | 4,590 | 87,916 |
+| 7 | 155,998 | 3,223,958 |
+| 8 | 2,562,572 | 57,541,389 |
+| 9 | 72,606,206 | 1,786,112,669 |
+
+## Reproducing the counts
+
+Build the two probes with a C++17 compiler and GMP. The five-term verifier processes the fields sequentially and keeps one 64-bit key per multiset orbit, using less than 300 MB for the keys. The locator verifier defaults to order 128. The optional order-256 run processes the two named fields sequentially. For a fixed product exponent and sorted prefix, the verifier looks up all strictly subsequent root pairs with the required remaining product. It sorts the full reduced locator values, checks the total mass against $\binom{127}{j}$ or $\binom{255}{j}$, and squares the run lengths. An independent enumeration of all $2^{15}$ subsets of $\mathbb F_{17}^{\times}\setminus\{1\}$ checks the small energies and every derived cap through nine roots.
 
 ```sh
 c++ -O3 -std=c++17 scripts/probes/probe_antipodal_locator_fresh_energy.cpp $(pkg-config --cflags --libs gmpxx) -o /tmp/antipodal-locator-energy
 /tmp/antipodal-locator-energy
+/tmp/antipodal-locator-energy --order-256
 c++ -O3 -std=c++17 scripts/probes/probe_dyadic_five_term_sums.cpp $(pkg-config --cflags --libs gmpxx) -o /tmp/dyadic-five-term-sums
 /tmp/dyadic-five-term-sums
 ```
