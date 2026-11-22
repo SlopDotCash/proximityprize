@@ -151,6 +151,6 @@ $X^t-P_f=c^t$ is constant. At most $\lfloor n/T\rfloor$ constants can have $T$
 agreements with a fixed word, since their agreement sets are disjoint. These
 counts rule out the published degree certificate as a witness at all eight
 first unresolved steps. A proof of extra coefficient cancellation, including
-after reduction modulo $X^n-1$, could certify other parameter choices. The
-argument is a written application of the two papers and leaves safety of the
-eight closed balls open.
+after reduction modulo $X^n-1$, could certify other parameter choices. Linear maps $f(X)=cX$ allow a separate count that includes different seed sizes giving the same center. When $\ell\ge2$, the degree certificate gives $\ell t\le2(k-1)<n$, and $T>4k/3$ forces $\ell\le3$. The center $X^{\ell t}$ determines its exponent uniquely on $H$ in this range. Hence at most one $t$ occurs for each $\ell=2,3$. A coset of $\mu_t$ intersects $H$ in zero or $g=\gcd(n,t)$ sites. All selected cosets must be distinct and meet $H$, since $(\ell-1)t<T$. Then $g\ge T/\ell$, and the number $n/g$ of eligible cosets is a power of two strictly below 13, hence at most eight. Even across both amplifications there are at most $\binom82+\binom83=84$ messages at this center. Unamplified monomials injective on the seed give at most four agreeing constants, including when their center exponents coincide modulo $n$. A noninjective monomial has at most $t/2<k<T$ image points in the remaining unamplified degree-two and degree-three cases. The combined bound of 88 is below both budgets.
+
+The obstruction is a written application of the two papers. Safety at the eight closed balls remains open.
