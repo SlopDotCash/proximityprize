@@ -10,6 +10,8 @@ Allowing arbitrary rational reparameterizations of the 16-node tetrahedron leave
 
 At rate one eighth on the second named prime, a written construction gives at least **2,148,807,811** bad scalars on one received pair at **679,477,248 errors**, one error earlier than the previous Lean endpoint. Its four defining cores each have 394,264,575 sites. Thirteen quotient fibers suffice for the variable fractional-linear maps, and the collision allowance leaves 1,324,163 labels above budget. [Construction and verification](eighth-transverse-mobius.md)
 
+At the second prime, every dimension $2\le k\le76,695,848$ has its first MCA failure between **715,827,878 and 715,827,882** errors on every injective domain of length $2^{30}$ and at every positive width. This extends the dimension range by 5,113,059 above the exact window. At the predecessor, every outside witness belongs to a fourth head if there are at least two such witnesses. That head carries at most 14 labels. Lean verifies the actual residual count; the reduction through nonlinear factors is a written proof. At the first dimension beyond the exact window, failure at 715,827,881 additionally requires three disjoint split fibers of a coprime pencil of degree at least 23,860,930. [Proof and scope](three-head-residual-secant.md)
+
 ## Verified results and open cases
 
 | Question | Result | Verification |
