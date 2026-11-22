@@ -12,7 +12,7 @@ import tempfile
 from flint import fmpz_mat
 
 from probe_mu64_unit_lattice import require
-from probe_mu128_unit_ellipsoid import exponent_rows
+from probe_mu128_unit_ellipsoid import exponent_rows, kernel_basis
 from probe_mu256_joint_transfer import outer_bound, phase, short_basis, verify_fields
 
 ORDER = 256
@@ -51,14 +51,18 @@ def observations(logs, order, half_window, sector, modulus):
 
 
 def congruence_basis(observed, modulus):
-    """Lift the free coordinates through an invertible minor over Z/modulus."""
+    """Lift through an invertible minor, or intersect the column kernels one by one."""
     n, k = len(observed), len(observed[0])
     for indices in combinations(range(min(n, 15)), k):
         pivot = fmpz_mat([observed[i] for i in indices])
         if gcd(int(pivot.det()), modulus) == 1:
             break
     else:
-        raise ArithmeticError('invertible observation minor missing')
+        basis = fmpz_mat([[int(i == j) for j in range(n)] for i in range(n)])
+        for column in zip(*observed):
+            values = (basis*fmpz_mat([[a] for a in column])).entries()
+            basis = (kernel_basis([int(v) for v in values], modulus)*basis).lll()
+        return basis
     inverse, denominator = pivot.inv().numer_denom()
     inverse *= pow(int(denominator), -1, modulus)
     coefficients = (fmpz_mat(observed)*inverse).tolist()

@@ -470,3 +470,6 @@ ArkLib.Research.ProximityGap.Frontier.FiveHeadFiberRigidity ProximityGap.FiveHea
 # A split-pencil sufficient condition at the second-prime quarter-rate Johnson test
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeTransversePencil ArkLib.ProximityGap.Frontier.SecondPrimeTransversePencil.actual_events
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeTransversePencil ArkLib.ProximityGap.Frontier.SecondPrimeTransversePencil.quarter_below_of_split
+
+# A full quartet edge yields a scalar pencil on three complete root sets
+ArkLib.Research.ProximityGap.Frontier.SaturatedQuartetFullEdge ArkLib.ProximityGap.Frontier.SaturatedQuartetFullEdge.projected_pencil
