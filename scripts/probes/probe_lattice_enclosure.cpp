@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <iostream>
+#include <string_view>
 #include <vector>
 
 using Integer = std::int64_t;
@@ -15,6 +16,7 @@ class Enclosure {
     std::vector<Integer> weights;
     std::vector<Integer> coordinates;
     std::vector<Integer> shifts;
+    int target = -1;
 
     static Integer floor_div(Integer value, Integer positive) {
         return value >= 0 ? value / positive : -((-value + positive - 1) / positive);
@@ -43,8 +45,17 @@ public:
         return true;
     }
 
+    bool read_target(int index) {
+        target = index;
+        for (Integer &entry : shifts) {
+            if (!(std::cin >> entry)) return false;
+        }
+        return true;
+    }
+
     void visit(int i, Integer error, Integer remaining) {
         if (i < 0) {
+            if (target >= 0) std::cout << target << ' ';
             for (Integer value : coordinates) std::cout << value << ' ';
             std::cout << '\n';
             return;
@@ -63,7 +74,7 @@ public:
     }
 };
 
-int main() {
+int main(int argc, char **argv) {
     std::ios::sync_with_stdio(false);
     int dimension;
     Integer scale, budget;
@@ -71,5 +82,16 @@ int main() {
         dimension > 100 || scale <= 0 || budget < 0) return 1;
     Enclosure enclosure(dimension, scale);
     if (!enclosure.read()) return 1;
-    enclosure.visit(dimension - 1, 0, budget);
+    if (argc == 1) {
+        enclosure.visit(dimension - 1, 0, budget);
+    } else {
+        if (argc != 2 || std::string_view(argv[1]) != "--affine") return 1;
+        int count;
+        Integer error;
+        if (!(std::cin >> count >> error) || count < 0 || error < 0) return 1;
+        for (int i = 0; i < count; ++i) {
+            if (!enclosure.read_target(i)) return 1;
+            enclosure.visit(dimension - 1, error, budget);
+        }
+    }
 }

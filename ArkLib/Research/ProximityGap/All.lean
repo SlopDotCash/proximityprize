@@ -359,6 +359,7 @@ import ArkLib.Research.ProximityGap.Frontier.DyadicOddPencilCount
 import ArkLib.Research.ProximityGap.Frontier.DyadicOddPencilExclusion
 import ArkLib.Research.ProximityGap.Frontier.DyadicOrbitIndependence
 import ArkLib.Research.ProximityGap.Frontier.DyadicPairMinorTransfer
+import ArkLib.Research.ProximityGap.Frontier.DyadicPairedCenterDensity
 import ArkLib.Research.ProximityGap.Frontier.DyadicParityGalois
 import ArkLib.Research.ProximityGap.Frontier.DyadicParityLemma
 import ArkLib.Research.ProximityGap.Frontier.DyadicParityPolynomial
@@ -725,6 +726,9 @@ import ArkLib.Research.ProximityGap.Frontier.PaleyPairDeterminants
 import ArkLib.Research.ProximityGap.Frontier.PaleyPrescribedRectangle
 import ArkLib.Research.ProximityGap.Frontier.PaleyProductStratumNorm
 import ArkLib.Research.ProximityGap.Frontier.PaleyProjectiveMoment
+import ArkLib.Research.ProximityGap.Frontier.PaleyQuarticCertificate
+import ArkLib.Research.ProximityGap.Frontier.PaleyQuarticSlice
+import ArkLib.Research.ProximityGap.Frontier.PaleyQuarticSliceContractions
 import ArkLib.Research.ProximityGap.Frontier.PaleyQuarticTraceMoment
 import ArkLib.Research.ProximityGap.Frontier.PaleyQuarticTwist
 import ArkLib.Research.ProximityGap.Frontier.PaleyRowSampling
@@ -961,6 +965,7 @@ import ArkLib.Research.ProximityGap.Frontier.SalemZygmundMomentAssemblyA3
 import ArkLib.Research.ProximityGap.Frontier.SameDomainListMca
 import ArkLib.Research.ProximityGap.Frontier.SaturatedFaceLabelDistance
 import ArkLib.Research.ProximityGap.Frontier.SaturatedListCliques
+import ArkLib.Research.ProximityGap.Frontier.SaturatedQuartetFullEdge
 import ArkLib.Research.ProximityGap.Frontier.SaturatedSplitTriangle
 import ArkLib.Research.ProximityGap.Frontier.SaturatedTripleRotation
 import ArkLib.Research.ProximityGap.Frontier.SaturatedTripleRows
@@ -1136,6 +1141,7 @@ import ArkLib.Research.ProximityGap.Frontier.SplitCoefficientSecants
 import ArkLib.Research.ProximityGap.Frontier.SplitFiberNewton
 import ArkLib.Research.ProximityGap.Frontier.SplitPencilBlockVariance
 import ArkLib.Research.ProximityGap.Frontier.SplitPencilFiberData
+import ArkLib.Research.ProximityGap.Frontier.SplitPencilRootProducts
 import ArkLib.Research.ProximityGap.Frontier.SplitPrimeJointMoments
 import ArkLib.Research.ProximityGap.Frontier.SplitPrimeSixthDensity
 import ArkLib.Research.ProximityGap.Frontier.SpurBadPrimeCeiling

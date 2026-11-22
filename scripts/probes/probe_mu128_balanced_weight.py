@@ -16,14 +16,34 @@ from probe_mu64_unit_lattice import lattice_coordinates, require
 HERE = Path(__file__).resolve().parent
 
 
-def enclosed_coordinates(binary, mu, lengths, radius):
-    """Enumerate an integer outer approximation, then test the original Gram form."""
+def enclosure_parameters(mu, lengths, radius, affine):
+    """Integer outer bounds and overflow checks for a centered or translated lattice."""
     dimension = len(lengths)
     scale, resolution = 2**15, 2**25
     budget = resolution*scale**2
     coefficients = [[round(scale*x) for x in row] for row in mu]
     weights = [resolution*x.numerator//(x.denominator*radius) for x in lengths]
     require(min(weights) > 0, "fixed-point resolution too low")
+    bounds = [0]*dimension
+    for i in reversed(range(dimension)):
+        error = sum(bounds[i+1:]) + (dimension+1 if affine else 0)
+        offset = sum(abs(coefficients[j][i])*bounds[j] for j in range(i+1,dimension))
+        if affine:
+            offset += (scale+sum(abs(coefficients[j][i]) for j in range(i+1,dimension)))//2+1
+        reach = isqrt(budget//weights[i])+error
+        bounds[i] = (reach+offset)//scale
+        require(4*(reach+offset+scale*bounds[i]+scale) < 2**63 and
+                max(budget,weights[i],*map(abs,coefficients[i])) < 2**63,
+                "fixed-point word overflow")
+    payload = [f"{dimension} {scale} {budget}"]
+    payload.extend(' '.join(map(str,[weights[i]]+coefficients[i][:i])) for i in range(dimension))
+    return scale, coefficients, payload
+
+
+def enclosed_coordinates(binary, mu, lengths, radius):
+    """Enumerate an integer outer approximation, then test the original Gram form."""
+    dimension = len(lengths)
+    _, _, payload = enclosure_parameters(mu,lengths,radius,False)
     gram = []
     for i in range(dimension):
         row = []
@@ -34,18 +54,6 @@ def enclosed_coordinates(binary, mu, lengths, radius):
             row.append(int(dot))
         gram.append(row)
 
-    # Bound each signed intermediate used by the native recursion.
-    bounds = [0]*dimension
-    for i in reversed(range(dimension)):
-        error = sum(bounds[i+1:])
-        offset = sum(abs(coefficients[j][i])*bounds[j] for j in range(i+1,dimension))
-        reach = isqrt(budget//weights[i])+error
-        bounds[i] = (reach+offset)//scale
-        require(4*(reach+offset+scale*bounds[i]+scale) < 2**63 and
-                max(budget,weights[i],*map(abs,coefficients[i])) < 2**63,
-                "fixed-point word overflow")
-    payload = [f"{dimension} {scale} {budget}"]
-    payload.extend(' '.join(map(str,[weights[i]]+coefficients[i][:i])) for i in range(dimension))
     result = subprocess.run([binary],input='\n'.join(payload)+'\n',text=True,capture_output=True,check=True)
     for line in result.stdout.splitlines():
         v = tuple(map(int,line.split()))
