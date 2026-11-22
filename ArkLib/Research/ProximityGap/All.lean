@@ -635,6 +635,7 @@ import ArkLib.Research.ProximityGap.Frontier.PaleyPrescribedRectangle
 import ArkLib.Research.ProximityGap.Frontier.PaleyProductStratumNorm
 import ArkLib.Research.ProximityGap.Frontier.PaleyProjectiveMoment
 import ArkLib.Research.ProximityGap.Frontier.PaleyQuarticTraceMoment
+import ArkLib.Research.ProximityGap.Frontier.PaleyQuarticTwist
 import ArkLib.Research.ProximityGap.Frontier.PaleyRowSampling
 import ArkLib.Research.ProximityGap.Frontier.PaleyShiftFactorization
 import ArkLib.Research.ProximityGap.Frontier.PaleyShiftListRecovery
