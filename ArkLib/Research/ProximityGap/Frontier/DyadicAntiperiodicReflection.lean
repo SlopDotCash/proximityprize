@@ -99,6 +99,37 @@ theorem three_centres (k : ℕ) (f : ZMod (2^(k+1)) → ℤ)
     _ = f (x+y-j) := (h₂ _).symm
     _ = f j := (h₁ j).symm
 
+/-- Antisymmetry about two distinct reflection axes forces a half-turn
+antiperiodic integer signal to vanish. -/
+theorem two_antireflections (k : ℕ) (f : ZMod (2^(k+1)) → ℤ)
+    (ha : ∀ j, f (j + (2^k : ℕ)) = -f j)
+    (a b : ZMod (2^(k+1))) (hne : a ≠ b)
+    (h₁ : ∀ j, f (a-j) = -f j) (h₂ : ∀ j, f (b-j) = -f j) :
+    ∀ j, f j = 0 := by
+  apply period_kills k f ha (b-a) (sub_ne_zero.mpr hne.symm)
+  intro j
+  calc
+    f (j+(b-a)) = f (b-(a-j)) := by congr 1; abel
+    _ = -f (a-j) := h₂ _
+    _ = f j := by rw [h₁, neg_neg]
+
+/-- Three disjoint fibers have at most two occupants on each half of a four-site
+orbit. If all three signed differences agree, both half populations match. -/
+theorem three_fibers_in_two_site_halves (a b c A B C : ℕ)
+    (left : a+b+c ≤ 2) (right : A+B+C ≤ 2)
+    (hab : (a : ℤ) - A = (b : ℤ) - B) (hbc : (b : ℤ) - B = (c : ℤ) - C) :
+    a = A ∧ b = B ∧ c = C := by
+  omega
+
+/-- Equal half populations on every block make the whole fiber even. -/
+theorem balanced_total_even {ι : Type*} [Fintype ι] (a b : ι → ℕ) (h : ∀ j, a j = b j) :
+    Even (∑ j, (a j + b j)) := by
+  refine ⟨∑ j, b j, ?_⟩
+  simp_rw [h, Finset.sum_add_distrib]
+
+#print axioms three_fibers_in_two_site_halves
+#print axioms balanced_total_even
+#print axioms two_antireflections
 #print axioms reaches_antipode
 #print axioms two_centres
 #print axioms three_centres
