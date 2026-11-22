@@ -45,7 +45,7 @@ does not bound the fraction of bad affine-line challenges by `2^-128` there.
 ArkLib's capacity theorem provides the same fixed-slack qualitative route,
 with a concrete polynomial exception estimate whose finite-budget
 restrictions are quantified above.
-[Jeronimo, Theorems 1.1–1.2 and Corollary 8.3](https://arxiv.org/html/2609.05870v1) · [Local copy](../../../research/jeronimo-2609.05870.pdf) · [Prime-field specialization of the canonical capacity theorem](../../../ArkLib/Research/ProximityGap/Frontier/PrimeFieldCapacityGap.lean)
+[Jeronimo, Theorems 1.1–1.2 and Corollary 8.3](https://arxiv.org/html/2609.05870v1) · [Paper PDF](https://arxiv.org/pdf/2609.05870v1) · [Prime-field specialization of the canonical capacity theorem](../../../ArkLib/Research/ProximityGap/Frontier/PrimeFieldCapacityGap.lean)
 
 ## Full jet simplices at half rate
 
