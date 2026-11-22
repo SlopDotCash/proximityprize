@@ -213,14 +213,14 @@ theorem first_sponsor_reciprocal_locator_margins :
     3 * (2 * t - e) * denom * (b - 2) < 10 * (meanNum - e * denom) * (b - 2 - 7001) := by
   norm_num
 
-/-- Exact integer margins for the near-minimal-support band of 210000 coordinates. -/
+/-- Exact integer margins for the near-minimal-support band of 3100000 coordinates. -/
 theorem first_sponsor_near_minimal_locator_margins :
     let n : ℤ := 1073741824
     let D : ℤ := 536870913
-    let t : ℤ := 221542374
-    let J : ℤ := 210000
-    let e : ℤ := 377420252
-    let q : ℤ := 852199450
+    let t : ℤ := 221762374
+    let J : ℤ := 3100000
+    let e : ℤ := 388694542
+    let q : ℤ := 851979450
     let b := n + 1
     let s := e - t
     let l := D - 2 * t
@@ -230,9 +230,9 @@ theorem first_sponsor_near_minimal_locator_margins :
     let denom := 3 * q * b * (b - 1)
     let meanNum := n * denom - (2 * U + n * q^3) + 3 * q * b * (n - t)
     n < 12 * (l - J / 2) ∧
-    24 * t * (4 * s^2) < 144000 * ((s + l)^3 - 4 * s^2 * (D - e + 3 * J)) ∧
-    3031 * (2 * t - e) * denom * (b - 2) < 10000 * (meanNum - e * denom) * (b - 2 - 144003) ∧
-    6 * n^2 * ((n - D) * triples + D * (b / 3) - (3 * triples / 10) * (J + 1)) <
+    24 * t * (4 * s^2) < 7500 * ((s + l)^3 - 4 * s^2 * (D - e + 3 * J)) ∧
+    1574 * (2 * t - e) * denom * (b - 2) < 10000 * (meanNum - e * denom) * (b - 2 - 7503) ∧
+    6 * n^2 * ((n - D) * triples + D * (b / 3) - (157 * triples / 1000) * (J + 1)) <
       g * (g - n) * (g - 2 * n) := by
   norm_num
 
