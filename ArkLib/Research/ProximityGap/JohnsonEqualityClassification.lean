@@ -24,6 +24,39 @@ theorem length_sixteen : realizable 16 2 := by
   rw [cutoff, JohnsonPrimePowerList.list_answer m]
   norm_num [Real.sqrt_div]
 
+/-- At the four prize rates these are the only index pairs at which any grid boundary
+can coincide with the finite Johnson radius. -/
+theorem parameters_of_grid {F I : Type} [Field F] [DecidableEq F] [Fintype I] [Nonempty I]
+    (D : I ↪ F) [ReedSolomon.Smooth D] {k : ℕ} (hr : hasPrizeRate (Fintype.card I) k)
+    (a : Boundary (Fintype.card I))
+    (equal : (cutoff a : ℝ) / Fintype.card I =
+      1 - Real.sqrt (((k - 1 : ℕ) : ℝ) / Fintype.card I)) :
+    k = 1 ∨ k = 2 ∧ (Fintype.card I = 4 ∨ Fintype.card I = 16) := by
+  classical
+  have alignment := (JohnsonGridEquality.grid_alignment_iff D hr).mp ⟨a, equal⟩
+  rcases alignment with one | ⟨rfl, square⟩
+  · exact Or.inl one
+  · refine Or.inr ⟨rfl, ?_⟩
+    have sizes : Fintype.card I = 4 ∨ Fintype.card I = 8 ∨ Fintype.card I = 16 ∨
+        Fintype.card I = 32 := by rcases hr with h | h | h | h <;> omega
+    rcases sizes with h | h | h | h
+    · exact Or.inl h
+    · rw [h] at square
+      obtain ⟨a, ha⟩ := square
+      have lower : a ≤ 2 := by
+        by_contra! h
+        have bound := Nat.mul_self_le_mul_self h
+        omega
+      interval_cases a <;> omega
+    · exact Or.inr h
+    · rw [h] at square
+      obtain ⟨a, ha⟩ := square
+      have lower : a ≤ 5 := by
+        by_contra! h
+        have bound := Nat.mul_self_le_mul_self h
+        omega
+      interval_cases a <;> omega
+
 /-- At a prize rate, a field below the sponsor's ceiling and a smooth domain
 can realize an actual 128-bit list cutoff equal to Johnson at every positive
 width exactly in dimension one, or at length four or sixteen in dimension two. -/
@@ -32,30 +65,7 @@ theorem realizable_iff {n k : ℕ} (hr : hasPrizeRate n k) :
   constructor
   · rintro ⟨F, I, _, _, _, _, _, D, ⟨sm⟩, card, _, equal⟩
     subst n
-    have alignment := (JohnsonGridEquality.grid_alignment_iff D hr).mp
-      ⟨_, equal 1 (by decide)⟩
-    rcases alignment with one | ⟨rfl, square⟩
-    · exact Or.inl one
-    · refine Or.inr ⟨rfl, ?_⟩
-      have sizes : Fintype.card I = 4 ∨ Fintype.card I = 8 ∨ Fintype.card I = 16 ∨
-          Fintype.card I = 32 := by rcases hr with h | h | h | h <;> omega
-      rcases sizes with h | h | h | h
-      · exact Or.inl h
-      · rw [h] at square
-        obtain ⟨a, ha⟩ := square
-        have lower : a ≤ 2 := by
-          by_contra! h
-          have bound := Nat.mul_self_le_mul_self h
-          omega
-        interval_cases a <;> omega
-      · exact Or.inr h
-      · rw [h] at square
-        obtain ⟨a, ha⟩ := square
-        have lower : a ≤ 5 := by
-          by_contra! h
-          have bound := Nat.mul_self_le_mul_self h
-          omega
-        interval_cases a <;> omega
+    exact parameters_of_grid D hr _ (equal 1 (by decide))
   · rintro (rfl | ⟨rfl, rfl | rfl⟩)
     · exact dimension_one hr
     · exact length_four

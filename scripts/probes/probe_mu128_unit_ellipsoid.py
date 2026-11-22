@@ -80,18 +80,20 @@ def kernel_basis(logs, modulus):
     return result
 
 
-def check_shift(rows, h, logs, order, bound, reverse=False):
-    matrix = fmpz_mat([[r[j]-r[(j-h) % ORDER] for j in range(ORDER) if j not in (0,h)]
+def check_shift(rows, h, logs, order, bound, reverse=False, weight_bound=None):
+    """Reject every nonzero exponent in the allowed weighted comparison region."""
+    size = len(rows[0])
+    matrix = fmpz_mat([[r[j]-r[(j-h) % size] for j in range(size) if j not in (0,h)]
                        for r in rows])
-    if h == ORDER//2:
+    if h == size//2:
         require(all(sum(col) == 0 for col in matrix.transpose().tolist()),
                 "antipodal coordinate elimination failed")
         matrix = fmpz_mat(matrix.tolist()[:-1])
         logs = [a-logs[-1] for a in logs[:-1]]
-    return check_ellipsoid(matrix, logs, order, bound, reverse, f"displacement {h}")
+    return check_ellipsoid(matrix, logs, order, bound, reverse, f"displacement {h}", weight_bound)
 
 
-def check_ellipsoid(matrix, logs, order, bound, reverse, case):
+def check_ellipsoid(matrix, logs, order, bound, reverse, case, weight_bound=None):
     dim = matrix.nrows()
     identity = fmpz_mat([[int(i == j) for j in range(dim)] for i in range(dim)])
     covariance = matrix*matrix.transpose()
@@ -110,14 +112,22 @@ def check_ellipsoid(matrix, logs, order, bound, reverse, case):
     reduced, transform = initial.lll(transform=True, rep='gram', gram='exact')
     require(abs(int(transform.det())) == 1 and transform*initial*transform.transpose() == reduced,
             "basis reduction changed the lattice or quadratic form")
-    points = 0
+    points = zero = 0
     mu, lengths = orthogonal_lengths([[int(v) for v in row] for row in reduced.tolist()])
     for vector in lattice_coordinates(mu, lengths, int(scale)*bound):
         points += 1
         if any(vector):
             e = (fmpz_mat([vector])*transform*basis).tolist()[0]
+            if weight_bound is not None:
+                dual = fmpz_mat([e])*metric
+                separation = int((dual*fmpz_mat([e]).transpose())[0,0])
+                support = sum(abs(int(x)) for x in (dual*matrix).tolist()[0])
+                if separation > weight_bound*support:
+                    continue
             raise ArithmeticError(f"nonzero candidate for {case}: {e}")
-    require(points == 1, "zero vector missing")
+        else:
+            zero += 1
+    require(zero == 1, "zero vector missing or repeated")
     return points
 
 
