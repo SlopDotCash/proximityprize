@@ -92,14 +92,12 @@ theorem norm_height {n s : ℕ} [NeZero n] (a b : Fin s → ℕ) (d : ℕ) :
   rw [Int.natCast_natAbs]
   exact_mod_cast realbound
 
-/-- An equal pair of products in a split prime field vanishes on the
-whole cyclotomic polynomial in characteristic zero under the stated height
-test. Inversion supplies a second independent root modulo the prime. -/
-theorem cyclotomic_dvd {p n s : ℕ} [Fact p.Prime] [NeZero n] [NeZero (n : ZMod p)]
-    (hn : 2<n) {z : ZMod p} (hz : IsPrimitiveRoot z n) (d : ℕ) (a b : Fin s → ℕ)
-    (ha : ∀ i, z^(a i) ≠ z^d) (hb : ∀ i, z^(b i) ≠ z^d)
-    (same : profile z d a = profile z d b) (large : 2^((2*s+1)*n.totient)<p^2) :
-    cyclotomic n ℤ ∣ difference a b d := by
+/-- Two distinct reciprocal primitive roots force divisibility by the whole
+cyclotomic polynomial when the integer norm is smaller than the prime squared. -/
+theorem dvd_of_reciprocal_roots {p n : ℕ} [Fact p.Prime] [NeZero n] [NeZero (n : ZMod p)]
+    (hn : 2<n) {z : ZMod p} (hz : IsPrimitiveRoot z n) (C : ℤ[X])
+    (direct : C.eval₂ (Int.castRingHom _) z=0) (reverse : C.eval₂ (Int.castRingHom _) z⁻¹=0)
+    (small : (cycloNorm n C).natAbs < p^2) : cyclotomic n ℤ ∣ C := by
   have nz : z≠0 := by
     intro zero
     have impossible := hz.pow_eq_one
@@ -115,23 +113,37 @@ theorem cyclotomic_dvd {p n s : ℕ} [Fact p.Prime] [NeZero n] [NeZero (n : ZMod
     have positive := Nat.totient_pos.mpr (by omega : 0<n)
     by_contra! small
     rcases Nat.totient_eq_one_iff.mp (by omega : n.totient=1) with h | h <;> omega
-  have rev : profile z⁻¹ d a = profile z⁻¹ d b := by
-    rw [profile_inverse nz,profile_inverse nz,same]
-  have div : (p:ℤ)^2 ∣ cycloNorm n (difference a b d) := by
+  have div : (p:ℤ)^2 ∣ cycloNorm n C := by
     apply ModularResultantMultiplicity.two_roots _ _ le_rfl le_rfl
       (by rw [natDegree_cyclotomic];omega) distinct
     · rw [map_cyclotomic];exact hz.isRoot_cyclotomic (by omega)
     · rw [map_cyclotomic];exact hz.inv.isRoot_cyclotomic (by omega)
-    · rw [eval_map];exact (difference_zero_iff z d a b ha hb).mpr same
-    · rw [eval_map]
-      apply (difference_zero_iff z⁻¹ d a b (fun i => ?_) (fun i => ?_)).mpr rev
-      · simpa only [inv_pow,ne_eq,inv_inj] using ha i
-      · simpa only [inv_pow,ne_eq,inv_inj] using hb i
+    · rwa [eval_map]
+    · rwa [eval_map]
   apply dvd_of_norm_zero
   by_contra nonzero
   have divides := Int.natAbs_dvd_natAbs.mpr div
-  rw [Int.natAbs_pow,Int.natAbs_natCast] at divides
-  exact (not_le_of_gt large) ((Nat.le_of_dvd (Int.natAbs_pos.mpr nonzero) divides).trans (norm_height a b d))
+  rw [Int.natAbs_pow, Int.natAbs_natCast] at divides
+  exact (not_le_of_gt small) (Nat.le_of_dvd (Int.natAbs_pos.mpr nonzero) divides)
+
+/-- An equal pair of products in a split prime field vanishes on the
+whole cyclotomic polynomial in characteristic zero under the stated height
+test. Inversion supplies a second independent root modulo the prime. -/
+theorem cyclotomic_dvd {p n s : ℕ} [Fact p.Prime] [NeZero n] [NeZero (n : ZMod p)]
+    (hn : 2<n) {z : ZMod p} (hz : IsPrimitiveRoot z n) (d : ℕ) (a b : Fin s → ℕ)
+    (ha : ∀ i, z^(a i) ≠ z^d) (hb : ∀ i, z^(b i) ≠ z^d)
+    (same : profile z d a = profile z d b) (large : 2^((2*s+1)*n.totient)<p^2) :
+    cyclotomic n ℤ ∣ difference a b d := by
+  have nz : z≠0 := by
+    intro zero
+    have impossible := hz.pow_eq_one
+    simp [zero,NeZero.ne n] at impossible
+  have rev : profile z⁻¹ d a = profile z⁻¹ d b := by
+    rw [profile_inverse nz,profile_inverse nz,same]
+  apply dvd_of_reciprocal_roots hn hz _ ((difference_zero_iff z d a b ha hb).mpr same) _ ((norm_height a b d).trans_lt large)
+  apply (difference_zero_iff z⁻¹ d a b (fun i => ?_) (fun i => ?_)).mpr rev
+  · simpa only [inv_pow,ne_eq,inv_inj] using ha i
+  · simpa only [inv_pow,ne_eq,inv_inj] using hb i
 
 /-- Transfer a collision to any characteristic admitting the same primitive
 roots. The target order and the exponent tuple can represent a Galois
