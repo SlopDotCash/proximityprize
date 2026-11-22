@@ -101,3 +101,38 @@ An over-budget list must continue to contain split differences after many of its
 | $2^{31}$ | $1/8$ | 694,116,764 | 366,766,857 | 3 | 134,217,726 |
 
 For example, in the first-prime eighth-rate row, take any 893,071,997 remaining messages. The integer pair-incidence estimate with tangent parameter 315,748,631 gives more edges than any graph on this many vertices without a seven-clique. Two messages form an edge when they agree with the received word on at least 134,217,726 common selected coordinates. Their difference has degree at most 134,217,727. Dividing out the known roots leaves a polynomial of degree at most one, so the entire difference splits over the field. Remove those seven messages and reapply the same estimate while enough remain. These necessary configurations leave the named list endpoints open.
+
+## Testing the two end coefficients
+
+On a smooth coset where every site satisfies $(-x)^n=c$, a nonzero polynomial of degree at most $d$ with $d$ distinct physical roots has leading coefficient $L\ne0$ and constant coefficient $A$ satisfying $A^n=L^n c^d$. Indeed, $A/L$ is the product of the negatives of the roots. Applying this identity to message differences gives an executable necessary edge count using only two coefficients per message. For a subgroup of order $n$ coprime to $d$, every subgroup element occurs as a product of $d$ distinct sites, by rotating a fixed subset.
+
+For a family whose message coefficients satisfy $A=uL+b$ with $u^n\ne c^d$, distinct messages have at most $d-1$ common domain evaluations. The strict Johnson rank bound therefore limits every interleaved list in this subcode to $n$ whenever $t^2>n(d-1)$, for arbitrary received words. The first open agreement count at each named budget and rate meets this inequality. Deciding the full code still requires control of messages across different affine slices. [Coefficient test and interleaved bound](../../../ArkLib/Research/ProximityGap/Frontier/SplitCoefficientSecants.lean)
+
+For an explicit family, the exact number of physical roots of every difference can also be computed without enumerating the domain. For a nonzero difference $P$ on $X^{2^h}=b$, compute $X^{2^h}$ by $h$ squarings modulo the monic normalization of $P$, subtract $b$, and take the monic gcd with $P$. Its degree counts the distinct coincident sites. Substituting these counts for the pair intersections bounds the total agreements possible at any center. On both named groups, $X^2-1$ and $X^2+X-1$ have identical end coefficients but respectively two and zero physical roots, as checked by kernel reduction with $h=30$. Applying this test to supplied messages leaves the search for arbitrary over-budget families open. [Exact root counter and list test](../../../ArkLib/Research/ProximityGap/Frontier/DyadicDifferenceRoots.lean)
+
+## Affine rank from shortened pair counts
+
+At 314,491,700 errors in the half-rate code, for example, any list exceeding the first named budget has affine dimension at least **58**. Counting only cuts of a flat by a single coordinate gave 25. The certificates below apply to every injective domain and every positive interleaving width. Dimension is over the alphabet field, in the vector space of interleaved words. The bounds restrict candidate lists at the stated radii.
+
+| Rate | Budget | Errors | Required affine dimension | Maximum certified at the preceding dimension |
+| --- | ---: | ---: | ---: | ---: |
+| $1/2$ | $n$ | 314,491,700 | 58 | 886,009,082 |
+| $1/2$ | $2n$ | 314,491,700 | 60 | 1,772,018,175 |
+| $1/4$ | $n$ | 536,870,914 | 29 | 536,870,916 |
+| $1/4$ | $2n$ | 536,870,914 | 30 | 1,073,741,840 |
+| $1/8$ | $n$ | 694,116,763 | 20 | 440,738,901 |
+| $1/8$ | $2n$ | 694,116,764 | 21 | 1,246,598,273 |
+| $1/16$ | $n$ | 805,306,371 | 15 | 357,913,949 |
+| $1/16$ | $2n$ | 805,306,371 | 16 | 1,431,655,816 |
+
+Write $t=n-e$ and $D=k-1$. More generally consider distinct vector words whose pairwise agreement is at most $D$, each agreeing with one center on at least $t>D$ sites. Suppose the list lies in a flat of dimension at most $r$, and every such list in dimension at most $r-1$ has size at most $L$. Select an arbitrary sublist of exactly $M>L$ words. Let $c$ be the number of coordinates constant across the sublist. At every other site the center agreement equation cuts its affine hull in a proper affine subspace, or has no solutions. Thus at most $L$ selected words match there, even for vector columns. Counting all matches gives $Mt\le cM+(n-c)L$. Hence at least
+\[
+ b=\max\left(0,\left\lceil\frac{Mt-Ln}{M-L}\right\rceil\right)
+\]
+sites are constant. If $b>D$, any two of the selected words contradict the pair agreement limit. Otherwise delete $b$ constant sites. Each selected word has at least $t-b$ residual matches and each pair at most $D-b$ residual agreements, irrespective of the center on the deleted sites.
+
+Select exactly $t-b$ residual matches per word. Their site multiplicities $v_x$ obey $\sum v_x=M(t-b)$ and $\sum v_x^2\le M(t-b)+M(M-1)(D-b)$. By Cauchy–Schwarz, existence therefore requires
+\[
+ M(t-b)^2\le (n-b)\big(t-b+(M-1)(D-b)\big).
+\]
+A strict failure certifies $L_r=M-1$. Starting from $L_0=1$ proves the table. The verifier checks the forced number of constant sites and the exclusion at each rank with exact integers. Binary search locates candidate bounds, and correctness uses only the final excluded size because every larger list admits a sublist of that cardinality. For interleaved Reed–Solomon words two distinct words differ in at least one component polynomial, which supplies the pair agreement bound $k-1$. [Certificate replay](../../../scripts/probes/probe_affine_rank_moments.py)

@@ -15,6 +15,8 @@ struct Counts {
     Word largest = 0;
     // Per product exponent, histogram[m] counts values of multiplicity m.
     std::vector<std::vector<Word>> histograms;
+    // Four-subset locator values contributing excess over the baseline of two.
+    std::vector<std::vector<std::pair<mpz_class, Word>>> excess;
 };
 
 Word choose(unsigned n, unsigned k) {
@@ -42,6 +44,8 @@ Counts signature_counts(const Field &field, const std::vector<mpz_class> &factor
     const unsigned order = factors.size();
     Counts counts;
     counts.histograms.resize(order);
+    if (size == 4)
+        counts.excess.resize(order);
     // For a prescribed product, the exponents of the prefix determine the final one.
     // Strict increase excludes both the anchor exponent zero and repeated roots.
     for (unsigned product = 0; product < order; ++product) {
@@ -72,6 +76,8 @@ Counts signature_counts(const Field &field, const std::vector<mpz_class> &factor
             if (histogram.size() <= multiplicity)
                 histogram.resize(multiplicity + 1);
             ++histogram[multiplicity];
+            if (size == 4 && multiplicity > 2)
+                counts.excess[product].emplace_back(*begin, multiplicity - 2);
             begin = end;
         }
     }
@@ -124,12 +130,42 @@ Word product_pairing(const Counts &left, const Counts &right) {
     return largest;
 }
 
-std::array<Word, 10> population_caps(const std::array<Counts, 5> &counts, unsigned sites) {
+// Sum the positive excess of n4 above two over the possible deleted singletons.
+Word largest_five_excess(const Field &field, const std::vector<mpz_class> &factors,
+                         const Counts &four) {
+    const unsigned order = factors.size();
+    Word largest = 0;
+    for (unsigned product = 0; product < order; ++product) {
+        std::vector<std::pair<mpz_class, Word>> terms;
+        for (unsigned singleton = 1; singleton < order; ++singleton) {
+            const auto &heavy = four.excess[(product + order - singleton) % order];
+            for (const auto &[value, excess] : heavy)
+                terms.emplace_back((value * factors[singleton]) % field.p, excess);
+        }
+        std::sort(terms.begin(), terms.end());
+        for (auto begin = terms.begin(); begin != terms.end();) {
+            auto end = begin;
+            Word total = 0;
+            do {
+                total += end->second;
+                ++end;
+            } while (end != terms.end() && end->first == begin->first);
+            largest = std::max(largest, total);
+            begin = end;
+        }
+    }
+    return largest;
+}
+
+std::array<Word, 10> population_caps(const std::array<Counts, 5> &counts, unsigned sites,
+                                     Word five_excess) {
     std::array<Word, 10> caps{1};
     for (unsigned size = 1; size <= 4; ++size)
         caps[size] = counts[size].largest;
     for (unsigned size = 5; size <= 9; ++size) {
         caps[size] = sites * caps[size - 1] / size;
+        if (size == 5)
+            caps[size] = std::min(caps[size], (2 * sites + five_excess) / size);
         for (unsigned a = 1; a <= 4; ++a) {
             unsigned b = size - a;
             if (b <= 4) {
@@ -174,7 +210,7 @@ void small_control() {
         }
         require(counts[k].energy == energy && counts[k].largest == largest, "small energy");
     }
-    auto caps = population_caps(counts, 15);
+    auto caps = population_caps(counts, 15, largest_five_excess(field, factors, counts[4]));
     for (unsigned k = 0; k <= 9; ++k)
         for (const auto &entry : signatures[k])
             require(entry.second <= caps[k], "small population bound");
@@ -193,24 +229,38 @@ int main() {
                       << " energy " << counts[k].energy << " largest " << counts[k].largest << '\n';
         }
         require(counts[4].energy == 11202567 && counts[4].largest == 6, "production energy");
-        auto caps = population_caps(counts, 127);
+        Word heavy = 0;
+        for (const auto &bucket : counts[4].excess)
+            heavy += bucket.size();
+        require(heavy == 39141, "four-pair heavy signatures");
+        Word excess = largest_five_excess(field, factors, counts[4]);
+        require(excess == 32, "five-pair locator excess");
+        auto caps = population_caps(counts, 127, excess);
         std::cout << "caps";
         for (Word cap : caps)
             std::cout << ' ' << cap;
         std::cout << '\n';
-        const std::array<Word, 10> expected{1, 1, 1, 2, 6, 98, 1746, 19022, 160036, 2258285};
+        const std::array<Word, 10> expected{1, 1, 1, 2, 6, 57, 1206, 19022, 160036, 2258285};
         require(caps == expected && 255 * caps[9] == 575862675, "production cap");
         Word orientations = (choose(256, 2) - 128) / choose(6, 2);
         Word six_cap = orientations * caps[6] + caps[7];
-        require(orientations == 2167 && six_cap == 3802604 && 255 * six_cap == 969664020,
+        require(orientations == 2167 && six_cap == 2632424 && 255 * six_cap == 671268120,
                 "six-singleton cap");
+        Word six_orientations = 256 / 6;
+        Word eight_orientations = 8 * choose(128, 3) / choose(8, 3);
+        Word eight_cap = eight_orientations * caps[5] + std::max(six_orientations * caps[6], caps[7]);
+        require(eight_orientations == 48768 && eight_cap == 2830428
+                && 255 * eight_cap == 721759140, "eight-singleton cap");
         Word h = field.n / 256;
         Word budget = name == "first" ? (Word(1) << 30) : (Word(1) << 31);
         Word agreement_bound = 19 * h - 1 + (255 * h + 1) * caps[9] / (budget + 1);
         Word floor = name == "first" ? 991800586 : 992925318;
         require(field.n - agreement_bound == floor, "restricted radius");
         Word six_agreement_bound = 19 * h - 1 + (255 * h + 1) * six_cap / (budget + 1);
-        require(field.n - six_agreement_bound == (name == "first" ? 990262299U : 992156174U),
+        require(field.n - six_agreement_bound == (name == "first" ? 991427908U : 992738979U),
                 "six-singleton restricted radius");
+        Word eight_agreement_bound = 19 * h - 1 + (255 * h + 1) * eight_cap / (budget + 1);
+        require(field.n - eight_agreement_bound == (name == "first" ? 991230678U : 992640364U),
+                "eight-singleton restricted radius");
     }
 }
