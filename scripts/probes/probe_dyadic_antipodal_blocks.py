@@ -13,7 +13,7 @@ from probe_mu128_unit_ellipsoid import (
 from probe_mu64_unit_lattice import lattice_coordinates, orthogonal_lengths, require
 
 
-def check_field(cert, reverse):
+def verified_source(cert):
     p, g, z, unit_logs = (cert[k] for k in ('prime','generator','root','logs'))
     certify_prime(p)
     require(all(pow(g,(p-1)//factor,p) != 1 for factor in FACTOR_TABLE[p]), "seed order")
@@ -21,6 +21,20 @@ def check_field(cert, reverse):
     require(len(unit_logs) == 32 and all(pow(g,a,p) == (1-pow(z,j,p)) % p
             for j,a in zip(range(1,64,2),unit_logs)), "source unit logarithms")
 
+    return p, g, z, unit_logs
+
+
+def order64_logs(p, g, z, unit_logs):
+    # For z_64 = z^2, (1-z^(2r))=(1-z^r)(1-z^(r+64)).
+    logs = [(unit_logs[r//2]+unit_logs[(64-r)//2]+(p-1)//2+(64+r)*((p-1)//128)) % (p-1)
+            for r in range(1,32,2)]
+    require(all(pow(g,a,p) == (1-pow(z,2*r,p)) % p for r,a in zip(range(1,32,2),logs)),
+            "order-64 logarithms")
+    return logs
+
+
+def check_field(cert, reverse):
+    p, g, z, unit_logs = verified_source(cert)
     # Up to a 128th root of unity, phi_j=(1-z^j)/(1-z^(j+64)).
     factors = exponent_rows(128)
     chord_logs = [sum(a*(row[j]-row[j+64]) for a,row in zip(unit_logs,factors))
@@ -42,11 +56,7 @@ def check_field(cert, reverse):
         else:
             zero += 1
     require((sphere,zero) == (5,1), "antipodal census")
-    # For z_64 = z^2, (1-z^(2r))=(1-z^r)(1-z^(r+64)).
-    lower_logs = [(unit_logs[r//2]+unit_logs[(64-r)//2]+(p-1)//2+(64+r)*((p-1)//128)) % (p-1)
-                  for r in range(1,32,2)]
-    require(all(pow(g,a,p) == (1-pow(z,2*r,p)) % p for r,a in zip(range(1,32,2),lower_logs)),
-            "order-64 logarithms")
+    lower_logs = order64_logs(p, g, z, unit_logs)
     rows = exponent_rows(64)
     counts = [check_shift(rows,h,lower_logs,(p-1)//64,62*32**2,reverse,weight_bound=32)
               for h in range(1,33)]
