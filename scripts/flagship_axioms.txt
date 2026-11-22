@@ -79,6 +79,8 @@ ArkLib.Research.ProximityGap.Frontier.EighthCollinearOutlier ArkLib.ProximityGap
 # The weighted multiplicity and integer optimization for four collinear heads and an outlier
 ArkLib.Research.ProximityGap.Frontier.CollinearFreshMultiplicity ArkLib.ProximityGap.Frontier.CollinearFreshMultiplicity.weighted
 ArkLib.Research.ProximityGap.Frontier.EighthOutlierArithmetic ArkLib.ProximityGap.Frontier.EighthOutlierArithmetic.count
+ArkLib.Research.ProximityGap.Frontier.EighthFourPlusOne ArkLib.ProximityGap.Frontier.EighthFourPlusOne.covered
+ArkLib.Research.ProximityGap.Frontier.EighthThreePlusOne ArkLib.ProximityGap.Frontier.EighthThreePlusOne.covered
 
 # End-to-end selected-scalar cap in the five-rich-head tangent allocation
 ArkLib.Research.ProximityGap.Frontier.EighthFiveRichSafety ArkLib.ProximityGap.Frontier.EighthFiveRichSafety.covered
