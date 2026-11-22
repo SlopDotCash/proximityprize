@@ -21,7 +21,8 @@ private theorem normalize_differences : ∀ d : Fin 128, d≠0 → d≠64 →
   unfold StandardRow
   decide +kernel
 
-private theorem power_add {F : Type*} [Field F] {z : F} (hz : IsPrimitiveRoot z 128)
+/-- Addition of exponents modulo 128 represents multiplication on a primitive orbit. -/
+theorem power_add {F : Type*} [Field F] {z : F} (hz : IsPrimitiveRoot z 128)
     (a b : Fin 128) : z^((a+b : Fin 128) : ℕ)=z^(a : ℕ)*z^(b : ℕ) := by
   rw [Fin.val_add, ← pow_add]
   simpa only [← hz.eq_orderOf] using pow_mod_orderOf z (a.val+b.val)
@@ -32,7 +33,8 @@ private theorem power_mul {F : Type*} [Field F] {z : F} (hz : IsPrimitiveRoot z 
   rw [← pow_mul]
   simpa only [← hz.eq_orderOf] using pow_mod_orderOf z (a.val*b.val)
 
-private theorem shift_den {F : Type*} [Field F] {z : F} (hz : IsPrimitiveRoot z 128)
+/-- Translation of distinct exponents preserves distinct orbit values. -/
+theorem shift_den {F : Type*} [Field F] {z : F} (hz : IsPrimitiveRoot z 128)
     (u v i : Fin 128) (h : i ≠ v) :
     z^((i-u : Fin 128) : ℕ) ≠ z^((v-u : Fin 128) : ℕ) := by
   intro he
@@ -48,18 +50,17 @@ private theorem scale_ratio {F : Type*} [Field F] {c : F} (hc : c ≠ 0) (x v : 
 set_option maxRecDepth 10000
 set_option exponentiation.threshold 1000
 
-/-- A separated source pair can be translated to zero and conjugated to one
-of the six auxiliary rows. Triple-product equalities lift by the cyclotomic
-norm bound and then reduce in the auxiliary field. -/
-theorem penaltyBound_of_six {p : ℕ} [Fact p.Prime] [NeZero (128 : ZMod p)]
-    {F : Type*} [Field F] [NeZero (128 : F)]
-    (D : Fin 128 ↪ ZMod p) (E : Fin 128 ↪ F)
-    (z : ZMod p) (w : F) (hz : IsPrimitiveRoot z 128) (hw : IsPrimitiveRoot w 128)
-    (hD : ∀ i, D i=z^(i : ℕ)) (hE : ∀ i, E i=w^(i : ℕ))
-    (large : 2^448 < p^2) (rows : ∀ d : Fin 128, StandardRow d → RowPenaltyBound E 0 d) :
-    PenaltyBound D := by
-  classical
-  intro u v hne hanti
+/-- Translate the base sites, then relabel exponents so that the target base
+difference is one of the six standard rows. This affine relabeling preserves
+the reflection relation between all four sites. -/
+theorem normalize_pair {K F : Type*} [Field K] [Field F] (D : Fin 128 ↪ K) (E : Fin 128 ↪ F)
+    (z : K) (w : F) (hz : IsPrimitiveRoot z 128) (hw : IsPrimitiveRoot w 128)
+    (hD : ∀ i,D i=z^(i : ℕ)) (hE : ∀ i,E i=w^(i : ℕ)) (u v : Fin 128)
+    (hne : u ≠ v) (hanti : D u ≠ -D v) :
+    ∃ (e : Fin 128 ↪ Fin 128) (s : F), IsPrimitiveRoot s 128 ∧ e u=0 ∧ StandardRow (e v) ∧
+      (∀ i, ratio D u v i = (z^(i-u).val-1)/(z^(i-u).val-z^(v-u).val)) ∧
+      (∀ i, ratio E (e u) (e v) (e i) = (s^(i-u).val-1)/(s^(i-u).val-s^(v-u).val)) ∧
+      (∀ a c, e a + e c = e u + e v → a+c=u+v) := by
   let d := v-u
   have shift (i : Fin 128) : D i=z^(u : ℕ)*z^((i-u : Fin 128) : ℕ) := by
     rw [← power_add hz,add_comm u (i-u), sub_add_cancel,hD]
@@ -88,8 +89,6 @@ theorem penaltyBound_of_six {p : ℕ} [Fact p.Prime] [NeZero (128 : ZMod p)]
     simpa only [sub_add_cancel] using congrArg (·+u) eq⟩
   have eu : e u=0 := by change b*(u-u)=0; simp
   have ev : e v=b*d := rfl
-  apply rowPenaltyBound_transfer D E e u v _ (by rw [eu,ev]; exact rows _ hr)
-  let U := ((univ : Finset (Fin 128)).erase u).erase v
   let ix (i : Fin 128) : ℕ := (i-u).val
   have nz : z^u.val ≠ 0 := pow_ne_zero _ (by
     intro h
@@ -105,6 +104,33 @@ theorem penaltyBound_of_six {p : ℕ} [Fact p.Prime] [NeZero (128 : ZMod p)]
     change (E (mapSite u)-E (mapSite i))/(E (mapSite v)-E (mapSite i))=_
     rw [emul,emul,emul,sub_self,Fin.val_zero,pow_zero]
     rw [← neg_sub (s^(ix i)) 1, ← neg_sub (s^(ix i)) (s^d.val),neg_div_neg_eq]
+  refine ⟨e,s,hs,eu,ev ▸ hr,rD,rE,?_⟩
+  intro a c he
+  let : CommRing (Fin 128) := Fin.instCommRing _
+  have eq : e (a+c-u)=e v := by
+    change b*((a+c-u)-u)=b*(v-u)
+    change b*(a-u)+b*(c-u)=b*(u-u)+b*(v-u) at he
+    linear_combination he
+  have out := e.injective eq
+  linear_combination out
+
+/-- A separated source pair can be translated to zero and conjugated to one
+of the six auxiliary rows. Triple-product equalities lift by the cyclotomic
+norm bound and then reduce in the auxiliary field. -/
+theorem penaltyBound_of_six {p : ℕ} [Fact p.Prime] [NeZero (128 : ZMod p)]
+    {F : Type*} [Field F] [NeZero (128 : F)]
+    (D : Fin 128 ↪ ZMod p) (E : Fin 128 ↪ F)
+    (z : ZMod p) (w : F) (hz : IsPrimitiveRoot z 128) (hw : IsPrimitiveRoot w 128)
+    (hD : ∀ i, D i=z^(i : ℕ)) (hE : ∀ i, E i=w^(i : ℕ))
+    (large : 2^448 < p^2) (rows : ∀ d : Fin 128, StandardRow d → RowPenaltyBound E 0 d) :
+    PenaltyBound D := by
+  classical
+  intro u v hne hanti
+  let d := v-u
+  let ix (i : Fin 128) : ℕ := (i-u).val
+  obtain ⟨e,s,hs,eu,hr,rD,rE,_⟩ := normalize_pair D E z w hz hw hD hE u v hne hanti
+  apply rowPenaltyBound_transfer D E e u v _ (by rw [eu]; exact rows _ hr)
+  let U := ((univ : Finset (Fin 128)).erase u).erase v
   intro x hx y hy A hA B hB hsame
   obtain ⟨hAs,hAc⟩ := mem_powersetCard.mp hA
   obtain ⟨hBs,hBc⟩ := mem_powersetCard.mp hB
