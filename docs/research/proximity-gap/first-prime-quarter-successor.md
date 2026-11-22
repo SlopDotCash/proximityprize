@@ -68,7 +68,7 @@ A small sharp example is the order-eight subgroup of $\mathbb F_{17}^{\times}$ w
 
 ## Split polynomials with a common remainder
 
-This section concerns the profile with one single-core site and three two-core sites. It restates that profile as a statement about four vanishing polynomials, shows that any realization is over budget, and records an exhaustive search at small lengths. It does not decide the production case.
+This section restates the profile with one single-core site and three two-core sites as a statement about four vanishing polynomials, shows that any realization is over budget, and records exhaustive searches at small lengths for that profile and for all four-head families. It does not decide the production case.
 
 **Structure.** All six pair overlaps sum to $12h-12=6(2h-2)$, so every difference $f_a-f_b$ has degree exactly $2h-2$ and its roots are exactly $C_a\cap C_b$. Each perfect matching of the heads carries one two-core site. A star of three pairs through one head would force $2|S|=2h-3$ for the three other omitted classes, so the three two-core pairs form a triangle. Number the heads so that the triangle is $\{0,1,2\}$, let $S_i$ be the triple sites that omit head $i$, and let $v_i$ be the monic polynomial vanishing on $S_i$. Then $|S_0|=|S_1|=|S_2|=h-1$, $|S_3|=h-2$, the single-core site lies in $C_3$, and
 $$
@@ -86,16 +86,29 @@ So $v_0,v_1,v_2$ are proportional on $S_3$: up to scalars they have **one common
 
 **The concurrent case stays within budget.** If the three sites $r_{ab}$ coincide, the four polynomials $v_0,v_1,v_2,(X-r)v_3$ lie in one pencil and vanish on four disjoint fibers of size $h-1$. Each of the four remaining sites can join only one core, because the four heads take pairwise distinct values there. Giving one remaining site to each core covers every site, and these heads then have exactly $4h$ bad scalars, which equals the budget. One family of such pencils needs $h-1=2m$ with $m$ dividing $4h$: the map $x^m+c\,x^{-m}$ has fibers of size $2m$ inside the group of $4h$-th roots of unity. This forces $h\in\{3,5,9\}$. For $h$ a power of two the degree $h-1$ is odd and coprime to $4h$, so no power map can be a factor.
 
-**Search.** For $h=4,5,6$ and a prime just below $2^{31}$, every choice of $S_3$ and $S_0$ up to rotation was examined for further split members of the span of $v_0$, $v_3$ and $Xv_3$.
+**Search for this profile.** For $h=4,5,6,7$ and a prime just below $2^{31}$, every choice of $S_3$ and $S_0$ up to rotation was examined for further split members of the span of $v_0$, $v_3$ and $Xv_3$.
 
 | $h$ | Sites | Pairs $(S_3,S_0)$ | With a further split member | With two on disjoint sets | Configurations |
 |---:|---:|---:|---:|---:|---:|
 | 4 | 16 | 5460 | 1348 | 152 | 0 |
 | 5 | 20 | 406980 | 1272 | 108 | 0 |
 | 6 | 24 | 27457584 | 80 | 0 | 0 |
+| 7 | 28 | 1771619850 | 270 | 0 | 0 |
 
 At $h=5$ the 108 cases are the pencils $x^2+c\,x^{-2}$ with coincident sites. At $h=4$ the counts are the same at a second prime. No case has three distinct two-core sites on the domain.
 
-Small fields behave differently. At $h=4$ the field $\mathbb F_{17}$ has 4104 configurations and the thirteen primes from 97 to 641 have none. At $h=5$ the field $\mathbb F_{41}$ has nine and the thirteen primes from 61 to 661 have none. Exhaustive decoding of one $\mathbb F_{41}$ configuration finds **23 bad scalars on 20 sites**, which is $4h+3$ and confirms the converse numerically. These realizations disappear as the field grows, as with the earlier small-field counts.
+Small fields behave differently. At $h=4$ the field $\mathbb F_{17}$ has 4104 configurations and the thirteen primes from 97 to 641 have none. At $h=5$ the field $\mathbb F_{41}$ has nine and the thirteen primes from 61 to 661 have none. Exhaustive decoding of one $\mathbb F_{41}$ configuration finds **23 bad scalars on 20 sites**, which is $4h+3$ and confirms the converse numerically. [Search program](../../../scripts/probes/probe_successor_common_remainder.cpp) · [Exhaustive check over $\mathbb F_{41}$](../../../scripts/probes/probe_successor_converse_check.py)
 
-These are finite checks at three small lengths. They are evidence that this profile is not realized, and they are not a proof at the production length. The two profiles with five or six two-core sites, and received pairs without four large cores, are not covered. [Search program](../../../scripts/probes/probe_successor_common_remainder.cpp) · [Exhaustive check over $\mathbb F_{41}$](../../../scripts/probes/probe_successor_converse_check.py)
+**Search over all four-head families.** A second program does not assume a profile. It uses only that an over-budget family has four cores of size $3h-2$ beside an uncovered site, and that at most one of the six differences has fewer than $2h-2$ roots on the domain. Number the heads so that a short difference, if any, is $f_0-f_1$, and subtract $f_3$. Then $f_0=V_{Z_0}$, $f_1=\lambda_1V_{Z_1}$ and $f_2=\lambda_2V_{Z_2}$ for three site sets of size $2h-2$. The program enumerates the sets, takes the constants from repeated ratio values, and for each family chooses the received row by a dynamic programme that maximises the bad scalars with all four cores of size $3h-2$.
+
+| $h$ | Prime | Families | Admitting an uncovered site | Largest count | Over budget |
+|---:|---:|---:|---:|---:|---:|
+| 4 | 2147483489 | 15502872 | 2880 | 16 | 0 |
+| 5 | 2147482921 | 236400 | 0 | none | 0 |
+| 4 | 97 | 26875824 | 4080 | 19 | 48 |
+| 4 | 337 | 16093128 | 3456 | 19 | 288 |
+| 4 | 113, 193, 241, 257, 449, 641 | 15512712 to 23164848 | 2880 to 4176 | 16 | 0 |
+
+A family is listed once for every admissible numbering of its heads, so these are not orbit counts. Exhaustive decoding of one $\mathbb F_{97}$ family finds **19 bad scalars on 16 sites**, the predicted count. At 16 sites the budget itself is attained over every prime tested. Over-budget four-head families therefore occur over isolated small primes, here 97 and 337 at 16 sites and 41 at 20 sites, and over no large prime tested.
+
+These are finite checks at 16 and 20 sites, and up to 28 sites for the first profile. They are evidence that four heads do not exceed the budget one error past the quarter radius over a large prime. They are not a proof at the production length. Even if no family exists there in characteristic zero, families can occur over the finitely many primes dividing certain obstruction norms, as at 97, 337 and 41 above, and those norms are far too large to compare with the designated prime. Received pairs without four large cores are not covered. [All-profile search](../../../scripts/probes/probe_successor_four_head_census.cpp) · [Exhaustive decoding of a reported family](../../../scripts/probes/probe_successor_family_decode.py)

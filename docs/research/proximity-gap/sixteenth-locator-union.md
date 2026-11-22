@@ -64,7 +64,7 @@ distinct certified words. This exceeds $2^{30}$ by **1,659,868**. With eleven ad
 
 Suppose the two unsigned selections in the table receive $x$ and $y$ sites, respectively, for each possible locator value. Using the certified two-value allowance for each signature gives $419430x+1048576y\le4194304$. In particular $x+2y\le10$ and $y\le4$. A root set having $r,s$ selected anchors in the two pools receives $xr+ys$ certified extra agreements, counting both allocations when the two pools select the same anchor.
 
-Writing $I$ for incidence count and $U$ for union size, at most $(I-U)/(j-1)$ candidates of a given pool have at least $j\ge2$ hits, since each such candidate contributes at least $j-1$ to $I-U$. Gain 11 forces either $r\ge2$ or $s\ge3$. The unsigned table thus bounds this population by $152188880+476279216/2=390328488$, below the first budget. Gain 5 forces $r\ge1$ or $s\ge2$, for at most $1124276896+476279216=1600556112$ candidates, below the second budget. This counts only the memberships and the uniform per-mode allocations specified here. Different selections or certified coincidences between locator values could change the conclusion.
+Writing $I$ for incidence count and $U$ for union size, at most $(I-U)/(j-1)$ candidates of a given pool have at least $j\ge2$ hits, since each such candidate contributes at least $j-1$ to $I-U$. Gain 11 forces either $r\ge2$ or $s\ge3$. The unsigned table thus bounds this population by $152188880+476279216/2=390328488$, below the first budget. Gain 5 forces $r\ge1$ or $s\ge2$, for at most $1124276896+476279216=1600556112$ candidates, below the second budget. This counts only the memberships and the uniform per-mode allocations specified here. Different selections or smaller allocations for unsigned signatures with only one realized sign could change the conclusion.
 
 ## A gain-five upper bound for every allocation in the signed dictionary
 
@@ -81,13 +81,25 @@ For each signed mode, count the remaining candidates of that mode. At one anchor
 | 32 | 2 | 111,168,866 | 58 |
 | 64 | 1 | 125,988,044 | 60 |
 
-Sum the incidence bounds over the anchor orbits, divide by five for each qualifying remaining candidate, and add back all 364,739,488 set-aside candidates. This gives the stated ceiling. The bound includes arbitrary mixtures of full and partial allocations, whose agreements may accumulate across anchors. Other root products, additional signatures and equalities of field values shared by separately charged modes require different counts.
+Sum the incidence bounds over the anchor orbits, divide by five for each qualifying remaining candidate, and add back all 364,739,488 set-aside candidates. This gives the stated ceiling. The bound includes arbitrary mixtures of full and partial allocations, whose agreements may accumulate across anchors. For the two named primes the same bound applies to actual field symbols in the retained dictionary, as shown below.
 
 Run the optional verifier from the repository root. It checks every residual capacity and the resulting bound against direct enumeration on both small boards before recomputing the production table. [Exact census](../../../scripts/probes/probe_sixteenth_locator_union.cpp) · [Driver and independent controls](../../../scripts/probes/check_sixteenth_locator_union.py)
 
 ```sh
 python3 scripts/probes/check_sixteenth_locator_union.py --gain-five-cap --workers 3
 ```
+
+## Actual field symbols at the fifteen anchors
+
+On each named prime, two ordinary nine-sets of root product one yield the same locator value at an anchor $y$ exactly when their relative signed modes agree. The single-site primitive-unit certificate proves this at squared radius 127, covering every pair of supports; two nine-sets require only radius 18. In particular no omitted mode can have the same actual locator value as a retained mode. [Single-anchor transfer and sign calculation](mu128-unit-ellipsoid-transfer.md#single-anchor-locator-values-and-roots-of-unity)
+
+Keep the baseline center outside the fifteen serving fibers. At a site $x$ on one of them, let $y=x^h$. Here $H(x)\ne0$, so every actual received symbol $w(x)$ gives exactly one normalized field value
+\[
+ \ell_x=y^9+c-\frac{y\,w(x)}{H(x)}.
+\]
+The candidate $f_T$ agrees at this site precisely when $L_T(y)=\ell_x$. Therefore if each $\ell_x$ belongs to a retained signed mode at that anchor, or matches no admissible candidate there (including the baseline value zero), each agreement is charged to exactly one mode. Counting the actual sites now automatically gives $\sum_v x_{a,v}\le h$. Outside the serving fibers the baseline contributes exactly $10h-1$ agreements for each candidate, since its difference from $f_T$ vanishes precisely at the roots of $H$ or over $T$.
+
+It follows that **at most 2,053,061,200** of these prescribed-product words can gain five agreements under any such choice of actual field symbols. All 1,923,274 retained vectors and their realized signs are available. A center using an actual field value from an omitted mode can earn additional agreements. Bounds for those unrestricted centers and for codewords outside this construction remain open.
 
 ## Reproduction
 
