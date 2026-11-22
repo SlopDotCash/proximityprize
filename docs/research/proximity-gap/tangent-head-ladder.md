@@ -1,0 +1,90 @@
+# A tangent-head ladder of safe line-MCA radii at length $2^{30}$
+
+Let $n=2^{30}$. Over every finite field with at least $2^{128+\beta}$ elements
+and characteristic at least $2^{45}$, and on every injective evaluation domain
+of length $n$, the closed ball through the listed number of errors passes the
+128-bit line-MCA test at every positive interleaving width. Every prime field
+of that size satisfies the characteristic condition.
+
+| $\beta$ | Rate 1/2 | Rate 1/4 | Rate 1/8 | Rate 1/16 |
+|---:|---:|---:|---:|---:|
+| 32 | 307,759,023 | 527,124,673 | 671,088,385 | 738,197,249 |
+| 34 | 309,134,539 | 529,408,947 | 680,837,212 | 786,379,766 |
+| 36 | 310,191,320 | 530,904,312 | 687,671,509 | 798,744,899 |
+| 40 | 311,753,565 | 533,136,284 | 690,063,301 | 801,231,080 |
+| 44 | 312,769,668 | 534,507,592 | 691,551,680 | 802,743,393 |
+| 48 | 313,401,975 | 535,375,373 | 692,503,565 | 803,694,497 |
+| Johnson count | 314,491,699 | 536,870,913 | 694,116,762 | 805,306,370 |
+
+For comparison, the kernel-checked
+[weighted Johnson ladder](../../../ArkLib/Research/ProximityGap/Frontier/JohnsonBudgetLadder.lean)
+gives the following counts, with no condition on the characteristic.
+
+| $\beta$ | Rate 1/2 | Rate 1/4 | Rate 1/8 | Rate 1/16 |
+|---:|---:|---:|---:|---:|
+| 36 | 264,305,680 | 441,001,106 | 590,558,004 | 709,234,733 |
+| 40 | 286,064,053 | 497,724,075 | 654,203,879 | 768,608,494 |
+| 44 | 302,702,397 | 521,162,467 | 678,319,226 | 791,028,984 |
+| 48 | 309,697,726 | 530,597,867 | 687,862,086 | 799,681,249 |
+
+At $\beta=36$ the new counts are larger by 45,885,640, 89,903,206, 97,113,505
+and 89,510,166 errors. At $\beta=48$ they are larger by 3,704,249, 4,777,506,
+4,641,479 and 4,013,248.
+
+**Status.** Written lower bounds with an
+[exact-arithmetic certificate](../../../scripts/probes/probe_tangent_head_ladder.py)
+for every entry. They rest on Theorem D′ of the
+[section-incidence note](section-incidence-hodge-index.md#a-second-route-below-the-johnson-radius-tangent-heads),
+whose counting half is kernel-checked in
+[TangentHeadCount.lean](../../../ArkLib/Research/ProximityGap/Frontier/TangentHeadCount.lean)
+and whose geometric half is a written argument. Lean does not check the
+entries of this table. The weighted Johnson ladder is a Lean theorem and is
+the stronger statement for fields of small characteristic and from
+$\beta=64$ on.
+
+## Argument
+
+The allocation argument is the one of the
+[tangent-head windows](tangent-head-windows.md) with the budget $2n$ replaced
+by $2^\beta$. A field with at least $2^{128+\beta}$ elements has integer
+budget at least $2^\beta$. Two mixed Hasse interpolants contain every selected
+section. A factor carrying more labels than the cutoff divides both. A
+nonlinear factor of value degree $b$ is capped by Theorem D′, with
+$W=rt-1-(\ell-b)d$ and $m=a-j$ as before. A rich affine head carries at most
+$e+1$ labels.
+
+One input is added. Rich heads have joint cores of size at least $C=t-255$,
+and two distinct heads share at most $d$ core sites. Counting pairs of cores
+through each site gives at most
+$$
+\Bigl\lfloor\frac{n(C-d)}{C^2-nd}\Bigr\rfloor
+$$
+rich heads whenever $C^2>nd$. Allocations with more rich heads do not occur.
+Without this bound the trivial count $j(e+1)$ for $j$ up to the value degree
+would exceed the smaller budgets.
+
+The certificate uses the proportional-price test of the Lean window files.
+For $j$ rich heads and total value degree $\ell$, it checks that the heads
+fit the budget and that every value degree $b$ costs at most the share
+$b/(\ell-j)$ of what they leave. Each row lists its two shapes $(r,v,s)$ in
+the certificate.
+
+## What limits the entries
+
+* At $\beta=32$ the eighth-rate and sixteenth-rate entries end where the
+  four-head determinant test $4C>n+4d$ fails, at 671,088,385 and 738,197,249
+  errors. One step later the head count used here allows more rich heads than
+  the budget can pay for.
+* The other entries are limited by the cap for the largest nonlinear factor,
+  which grows like $b^2mW/(t^2-nd)$ while the value degree and order of the
+  interpolant grow as the Johnson count is approached. The search over shapes
+  was a heuristic bisection with a tolerance of 20,000 errors. Nearby shapes
+  may certify slightly more.
+* For $\beta\ge64$ the shapes needed exceed the range searched, and the
+  weighted Johnson ladder is stronger there.
+
+## Reproduce
+
+```bash
+python3 -O scripts/probes/probe_tangent_head_ladder.py
+```
