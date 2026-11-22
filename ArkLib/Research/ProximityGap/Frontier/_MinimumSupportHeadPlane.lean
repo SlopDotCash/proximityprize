@@ -199,6 +199,53 @@ theorem locator_cross_numerator_degree {F : Type*} [Field F]
     ((natDegree_add_le _ _).trans (max_le (leftTerm p b c u hp hb hc) (leftTerm q a c v hq ha hc)))
     hright)
 
+open Polynomial in
+/-- Common agreements at regular evaluation points are roots of the cleared numerator. -/
+theorem locator_common_agreement_bound {F X : Type*} [Field F] [DecidableEq X]
+    (z : X ↪ F) (S : Finset X) (p q r a b c : F[X]) (u v : F) (k J : ℕ)
+    (hp : p.natDegree ≤ k + J) (hq : q.natDegree ≤ k + J) (hr : r.natDegree ≤ k + J)
+    (ha : a.natDegree ≤ J) (hb : b.natDegree ≤ J) (hc : c.natDegree ≤ J)
+    (hne : C u * p * b * c + C v * q * a * c - r * a * b ≠ 0)
+    (hag : ∀ x ∈ S, a.eval (z x) ≠ 0 ∧ b.eval (z x) ≠ 0 ∧ c.eval (z x) ≠ 0 ∧
+      u * (p.eval (z x) / a.eval (z x)) + v * (q.eval (z x) / b.eval (z x)) =
+        r.eval (z x) / c.eval (z x)) : S.card ≤ k + 3 * J := by
+  classical
+  let N := C u * p * b * c + C v * q * a * c - r * a * b
+  have hN : N ≠ 0 := hne
+  have hdeg : N.natDegree ≤ k + 3 * J :=
+    locator_cross_numerator_degree p q r a b c u v k J hp hq hr ha hb hc
+  have hroot (x : X) (hx : x ∈ S) : N.eval (z x) = 0 := by
+    obtain ⟨hax, hbx, hcx, he⟩ := hag x hx
+    simp only [N, eval_sub, eval_add, eval_mul, eval_C]
+    apply sub_eq_zero.mpr
+    calc
+      u * p.eval (z x) * b.eval (z x) * c.eval (z x) +
+          v * q.eval (z x) * a.eval (z x) * c.eval (z x) =
+          (u * (p.eval (z x) / a.eval (z x)) + v * (q.eval (z x) / b.eval (z x))) *
+            (a.eval (z x) * b.eval (z x) * c.eval (z x)) := by
+        field_simp [hax, hbx] <;> ring
+      _ = r.eval (z x) * a.eval (z x) * b.eval (z x) := by
+        rw [he]
+        field_simp [hcx] <;> ring
+  obtain ⟨R, hR⟩ : Lagrange.nodal S z ∣ N :=
+    prod_X_sub_C_dvd S z z.injective.injOn N hroot
+  have hR0 : R ≠ 0 := by
+    intro h
+    apply hN
+    simp [hR, h]
+  rw [hR, natDegree_mul Lagrange.nodal_ne_zero hR0, Lagrange.natDegree_nodal] at hdeg
+  omega
+
+open Polynomial in
+/-- A shared regular zero of two collinear rational locators is a zero of the third numerator. -/
+theorem locator_collinear_numerator_root {F : Type*} [Field F]
+    (p q r a b c : F[X]) (u v x : F)
+    (hzero : C u * p * b * c + C v * q * a * c - r * a * b = 0)
+    (hp : p.eval x = 0) (hq : q.eval x = 0)
+    (ha : a.eval x ≠ 0) (hb : b.eval x ≠ 0) : r.eval x = 0 := by
+  have h := congrArg (fun f : F[X] => f.eval x) hzero
+  simpa [hp, hq, ha, hb, mul_eq_zero] using h
+
 /-- A residual with a full set of prescribed roots has a complementary locator. -/
 theorem residual_mul_nodal_complement {F X : Type*} [Field F] [DecidableEq X]
     (z : X ↪ F) (G B : Finset X) (hB : B ⊆ G) (v : F[X]) (hv : v ≠ 0)
@@ -324,3 +371,5 @@ end ProximityGap.MinimumSupportHeadPlane
 #print axioms ProximityGap.MinimumSupportHeadPlane.first_sponsor_weighted_locator_margins
 #print axioms ProximityGap.MinimumSupportHeadPlane.residual_mul_nodal_complement_of_degree_band
 #print axioms ProximityGap.MinimumSupportHeadPlane.locator_cross_numerator_degree
+#print axioms ProximityGap.MinimumSupportHeadPlane.locator_common_agreement_bound
+#print axioms ProximityGap.MinimumSupportHeadPlane.locator_collinear_numerator_root
