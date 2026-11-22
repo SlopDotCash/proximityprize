@@ -578,6 +578,7 @@ import ArkLib.Research.ProximityGap.Frontier.JohnsonBudgetLadder
 import ArkLib.Research.ProximityGap.Frontier.JohnsonCountFromNonprincipalWick
 import ArkLib.Research.ProximityGap.Frontier.JohnsonGridWitness
 import ArkLib.Research.ProximityGap.Frontier.JohnsonJetDimension
+import ArkLib.Research.ProximityGap.Frontier.JohnsonJetRoom
 import ArkLib.Research.ProximityGap.Frontier.JohnsonQuarticDomain
 import ArkLib.Research.ProximityGap.Frontier.JohnsonQuarticMca
 import ArkLib.Research.ProximityGap.Frontier.JointLocatorRounding
