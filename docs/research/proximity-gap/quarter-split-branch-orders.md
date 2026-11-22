@@ -13,6 +13,8 @@ In particular a $(2,3,7)$ triangle cover is impossible at all four possible pref
 | 134,217,727 | 0.064516 | A $(2,3,c)$ signature requires $c\ge10$. |
 | 268,435,454 | 0.031746 | A $(2,3,c)$ signature requires $c\ge8$. |
 
+The parameterized gcd estimate strengthens all four excess bounds and also bounds the permutation rank of the full pencil. [Suborbits and whole-cover signatures](quarter-split-suborbits.md)
+
 ## A variance bound on the ordered-pair genus
 
 Let $Y$ be the smooth projective normalization of the ordered distinct-pair curve of $W$. Its degree over the target is $m(m-1)$. It is connected by double transitivity of the geometric monodromy. The two coordinate maps $y_1,y_2$ to the source of $W$ both have degree $m-1$.
