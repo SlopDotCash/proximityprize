@@ -41,3 +41,27 @@ The first inequality bounds the incidence ratio in the MCA charge. The
 second bounds the list weight. A rational-function extension transfers the
 scalar list bound to every interleaving width.
 [Closed slot counts](../../../ArkLib/Research/ProximityGap/Frontier/FineGridFirstOrderSecurity.lean) · [Canonical first-order field recovery](../../../ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/AutomaticHybrid.lean)
+
+## Every fixed physical rate
+
+Let `0<R<1` and `g(R)=3 sqrt(R)(1−sqrt(R))²/32`. The canonical
+first-order agreement threshold `a₁(R)` satisfies `a₁(R)+2g(R)≤sqrt(R)`.
+Indeed, put `x=sqrt(R)` and `s=sqrt(R(5−R)(2−R))`. Rationalizing the
+threshold gives
+
+$$
+(x-a_1(R))(x(8-R)-3R+2s)=3R(1-x)^2.
+$$
+
+The second factor is positive and at most `16x`. Taking agreement
+`sqrt(R)−g(R)` therefore leaves at least `g(R)` of interpolation slack.
+For the explicit rate-only coefficients `E(R)` and `M(R)` in ArkLib's
+exception and multiplicity estimates, put
+`C(R)=max(E(R)/g(R)^5, 1+M(R)/g(R))`. For every integer `Q≥1`, prime
+`p≥Q C(R)n²`, prescribed domain and `2≤k≤Rn`, the line-MCA error at
+`1−sqrt(R)+g(R)` is at most `1/Q`. At the actual rate `R=k/n`, the length
+condition `n sqrt(R) g(R)≥2` gives the same bound at the finite-length
+Johnson radius plus `g(R)/2`. No rate restriction beyond `0<R<1` enters
+this statement. The four-profile bound above gives a smaller explicit field
+requirement throughout its specified interval.
+[Every-rate Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/EveryRateJohnsonGain.lean) · [Canonical coefficients](../../../ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/FirstOrder/AutomaticBounds.lean)

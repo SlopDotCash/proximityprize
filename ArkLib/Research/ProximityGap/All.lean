@@ -346,6 +346,7 @@ import ArkLib.Research.ProximityGap.Frontier.DyadicParityLemma
 import ArkLib.Research.ProximityGap.Frontier.DyadicPenalty1024
 import ArkLib.Research.ProximityGap.Frontier.DyadicPeriodCeiling
 import ArkLib.Research.ProximityGap.Frontier.DyadicSidonTriple
+import ArkLib.Research.ProximityGap.Frontier.DyadicSquareOrbit
 import ArkLib.Research.ProximityGap.Frontier.DyadicTwoCenterReflection
 import ArkLib.Research.ProximityGap.Frontier.DyadicUnitEllipsoid
 import ArkLib.Research.ProximityGap.Frontier.DyadicUnitExponentBound
@@ -474,6 +475,7 @@ import ArkLib.Research.ProximityGap.Frontier.GeometricIncompleteSumNoGo
 import ArkLib.Research.ProximityGap.Frontier.GeometricWordLocator
 import ArkLib.Research.ProximityGap.Frontier.GoldilocksMixedTrace
 import ArkLib.Research.ProximityGap.Frontier.GradedAntipodalVanishingLower
+import ArkLib.Research.ProximityGap.Frontier.HalfCoreWeightedJets
 import ArkLib.Research.ProximityGap.Frontier.HalfFourFiberParity
 import ArkLib.Research.ProximityGap.Frontier.HalfListSplitDifferences
 import ArkLib.Research.ProximityGap.Frontier.HalfRadiusListMcaSeparation
