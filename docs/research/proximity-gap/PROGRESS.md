@@ -2987,3 +2987,11 @@ Lean proves the half-rate line-MCA bound of $2^{-128}$ through 324 errors at len
 For lengths divisible by 4096 up to 262,144 in the named 237-bit field, the scaled construction covers error fractions 1281/4096, 2203/4096, 2817/4096 and 3221/4096 at rates one half through one sixteenth. The same proof works at arbitrary positive multiples under its explicit field budget. [Scaled theorem](../../../ArkLib/Research/ProximityGap/Frontier/ScaledSecondOrderPrimeCuts.lean)
 
 At length $2^{30}$ in the BLS scalar field, Lean proves the rate-one-sixteenth line-MCA bound through 3206/4096 of the sites on every injective evaluation domain. Accounting for the dimension at each interpolation stage adds 1,048,576 errors to the 3202/4096 result. [Production theorem](../../../ArkLib/Research/ProximityGap/Frontier/SecondOrderSharpProduction.lean)
+
+### Sharp six-site projective bound at every dyadic order
+
+Lean now proves that a nonsingular projectivity carrying seven distinct dyadic sites into a second grid of the same order is a scaling or reciprocal scaling. This applies in characteristic zero and, for order $n$, in any split prime field with $p>2^n$. Source and target cosets can be prescribed independently. A non-dihedral involution attains six matches at every dyadic order at least eight. The proof excludes five matches on the exceptional conic, including fixed sites, and then descends by parity. [Proof and theorem links](six-dyadic-projective-matches.md)
+
+### A smaller Stepanov bound on prime-field projective intersections
+
+At length $2^{30}$ and prime characteristic greater than $2^{40}$, a nonsingular projectivity that is neither a scaling nor a reciprocal scaling matches at most **3,143,679** subgroup sites. Counting the independent coefficient slots at each derivative order lowers the previous bound of 3,960,117. The transposition cap is consequently **1,571,839**. Lean verifies the resulting sufficient list budgets through $n-k-2$ errors at all four prize rates on every smooth domain. The named production budgets are below this near-capacity range. [Thresholds, parameters and independent integer optimization](reflection-list-sampling.md)
