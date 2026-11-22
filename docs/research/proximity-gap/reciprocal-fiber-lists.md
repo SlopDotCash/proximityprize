@@ -2,7 +2,7 @@
 
 At length $n=2^{30}$ the following error counts already produce more than $B=\lfloor p/2^{128}\rfloor$ distinct scalar Reed–Solomon codewords in one closed ball. They apply to every positive interleaving width by repeating a scalar row. The gains count additional agreements relative to the prescribed-product construction at the same quotient order. The error counts are upper bounds on first failure. A matching bound on lists about every center is open.
 
-A subsequent two-anchor construction improves the half-rate entries below to **500520279** and **502025926** first-failure ceilings. [Signed two-anchor bounds](signed-two-anchor-lists.md) At rate $1/16$, an exact count of overlapping pools at fifteen anchors gives ceilings **989855735** and **989855741**. [Fifteen-anchor construction](sixteenth-locator-union.md)
+A subsequent two-anchor construction improves the half-rate entries below to **500520279** and **502025926** first-failure ceilings. [Signed two-anchor bounds](signed-two-anchor-lists.md) At rate $1/16$, an exact count of overlapping pools at fifteen anchors gives ceilings **989855734** and **989855741**. [Fifteen-anchor construction](sixteenth-locator-union.md)
 
 | Named field | Budget | Rate | Quotient order $M$ | Gain | First failure at or before |
 |---|---:|---:|---:|---:|---:|

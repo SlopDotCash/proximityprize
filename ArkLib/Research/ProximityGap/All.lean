@@ -542,6 +542,7 @@ import ArkLib.Research.ProximityGap.Frontier.ListSupportRank
 import ArkLib.Research.ProximityGap.Frontier.LiuZhouSplitRecursion
 import ArkLib.Research.ProximityGap.Frontier.LocatorPadding
 import ArkLib.Research.ProximityGap.Frontier.LocatorShortening
+import ArkLib.Research.ProximityGap.Frontier.LocatorSignedPacking
 import ArkLib.Research.ProximityGap.Frontier.LogRatioTowerBoundedIncrement
 import ArkLib.Research.ProximityGap.Frontier.LogRatioTowerExpForm
 import ArkLib.Research.ProximityGap.Frontier.LogarithmicSectionHeights
