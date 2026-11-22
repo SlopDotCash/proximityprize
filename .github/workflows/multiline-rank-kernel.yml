@@ -4,6 +4,7 @@ on:
     branches: [research/multiline-relation-shortening]
   pull_request:
     paths:
+      - ArkLib/Research/ProximityGap/Frontier/_IncidenceDistinctTripleMoment.lean
       - ArkLib/Research/ProximityGap/Frontier/_IncidenceDependencyArithmetic.lean
       - ArkLib/Research/ProximityGap/Frontier/_PencilCycleShortening.lean
       - ArkLib/Research/ProximityGap/Frontier/_RichPencilCycleBudget.lean
@@ -137,4 +138,18 @@ jobs:
           assert len(results) == 3
           for name, axioms in results:
               assert {axiom.strip() for axiom in axioms.split(',')} <= {'propext', 'Classical.choice', 'Quot.sound'}, name
+          PY
+      - name: Check distinct triple moment and audit axioms
+        run: |
+          set -o pipefail
+          lake env lean ArkLib/Research/ProximityGap/Frontier/_IncidenceDistinctTripleMoment.lean | tee distinct-triple-axioms.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          text = Path('distinct-triple-axioms.log').read_text()
+          results = re.findall(r"'ProximityGap\.IncidenceDistinctTripleMoment\.([^']+)' (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)", text)
+          assert {name for name, _ in results} == {'falling_cubic_lower', 'first_sponsor_distinct_triple_ledgers_incompatible'}
+          assert len(results) == 2
+          for name, axioms in results:
+              assert {axiom.strip() for axiom in axioms.split(',') if axiom.strip()} <= {'propext', 'Classical.choice', 'Quot.sound'}, name
           PY
