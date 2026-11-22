@@ -1,11 +1,12 @@
 name: Multi-line relation rank and shortening
 on:
   push:
-    branches: [research/multiline-relation-shortening]
+    branches: [research/multiline-relation-shortening, feat/minimum-support-head-plane]
   pull_request:
     paths:
       - ArkLib/Research/ProximityGap/Frontier/_IncidenceDependencyArithmetic.lean
       - ArkLib/Research/ProximityGap/Frontier/_PencilCycleShortening.lean
+      - ArkLib/Research/ProximityGap/Frontier/_MinimumSupportHeadPlane.lean
       - ArkLib/Research/ProximityGap/Frontier/_RichPencilDisjoint.lean
       - ArkLib/Research/ProximityGap/Frontier/_RichPencilCycleBudget.lean
       - ArkLib/Research/ProximityGap/Frontier/_ActiveErrorAffineCollapse.lean
@@ -154,4 +155,18 @@ jobs:
           witness = re.search(r"'ProximityGap\.RichPencilDisjoint\.other_heads_eq_of_collinear_triples' depends on axioms:\s*\[([^\]]*)\]", text)
           assert witness is not None
           assert {axiom.strip() for axiom in witness[1].split(',')} <= {'propext', 'Classical.choice', 'Quot.sound'}
+          PY
+      - name: Check minimum support and audit axioms
+        run: |
+          set -o pipefail
+          lake env lean ArkLib/Research/ProximityGap/Frontier/_MinimumSupportHeadPlane.lean | tee minimum-support-axioms.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          text = Path('minimum-support-axioms.log').read_text()
+          results = re.findall(r"'ProximityGap\.MinimumSupportHeadPlane\.([^']+)' depends on axioms:\s*\[([^\]]*)\]", text)
+          assert {name for name, _ in results} == {'residual_on_minimum_support', 'agreement_on_residual_line'}
+          assert len(results) == 2
+          for name, axioms in results:
+              assert {axiom.strip() for axiom in axioms.split(',')} <= {'propext', 'Classical.choice', 'Quot.sound'}, name
           PY

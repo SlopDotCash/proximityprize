@@ -2758,6 +2758,7 @@ import ArkLib.Research.ProximityGap.Frontier._MaxL1ShellMassNoGo
 import ArkLib.Research.ProximityGap.Frontier._MaximalMinorIdealCertificate
 import ArkLib.Research.ProximityGap.Frontier._MaximizerCarryingReduction
 import ArkLib.Research.ProximityGap.Frontier._MetaTheoremSecondOrderFloor
+import ArkLib.Research.ProximityGap.Frontier._MinimumSupportHeadPlane
 import ArkLib.Research.ProximityGap.Frontier._MixedMomentPhaseBlind
 import ArkLib.Research.ProximityGap.Frontier._MixingTimeCanonicalPathsCeiling
 import ArkLib.Research.ProximityGap.Frontier._MomentBoundFlooredAtN
