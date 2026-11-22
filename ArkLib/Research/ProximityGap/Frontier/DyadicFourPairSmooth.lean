@@ -12,19 +12,19 @@ namespace ProximityGap.DyadicFourPairSmooth
 open ReflectionListSampling Code
 variable {I : Type} [Fintype I] {p : ℕ} [Fact p.Prime]
 
-/-- A classification of four pairs on a power orbit holds on every scaled, reindexed coset. -/
-theorem dihedral_of_power (D : I ↪ ZMod p) [ReedSolomon.Smooth D] {m : ℕ} (hn : Fintype.card I=2^m)
-    (root_cap : ∀ (z : ZMod p), IsPrimitiveRoot z (2^m) → ∀ (g : Fin 4 × Fin 2 ↪ Fin (2^m))
+/-- A classification of disjoint pairs on a power orbit holds on every scaled, reindexed coset. -/
+theorem dihedral_of_power (D : I ↪ ZMod p) [ReedSolomon.Smooth D] {m L : ℕ} (hn : Fintype.card I=2^m)
+    (root_cap : ∀ (z : ZMod p), IsPrimitiveRoot z (2^m) → ∀ (g : Fin L × Fin 2 ↪ Fin (2^m))
       (a b c : ZMod p), a^2+b*c≠0 →
       (∀ i,c*z^(g (i,0)).val*z^(g (i,1)).val-a*(z^(g (i,0)).val+z^(g (i,1)).val)=b) →
-      a=0 ∨ c=0 ∧ b=0) (q : Fin 4 × Fin 2 ↪ I) (a b c : ZMod p) (det : a^2+b*c≠0)
+      a=0 ∨ c=0 ∧ b=0) (q : Fin L × Fin 2 ↪ I) (a b c : ZMod p) (det : a^2+b*c≠0)
     (law : ∀ i, c*D (q (i,0))*D (q (i,1))-a*(D (q (i,0))+D (q (i,1)))=b) : a=0 ∨ c=0 ∧ b=0 := by
   obtain ⟨z,s,f,hz,hD⟩ := SmoothPowerOrbit.reindex D hn
   let g := q.trans f.toEmbedding
   have det' : (a*(s:ZMod p))^2+b*(c*(s:ZMod p)^2)≠0 := by
     rw [show (a*(s:ZMod p))^2+b*(c*(s:ZMod p)^2)=(a^2+b*c)*(s:ZMod p)^2 by ring]
     exact mul_ne_zero det (pow_ne_zero _ s.ne_zero)
-  have law' (i : Fin 4) : c*(s:ZMod p)^2*z^(g (i,0)).val*z^(g (i,1)).val-
+  have law' (i : Fin L) : c*(s:ZMod p)^2*z^(g (i,0)).val*z^(g (i,1)).val-
       (a*(s:ZMod p))*(z^(g (i,0)).val+z^(g (i,1)).val)=b := by
     have h := law i
     simp only [hD] at h

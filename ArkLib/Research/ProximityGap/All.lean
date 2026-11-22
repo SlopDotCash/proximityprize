@@ -584,6 +584,12 @@ import ArkLib.Research.ProximityGap.Frontier.JohnsonJetRoom
 import ArkLib.Research.ProximityGap.Frontier.JohnsonQuarticDomain
 import ArkLib.Research.ProximityGap.Frontier.JohnsonQuarticMca
 import ArkLib.Research.ProximityGap.Frontier.JointLocatorRounding
+import ArkLib.Research.ProximityGap.Frontier.JointMinorGram
+import ArkLib.Research.ProximityGap.Frontier.JointMinorNorm
+import ArkLib.Research.ProximityGap.Frontier.JointPair512
+import ArkLib.Research.ProximityGap.Frontier.JointPairCounting
+import ArkLib.Research.ProximityGap.Frontier.JointPairEnergy
+import ArkLib.Research.ProximityGap.Frontier.JointPairThreshold
 import ArkLib.Research.ProximityGap.Frontier.K2Affine
 import ArkLib.Research.ProximityGap.Frontier.K2Multiplicity
 import ArkLib.Research.ProximityGap.Frontier.K2NearAffine

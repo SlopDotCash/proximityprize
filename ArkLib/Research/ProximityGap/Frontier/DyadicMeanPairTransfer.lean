@@ -15,10 +15,12 @@ open Finset Polynomial DyadicPairMinorTransfer ArkLib.ProximityGap.Frontier.Dyad
 def form {R : Type*} [CommRing R] (x y : Fin 3 → R) : R :=
   minor (x 0) (y 0) (x 1) (y 1) (x 2) (y 2)
 
-private noncomputable def cert {n : ℕ} (x y : Fin 3 → Fin n) : ℤ[X] :=
+/-- The integral polynomial representing an ordered three-pair determinant. -/
+noncomputable def cert {n : ℕ} (x y : Fin 3 → Fin n) : ℤ[X] :=
   form (fun i => X^(x i).val) (fun i => X^(y i).val)
 
-private theorem eval_cert {n : ℕ} (x y : Fin 3 → Fin n) {K : Type*} [Field K] (w : K) :
+/-- Evaluating the integral certificate evaluates the marked pairs. -/
+theorem eval_cert {n : ℕ} (x y : Fin 3 → Fin n) {K : Type*} [Field K] (w : K) :
     (cert x y).eval₂ (Int.castRingHom K) w=form (fun i => w^(x i).val) (fun i => w^(y i).val) := by
   simp only [cert,form,minor,eval₂_mul,eval₂_add,eval₂_sub,eval₂_pow,eval₂_X]
 
@@ -69,6 +71,27 @@ theorem norm_bound {m : ℕ} (x y : Fin 3 → Fin (2^(m+1))) (different : ∀ i,
   rw [←Int.cast_abs,←Nat.cast_natAbs] at bound
   exact_mod_cast bound
 
+/-- A vanishing modular determinant has two reciprocal roots, giving square
+divisibility of its integer norm even without a height assumption. -/
+theorem square_dvd {n p : ℕ} [Fact p.Prime] [NeZero n] [NeZero (n:ZMod p)]
+    {z : ZMod p} (len : 2<n) (hz : IsPrimitiveRoot z n) (x y : Fin 3 → Fin n)
+    (zero : form (fun i => z^(x i).val) (fun i => z^(y i).val)=0) :
+    (p:ℤ)^2 ∣ cycloNorm n (cert x y) := by
+  have nz := hz.ne_zero (by omega)
+  apply RatioProductNorm.square_dvd_of_reciprocal_roots len hz _ (by rwa [eval_cert])
+  rw [eval_cert]
+  let X (i : Fin 3) := z^(x i).val
+  let Y (i : Fin 3) := z^(y i).val
+  have nx (i) : X i≠0 := pow_ne_zero _ nz
+  have ny (i) : Y i≠0 := pow_ne_zero _ nz
+  have nzp : ∏ i, X i*Y i≠0 := prod_ne_zero_iff.mpr (fun i _ => mul_ne_zero (nx i) (ny i))
+  have identity : form (fun i => (X i)⁻¹) (fun i => (Y i)⁻¹)*(∏ i,X i*Y i)= -form X Y := by
+    simp only [form,minor,Fin.prod_univ_three]
+    field_simp [nx,ny]
+    ring
+  rw [show form X Y=0 from zero,neg_zero] at identity
+  simpa only [inv_pow] using (mul_eq_zero.mp identity).resolve_right nzp
+
 /-- A three-pair minor in a split prime field transfers to characteristic zero
 or another coprime characteristic if 54^φ(n)<p⁴. -/
 theorem transfer {m p : ℕ} [Fact p.Prime] [NeZero ((2^(m+1):ℕ):ZMod p)]
@@ -78,26 +101,15 @@ theorem transfer {m p : ℕ} [Fact p.Prime] [NeZero ((2^(m+1):ℕ):ZMod p)]
     (zero : form (fun i => z^(x i).val) (fun i => z^(y i).val)=0)
     (large : 54^(2^(m+1)).totient<p^4) :
     form (fun i => w^(x i).val) (fun i => w^(y i).val)=0 := by
-  have nz := hz.ne_zero (by positivity)
   rw [←eval_cert]
   apply eval_zero_of_cyclo_dvd hw
-  apply RatioProductNorm.dvd_of_reciprocal_roots len hz _ (by rwa [eval_cert]) _ _
-  · rw [eval_cert]
-    let X (i : Fin 3) := z^(x i).val
-    let Y (i : Fin 3) := z^(y i).val
-    have nx (i) : X i≠0 := pow_ne_zero _ nz
-    have ny (i) : Y i≠0 := pow_ne_zero _ nz
-    have nzp : ∏ i, X i*Y i≠0 := prod_ne_zero_iff.mpr (fun i _ => mul_ne_zero (nx i) (ny i))
-    have identity : form (fun i => (X i)⁻¹) (fun i => (Y i)⁻¹)*(∏ i,X i*Y i)= -form X Y := by
-      simp only [form,minor,Fin.prod_univ_three]
-      field_simp [nx,ny]
-      ring
-    rw [show form X Y=0 from zero,neg_zero] at identity
-    simpa only [inv_pow] using (mul_eq_zero.mp identity).resolve_right nzp
-  · by_contra! bad
-    have e := Nat.pow_le_pow_left bad 2
-    rw [←pow_mul] at e
-    exact (not_lt_of_ge e) ((norm_bound x y different).trans_lt large)
+  apply dvd_of_norm_zero
+  by_contra nonzero
+  have divides := Int.natAbs_dvd_natAbs.mpr (square_dvd len hz x y zero)
+  rw [Int.natAbs_pow,Int.natAbs_natCast] at divides
+  have e := Nat.pow_le_pow_left (Nat.le_of_dvd (Int.natAbs_pos.mpr nonzero) divides) 2
+  rw [←pow_mul] at e
+  exact (not_lt_of_ge e) ((norm_bound x y different).trans_lt large)
 
 end ProximityGap.DyadicMeanPairTransfer
 #print axioms ProximityGap.DyadicMeanPairTransfer.norm_bound
