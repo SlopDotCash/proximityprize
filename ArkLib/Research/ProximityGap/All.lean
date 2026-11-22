@@ -211,6 +211,7 @@ import ArkLib.Research.ProximityGap.Frontier.CliqueDecayPigeonholeVacuous
 import ArkLib.Research.ProximityGap.Frontier.CliqueOrbitFreeness
 import ArkLib.Research.ProximityGap.Frontier.ClosedManyLinePhase
 import ArkLib.Research.ProximityGap.Frontier.ClosedTwoLinePhase
+import ArkLib.Research.ProximityGap.Frontier.CollinearFreshMultiplicity
 import ArkLib.Research.ProximityGap.Frontier.CommonSectionChart
 import ArkLib.Research.ProximityGap.Frontier.ComplementHodgeWindows
 import ArkLib.Research.ProximityGap.Frontier.CompletedFirstPolar
@@ -342,6 +343,7 @@ import ArkLib.Research.ProximityGap.Frontier.E3StrataCharZero
 import ArkLib.Research.ProximityGap.Frontier.EffKatzConductorBarrier
 import ArkLib.Research.ProximityGap.Frontier.EighthCollinearOutlier
 import ArkLib.Research.ProximityGap.Frontier.EighthMobiusSites
+import ArkLib.Research.ProximityGap.Frontier.EighthOutlierArithmetic
 import ArkLib.Research.ProximityGap.Frontier.EighthQuotientCoreCap
 import ArkLib.Research.ProximityGap.Frontier.EighthRatePrime159
 import ArkLib.Research.ProximityGap.Frontier.EighthTransverseAttack
