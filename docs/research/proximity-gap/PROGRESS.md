@@ -1829,6 +1829,20 @@ The full fixed mixed rectangles and arbitrary small sets remain open.
 [Lean proofs](../../../ArkLib/Research/ProximityGap/Frontier/PaleyInversionTrace.lean) ·
 [Prime verifier](../../../scripts/probes/probe_sponsor_paley_trace.cpp)
 
+**Arbitrary subsets of a single product stratum.** At the first named prime
+every product stratum has Paley operator norm at most 115,376,587, and at
+the second at most 115,376,586. These bounds also hold on every projective
+image. Arbitrary subsets of a common stratum of sizes at least $2^{27}$
+therefore have relative discrepancy below $0.86$. In the original chart,
+centering the subset indicators and applying the certified full Fourier bound
+improves this to $0.646$; at sizes at least $9n/100$ the bound is $0.982$.
+A 512-point dyadic block
+partition reduces the fourth-moment certificate to one-dimensional four-point
+correlations of the packed Legendre rows. Four small fields reproduce the
+block moments directly from the original matrices. The finite matrix algebra
+is checked in Lean; the two production correlations use exact external
+integer calculations. [Proof and reproducibility](paley-product-traces.md#arbitrary-subsets-of-one-product-stratum)
+
 **Cancellation between product strata.** The union $2H\cup(1+g)H$ contains
 exactly two antipodal points in every product stratum of $H+H$. These cosets
 are disjoint and each has $2^{30}$ points. On arbitrary subsets of the two

@@ -605,6 +605,7 @@ import ArkLib.Research.ProximityGap.Frontier.PaleyMixedProductTraces
 import ArkLib.Research.ProximityGap.Frontier.PaleyMixedTraceSaving
 import ArkLib.Research.ProximityGap.Frontier.PaleyPairDeterminants
 import ArkLib.Research.ProximityGap.Frontier.PaleyPrescribedRectangle
+import ArkLib.Research.ProximityGap.Frontier.PaleyProductStratumNorm
 import ArkLib.Research.ProximityGap.Frontier.PaleyProjectiveMoment
 import ArkLib.Research.ProximityGap.Frontier.PaleyQuarticTraceMoment
 import ArkLib.Research.ProximityGap.Frontier.PaleyRowSampling
