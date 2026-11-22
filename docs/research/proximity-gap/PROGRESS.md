@@ -1872,6 +1872,29 @@ A power saving for the complete individual $T_0,T_1$ pair remains open.
 [Derivations and exact certificates](paley-product-traces.md#between-two-different-products) ·
 [Lean identities](../../../ArkLib/Research/ProximityGap/Frontier/PaleyMixedProductTraces.lean)
 
+**Independent subsets across mixed product runs at the second prime.**
+For two runs of $2^{20}$ consecutive product strata of opposite parity,
+arbitrary subsets of relative densities at least $3/4$ have relative
+discrepancy below $0.556$. At half density a smaller named control has all
+64 entries nonsquare on two length-sixteen runs. A separate power saving allows arbitrary
+paired source selections and an independent Rudin–Shapiro mask on every
+target seed. If $\bar a$ is the mean number of retained source sites per
+seed, the bound is $O(\bar a^{-1/2}+K^{-1})$ across $K$ strata. At
+$K=2^{20}$ and half source density it is below $0.0028$. The double
+character signs telescope on the constant target and the complementary
+convolutions have exact squared energy $2K$ times the input energy.
+On full orbits the source may select positions arbitrarily with equal
+even and odd counts per coset. At half source density the relative bound
+is below $0.000062$. Separately, any source selecting one site in each
+antipodal pair has exact cancellation against two prescribed adjacent
+product strata of the other parity when both antipodal pairs per target
+coset are independently retained or dropped. A residue-count identity
+proves the generalization to every even divisor of the orbit length.
+The same-stratum fourth moment cannot directly factor into two
+one-dimensional terms on a genuinely mixed block: its four shifted
+bilinear numerators are distinct absolutely irreducible polynomials.
+[Proof, computational scope, and finite controls](paley-independent-stratum-masks.md)
+
 **Zero discrepancy on full reciprocal product strata at the second prime.**
 For $A_s=T(s)\setminus\{0\}$ and any odd power $q$ of the generator, the
 rectangle $A_s\times(A_{q^2s}\cup A_{q^{-2}s})$ has discrepancy exactly
