@@ -26,41 +26,40 @@ def prime_factor(q):
     return q > 2 and q % 2 and all(q % j for j in range(3, isqrt(q)+1, 2))
 
 
-def gram_schmidt(basis):
-    """Exact row Gram–Schmidt coefficients and squared orthogonal lengths."""
-    n = len(basis)
-    mu = [[Fraction(0)]*n for _ in basis]
+def orthogonal_lengths(gram):
+    """Exact row Gram–Schmidt data from any positive definite rational Gram matrix."""
+    n = len(gram)
+    mu = [[Fraction(0)]*n for _ in range(n)]
     lengths = []
-    for i, row in enumerate(basis):
+    for i in range(n):
         for j in range(i):
-            dot = sum(x*y for x, y in zip(row, basis[j]))
             correction = sum(mu[i][k]*mu[j][k]*lengths[k] for k in range(j))
-            mu[i][j] = (dot-correction)/lengths[j]
-        norm = sum(x*x for x in row)
-        lengths.append(Fraction(norm)-sum(mu[i][k]**2*lengths[k] for k in range(i)))
-        require(lengths[-1] > 0, "dependent lattice basis")
+            mu[i][j] = (Fraction(gram[i][j])-correction)/lengths[j]
+        lengths.append(Fraction(gram[i][i])-sum(mu[i][k]**2*lengths[k] for k in range(i)))
+        require(lengths[-1] > 0, "invalid positive definite Gram matrix")
     return mu, lengths
 
 
-def sphere(basis, mu, lengths):
-    """Enumerate every lattice vector in the circumscribed Euclidean ball."""
-    n = len(basis)
+def lattice_coordinates(mu, lengths, radius):
+    """Enumerate the coefficient vectors in the closed ellipsoid of squared radius."""
+    n = len(lengths)
     coordinates = [0]*n
 
     def visit(i, remaining):
         if i < 0:
-            yield tuple(sum(coordinates[j]*basis[j][k] for j in range(n)) for k in range(n))
+            yield tuple(coordinates)
             return
-        center = -sum((coordinates[j]*mu[j][i] for j in range(i+1, n)), Fraction(0))
+        center = -sum((coordinates[j]*mu[j][i] for j in range(i+1,n) if coordinates[j]),
+                      Fraction(0))
         squared = remaining * center.denominator**2 / lengths[i]
-        radius = isqrt(squared.numerator // squared.denominator)
-        lo = -((radius-center.numerator) // center.denominator)
-        hi = (radius+center.numerator) // center.denominator
+        span = isqrt(squared.numerator // squared.denominator)
+        lo = -((span-center.numerator) // center.denominator)
+        hi = (span+center.numerator) // center.denominator
         for value in range(lo, hi+1):
             coordinates[i] = value
             yield from visit(i-1, remaining - (value-center)**2 * lengths[i])
 
-    yield from visit(n-1, Fraction(n*BOUND**2))
+    yield from visit(n-1, Fraction(radius))
 
 
 def verify(cert, prime, reverse):
@@ -87,10 +86,12 @@ def verify(cert, prime, reverse):
             "basis vector is outside the congruence kernel")
     if reverse:
         basis = list(reversed(basis))
-    mu, lengths = gram_schmidt(basis)
+    gram = [[sum(x*y for x,y in zip(u,v)) for v in basis] for u in basis]
+    mu, lengths = orthogonal_lengths(gram)
     require(prod(lengths) == index**2, "basis has incorrect lattice index")
     total = box = identities = 0
-    for v in sphere(basis, mu, lengths):
+    for coords in lattice_coordinates(mu, lengths, DIMENSION*BOUND**2):
+        v = tuple(sum(k*basis[j][i] for j,k in enumerate(coords)) for i in range(DIMENSION))
         total += 1
         if max(map(abs, v)) > BOUND:
             continue
