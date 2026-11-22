@@ -78,6 +78,21 @@ theorem pairCap_of_intersections {I F : Type} [Fintype I] [DecidableEq I] [Field
   · exact .inl ((mul_eq_zero.mp hh).resolve_right s.ne_zero)
   · exact .inr ⟨(mul_eq_zero.mp hh).resolve_right (pow_ne_zero _ s.ne_zero),hb⟩
 
+/-- Every smooth prime-field coset of length at least `u³` has the displayed
+two-thirds bound on its nonreflection pair fibers when the exponents fit below
+the characteristic. Choosing the largest admissible `u` gives `T ~ 3n/(2u)`. -/
+theorem cubic_cap {I : Type} [Fintype I] [DecidableEq I] {p n u T : ℕ} [Fact p.Prime]
+    (D : I ↪ ZMod p) [ReedSolomon.Smooth D] (hn : Fintype.card I=n)
+    (hu : 0<u) (size : u^3≤n) (char : u^2-1+n*(u-1)<p) (hT : 1≤T)
+    (enough : u^2-1+n*(u-1)+n*(2*u-1)<2*(T+1)*u^2) : PairCap D T := by
+  have pos : 0<u^2 := by positivity
+  apply pairCap_of_intersections D hn (C := (u^2-1+n*(u-1)+n*(2*u-1))/u^2) _
+    ((Nat.div_lt_iff_lt_mul pos).mpr enough) hT
+  intro J _ x y ix hx hy a b c d det diag anti law
+  apply (Nat.le_div_iff_mul_le pos).mpr
+  simpa only [Nat.mul_comm (Fintype.card J)] using
+    MobiusSubgroupBound.cubic_graph_graded (Fact.out : p.Prime) hu size char x y ix hx hy det diag anti law
+
 /-- The production intersection bound supplies at most 1,980,058
 non-dihedral transpositions on any smooth coset of length 2^30. -/
 theorem production_cap {I : Type} [Fintype I] [DecidableEq I] {p : ℕ} [Fact p.Prime]
@@ -100,9 +115,32 @@ theorem production_threshold {I : Type} [Fintype I] [DecidableEq I] {p : ℕ} [F
   threshold_of_payment D (hn.trans split.symm) hr (sponsor_payment large rate)
     (production_cap hp D hn) (by decide) upper lower m hm δ
 
+/-- The graded Stepanov intersection bound supplies at most 1,571,839
+non-dihedral transpositions on any smooth coset of length 2^30. -/
+theorem production_cap_graded {I : Type} [Fintype I] [DecidableEq I] {p : ℕ} [Fact p.Prime]
+    (hp : 2^40<p) (D : I ↪ ZMod p) [ReedSolomon.Smooth D] (hn : Fintype.card I=2^30) :
+    PairCap D 1571839 := by
+  apply pairCap_of_intersections D hn (C:=3143679) _ (by decide) (by decide)
+  intro J _ x y ix hx hy a b c d det diag anti law
+  exact MobiusSubgroupBound.production_graph_graded (Fact.out : p.Prime) hp x y ix hx hy det diag anti law
+
+/-- The improved budget interval at any of the four production dimensions, whenever
+the displayed sampling upper bound and common-product lower bound straddle
+the chosen budget. -/
+theorem production_threshold_graded {I : Type} [Fintype I] [DecidableEq I] {p : ℕ} [Fact p.Prime]
+    (hp : 2^40<p) (D : I ↪ ZMod p) [ReedSolomon.Smooth D] (hn : Fintype.card I=2^30)
+    {k r B : ℕ} [NeZero k] (split : k+3+r=2^30) (hr : 2≤r)
+    (large : 6144≤k) (rate : r+1≤16*k) (upper : bound k r 1571839≤B)
+    (lower : (k+3+r)*B < (k+3+r).choose (k+1)) (m : ℕ) (hm : 0 < m) (δ : ℝ) :
+    Lambda (interleavedCodeSet (κ := Fin m) (ReedSolomon.code D k : Set (I → ZMod p))) δ ≤
+      (B : ℕ∞) ↔ δ<((r+2 : ℕ):ℝ)/(Fintype.card I : ℝ) :=
+  threshold_of_payment D (hn.trans split.symm) hr (sponsor_payment large rate)
+    (production_cap_graded hp D hn) (by decide) upper lower m hm δ
+
 end ProximityGap.ReflectionListSampling
 
 #print axioms ProximityGap.ReflectionListSampling.pairCap_of_intersections
+#print axioms ProximityGap.ReflectionListSampling.cubic_cap
 #print axioms ProximityGap.ReflectionListSampling.production_cap
-
 #print axioms ProximityGap.ReflectionListSampling.production_threshold
+#print axioms ProximityGap.ReflectionListSampling.production_threshold_graded

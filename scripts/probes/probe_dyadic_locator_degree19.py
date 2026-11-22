@@ -87,7 +87,7 @@ def phase_cap(zeros, active, singles, unique_terms=4):
     return min(fixed_support, by_marking)
 
 
-def degree_cap(order, size, completion_cap, unique_terms=4, low_cutoff=5):
+def degree_cap(order, size, completion_cap, unique_terms=4, low_cutoff=5, distance=31):
     """Return the low-weight charge and charges by number of double imbalances."""
     blocks = order // 4
     low_weight = 0
@@ -100,7 +100,7 @@ def degree_cap(order, size, completion_cap, unique_terms=4, low_cutoff=5):
     for doubles in range(min(blocks, size // 2) + 1):
         total = 0
         for singles in range(size % 2, min(blocks - doubles, size - 2*doubles) + 1, 2):
-            orientations = signed_imbalance_cap(blocks, doubles, singles, 31)
+            orientations = signed_imbalance_cap(blocks, doubles, singles, distance)
             pairs = (size - 2*doubles - singles) // 2
             for triples in range(min(singles, pairs) + 1):
                 zero_blocks = blocks - doubles - singles
@@ -181,7 +181,7 @@ def check_small_domain():
         if max(counts.values()) > low + sum(charges):
             raise ArithmeticError((size, max(counts.values()), low, charges))
         low, charges = degree_cap(order, size, sums_products.__getitem__,
-                                  unique_terms=5, low_cutoff=7)
+                                  unique_terms=5, low_cutoff=7, distance=32)
         if max(product_counts.values()) > low + sum(charges):
             raise ArithmeticError(("five-term product cap", size, low, charges))
     # A field with accidental short sums must be rejected even at small order.

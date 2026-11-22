@@ -36,18 +36,31 @@ private theorem factor_degree {P Q G : F[X]} {h d : ℕ} (ng : G ≠ 0)
   rw [natDegree_mul q ng] at hc
   omega
 
-/-- The same primitive-direction degree is subtracted from every pair-overlap
-budget and added once to the transverse-intersection budget for the whole union. -/
-theorem overlap {s d : ℕ} (dom : I ↪ F) (u v : I → F)
-    (a b z : F[X] × F[X]) (ab : a ≠ b) (out : threeLineDeterminant a b z ≠ 0)
-    (L : Fin s → F[X] × F[X]) (inj : Function.Injective L)
+/-- Clear the denominator of a rational head against the primitive direction
+of a polynomial line. This determinant is nonzero exactly when the rational
+point with the given numerators and nonzero denominator is off that line. -/
+def rationalDet {K : Type*} [Field K] (φ : F →+* K) (a b : F[X] × F[X])
+    (denom num0 num1 : K[X]) : K[X] :=
+  (primitiveIntercept a b).map φ * (num1-denom*a.2.map φ) -
+    (primitiveSlope a b).map φ * (num0-denom*a.1.map φ)
+
+/-- A rational transverse head of height `c` has at most `d+c+h` simultaneous
+agreement sites in the whole cluster union. Each pair of polynomial cluster
+heads has overlap at most `d-h` for the same primitive direction degree `h`. -/
+theorem rational_overlap {K : Type*} [Field K] (φ : F →+* K) {s d c : ℕ}
+    (dom : I ↪ F) (u v : I → F)
+    (a b : F[X] × F[X]) (ab : a ≠ b) (L : Fin s → F[X] × F[X]) (inj : Function.Injective L)
     (coll : ∀ i, lineDeterminant a b (L i) = 0)
     (degA : a.1.natDegree ≤ d ∧ a.2.natDegree ≤ d)
-    (degZ : z.1.natDegree ≤ d ∧ z.2.natDegree ≤ d)
-    (deg : ∀ i, (L i).1.natDegree ≤ d ∧ (L i).2.natDegree ≤ d) :
+    (deg : ∀ i, (L i).1.natDegree ≤ d ∧ (L i).2.natDegree ≤ d)
+    (denom num0 num1 : K[X]) (degZ : denom.natDegree ≤ c)
+    (degN : num0.natDegree ≤ d+c ∧ num1.natDegree ≤ d+c)
+    (trans : rationalDet φ a b denom num0 num1 ≠ 0)
+    (S : Finset I) (agree : ∀ x ∈ S, num0.eval (φ (dom x)) = φ (u x) * denom.eval (φ (dom x)) ∧
+      num1.eval (φ (dom x)) = φ (v x) * denom.eval (φ (dom x))) :
     let h := max (primitiveIntercept a b).natDegree (primitiveSlope a b).natDegree
     (∀ i j, i ≠ j → (core dom u v (L i) ∩ core dom u v (L j)).card + h ≤ d) ∧
-      ((univ.biUnion fun i => core dom u v (L i)) ∩ core dom u v z).card ≤ d + h := by
+      ((univ.biUnion fun i => core dom u v (L i)) ∩ S).card ≤ d+c+h := by
   classical
   let P := primitiveIntercept a b
   let Q := primitiveSlope a b
@@ -86,32 +99,60 @@ theorem overlap {s d : ℕ} (dom : I ↪ F) (u v : I → F)
         simp only [eval_sub,eval_mul,hyi,hyj,sub_self] at hh
         simpa only [eval_sub] using (mul_eq_zero.mp hh.symm).resolve_left hq
     exact (Nat.add_le_add_right count _).trans cap
-  · let T := P * (z.2 - a.2) - Q * (z.1 - a.1)
-    have trans : T ≠ 0 := by
-      intro e
-      apply out
-      unfold threeLineDeterminant
-      rw [referenceIntercept_eq_content_mul_primitive ab, referenceSlope_eq_content_mul_primitive ab]
-      change _ * P * _ - _ * Q * _ = 0
-      dsimp [T] at e
-      linear_combination referenceContent a b * e
-    have bound : T.natDegree ≤ d + h := by
+  · have coord {N A : K[X]} (hn : N.natDegree≤d+c) (ha : A.natDegree≤d) :
+        (N-denom*A).natDegree≤d+c := by
+      have hz := natDegree_mul_le (p:=denom) (q:=A)
+      exact (natDegree_sub_le ..).trans (max_le hn (by omega))
+    have bv := coord degN.2 (natDegree_map_le.trans degA.2 : (a.2.map φ).natDegree ≤ d)
+    have br := coord degN.1 (natDegree_map_le.trans degA.1 : (a.1.map φ).natDegree ≤ d)
+    have pdeg : ((primitiveIntercept a b).map φ).natDegree ≤ h :=
+      natDegree_map_le.trans (le_max_left ..)
+    have qdeg : ((primitiveSlope a b).map φ).natDegree ≤ h :=
+      natDegree_map_le.trans (le_max_right ..)
+    have bound : (rationalDet φ a b denom num0 num1).natDegree≤d+c+h := by
       apply (natDegree_sub_le ..).trans (max_le ?_ ?_)
-      · have zdeg := (natDegree_sub_le z.2 a.2).trans (max_le degZ.2 degA.2)
-        exact (natDegree_mul_le ..).trans (by dsimp [h]; omega)
-      · have zdeg := (natDegree_sub_le z.1 a.1).trans (max_le degZ.1 degA.1)
-        exact (natDegree_mul_le ..).trans (by dsimp [h]; omega)
+      · exact (natDegree_mul_le ..).trans (by omega)
+      · exact (natDegree_mul_le ..).trans (by omega)
     apply le_trans _ bound
-    apply Polynomial.card_le_natDegree_of_injOn_of_eval_eq_zero trans dom.injective.injOn
+    apply Polynomial.card_le_natDegree_of_injOn_of_eval_eq_zero trans
+      (φ.injective.comp dom.injective).injOn
     intro x hx
-    obtain ⟨xU,xZ⟩ := mem_inter.mp hx
+    obtain ⟨xU,xS⟩ := mem_inter.mp hx
     obtain ⟨i,_,xi⟩ := mem_biUnion.mp xU
-    obtain ⟨zu,zv⟩ := (mem_filter.mp xZ).2
+    obtain ⟨ru,rv⟩ := agree x xS
     obtain ⟨iu,iv⟩ := (mem_filter.mp xi).2
     have eq := congrArg (fun w : F[X] => w.eval (dom x))
       (primitive_relation_of_lineDeterminant_eq_zero a b (L i) ab (coll i))
     simp only [eval_mul,eval_sub,iu,iv] at eq
-    simpa only [T,P,Q,eval_mul,eval_sub,zu,zv,sub_eq_zero] using eq
+    have mapped := congrArg φ eq
+    simp only [map_mul, map_sub] at mapped
+    change (rationalDet φ a b denom num0 num1).eval (φ (dom x)) = 0
+    simp only [rationalDet,eval_sub,eval_mul,eval_map_apply,ru,rv]
+    linear_combination denom.eval (φ (dom x)) * mapped
+
+/-- The same primitive-direction degree is subtracted from every pair-overlap
+budget and added once to the transverse-intersection budget for the whole union. -/
+theorem overlap {s d : ℕ} (dom : I ↪ F) (u v : I → F)
+    (a b z : F[X] × F[X]) (ab : a ≠ b) (out : threeLineDeterminant a b z ≠ 0)
+    (L : Fin s → F[X] × F[X]) (inj : Function.Injective L)
+    (coll : ∀ i, lineDeterminant a b (L i) = 0)
+    (degA : a.1.natDegree ≤ d ∧ a.2.natDegree ≤ d)
+    (degZ : z.1.natDegree ≤ d ∧ z.2.natDegree ≤ d)
+    (deg : ∀ i, (L i).1.natDegree ≤ d ∧ (L i).2.natDegree ≤ d) :
+    let h := max (primitiveIntercept a b).natDegree (primitiveSlope a b).natDegree
+    (∀ i j, i ≠ j → (core dom u v (L i) ∩ core dom u v (L j)).card + h ≤ d) ∧
+      ((univ.biUnion fun i => core dom u v (L i)) ∩ core dom u v z).card ≤ d + h := by
+  have trans : rationalDet (RingHom.id F) a b 1 z.1 z.2 ≠ 0 := by
+    intro e
+    apply out
+    unfold threeLineDeterminant
+    rw [referenceIntercept_eq_content_mul_primitive ab, referenceSlope_eq_content_mul_primitive ab]
+    simp only [rationalDet,Polynomial.map_id,one_mul] at e
+    linear_combination referenceContent a b * e
+  have h := rational_overlap (RingHom.id F) dom u v a b ab L inj coll degA deg 1 z.1 z.2
+    (c:=0) (by simp) (by simpa using degZ) trans (core dom u v z) (fun x hx => by
+      simpa using (mem_filter.mp hx).2)
+  simpa using h
 
 omit [Fintype I] in
 private theorem union_degree {s : ℕ} (C : Fin s → Finset I) (c b : ℕ)
@@ -128,6 +169,112 @@ private theorem union_degree {s : ℕ} (C : Fin s → Finset I) (c b : ℕ)
   have e := RateHalfRichHeadCensus.incidence_bound S (fun i => (size i).symm ▸ big i)
     (fun i j ij => by rw [inter,card_subtype]; exact (card_le_card (filter_subset ..)).trans (pair i j ij)) a
   simpa only [Fintype.card_coe] using e
+
+/-- An off-line rational head must pay for the gap between the union lower
+bound and the available regular agreements in denominator height or lost sites.
+The primitive direction degree cancels for every moment order `a < j`. -/
+theorem rational_tangent_cost {K : Type*} [Field K] (φ : F →+* K) {j d C c t ell : ℕ}
+    (dom : I ↪ F) (u v : I → F)
+    (base dir : F[X] × F[X]) (ab : base ≠ dir)
+    (L : Fin j → F[X] × F[X]) (inj : Function.Injective L)
+    (coll : ∀ i, lineDeterminant base dir (L i) = 0)
+    (degA : base.1.natDegree ≤ d ∧ base.2.natDegree ≤ d)
+    (deg : ∀ i, (L i).1.natDegree ≤ d ∧ (L i).2.natDegree ≤ d)
+    (big : ∀ i, C ≤ (core dom u v (L i)).card)
+    (denom num0 num1 : K[X]) (degZ : denom.natDegree ≤ c)
+    (degN : num0.natDegree ≤ d+c ∧ num1.natDegree ≤ d+c)
+    (trans : rationalDet φ base dir denom num0 num1 ≠ 0)
+    (S : Finset I) (agree : ∀ x ∈ S, num0.eval (φ (dom x)) = φ (u x) * denom.eval (φ (dom x)) ∧
+      num1.eval (φ (dom x)) = φ (v x) * denom.eval (φ (dom x)))
+    (enough : t ≤ S.card+ell) (a : ℕ) (aj : a<j) :
+    a*(a+1)*t + 2*a*(j*C) ≤
+      a*(a+1)*(Fintype.card I+d+c+ell) + j*(j-1)*d := by
+  classical
+  by_cases az : a=0
+  · simp [az]
+  let h := max (primitiveIntercept base dir).natDegree (primitiveSlope base dir).natDegree
+  let U := univ.biUnion fun i => core dom u v (L i)
+  obtain ⟨pairs,cap⟩ := rational_overlap φ dom u v base dir ab L inj coll degA deg
+    denom num0 num1 degZ degN trans S agree
+  change (U ∩ S).card≤d+c+h at cap
+  have hd : h≤d := by
+    let i : Fin j := ⟨0,by omega⟩
+    let k : Fin j := ⟨1,by omega⟩
+    have ne : i≠k := by simp [i,k]
+    have hpair := pairs i k ne
+    change _ + h ≤ d at hpair
+    omega
+  have pu := union_degree (fun i => core dom u v (L i)) C (d-h) big
+    (fun i k ne => Nat.le_sub_of_add_le (pairs i k ne)) a
+  change 2*a*(j*C) ≤ j*(j-1)*(d-h)+a*(a+1)*U.card at pu
+  have sum := card_union_add_card_inter U S
+  have full := card_le_univ (U ∪ S)
+  have su : U.card+t ≤ Fintype.card I+d+c+ell+h := by omega
+  have times := Nat.mul_le_mul_left (a*(a+1)) su
+  have coeff : a*(a+1)≤j*(j-1) := by
+    rw [Nat.mul_comm j (j-1)]
+    exact Nat.mul_le_mul (by omega) (by omega)
+  have cancel := Nat.mul_le_mul_right h coeff
+  have restore : j*(j-1)*(d-h)+j*(j-1)*h=j*(j-1)*d := by
+    rw [← Nat.mul_add,Nat.sub_add_cancel hd]
+  rw [Nat.mul_add (a*(a+1)) U.card t, Nat.mul_add (a*(a+1)) (Fintype.card I+d+c+ell) h] at times
+  omega
+
+/-- Aggregate the off-line inequalities over a family with one global
+denominator-height budget and one global regular-agreement loss budget.
+A positive gap yields an integer population cap even when some sections
+have more regular agreements than the requested threshold. -/
+theorem off_line_population {α : Type*} (T : Finset α) (sites height : α → ℕ)
+    {A coreTerm baseCost t gap C loss : ℕ}
+    (gap_pos : 0<gap) (gap_bound : baseCost+gap≤A*t+coreTerm)
+    (per : ∀ z ∈ T, A*sites z+coreTerm≤baseCost+A*height z)
+    (budget : ∑ z ∈ T, height z ≤ C)
+    (enough : T.card*t ≤ (∑ z ∈ T, sites z)+loss) :
+    T.card ≤ A*(C+loss)/gap := by
+  have summ := Finset.sum_le_sum per
+  simp only [sum_add_distrib, ← mul_sum, sum_const, nsmul_eq_mul] at summ
+  change A*(∑ z ∈ T, sites z) + T.card*coreTerm ≤
+    T.card*baseCost + A*(∑ z ∈ T, height z) at summ
+  have priced := Nat.mul_le_mul_left T.card gap_bound
+  have regular := Nat.mul_le_mul_left A enough
+  have cap := Nat.mul_le_mul_left A budget
+  simp only [Nat.mul_add] at priced regular ⊢
+  have rearrange : A*(T.card*t) = T.card*(A*t) := by ring
+  rw [rearrange] at regular
+  apply (Nat.le_div_iff_mul_le gap_pos).mpr
+  omega
+
+/-- Population of any finite family of off-line rational tangents, using actual
+polynomial heads, regular agreement sets, and aggregate height and loss bounds.
+Distinct labels may have the same tangent data. -/
+theorem rational_tangent_population {K α : Type*} [Field K] (φ : F →+* K)
+    {j d C t gap totalHeight loss : ℕ}
+    (dom : I ↪ F) (u v : I → F) (base dir : F[X] × F[X]) (ab : base ≠ dir)
+    (L : Fin j → F[X] × F[X]) (inj : Function.Injective L)
+    (coll : ∀ i, lineDeterminant base dir (L i) = 0)
+    (degA : base.1.natDegree ≤ d ∧ base.2.natDegree ≤ d)
+    (deg : ∀ i, (L i).1.natDegree ≤ d ∧ (L i).2.natDegree ≤ d)
+    (big : ∀ i, C ≤ (core dom u v (L i)).card)
+    (T : Finset α) (denom num0 num1 : α → K[X]) (height : α → ℕ) (S : α → Finset I)
+    (degZ : ∀ z ∈ T, (denom z).natDegree ≤ height z)
+    (degN : ∀ z ∈ T, (num0 z).natDegree ≤ d+height z ∧ (num1 z).natDegree ≤ d+height z)
+    (trans : ∀ z ∈ T, rationalDet φ base dir (denom z) (num0 z) (num1 z) ≠ 0)
+    (agree : ∀ z ∈ T, ∀ x ∈ S z,
+      (num0 z).eval (φ (dom x)) = φ (u x) * (denom z).eval (φ (dom x)) ∧
+      (num1 z).eval (φ (dom x)) = φ (v x) * (denom z).eval (φ (dom x)))
+    (budget : ∑ z ∈ T, height z ≤ totalHeight)
+    (enough : T.card*t ≤ (∑ z ∈ T, (S z).card)+loss)
+    (a : ℕ) (aj : a<j) (gap_pos : 0<gap)
+    (gap_bound : a*(a+1)*(Fintype.card I+d) + j*(j-1)*d + gap ≤ a*(a+1)*t + 2*a*(j*C)) :
+    T.card ≤ a*(a+1)*(totalHeight+loss)/gap := by
+  apply off_line_population T (fun z => (S z).card) height gap_pos gap_bound _ budget enough
+  intro z hz
+  have cost := rational_tangent_cost φ dom u v base dir ab L inj coll degA deg big (denom z)
+    (num0 z) (num1 z) (degZ z hz) (degN z hz) (trans z hz) (S z) (agree z hz)
+    (ell:=0) (Nat.le_refl (S z).card) a aj
+  simp only [Nat.add_zero] at cost
+  rw [Nat.mul_add (a*(a+1)) (Fintype.card I+d) (height z)] at cost
+  omega
 
 /-- Five collinear heads and one transverse head cannot all have cores above
 the common threshold `(3n + 13d)/13`. Four collinear heads give the separate bound
@@ -350,6 +497,10 @@ theorem covered (fam : BadScalarRichPointFamily dom 134217728 δ u)
   · exact .inl ⟨rfl,hmax,rfl⟩
   · exact .inr ⟨rfl,hmax,rfl⟩
 
+#print axioms rational_tangent_population
+#print axioms rational_overlap
+#print axioms rational_tangent_cost
+#print axioms off_line_population
 #print axioms covered
 #print axioms six
 #print axioms saturated_four
