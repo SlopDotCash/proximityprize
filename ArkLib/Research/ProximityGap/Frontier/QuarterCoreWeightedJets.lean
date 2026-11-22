@@ -27,6 +27,58 @@ variable {I : Type*} [DecidableEq I]
 
 private def mark (A : Finset I) (x : I) : ℕ := if x ∈ A then 1 else 0
 
+/-- The zero-order mixed jet is the formal evaluation of the trivariate
+surface on the whole received line through one physical site. -/
+theorem received_line_of_jet {F : Type} [Field F] {s b D W : ℕ}
+    (a : Monomials s b D W → F) (x u v : F)
+    (h : ∑ m, Polynomial.C (a m) * jetTerm m 0 0 x u v = 0) :
+    (surface a).eval₂ (mapRingHom (evalRingHom x)) (Polynomial.C u + X * Polynomial.C v) = 0 := by
+  rw [surface_received_line]
+  convert h using 1
+  unfold receivedLine
+  apply sum_congr rfl
+  intro m _
+  simp only [jetTerm, Nat.choose_zero_right, Nat.cast_one, one_mul, Nat.sub_zero]
+  rfl
+
+/-- The support and specialization guarantees for one nonzero received-row surface.
+The predicate specifies the agreement sets that carry enough weight. -/
+def SectionSurface {F : Type} [Field F] (dom : I ↪ F) (u v : I → F)
+    (s b D W : ℕ) (eligible : Finset I → Prop) : Prop :=
+  ∃ Q : Polynomial (Polynomial F[X]), Q ≠ 0 ∧
+    (∀ j h x, ((Q.coeff j).coeff h).coeff x ≠ 0 → j ≤ b ∧ h + j ≤ s ∧ x + j * D < W) ∧
+    (∀ x, Q.eval₂ (mapRingHom (evalRingHom (dom x)))
+      (Polynomial.C (u x) + X * Polynomial.C (v x)) = 0) ∧
+    ∀ g : F, ∀ q : F[X], q.natDegree ≤ D → ∀ S : Finset I, eligible S →
+      (∀ x ∈ S, q.eval (dom x) = u x + g * v x) → Q.eval₂ (evalRingHom (Polynomial.C g)) q = 0
+
+omit [DecidableEq I] in
+/-- Site-dependent interpolation on the supplied received rows followed by
+substitution of the actual scalar and section polynomial. -/
+theorem weighted_received_surface {F : Type} [Field F] [Fintype I] (dom : I ↪ F) (u v : I → F)
+    {s b D W : ℕ} (o : I → ℕ) (positive : ∀ x, 0 < o x) (hW : 0 < W) (hs : ∀ x, o x ≤ s + 1)
+    (hcount : Fintype.card ((x : I) × JetRows s (o x)) < Fintype.card (Monomials s b D W)) :
+    SectionSurface dom u v s b D W (fun S => W ≤ ∑ x ∈ S, o x) := by
+  obtain ⟨a,ha,jets,hf⟩ := exists_order_surface dom u v o hW hs hcount
+  refine ⟨surface a, surface_ne_zero ha, fun _ _ _ h => surface_support a h,
+    fun x => received_line_of_jet a _ _ _ (jets x 0 0 (positive x)), ?_⟩
+  intro g q hq S hw hag
+  rw [surface_eval]
+  exact hf g q hq S hw hag
+
+omit [DecidableEq I] in
+/-- Constant-order interpolation specialized to every agreeing section. -/
+theorem uniform_received_surface {F : Type} [Field F] [Fintype I] (dom : I ↪ F) (u v : I → F)
+    {r s b D T : ℕ} (hr : 0 < r) (ht : 0 < T) (hs : r ≤ s + 1)
+    (hcount : Fintype.card I * Fintype.card (JetRows s r) < Fintype.card (Monomials s b D (r * T))) :
+    SectionSurface dom u v s b D (r * T) (fun S => T ≤ S.card) := by
+  obtain ⟨a,ha,jets,hf⟩ := exists_surface dom u v hr ht hs hcount
+  refine ⟨surface a, surface_ne_zero ha, fun _ _ _ h => surface_support a h,
+    fun x => received_line_of_jet a _ _ _ (jets x 0 0 hr), ?_⟩
+  intro g q hq S hw hag
+  rw [surface_eval]
+  exact hf g q hq S hw hag
+
 /-- The unconditioned interpolants separate rich factors and affine heads. -/
 theorem parameters : 2051368 = max (e/256+1) (21569*44+22*379+1) ∧
     21569*40+22*301 < 2051368 ∧ n+2*d < 3*c ∧ n*d < t^2 ∧
@@ -53,14 +105,25 @@ theorem ordinary_surfaces {F : Type} [Field F] [Fintype I] (dom : I ↪ F) (u v 
     cases companion <;>
       simp only [JetRows,Monomials,Fintype.card_sigma,Fintype.card_prod,Fintype.card_fin] <;>
       norm_num [Fin.sum_univ_succ,r,s,b,d,t,n,e] <;> decide +kernel
-  obtain ⟨a,ha,_,hf⟩ := exists_surface dom u v hnum.1 hnum.2.1 hnum.2.2.1 hnum.2.2.2
-  refine ⟨surface a,surface_ne_zero ha,fun _ _ _ h => surface_support a h,?_⟩
-  intro g q hq S hs hg
-  rw [surface_eval]
-  exact hf g q hq S hs hg
+  obtain ⟨Q, hQ, supp, _, cap⟩ := uniform_received_surface dom u v hnum.1 hnum.2.1
+    hnum.2.2.1 hnum.2.2.2
+  exact ⟨Q, hQ, supp, cap⟩
 
-/-- Each owned position saves two mixed-jet orders for every owning head. -/
-def order (A B C : Finset I) (x : I) : ℕ := 23-2*(mark A x + mark B x + mark C x)
+/-- Each owning core saves two mixed-jet orders, starting at the supplied order. -/
+def siteOrder (r : ℕ) (A B C : Finset I) (x : I) : ℕ :=
+  r - 2 * (mark A x + mark B x + mark C x)
+
+/-- The residual order used at 525,150,000 errors. -/
+abbrev order (A B C : Finset I) (x : I) : ℕ := siteOrder 23 A B C x
+
+theorem siteOrder_pos {r : ℕ} (hr : 6 < r) (A B C : Finset I) (x : I) :
+    0 < siteOrder r A B C x := by
+  have one (T : Finset I) : mark T x ≤ 1 := by unfold mark; split <;> omega
+  have hA := one A
+  have hB := one B
+  have hC := one C
+  unfold siteOrder
+  omega
 
 private theorem marks (T A : Finset I) : ∑ x ∈ T, mark A x = (T ∩ A).card := by
   classical
@@ -68,17 +131,50 @@ private theorem marks (T A : Finset I) : ∑ x ∈ T, mark A x = (T ∩ A).card 
   rw [← Finset.sum_filter]
   simp [Finset.filter_mem_eq_inter]
 
-private def rows (b : ℕ) : ℕ := ∑ j ∈ range b, (b-j)*(302-j)
+/-- Number of scalar coefficient constraints at a site of multiplicity `r`. -/
+def rowCount (s r : ℕ) : ℕ := ∑ j ∈ range r, (r - j) * (s + 1 - j)
 
-private theorem card_rows (b : ℕ) : Fintype.card (JetRows 301 b) = rows b := by
-  simp only [JetRows,Fintype.card_sigma,Fintype.card_prod,Fintype.card_fin,rows]
-  exact Fin.sum_univ_eq_sum_range (fun j : ℕ => (b-j)*(302-j)) b
+theorem card_rows (s r : ℕ) : Fintype.card (JetRows s r) = rowCount s r := by
+  simp only [JetRows,Fintype.card_sigma,Fintype.card_prod,Fintype.card_fin,rowCount]
+  exact Fin.sum_univ_eq_sum_range (fun j : ℕ => (r - j) * (s + 1 - j)) r
 
-private theorem local_rows (A B C : Finset I) (x : I) :
-    rows (order A B C x) + 13106 * (mark A x + mark B x + mark C x) ≤
-      81328 + 1208 * (mark (A ∩ B) x + mark (A ∩ C) x + mark (B ∩ C) x) := by
-  by_cases ha : x ∈ A <;> by_cases hb : x ∈ B <;> by_cases hc : x ∈ C <;>
-    simp [order,mark,ha,hb,hc] <;> decide
+/-- Number of coefficients available below the strict weighted-degree cap. -/
+def columnCount (s b D W : ℕ) : ℕ := ∑ j ∈ range (b + 1), (s + 1 - j) * (W - j * D)
+
+theorem card_columns (s b D W : ℕ) : Fintype.card (Monomials s b D W) = columnCount s b D W := by
+  simp only [Monomials,Fintype.card_sigma,Fintype.card_prod,Fintype.card_fin,columnCount]
+  exact Fin.sum_univ_eq_sum_range (fun j : ℕ => (s + 1 - j) * (W - j * D)) (b + 1)
+
+/-- An upper bound on four possible local costs gives a row budget in terms
+of the three core sizes and their three pair intersections. -/
+theorem three_core_rows [Fintype I] (A B C : Finset I) {s r base gain penalty : ℕ}
+    (localCost : ∀ m : Fin 4, rowCount s (r - 2 * m.val) + gain * m.val ≤
+      base + penalty * m.val.choose 2) :
+    Fintype.card ((x : I) × JetRows s (siteOrder r A B C x)) + gain * (A.card + B.card + C.card) ≤
+      Fintype.card I * base + penalty * ((A ∩ B).card + (A ∩ C).card + (B ∩ C).card) := by
+  have bound (x : I) : rowCount s (siteOrder r A B C x) + gain * (mark A x + mark B x + mark C x) ≤
+      base + penalty * (mark (A ∩ B) x + mark (A ∩ C) x + mark (B ∩ C) x) := by
+    by_cases a : x ∈ A <;> by_cases b : x ∈ B <;> by_cases c : x ∈ C <;>
+      simp only [siteOrder,mark,mem_inter,a,b,c,and_self,and_true,and_false,true_and,false_and,
+        ite_true,ite_false] <;>
+      first | exact localCost 0 | exact localCost 1 | exact localCost 2 | exact localCost 3
+  have h := sum_le_sum (s := (univ : Finset I)) (fun x _ => bound x)
+  rw [Fintype.card_sigma]
+  simpa only [sum_add_distrib, ← mul_sum, marks, univ_inter, sum_const, card_univ, nsmul_eq_mul,
+    Nat.cast_id, card_rows] using h
+
+/-- Each of the three intersections consumes at most two orders per site. -/
+theorem three_core_weight (A B C S : Finset I) {r D T : ℕ} (hs : T ≤ S.card)
+    (ha : (S ∩ A).card ≤ D) (hb : (S ∩ B).card ≤ D) (hc : (S ∩ C).card ≤ D) :
+    r * T - 6 * D ≤ ∑ x ∈ S, siteOrder r A B C x := by
+  have point (x : I) : r ≤ siteOrder r A B C x + 2 * (mark A x + mark B x + mark C x) := by
+    unfold siteOrder
+    omega
+  have h := sum_le_sum (s := S) (fun x _ => point x)
+  simp only [sum_add_distrib, ← mul_sum, marks, sum_const, nsmul_eq_mul, Nat.cast_id] at h
+  have hr := Nat.mul_le_mul_left r hs
+  rw [Nat.mul_comm r S.card] at hr
+  omega
 
 /-- The actual collection of site-dependent jet constraints fits the monomial space. -/
 theorem row_budget [Fintype I] (A B C : Finset I) (hn : Fintype.card I = n)
@@ -86,45 +182,35 @@ theorem row_budget [Fintype I] (A B C : Finset I) (hn : Fintype.card I = n)
     (hab : (A ∩ B).card ≤ d) (hac : (A ∩ C).card ≤ d) (hbc : (B ∩ C).card ≤ d) :
     Fintype.card ((x : I) × JetRows 301 (order A B C x)) <
       Fintype.card (Monomials 301 40 d weight) := by
-  classical
-  have h := sum_le_sum (s := (univ : Finset I)) (fun x _ => local_rows A B C x)
-  simp only [sum_add_distrib,← mul_sum, marks,univ_inter,sum_const,card_univ,hn,nsmul_eq_mul,
-    Nat.cast_id] at h
+  have bound := three_core_rows A B C (s := 301) (r := 23) (gain := 13106)
+    (base := 81328) (penalty := 1208) (by decide +kernel)
   have cols : Fintype.card (Monomials 301 40 d weight) = 66730729902264 := by
-    simp only [Monomials,Fintype.card_sigma,Fintype.card_prod,Fintype.card_fin]
-    norm_num [Fin.sum_univ_succ,weight,t,n,e,d]
-  rw [cols,Fintype.card_sigma]
-  simp only [card_rows]
-  dsimp only [c,t,n,e,d] at *
+    rw [card_columns]; decide +kernel
+  rw [cols]
+  rw [hn] at bound
+  dsimp only [c,t,n,e,d,order] at *
   omega
 
 /-- Every agreement set meeting each selected core in at most d sites has
 enough total order to force identical vanishing of the specialized section. -/
 theorem agreement_weight (A B C S : Finset I) (hs : t ≤ S.card)
     (ha : (S ∩ A).card ≤ d) (hb : (S ∩ B).card ≤ d) (hc : (S ∩ C).card ≤ d) :
-    weight ≤ ∑ x ∈ S, order A B C x := by
-  have h := sum_congr (s₁ := S) rfl (fun x _ =>
-    show order A B C x + 2*(mark A x + mark B x + mark C x) = 23 by
-      by_cases a : x ∈ A <;> by_cases b : x ∈ B <;> by_cases c : x ∈ C <;> simp [order,mark,a,b,c])
-  simp only [sum_add_distrib,← mul_sum,marks,sum_const,nsmul_eq_mul,Nat.cast_id] at h
-  dsimp only [weight,t,n,e,d] at *
-  omega
+    weight ≤ ∑ x ∈ S, order A B C x := three_core_weight A B C S hs ha hb hc
 
 /-- A single nonzero received-row surface captures every residual section for these cores. -/
 theorem residual_surface {F : Type} [Field F] [Fintype I] (dom : I ↪ F) (u v : I → F)
     (A B C : Finset I) (hn : Fintype.card I = n) (ha : c ≤ A.card) (hb : c ≤ B.card)
     (hc : c ≤ C.card) (hab : (A ∩ B).card ≤ d) (hac : (A ∩ C).card ≤ d) (hbc : (B ∩ C).card ≤ d) :
     ∃ Q : Polynomial (Polynomial F[X]), Q ≠ 0 ∧
-      (∀ j h x, ((Q.coeff j).coeff h).coeff x ≠ 0 → j ≤ 40 ∧ h+j ≤ 301 ∧ x+j*d < weight) ∧
+      (∀ j h x, ((Q.coeff j).coeff h).coeff x ≠ 0 → j ≤ 40 ∧ h + j ≤ 301 ∧ x + j * d < weight) ∧
       ∀ g : F, ∀ q : F[X], q.natDegree ≤ d → ∀ S : Finset I, t ≤ S.card →
         (S ∩ A).card ≤ d → (S ∩ B).card ≤ d → (S ∩ C).card ≤ d →
-        (∀ x ∈ S, q.eval (dom x) = u x + g*v x) → Q.eval₂ (evalRingHom (Polynomial.C g)) q = 0 := by
-  obtain ⟨a,ha',_,hf⟩ := exists_order_surface dom u v (order A B C) (by decide : 0 < weight)
-    (fun x => by unfold order; omega) (row_budget A B C hn ha hb hc hab hac hbc)
-  refine ⟨surface a,surface_ne_zero ha',fun _ _ _ h => surface_support a h,?_⟩
-  intro g q hq S hs h1 h2 h3 hg
-  rw [surface_eval]
-  exact hf g q hq S (agreement_weight A B C S hs h1 h2 h3) hg
+        (∀ x ∈ S, q.eval (dom x) = u x + g * v x) → Q.eval₂ (evalRingHom (Polynomial.C g)) q = 0 := by
+  obtain ⟨Q, hQ, support, _, capture⟩ := weighted_received_surface dom u v (order A B C)
+    (siteOrder_pos (by decide : 6 < 23) A B C) (by decide : 0 < weight) (fun x => by unfold order siteOrder; omega)
+    (row_budget A B C hn ha hb hc hab hac hbc)
+  exact ⟨Q, hQ, support, fun g q hq S hs h1 h2 h3 =>
+    capture g q hq S (agreement_weight A B C S hs h1 h2 h3)⟩
 
 /-- The difference from a fixed affine head pays at most d sites on its joint core. -/
 theorem outside_overlap {F : Type} [Field F] (dom : I ↪ F) (u v : I → F)
