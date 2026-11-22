@@ -111,12 +111,13 @@ theorem rootCount_eq (D : I ↪ F) {h : ℕ} {c : F} (hn : Fintype.card I = 2 ^ 
 
 /-- Necessary integer test for any proposed message table to agree with one center.
 Each contribution is its exact number of physical coincidences. -/
-theorem family_test [DecidableEq I] (D : I ↪ F) {h M t : ℕ} {c : F}
+theorem family_test (D : I ↪ F) {h M t : ℕ} {c : F}
     (hn : Fintype.card I = 2 ^ h) (hD : ∀ i, D i ^ (2 ^ h) = c)
     (P : Fin M → CPolynomial F) (S : Fin M → Finset I) (hsize : ∀ i, t ≤ (S i).card)
     (y : I → F) (hag : ∀ i x, x ∈ S i → (P i).toPoly.eval (D x) = y x) (a : ℕ) :
     2 * a * (M * t) ≤ (∑ i, ∑ j ∈ univ.erase i, rootCount (P i - P j) h c) +
       a * (a + 1) * 2 ^ h := by
+  classical
   have sd (i j : Fin M) : (S i ∩ S j).card ≤ rootCount (P i - P j) h c := by
     rw [rootCount_eq D hn hD]
     apply card_le_card
@@ -130,7 +131,7 @@ theorem family_test [DecidableEq I] (D : I ↪ F) {h M t : ℕ} {c : F}
 
 /-- Every scalar over-budget list yields an explicit table of distinct polynomial
 messages passing the exact dyadic collision test. -/
-theorem of_list [DecidableEq I] (D : I ↪ F) {h k B t : ℕ} {c : F}
+theorem of_list (D : I ↪ F) {h k B t : ℕ} {c : F}
     (hn : Fintype.card I = 2 ^ h) (hD : ∀ i, D i ^ (2 ^ h) = c)
     (hk : 0 < k) (ht : t ≤ Fintype.card I)
     (hlist : (B : ℕ∞) < Code.Lambda (ReedSolomon.code D k : Set (I → F))
@@ -138,6 +139,7 @@ theorem of_list [DecidableEq I] (D : I ↪ F) {h k B t : ℕ} {c : F}
     ∃ P : Fin (B + 1) → CPolynomial F, Function.Injective P ∧ (∀ i, (P i).natDegree < k) ∧
       ∀ a : ℕ, 2 * a * ((B + 1) * t) ≤ (∑ i, ∑ j ∈ univ.erase i, rootCount (P i - P j) h c) +
         a * (a + 1) * 2 ^ h := by
+  classical
   obtain ⟨y, Q, S, hinj, hdeg, hsize, hag, -⟩ :=
     SaturatedListCliques.from_list_at_overlap D (s := 0) (r := 0) hk ht
       (hn ▸ pow_pos (by decide) _) (fun _ _ _ => SimpleGraph.not_cliqueFree_zero) hlist
@@ -159,7 +161,6 @@ local instance : Fact (Nat.Prime PrizeShapePrimeP30.P) := ⟨PrizeShapePrimeP30.
 local instance : Fact (Nat.Prime PrizeShapePrimeP30Second.P) := ⟨PrizeShapePrimeP30Second.prime_P⟩
 
 set_option maxRecDepth 6000 in
-set_option maxHeartbeats 4000000 in
 /-- On each named subgroup, two differences pass the same end-coefficient test
 and have respectively two and zero physical roots. -/
 theorem named_quadratic_roots :

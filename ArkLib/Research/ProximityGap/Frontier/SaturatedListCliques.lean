@@ -46,7 +46,8 @@ theorem pair_incidence (S : Fin M → Finset I) {t : ℕ}
     apply le_trans (Finset.sum_le_sum (fun x _ => tangent ((univ.filter (fun i => x ∈ S i)).card) a))
     simp only [Finset.sum_add_distrib, Finset.sum_const, card_univ, nsmul_eq_mul, Nat.mul_comm]
     exact le_rfl
-  have row (i) : ∑ j, (S i ∩ S j).card = (S i).card + ∑ j ∈ univ.erase i, (S i ∩ S j).card := by
+  have row (i) : ∑ j, (S i ∩ S j).card =
+      (S i).card + ∑ j ∈ univ.erase i, (S i ∩ S j).card := by
     rw [← add_sum_erase univ (fun j => (S i ∩ S j).card) (mem_univ i), inter_self]
   simp only [row, sum_add_distrib, Nat.add_mul, one_mul] at htan
   have hlo := Nat.mul_le_mul_left (2*a) hS

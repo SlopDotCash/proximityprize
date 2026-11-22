@@ -52,6 +52,7 @@ def partners {M : ℕ} (ends : Fin M → F × F) (n : ℕ) (cosetPower : F) (i :
     Finset (Fin M) := univ.filter fun j => (ends i).2 ≠ (ends j).2 ∧
       ((ends i).1 - (ends j).1) ^ n = ((ends i).2 - (ends j).2) ^ n * cosetPower
 
+omit [DecidableEq I] in
 /-- Every proposed collection of messages around one center must pass this integer
 incidence inequality. A failed test rejects every center for the collection. -/
 theorem necessary {M d n t : ℕ} {c : F} (D : I ↪ F) (hD : ∀ j, (-D j) ^ n = c)
@@ -77,8 +78,10 @@ theorem necessary {M d n t : ℕ} {c : F} (D : I ↪ F) (hD : ∀ j, (-D j) ^ n 
     apply card_le_card
     intro j hj
     obtain ⟨hne, hs⟩ := (SimpleGraph.mem_neighborFinset _ _ _).mp hj
-    obtain ⟨hn, he⟩ := full_difference D _ _ hD (sub_ne_zero.mpr (inj.ne hne)) (degree i j) hs (root i j)
-    exact mem_filter.mpr ⟨mem_univ _, by simpa only [coeff_sub, sub_ne_zero] using And.intro hn he⟩
+    obtain ⟨hn, he⟩ := full_difference D _ _ hD
+      (sub_ne_zero.mpr (inj.ne hne)) (degree i j) hs (root i j)
+    exact mem_filter.mpr ⟨mem_univ _, by
+      simpa only [coeff_sub, sub_ne_zero] using And.intro hn he⟩
   have edges := forced_edges S hpos hsize pair a
   rw [← SimpleGraph.sum_degrees_eq_twice_card_edges] at edges
   exact edges.trans (by gcongr; exact count _)
@@ -86,11 +89,12 @@ theorem necessary {M d n t : ℕ} {c : F} (D : I ↪ F) (hD : ∀ j, (-D j) ^ n 
 /-- Rotation realizes every product of `d` distinct sites whenever `d` is coprime
 to the order of the evaluation subgroup. Thus the two-coefficient filter alone
 cannot forbid any further nonzero slopes in that subgroup. -/
-theorem all_products {G : Type*} [CommGroup G] [Fintype G] [DecidableEq G] {d : ℕ}
+theorem all_products {G : Type*} [CommGroup G] [Fintype G] {d : ℕ}
     (hd : d ≤ Fintype.card G) (cop : (Nat.card G).Coprime d) (v : G) :
     ∃ S : Finset G, S.card = d ∧ ∏ x ∈ S, x = v := by
   classical
-  obtain ⟨T, _, hT⟩ := exists_subset_card_eq (show d ≤ (univ : Finset G).card by simpa using hd)
+  have hcard : d ≤ (univ : Finset G).card := by simpa using hd
+  obtain ⟨T, _, hT⟩ := exists_subset_card_eq hcard
   obtain ⟨u, hu⟩ := cop.pow_left_bijective.surjective (v / ∏ x ∈ T, x)
   refine ⟨T.map (Equiv.mulLeft u).toEmbedding, (card_map _).trans hT, ?_⟩
   rw [prod_map]
@@ -121,14 +125,18 @@ def slice (D : I ↪ F) (d : ℕ) (u b : F) : Set (I → F) :=
     ∀ x, P.eval (D x) = w x }
 
 open Code
+open ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterObtuse
+  (card_le_universe_of_equal_card_pair_inter_le)
 
+omit [DecidableEq I] [DecidableEq F] in
 /-- At any received word, for any interleaving width, the excluded-slope subcode
 has list size at most the block length throughout the improved Johnson region. -/
 theorem forbidden_slice [Nonempty I] {d n t : ℕ} {c u b : F} (D : I ↪ F)
     (hD : ∀ j, (-D j) ^ n = c) (hu : u ^ n ≠ c ^ d) (arity : ℕ) (δ : ℝ)
     (hδ : δ * (Fintype.card I : ℝ) < (Fintype.card I : ℝ) - t + 1)
     (ht : 0 < t) (hgap : Fintype.card I * (d - 1) < t ^ 2) :
-    Lambda (interleavedCodeSet (κ := Fin arity) (slice D d u b)) δ ≤ (Fintype.card I : ℕ∞) := by
+    Lambda (interleavedCodeSet (κ := Fin arity) (slice D d u b)) δ ≤
+      (Fintype.card I : ℕ∞) := by
   classical
   apply Lambda_le_of_forall_finset_card_le
   intro y W hW
@@ -159,9 +167,10 @@ theorem forbidden_slice [Nonempty I] {d n t : ℕ} {c u b : F} (D : I ↪ F)
     have hi := (mem_filter.mp (hsub i (mem_inter.mp hx).1)).2
     have hj := (mem_filter.mp (hsub j (mem_inter.mp hx).2)).2
     exact (heP x).trans ((congrFun (hi.trans hj.symm) z).trans (heQ x).symm)
-  simpa using ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterObtuse.card_le_universe_of_equal_card_pair_inter_le
+  simpa using card_le_universe_of_equal_card_pair_inter_le
     S (Fintype.card I) t (d - 1) rfl ht hcard pair (by omega)
 
+omit [DecidableEq I] in
 /-- An overflow of the unrestricted scalar list yields distinct messages whose
 coefficient pairs pass the test for every multiplier `a`. -/
 theorem of_list {B d n t : ℕ} {c : F} (D : I ↪ F) (hD : ∀ j, (-D j) ^ n = c)
