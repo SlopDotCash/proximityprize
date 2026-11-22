@@ -365,17 +365,72 @@ template <class Visit> void parallel_jobs(unsigned workers, unsigned size, Visit
     for (auto &task : tasks)
         task.get();
 }
+// Remove all reference words seen twice, then maximize the remaining incidence mass per anchor.
+void gain_five_bound(const Census &c, const std::vector<Work> &work, unsigned workers,
+                     unsigned sites) {
+    struct Bin {
+        Word remaining = 0, repeated_weight = 0;
+    };
+    std::vector<Bin> bins(work.size());
+    parallel_jobs(workers, work.size(), [&](unsigned j) {
+        const auto &w = work[j];
+        bool active = c.labels[w.id].selected[c.slot(w.anchor, w.mode)] & 1;
+        c.enumerate(w, [&](Mask prefix, const std::vector<Mask> &tails) {
+            for (Mask tail : tails) {
+                unsigned hits = c.hits(prefix | tail, w)[0];
+                if (hits <= 1)
+                    bins[j].remaining++;
+                else if (active)
+                    bins[j].repeated_weight += c.denominator / hits;
+            }
+        });
+    });
+    Word single = 0, repeated_weight = 0, incidences = 0;
+    for (unsigned a = c.step; a < c.order; a *= 2) {
+        unsigned anchor_orbit = c.order / (2 * a);
+        std::vector<std::pair<Word, unsigned>> modes;
+        for (unsigned j = 0; j < work.size(); j++)
+            if (work[j].anchor == a) {
+                const auto &w = work[j];
+                modes.emplace_back(bins[j].remaining, w.multiplicity / anchor_orbit);
+                repeated_weight += bins[j].repeated_weight * w.multiplicity;
+                if (c.labels[w.id].selected[c.slot(a, w.mode)] & 1)
+                    single += bins[j].remaining * w.multiplicity;
+            }
+        std::sort(modes.rbegin(), modes.rend());
+        unsigned room = sites;
+        Word full = 0, next = 0;
+        for (auto [population, count] : modes) {
+            const unsigned allocated = std::min(room, 5 * count);
+            full += population * (allocated / 5);
+            if (allocated % 5)
+                next = population;
+            room -= allocated;
+            if (!room)
+                break;
+        }
+        // Any unused sites after the final mode have zero incidence.
+        incidences += anchor_orbit * (5 * full + (sites % 5) * next);
+        std::cout << "anchor=" << a << " full=" << full << " next=" << next << "\n";
+    }
+    require(repeated_weight % c.denominator == 0, "integral number of multiply covered candidates");
+    Word repeated = repeated_weight / c.denominator;
+    std::cout << "single=" << single << " repeated=" << repeated
+              << " upper=" << repeated + incidences / 5 << "\n";
+}
 int main(int argc, char **argv) try {
-    bool signed_modes = argc == 10 && std::string(argv[1]) == "--signed-scores";
+    bool cover_bound = argc == 8 && std::string(argv[1]) == "--gain-five-cap";
+    bool signed_modes = cover_bound || (argc == 10 && std::string(argv[1]) == "--signed-scores");
     bool product_scores =
         signed_modes || (argc == 10 && std::string(argv[1]) == "--product-scores");
     if (product_scores) {
         argc--;
         argv++;
     }
-    require(argc == 9, "usage: census POOL ORDER DEGREE SPARE CUTOFF1 CUTOFF2 CAP2 WORKERS "
-                       "or census {--product-scores|--signed-scores} POOL ORDER DEGREE SPARE CAP1 "
-                       "CAP2 ROUNDS WORKERS");
+    require(argc == (cover_bound ? 7 : 9),
+            "usage: census POOL ORDER DEGREE SPARE CUTOFF1 CUTOFF2 CAP2 WORKERS "
+            "or census {--product-scores|--signed-scores} POOL ORDER DEGREE SPARE CAP1 "
+            "CAP2 ROUNDS WORKERS or census --gain-five-cap POOL ORDER DEGREE SPARE SITES WORKERS");
     auto param = [](const char *arg) {
         std::size_t n = 0;
         const auto value = std::stoul(arg, &n);
@@ -387,15 +442,17 @@ int main(int argc, char **argv) try {
     require(spare >= 4 && spare <= 16, "spare subgroup must have order 4, 8 or 16");
     Census c(order, degree, spare, signed_modes);
     c.read(argv[1]);
-    const unsigned workers = param(argv[8]);
+    const unsigned workers = param(argv[argc - 1]);
     require(workers >= 1 && workers <= 3, "use 1 to 3 workers");
     if (!product_scores)
         c.choose(param(argv[5]), param(argv[6]), param(argv[7]));
     c.build_locals();
     auto work = c.jobs(product_scores);
     if (product_scores) {
-        const std::array<unsigned, 2> caps{param(argv[5]), param(argv[6])};
-        const unsigned rounds = param(argv[7]);
+        const std::array<unsigned, 2> caps =
+            cover_bound ? std::array<unsigned, 2>{param(argv[5]) / 5, 0}
+                        : std::array<unsigned, 2>{param(argv[5]), param(argv[6])};
+        const unsigned rounds = cover_bound ? 0 : param(argv[7]);
         require(rounds <= (signed_modes ? 3u : 1u), "unsupported refinement count");
         std::vector<std::array<Word, 2>> scores(work.size());
         for (unsigned round = 0; round <= rounds; round++) {
@@ -411,6 +468,10 @@ int main(int argc, char **argv) try {
             });
             c.choose_by_product(work, scores, caps, round >= 2 ? order / (1U << (round - 1)) : 0);
         }
+    }
+    if (cover_bound) {
+        gain_five_bound(c, work, workers, param(argv[5]));
+        return 0;
     }
     if (signed_modes) {
         // The final replacement changes just one actual anchor. Its signed modes are disjoint.
