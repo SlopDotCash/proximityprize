@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check the two interpolants and every eighth-rate factor allocation at 5n/8-1."""
+"""Check the eighth-rate factor allocations immediately below and at 5n/8."""
 from functools import cache
 
 from probe_tangent_head_windows import N, surplus, tangent_cap
@@ -56,12 +56,59 @@ def partitions(total, smallest=1):
 
 
 @cache
-def price(total, heads, b):
-    weight = PRIMARY[0] * AGREEMENTS - 1 - (total - b) * DEGREE
+def price(total, heads, b, agreements, cutoff):
+    weight = PRIMARY[0] * agreements - 1 - (total - b) * DEGREE
     m = COMPANION[2] - heads
     if b == 1 or weight < b * DEGREE or m < b:
-        return CUTOFF
-    return max(CUTOFF, tangent_cap(b, m, weight, AGREEMENTS, DEGREE))
+        return cutoff
+    return max(cutoff, tangent_cap(b, m, weight, agreements, DEGREE))
+
+
+def residuals(heads, agreements, cutoff):
+    for total in range(heads, PRIMARY[1] + 1):
+        for degrees in partitions(total - heads):
+            remaining = PRIMARY[2] + sum(price(total, heads, b, agreements, cutoff) for b in degrees)
+            yield remaining, degrees
+
+
+def next_count():
+    """Every allocation at exactly five eighths outside the exceptional quartet."""
+    errors = ERRORS + 1
+    agreements = N - errors
+    cutoff = max(1 + errors // 8192, 1 + PRIMARY[2] * COMPANION[1] + PRIMARY[1] * COMPANION[2])
+    floor = agreements - 8191
+    ranks = tuple(surplus(shape, agreements, DEGREE) for shape in (PRIMARY, COMPANION))
+    require(ranks == (44200, 805345446) and cutoff == 81921, "successor interpolation")
+    m = COMPANION[2]
+    require(agreements - m*N//cutoff - 3*(m*N//(cutoff-m)) > DEGREE, "successor identity test")
+    require(errors//cutoff == 8191 and agreements**2 > N*DEGREE, "successor core and Johnson bounds")
+    require(15*floor > 3*N+20*DEGREE and 13*floor > 3*N+13*DEGREE, "successor rich geometry")
+    def head_price(deficit):
+        return 1 + errors // deficit
+
+    four_ordinary = max(2*head_price(1)+2*head_price(2), 3*head_price(1)+head_price(6))
+    four_with_triple = max(1+3*(N-(3*floor-3*DEGREE))+head_price(1),
+                           3*head_price(1)+head_price(3)-(floor-2*DEGREE))
+    require((four_ordinary, four_with_triple) == (2125114030, 2102752598), "successor quartet caps")
+    best = []
+    checked = 0
+    for j in range(PRIMARY[1]+1):
+        head = j*head_price(1)
+        if j >= 4:
+            den = floor+(j-1)*DEGREE
+            union = (j*floor**2+den-1)//den
+            head = min(head, j*N-(j-1)*union)
+        if j == 4:
+            head = max(head, four_ordinary, four_with_triple)
+        if j == 5:
+            head = max(head, 2058021547)  # EighthFourPlusOne
+        rows = list(residuals(j, agreements, cutoff))
+        checked += len(rows)
+        best.append((head + max(rows)[0], max(rows)))
+    require(checked == 3370 and max(best)[0] <= 2*N, "every ordinary successor allocation")
+    require(best[4][1] == (20607410, (12,)), "successor four-head residual")
+    print("At five eighths,", checked, "allocations outside the exceptional quartet fit;",
+          "maximum", max(best)[0], "and quartet residual", best[4][1][0])
 
 
 def main():
@@ -77,12 +124,11 @@ def main():
     for j in range(PRIMARY[1] + 1):
         head = head_bound(j)
         candidates = []
-        for total in range(j, PRIMARY[1] + 1):
-            for degrees in partitions(total - j):
-                count = PRIMARY[2] + head + sum(price(total, j, b) for b in degrees)
-                candidates.append((count, degrees))
-                require(count <= 2*N, (j, degrees, count))
-                checked += 1
+        for remaining, degrees in residuals(j, AGREEMENTS, CUTOFF):
+            count = head + remaining
+            candidates.append((count, degrees))
+            require(count <= 2*N, (j, degrees, count))
+            checked += 1
         best.append(max(candidates))
     worst, j = max((row, j) for j, row in enumerate(best))
     require((worst, j) == ((2_145_721_437, (12,)), 4), "worst allocation")
@@ -93,3 +139,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    next_count()
