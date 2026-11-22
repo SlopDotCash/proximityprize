@@ -913,6 +913,8 @@ import ArkLib.Research.ProximityGap.Frontier.ReflectionListTranspositions
 import ArkLib.Research.ProximityGap.Frontier.ReflectionRowTransfer
 import ArkLib.Research.ProximityGap.Frontier.RegimePin
 import ArkLib.Research.ProximityGap.Frontier.RegularTaylorPole
+import ArkLib.Research.ProximityGap.Frontier.RepeatedParabola
+import ArkLib.Research.ProximityGap.Frontier.RepetitionFirstPrimeThreshold
 import ArkLib.Research.ProximityGap.Frontier.RepetitionFourCenterAttack
 import ArkLib.Research.ProximityGap.Frontier.RepetitionSecondPrimeThreshold
 import ArkLib.Research.ProximityGap.Frontier.ReservedFiberList

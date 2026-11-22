@@ -242,79 +242,110 @@ private theorem card_le_mass (S : Finset P) (hs : S ⊆ A.points) :
     (fun x hx => A.positive x (hs hx))
   simpa using h
 
-/-- At agreement count 2²⁷+2, every weighted linear arrangement of total
-weight 2³⁰ contains at most 2³¹ nontrivial rich lines. -/
-theorem predecessor (A : Arrangement P J 134217730)
-    (total : mass A.w A.points = 1073741824) : A.lines.card ≤ 2147483648 := by
+/-- Numerical checks for separating rich lines according to their heavy points.
+Here `m` is the critical number of heavy points, `v` the medium weight, and
+`r` the final bound on lines through no heavy point. -/
+def PackingCertificate (n t B m c v r : ℕ) : Prop :=
+  let cut := t-c+1
+  let away := n*n/(t*c)
+  let possible := n-m*cut
+  let strong := n-m*(t-1)
+  let multi := m*m-m
+  0 < t ∧ 0 < c ∧ c ≤ t ∧
+  (∀ s : Fin (n/cut+1), s.val ≠ m →
+    away + (s.val*s.val-s.val) + s.val*(n-s.val*cut) ≤ B) ∧
+  away + multi + (m-1)*possible + possible/2 ≤ B ∧
+  away + multi + m*(strong+1-v) ≤ B ∧
+  strong + (r+1)^2*v < (r+1)*t ∧
+  r + multi + m*strong ≤ B
+
+/-- A packing certificate bounds the actual number of nontrivial weighted rich lines. -/
+theorem of_certificate (A : Arrangement P J t) {n B m c v r : ℕ}
+    (total : mass A.w A.points = n) (cert : PackingCertificate n t B m c v r) :
+    A.lines.card ≤ B := by
   classical
-  let H := A.points.filter (fun x => 134217219 ≤ A.w x)
+  obtain ⟨ht, hc, hct, off, weakBound, mediumBound, avoid, finalBound⟩ := cert
+  let cut := t-c+1
+  let H := A.points.filter (fun x => cut ≤ A.w x)
   let Q := A.points \ H
   let L := mass A.w Q
-  have hsub : H ⊆ A.points := filter_subset _ _
-  have hparts : L + mass A.w H = 1073741824 := (sum_sdiff hsub).trans total
-  have cost : H.card * 134217219 ≤ mass A.w H := by
-    simpa using sum_le_sum (s:=H) (f:=fun _ => 134217219) (g:=A.w)
+  have sub : H ⊆ A.points := filter_subset _ _
+  have parts : L + mass A.w H = n := (sum_sdiff sub).trans total
+  have cost : H.card * cut ≤ mass A.w H := by
+    simpa using sum_le_sum (s := H) (f := fun _ => cut) (g := A.w)
       (fun x hx => (mem_filter.mp hx).2)
-  have h8 : H.card ≤ 8 := by omega
-  have hcard : Q.card ≤ L := A.card_le_mass Q sdiff_subset
-  have pairs := A.away_pairs H 512 (by decide) (by
+  have cap : H.card ≤ n/cut := (Nat.le_div_iff_mul_le (by dsimp [cut]; omega)).mpr (by omega)
+  have light : ∀ x ∈ Q, A.w x ≤ t-c := by
     intro x hx
-    have hm := mem_sdiff.mp hx
-    have hh : ¬ 134217219 ≤ A.w x := fun he => hm.2 (mem_filter.mpr ⟨hm.1,he⟩)
-    omega)
+    have mem := mem_sdiff.mp hx
+    have no : ¬ cut ≤ A.w x := fun he => mem.2 (mem_filter.mpr ⟨mem.1, he⟩)
+    dsimp [cut] at no
+    omega
+  have pairs := A.away_pairs H c hct light
   rw [total] at pairs
-  have away : (A.away H).card < 16777216 := by omega
+  have away : (A.away H).card ≤ n*n/(t*c) :=
+    (Nat.le_div_iff_mul_le (Nat.mul_pos ht hc)).mpr pairs
+  have hcard : Q.card ≤ L := A.card_le_mass Q sdiff_subset
   have solo (x : P) : (A.solo H x).card ≤ Q.card := (A.solo_bounds H x).1
-  have sumq : (∑ x ∈ H, (A.solo H x).card) ≤ H.card * Q.card := by
-    simpa using sum_le_sum (s:=H) (fun x _ => solo x)
+  have allSolo : (∑ x ∈ H, (A.solo H x).card) ≤ H.card * Q.card := by
+    simpa using sum_le_sum (s := H) (fun x _ => solo x)
   have decomp := A.decomposition H
-  by_cases four : H.card = 4
-  · have lightBudget : L ≤ 536872948 := by omega
-    by_cases weak : ∃ x ∈ H, A.w x ≤ 134217728
-    · obtain ⟨x,hx,hw⟩ := weak
-      have two : 2 ≤ 134217730-A.w x := by omega
-      have half : (A.solo H x).card * 2 ≤ L :=
-        (Nat.mul_le_mul_left _ two).trans (A.solo_bounds H x).2
-      have rest : (∑ y ∈ H.erase x, (A.solo H y).card) ≤ 3 * L := by
-        have h := sum_le_sum (s:=H.erase x) (g:=fun _ => L) (fun y _ => (solo y).trans hcard)
-        simpa [card_erase_of_mem hx,four] using h
-      have e := sum_erase_add (f:=fun y => (A.solo H y).card) H hx
-      rw [four] at decomp
+  have lightBudget : L ≤ n-H.card*cut := by omega
+  by_cases critical : H.card = m
+  · rw [critical] at allSolo decomp lightBudget
+    by_cases weak : ∃ x ∈ H, A.w x < t-1
+    · obtain ⟨x, hx, w⟩ := weak
+      have half := (Nat.mul_le_mul_left (A.solo H x).card
+        (show 2 ≤ t-A.w x by omega)).trans (A.solo_bounds H x).2
+      have half' : (A.solo H x).card ≤ (n-m*cut)/2 :=
+        (Nat.le_div_iff_mul_le (by decide)).mpr (half.trans lightBudget)
+      have rest : (∑ y ∈ H.erase x, (A.solo H y).card) ≤ (m-1)*(n-m*cut) := by
+        have h := sum_le_sum (s := H.erase x)
+          (fun y _ => ((solo y).trans hcard).trans lightBudget)
+        simpa [card_erase_of_mem hx, critical] using h
+      have add := sum_erase_add (f := fun y => (A.solo H y).card) H hx
+      change _ + _ + (m-1)*(n-m*cut) + (n-m*cut)/2 ≤ B at weakBound
       omega
-    · have high (x) (hx : x ∈ H) : 134217729 ≤ A.w x := by
+    · have strong (x) (hx : x ∈ H) : t-1 ≤ A.w x := by
         by_contra! h
-        exact weak ⟨x,hx,by omega⟩
-      have cost' : 4*134217729 ≤ mass A.w H := by
-        simpa [four] using sum_le_sum (s:=H) (f:=fun _ => 134217729) (g:=A.w) high
-      have budget : L ≤ 536870908 := by omega
-      rw [four] at sumq decomp
-      by_cases medium : ∃ x ∈ Q, 4194304 ≤ A.w x
-      · obtain ⟨x,hx,hw⟩ := medium
+        exact weak ⟨x, hx, h⟩
+      have cost' : m*(t-1) ≤ mass A.w H := by
+        simpa [critical] using sum_le_sum (s := H) (f := fun _ => t-1) (g := A.w) strong
+      have budget : L ≤ n-m*(t-1) := by omega
+      by_cases medium : ∃ x ∈ Q, v ≤ A.w x
+      · obtain ⟨x, hx, hw⟩ := medium
         have rest := A.card_le_mass (Q.erase x) ((erase_subset x Q).trans sdiff_subset)
         rw [card_erase_of_mem hx] at rest
         have split : mass A.w (Q.erase x) + A.w x = L := sum_erase_add Q A.w hx
         have pos : 0 < Q.card := card_pos.mpr ⟨x,hx⟩
+        have bound := Nat.mul_le_mul_left m (show Q.card ≤ n-m*(t-1)+1-v by omega)
         omega
-      · have few : (A.away H).card ≤ 4 := by
-          by_contra! hn
-          obtain ⟨G,hsubG,hfive⟩ := exists_subset_card_eq (show 5 ≤ (A.away H).card by omega)
-          have h := A.away_few H 4194304 (by
-            intro x hx
-            by_contra! h
-            exact medium ⟨x,hx,by omega⟩) G hsubG
-          rw [hfive] at h
-          change 5*134217730 ≤ L + 5^2*4194304 at h
+      · have few : (A.away H).card ≤ r := by
+          by_contra! many
+          obtain ⟨G, subG, sizeG⟩ := exists_subset_card_eq (show r+1 ≤ (A.away H).card by omega)
+          have h := A.away_few H v (fun x hx => by
+            by_contra! large
+            exact medium ⟨x, hx, large.le⟩) G subG
+          rw [sizeG] at h
+          change (r+1)*t ≤ L + (r+1)^2*v at h
           omega
+        have bound := Nat.mul_le_mul_left m (hcard.trans budget)
         omega
-  · have lb : L ≤ 1073741824 - H.card*134217219 := by omega
-    have prod := Nat.mul_le_mul_left H.card (hcard.trans lb)
-    have check : ∀ s : Fin 9, s.val ≠ 4 →
-        16777215 + (s.val*s.val-s.val) + s.val*(1073741824-s.val*134217219) ≤ 2147483648 := by
-      decide
-    have hn := check ⟨H.card,by omega⟩ four
-    change 16777215 + (H.card*H.card-H.card) +
-      H.card*(1073741824-H.card*134217219) ≤ 2147483648 at hn
-    omega
+  · have bound := Nat.mul_le_mul_left H.card (hcard.trans lightBudget)
+    exact decomp.trans ((Nat.add_le_add (Nat.add_le_add_right away _)
+      (allSolo.trans bound)).trans (off ⟨H.card, Nat.lt_succ_of_le cap⟩ critical))
+
+/-- At agreement count 2²⁷+2, every weighted linear arrangement of total
+weight 2³⁰ contains at most 2³¹ nontrivial rich lines. -/
+theorem predecessor (A : Arrangement P J 134217730)
+    (total : mass A.w A.points = 1073741824) : A.lines.card ≤ 2147483648 :=
+  of_certificate A total (m := 4) (c := 512) (v := 4194304) (r := 4) (by unfold PackingCertificate; decide)
+
+/-- At the first-prime predecessor, the same argument gives the budget 2³⁰. -/
+theorem first_predecessor (A : Arrangement P J 268435458)
+    (total : mass A.w A.points = 1073741824) : A.lines.card ≤ 1073741824 :=
+  of_certificate A total (m := 2) (c := 512) (v := 8388608) (r := 2) (by unfold PackingCertificate; decide)
+
 #print axioms predecessor
 
 end Arrangement
