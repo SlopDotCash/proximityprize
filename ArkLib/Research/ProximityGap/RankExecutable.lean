@@ -3,6 +3,7 @@ Copyright (c) 2026 Proximity Prize Contributors. All rights reserved.
 SPDX-License-Identifier: MIT OR Apache-2.0
 -/
 import ArkLib.Research.ProximityGap.RankReview
+import ArkLib.Research.ProximityGap.RankBinarySearch
 import ArkLib.Research.ProximityGap.Frontier.ListSupportGaussian
 import ArkLib.Research.ProximityGap.Frontier.SimultaneousSupportGaussian
 import ArkLib.Data.CodingTheory.ProximityGap.MCAStaircaseRS
@@ -109,11 +110,24 @@ theorem packingBoundary_correct [Fintype I] [Nonempty I] [Fintype F]
       rw [hc, ← NNReal.coe_lt_coe, NNReal.coe_div, NNReal.coe_natCast, NNReal.coe_natCast]
     · cases result
 
+private def listSupportSafe (points : List I) (D : I ↪ F) (k q m B t : ℕ) : Bool :=
+  if 0 < m ∧ (B + 1).choose 2 ≤ q then
+    ListSupportRank.gaussianPairSafe points D k B t
+  else ListSupportRank.gaussianSafe points D k q m B t
+
+private theorem listSupportSafe_iff [Fintype I] [Fintype F]
+    (points : List I) (hp : ∀ i, i ∈ points) (D : I ↪ F) (k m B t : ℕ)
+    (hn : 0 < Fintype.card I) (hk : k ≤ Fintype.card I) :
+    listSupportSafe points D k (Fintype.card F) m B t = true ↔
+      Lambda (interleavedCodeSet (κ := Fin m) (ReedSolomon.code D k : Set (I → F)))
+        (1 - (t : ℝ) / Fintype.card I) ≤ (B : ℕ∞) := by
+  unfold listSupportSafe
+  split_ifs with h
+  · exact ListSupportRank.gaussianPairSafe_iff points hp D k m B t hn hk h.1 h.2
+  · exact ListSupportRank.gaussianSafe_iff points hp D k m B t hn hk
+
 private def listSupportBoundary (points : List I) (D : I ↪ F) (n k q m B : ℕ) : Boundary n :=
-  scan n fun e =>
-    if 0 < m ∧ (B + 1).choose 2 ≤ q then
-      ListSupportRank.gaussianPairSafe points D k B (n - e.val)
-    else ListSupportRank.gaussianSafe points D k q m B (n - e.val)
+  RankBinarySearch.search n fun e => listSupportSafe points D k q m B (n - e.val)
 
 /-- Compute the list boundary from a coordinate list, its evaluation map, and an integer budget. -/
 def listBoundary (points : List I) (D : I ↪ F) (n k q m B : ℕ) : Boundary n :=
@@ -132,22 +146,21 @@ theorem listBoundary_eq [Fintype I] [Fintype F] (points : List I) (hp : ∀ i, i
   · rename_i e he
     exact packingBoundary_correct D ε k m he
   · unfold listSupportBoundary
-    apply scan_eq_firstFailure
-    intro e
     let B := RankReview.budget F ε
-    have hs : (if 0 < m ∧ (B + 1).choose 2 ≤ Fintype.card F then
-          ListSupportRank.gaussianPairSafe points D k B (Fintype.card I - e.val)
-        else ListSupportRank.gaussianSafe points D k (Fintype.card F) m B
-          (Fintype.card I - e.val)) = true ↔
-          Lambda (interleavedCodeSet (κ := Fin m) (ReedSolomon.code D k : Set (I → F)))
-            (1 - ((Fintype.card I - e.val : ℕ) : ℝ) / Fintype.card I) ≤ (B : ℕ∞) := by
-      split_ifs with h
-      · exact ListSupportRank.gaussianPairSafe_iff points hp D k m B _ hn hk h.1 h.2
-      · exact ListSupportRank.gaussianSafe_iff points hp D k m B _ hn hk
-    rw [hs, ListSupportRank.rs_vandermonde_safe_iff D k m _ _ hn hk]
-    unfold RankReview.listFails
-    push Not
-    rfl
+    have test := listSupportSafe_iff points hp D k m B
+    rw [RankBinarySearch.search_eq_find?]
+    · apply scan_eq_firstFailure
+      intro e
+      rw [test _ hn hk, ListSupportRank.rs_vandermonde_safe_iff D k m _ _ hn hk]
+      unfold RankReview.listFails
+      push Not
+      rfl
+    · intro a b hab hb
+      apply (test _ hn hk).mpr
+      apply le_trans (Lambda_mono _) ((test _ hn hk).mp hb)
+      apply sub_le_sub_left
+      apply div_le_div_of_nonneg_right _ (by positivity)
+      exact_mod_cast Nat.sub_le_sub_left (show a.val ≤ b.val from hab) _
 
 /-- Compute the smooth-domain list cutoff. Coordinates are supplied on demand, so all
 parameter-only branches can run even when materializing the domain would exhaust memory. -/
@@ -304,7 +317,8 @@ def mcaBoundaryWith {n : ℕ} (E : Fin n ≃ I) (labels : Unit → List F) (D : 
     if circuitsCovered n k B then none else
       if n = k + 2 then twoCheckBoundary n B else
         let fieldLabels := labels ()
-        scan n fun e => SimultaneousSupportGaussian.anchoredSafe E fieldLabels D k B (n - e.val)
+        RankBinarySearch.search n fun e =>
+          SimultaneousSupportGaussian.anchoredSafe E fieldLabels D k B (n - e.val)
 
 /-- Compute the MCA boundary with a supplied list of field elements. -/
 def mcaBoundary {n : ℕ} (E : Fin n ≃ I) (labels : List F) (D : I ↪ F) (k B : ℕ) : Boundary n :=
@@ -324,6 +338,22 @@ theorem mcaBoundary_eq [Fintype I] [Nonempty I] [Fintype F] [SampleableType F]
     · rw [ite_eq_left covered]
       exact circuitsCovered_correct D ε k covered
     · rw [ite_eq_right covered]
+      have down (a b : Fin (Fintype.card I + 1)) (hab : a ≤ b) :
+          SimultaneousSupportGaussian.anchoredSafe E labels D k (RankReview.budget F ε)
+              (Fintype.card I - b.val) = true →
+            SimultaneousSupportGaussian.anchoredSafe E labels D k (RankReview.budget F ε)
+              (Fintype.card I - a.val) = true := by
+        simp only [SimultaneousSupportGaussian.anchoredSafe_iff E labels hlabels D k _
+          _ Fintype.card_pos]
+        intro good
+        change mcaError _ _ (gridPt (ι := I) a.val : ℝ) ≤ _
+        change mcaError _ _ (gridPt (ι := I) b.val : ℝ) ≤ _ at good
+        rw [← epsMCA_eq_mcaError] at good ⊢
+        exact (epsMCA_mono _ (gridPt_mono hab)).trans good
+      rw [RankBinarySearch.search_eq_find? _ _ down]
+      change (if Fintype.card I = k + 2 then twoCheckBoundary _ _ else
+        scan _ (fun e => SimultaneousSupportGaussian.anchoredSafe E labels D k
+          (RankReview.budget F ε) (Fintype.card I - e.val))) = _
       rw [ite_eq_right_iff.mpr (twoCheckBoundary_eq_scan E labels hlabels D _)]
       apply scan_eq_firstFailure
       intro e
