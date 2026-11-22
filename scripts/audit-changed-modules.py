@@ -23,16 +23,22 @@ keeps it for the next run, one run at a time. A later run there skips a changed 
 already compiled from the current source text, compiles again every module that failed,
 and finishes an interrupted run.
 
+`--axioms` then runs the repository's axiom sweep, `scripts/AxiomSweep.lean`, on the
+covered modules through the same mirror. It fails when a declaration there depends on
+`sorryAx` or on any axiom other than `propext`, `Classical.choice` and `Quot.sound`.
+
 The tool runs `lean` directly. The build-time plugins and Lake's linter options do not
 apply. Modules outside the audited trees are not rebuilt: a cached module there that does
 not match its source is reported, and the result is then not trustworthy for its
 importers. The project build remains the authoritative check.
 
     scripts/audit-changed-modules.py BASE [--lake DIR] [--work DIR | --keep DIR] [--jobs N]
+        [--axioms]
 
 Exit status 0 means every selected module compiled; 1 means a failure, a module blocked
-by a failed import, a timeout, an import that has no source file, or a cache that
-replaced a module during the run; 2 means the tool could not start.
+by a failed import, a timeout, an import that has no source file, a cache that replaced
+a module during the run, or a declaration the axiom sweep rejects; 2 means the tool
+could not start.
 """
 from __future__ import annotations
 
@@ -60,6 +66,7 @@ MASK = (1 << 64) - 1
 MURMUR = 0xC6A4A7935BD1E995
 SIDECAR = ".source-hash"
 FAILED = ".audit-failed"
+STANDARD_AXIOMS = frozenset({"propext", "Classical.choice", "Quot.sound"})
 
 
 def research_exclusions() -> set[str]:
@@ -206,6 +213,58 @@ def outdated(imports: dict[str, list[str]], here: dict[str, float]) -> set[str]:
                    for d in dependencies)}
 
 
+def sweep_roots(imports: dict[str, list[str]]) -> list[str]:
+    """Module names to hand to the axiom sweep so that it loads and reports every source.
+
+    The sweep imports its roots and reports the loaded modules whose name starts with a
+    root. The sources nothing imports make it load everything; the sources with no
+    covered source as a name prefix make every name match.
+    """
+    names = {source: source[:-5].replace("/", ".") for source in imports}
+    imported = {dependency for dependencies in imports.values() for dependency in dependencies}
+    roots = {names[source] for source in imports if source not in imported}
+    kept: list[str] = []
+    for name in sorted(names.values()):
+        if not any(name == root or name.startswith(root + ".") for root in kept):
+            kept.append(name)
+    return sorted(roots.union(kept))
+
+
+def tainted(report: dict) -> list[dict]:
+    """Declarations of a sweep report that depend on an axiom outside the standard three."""
+    found = []
+    for declaration in report.get("declarations", []):
+        extra = sorted(set(declaration.get("axioms", [])) - STANDARD_AXIOMS)
+        if extra:
+            found.append({"name": declaration.get("name"), "module": declaration.get("module"),
+                          "axioms": extra})
+    return found
+
+
+def axiom_sweep(root: Path, env: dict[str, str], modules: list[str],
+                out: Path) -> tuple[int, list[dict]] | None:
+    """Run the repository's axiom sweep on compiled modules; `None` when it cannot run."""
+    command = ["lean", "--run", str(SCRIPTS / "AxiomSweep.lean")]
+    for module in modules:
+        command += ["--root", module]
+    command += ["--out", str(out)]
+    if out.exists():
+        out.unlink()
+    try:
+        done = subprocess.run(command, cwd=root, env=env, capture_output=True, text=True)
+    except OSError as error:
+        print(f"axiom sweep: cannot start: {error}", flush=True)
+        return None
+    try:
+        report = json.loads(out.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        report = None
+    if done.returncode != 0 or not isinstance(report, dict):
+        print("axiom sweep: did not finish\n" + (done.stdout + done.stderr)[-2000:], flush=True)
+        return None
+    return int(report.get("declarationCount", 0)), tainted(report)
+
+
 def git(root: Path, *args: str) -> str:
     return subprocess.check_output(["git", *args], cwd=root, text=True)
 
@@ -280,7 +339,7 @@ def outside_mismatches(root: Path, library: Path, covered: set[str]) -> list[str
 
 
 def run(root: Path, base: str, lake: Path, work: Path, jobs: int, trees: tuple[str, ...],
-        timeout: int, keep: bool = False) -> int:
+        timeout: int, keep: bool = False, axioms: bool = False) -> int:
     excluded = research_exclusions()
     imports = {path: parse_imports((root / path).read_text(encoding="utf-8"))
                for path in git(root, "ls-files", "--", *trees).splitlines()
@@ -392,17 +451,34 @@ def run(root: Path, base: str, lake: Path, work: Path, jobs: int, trees: tuple[s
     if moved:
         print(f"WARNING: the cache replaced {len(moved)} compiled modules during the run, "
               f"for example {moved[0]}; run the audit again", flush=True)
-    (work / "summary.json").write_text(
-        json.dumps({"base": base, "status": status, "report": report,
-                    "mismatched": sorted(mismatched), "outside_mismatched": foreign,
-                    "replaced_during_run": moved}, indent=1),
-        encoding="utf-8")
     counts: dict[str, int] = {}
     for state in status.values():
         counts[state] = counts.get(state, 0) + 1
     print("result:", ", ".join(f"{count} {state}" for state, count in sorted(counts.items()))
-          or "nothing to compile")
-    return 0 if set(counts) <= {"ok"} and not moved else 1
+          or "nothing to compile", flush=True)
+    clean = set(counts) <= {"ok"} and not moved
+    swept: dict | None = None
+    if axioms and not clean:
+        print("axiom sweep: skipped, the modules above must compile first", flush=True)
+    elif axioms:
+        outcome = axiom_sweep(root, env, sweep_roots(imports), work / "axioms.json")
+        if outcome is None:
+            clean = False
+            swept = {"ran": False}
+        else:
+            total, rejected = outcome
+            swept = {"ran": True, "declarations": total, "rejected": rejected}
+            print(f"axiom sweep: {total} declarations, {len(rejected)} depend on an axiom "
+                  "outside propext, Classical.choice, Quot.sound", flush=True)
+            for entry in rejected[:10]:
+                print(f"  {entry['name']} ({entry['module']}): {entry['axioms']}", flush=True)
+            clean = clean and not rejected
+    (work / "summary.json").write_text(
+        json.dumps({"base": base, "status": status, "report": report,
+                    "mismatched": sorted(mismatched), "outside_mismatched": foreign,
+                    "replaced_during_run": moved, "axiom_sweep": swept}, indent=1),
+        encoding="utf-8")
+    return 0 if clean else 1
 
 
 def main() -> int:
@@ -420,6 +496,9 @@ def main() -> int:
     parser.add_argument("--jobs", type=int, default=4, help="concurrent compilations")
     parser.add_argument("--timeout", type=int, default=3600, help="seconds per module")
     parser.add_argument("--tree", action="append", help="audited source prefix; repeatable")
+    parser.add_argument("--axioms", action="store_true",
+                        help="after a clean compile, run the axiom sweep on the covered "
+                             "modules and fail on sorryAx or a non-standard axiom")
     args = parser.parse_args()
     root = Path(git(Path.cwd(), "rev-parse", "--show-toplevel").strip())
     lake = Path(args.lake).resolve() if args.lake else (root / ".lake").resolve()
@@ -432,7 +511,8 @@ def main() -> int:
         work = Path(args.work).resolve() if args.work else Path(
             tempfile.mkdtemp(prefix="arklib-audit-"))
     trees = tuple(args.tree) if args.tree else DEFAULT_TREES
-    return run(root, args.base, lake, work, args.jobs, trees, args.timeout, bool(args.keep))
+    return run(root, args.base, lake, work, args.jobs, trees, args.timeout, bool(args.keep),
+               args.axioms)
 
 
 if __name__ == "__main__":

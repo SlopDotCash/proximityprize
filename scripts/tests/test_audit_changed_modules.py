@@ -1,5 +1,7 @@
 """Selection logic and cache checks of the changed-module audit."""
+import contextlib
 import importlib.util
+import io
 import json
 from pathlib import Path
 import subprocess
@@ -287,6 +289,52 @@ class CacheOrigin(unittest.TestCase):
             write_trace(self.library / (source[:-5] + ".trace"), source, recorded)
         (self.library / "ArkLib/Data/Orphan.olean").write_bytes(b"olean")
         self.assertEqual(audit.outside_mismatches(root, self.library, {A}), [LIB])
+
+
+class AxiomSweep(unittest.TestCase):
+    def test_roots_load_and_name_every_covered_module(self):
+        root = "ArkLib/Research/ProximityGap.lean"
+        review = "ArkLib/Tests/ProximityPrize/Review.lean"
+        imports = {root: [A], A: [B], B: [], C: [B], review: [A]}
+        # the root's name is a prefix of A, B and C; nothing imports C or the review
+        self.assertEqual(audit.sweep_roots(imports), [
+            "ArkLib.Research.ProximityGap", "ArkLib.Research.ProximityGap.C",
+            "ArkLib.Tests.ProximityPrize.Review"])
+
+    def test_without_a_prefix_module_every_name_is_a_root(self):
+        self.assertEqual(audit.sweep_roots({A: [B], B: []}), [
+            "ArkLib.Research.ProximityGap.A", "ArkLib.Research.ProximityGap.B"])
+
+    def test_reports_only_declarations_outside_the_standard_axioms(self):
+        report = {"declarations": [
+            {"name": "good", "module": "M", "axioms": ["propext", "Quot.sound"]},
+            {"name": "none", "module": "M", "axioms": []},
+            {"name": "unfinished", "module": "M", "axioms": ["sorryAx", "propext"]},
+            {"name": "assumed", "module": "N", "axioms": ["Classical.choice", "extra"]}]}
+        self.assertEqual(audit.tainted(report), [
+            {"name": "unfinished", "module": "M", "axioms": ["sorryAx"]},
+            {"name": "assumed", "module": "N", "axioms": ["extra"]}])
+
+    def test_sweep_reads_the_report_and_fails_closed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory) / "axioms.json"
+
+            def sweep(command, **_):
+                self.assertEqual(command[:2], ["lean", "--run"])
+                self.assertEqual(command[3:], ["--root", "X", "--root", "Y", "--out", str(out)])
+                out.write_text(json.dumps({"declarationCount": 2, "declarations": [
+                    {"name": "t", "module": "X", "axioms": ["sorryAx"]},
+                    {"name": "u", "module": "Y", "axioms": ["propext"]}]}))
+                return subprocess.CompletedProcess(command, 0, stdout="", stderr="")
+
+            with patch.object(audit.subprocess, "run", side_effect=sweep):
+                total, rejected = audit.axiom_sweep(Path(directory), {}, ["X", "Y"], out)
+            self.assertEqual((total, [entry["name"] for entry in rejected]), (2, ["t"]))
+            # a sweep that fails leaves no report behind, even when an older one existed
+            failure = subprocess.CompletedProcess([], 2, stdout="", stderr="cannot import")
+            with patch.object(audit.subprocess, "run", return_value=failure), \
+                    contextlib.redirect_stdout(io.StringIO()):
+                self.assertIsNone(audit.axiom_sweep(Path(directory), {}, ["X"], out))
 
 
 if __name__ == "__main__":
