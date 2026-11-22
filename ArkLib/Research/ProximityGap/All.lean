@@ -625,6 +625,7 @@ import ArkLib.Research.ProximityGap.Frontier.OrbitCount5GeneralNormalForm
 import ArkLib.Research.ProximityGap.Frontier.OrbitCountDoublingInvariant
 import ArkLib.Research.ProximityGap.Frontier.OrbitDegreeBelowFoldR5
 import ArkLib.Research.ProximityGap.Frontier.OrbitSizeR5HalfOrder
+import ArkLib.Research.ProximityGap.Frontier.Order256LocatorCounterexamples
 import ArkLib.Research.ProximityGap.Frontier.OrderSixteenEntryPrimes
 import ArkLib.Research.ProximityGap.Frontier.OrdinaryPolarCappedGcd
 import ArkLib.Research.ProximityGap.Frontier.OrdinaryPolarGcdBudget
