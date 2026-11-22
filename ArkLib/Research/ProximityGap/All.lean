@@ -757,6 +757,7 @@ import ArkLib.Research.ProximityGap.Frontier.PrimeThreeLineCutoff
 import ArkLib.Research.ProximityGap.Frontier.PrimeThreeLineFamily
 import ArkLib.Research.ProximityGap.Frontier.PrimitiveIntegralSectionChart
 import ArkLib.Research.ProximityGap.Frontier.PrimitiveReceivedInterpolation
+import ArkLib.Research.ProximityGap.Frontier.PrimitiveSaturatedStar
 import ArkLib.Research.ProximityGap.Frontier.Prize407EntropyPinSynthesis
 import ArkLib.Research.ProximityGap.Frontier.PrizeConditionalPinCapstone
 import ArkLib.Research.ProximityGap.Frontier.PrizeEquivalencePin
