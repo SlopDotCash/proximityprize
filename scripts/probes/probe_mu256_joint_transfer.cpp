@@ -9,7 +9,7 @@
 
 namespace {
 using Integer = std::int64_t;
-constexpr int max_dimension = 64;
+constexpr int max_dimension = 128;
 int dimension;
 Integer unit;
 std::array<Integer, max_dimension> weights{}, caps{}, sums{};
@@ -61,7 +61,7 @@ int main() {
             if (!(std::cin >> coefficients[i][j]) ||
                 coefficients[i][j] < -(Integer{1} << 22) || coefficients[i][j] > (Integer{1} << 22))
                 return 2;
-    // The input limits keep every centre below 2^44 and error below 2^23.
+    // The input limits keep every centre at most 2^45 and error at most 2^23.
     // By the closed coordinate interval, 0 <= cost <= remaining <= 2^46.
     const bool hit = has_nonzero(dimension - 1, budget, 0, false);
     std::cout << nodes << ' ' << hit << '\n';
