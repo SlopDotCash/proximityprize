@@ -38,6 +38,10 @@ At rate one eighth on the second named prime, Lean proves that a single construc
 
 The **679,477,248-error** eighth-rate attack is exact among four-head witnesses for which three heads have a common direction and their scalar differences, after a common locator, factor through the sixty-fourth-root quotient. The fourth head and the number of fresh sites per witness are unrestricted. A production-field census covering 35,337,933,180 anchor/support pairs rules out the only stronger degree-seven root count. A private-core counting argument excludes the preceding error count. A further 110-anchor census rules out even a six-site third fiber of two septics, and every extremal sextic descends through $X^2$ to one of **33** cubic-pencil orbits on the thirty-second roots. An attaining primitive direction must have degree one or two. [Complete census, proof and verification](eighth-quotient-septic.md)
 
+At the first dimension above the exact sixteenth-rate window, **71,582,790**, a freely chosen production-length domain over a finite extension admits **2,147,483,654** actual bad scalars at **715,827,881 errors**. Marked fibers give sharp first crossings of the fixed integer budget $2n$ at the next three successive error levels when the domain and field may vary. The field-size denominator in the probability depends on the extension. On the named prime itself, an explicit 34-site domain has 72 literal bad scalars at 21 errors in dimension four. The production marked roots have not been placed in the designated subgroup. [Construction, schedules and prime-field reconstruction](three-head-marked-fibers.md)
+
+At the second named prime the first MCA failure on every injective length-$2^{30}$ domain lies in **[715,827,881, 715,827,882]** through dimension **71,582,790**, in **[715,827,880, 715,827,882]** through **71,582,792**, and in **[715,827,879, 715,827,882]** through **73,688,168**, for dimensions at least two. A third-moment argument extends a ten-error bracket through **77,807,386**. At the sharp nine-outside-label case a fixed projective involution gives at most nine distinct directions for fifteen necessary slots. Lean verifies the incidence inequalities, the third-moment test and the interpolant. The nonlinear section bound and the global assembly are written. [Full table and proof](three-head-successor-incidence.md)
+
 At the second prime, every dimension $2\le k\le76,695,848$ has its first MCA failure between **715,827,878 and 715,827,882** errors on every injective domain of length $2^{30}$ and at every positive width. This extends the dimension range by 5,113,059 above the exact window. At the predecessor, every outside witness belongs to a fourth head if there are at least two such witnesses. That head carries at most 14 labels. Lean verifies the actual residual count; the reduction through nonlinear factors is a written proof. At the first dimension beyond the exact window, failure at 715,827,881 additionally requires three disjoint split fibers of a coprime pencil of degree at least 23,860,930. [Proof and scope](three-head-residual-secant.md)
 
 At the second production prime and length $2^{30}$, the written lower bounds on the first MCA failure improve to **309,800,001** at half rate and **529,350,001** at quarter rate, on every injective domain and at every positive width. At eighth rate the new allocation leaves **19,208,893** labels of slack at the already established safe count of **671,088,639**. A separate determinant estimate reaches **696,254,464 errors** at eighth rate for witnesses on a single nonlinear component of total degree at most 25 and coordinate weight at most 754,974,719. Such a component carries at most **140,161** labels even though $t^2<n(k-1)$. The geometric bridges use tame normalization and plane-curve duality. Lean checks the determinant with actual rational tangent coordinates, the surface ranks and every factor allocation. [Proof and numerical scope](tangent-polar-windows.md)
@@ -2770,7 +2774,7 @@ integral for an arbitrary coefficient polynomial. For a base derivation
 $\delta$ whose field extension preserves the integral closure the formal
 conclusion is $F_Y(z,q_z)\mid F(z,a) F^\delta(z,q_z)$ in $k[X]$.
 Independent kernel replay accepted 21,521 transitive declarations.
-The next result reduces that preservation to the concrete local DVRs; the repeated-root site argument remains separate. [Formal denominator theorem](../../../ArkLib/Research/ProximityGap/Frontier/NormalizedSectionSpecialization.lean) ·
+The next result reduces that preservation to the concrete local DVRs; the repeated-root site argument is formalized below. [Formal denominator theorem](../../../ArkLib/Research/ProximityGap/Frontier/NormalizedSectionSpecialization.lean) ·
 [Application to tangent heights](logarithmic-section-heights.md)
 
 **Height-one assembly on the normalized plane curve.**
@@ -2790,6 +2794,19 @@ kernel replay accepted 33,313 declarations for the combined plane theorem and
 [Unramified lifting](../../../ArkLib/Research/ProximityGap/Frontier/UnramifiedDerivationDVR.lean) ·
 [Intersection and denominator theorem](../../../ArkLib/Research/ProximityGap/Frontier/HeightOneNormalization.lean) ·
 [Height proof](logarithmic-section-heights.md)
+
+**Both tangent coordinates at a repeated received root.**
+Lean proves that the actual reduced tangent denominator is nonzero and both
+tangent coordinates equal the received rows at every good agreement site,
+for any multiplicity whose factorial survives in the field. The finite or
+infinite field needs more elements than the value degree. The proof constructs
+a good constant anchor. Clearing by the integral reciprocal gives
+$h^jt=(X-x)Q$ inside the full integral closure, with $h=S(Y-L)$ and $t$ nonzero
+at the site. Applying the checked repeated-derivative identity to $ht$ avoids
+any local regularity requirement beyond the previously identified branch DVRs.
+Independent verified kernel replay accepted all 33,355 transitive declarations.
+[Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/RepeatedSectionSpecialization.lean) ·
+[Argument](logarithmic-section-heights.md#ordinary-differentiation-at-a-repeated-received-root)
 
 ### Exact three-head window above rate one sixteenth
 
