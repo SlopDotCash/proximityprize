@@ -786,8 +786,12 @@ import ArkLib.Research.ProximityGap.Frontier.PrimitiveIntegralSectionChart
 import ArkLib.Research.ProximityGap.Frontier.PrimitiveReceivedInterpolation
 import ArkLib.Research.ProximityGap.Frontier.PrimitiveSaturatedStar
 import ArkLib.Research.ProximityGap.Frontier.Prize407EntropyPinSynthesis
+import ArkLib.Research.ProximityGap.Frontier.PrizeCeilingFermat
+import ArkLib.Research.ProximityGap.Frontier.PrizeCeilingPrimes
+import ArkLib.Research.ProximityGap.Frontier.PrizeCeilingProperPowers
 import ArkLib.Research.ProximityGap.Frontier.PrizeConditionalPinCapstone
 import ArkLib.Research.ProximityGap.Frontier.PrizeEquivalencePin
+import ArkLib.Research.ProximityGap.Frontier.PrizeFieldCeiling
 import ArkLib.Research.ProximityGap.Frontier.PrizeFloorFromCrossStep
 import ArkLib.Research.ProximityGap.Frontier.PrizeInstancePaleySpectrum
 import ArkLib.Research.ProximityGap.Frontier.PrizeRegimeDCEnergyBridge
