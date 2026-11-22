@@ -4,8 +4,7 @@ SPDX-License-Identifier: MIT OR Apache-2.0
 -/
 import ArkLib.Research.ProximityGap.Frontier.HyperbolaRulings
 import ArkLib.Research.ProximityGap.Frontier.SixteenFiberMass
-import ArkLib.Data.CodingTheory.ProximityGap.InterleavingStabilityLedger
-import ArkLib.Research.ProximityGap.Frontier.SmoothDomainMcaEquivalence
+import ArkLib.Research.ProximityGap.Frontier.SmoothOrderedMca
 import ArkLib.Research.ProximityGap.Frontier.BoundarySecurityBudget
 
 /-! # A six-head MCA ceiling on all multiplicative cosets of length sixteen times s -/
@@ -96,39 +95,10 @@ theorem smooth_mass {F I : Type} [Field F] [DecidableEq F] [Fintype F] [Fintype 
     ((36*s+10 : ℕ) : ℝ≥0∞) / Fintype.card F ≤
       epsMCA (F := F) ((ReedSolomon.code D k : Set (I → F)) ^⋈ (Fin width))
         (((6*s+1 : ℕ) : ℝ≥0) / (16*s : ℕ)) := by
-  classical
-  let _ : SampleableType F := SampleableType.ofFintype _
   let _ : NeZero (16*s) := ⟨by omega⟩
-  have : Nonempty I := Fintype.card_pos_iff.mp (by omega)
-  obtain ⟨sites,hsite⟩ := SmoothDomainMcaEquivalence.coset_equiv D
-  let H := ReedSolomon.Smooth.H D
-  let : Fintype H := Fintype.ofEquiv I sites
-  have card : Nat.card H = 16*s := by
-    rw [Nat.card_eq_fintype_card, ← Fintype.card_congr sites, hn]
-  obtain ⟨g,hg⟩ := IsCyclic.exists_ofOrder_eq_natCard (α := H)
-  have ho : orderOf g = 16*s := hg.trans card
-  have hfield : orderOf ((g.val : Fˣ) : F) = 16*s := by
-    rwa [orderOf_units, Subgroup.orderOf_coe]
-  let powers : Fin (16*s) ≃ H := Equiv.ofBijective (fun j => g^j.val)
-    ((Fintype.bijective_iff_injective_and_card _).mpr
-      ⟨fun i j hij => Fin.ext ((IsPrimitiveRoot.iff_orderOf.mpr ho).pow_inj i.isLt j.isLt hij),
-        by rw [Fintype.card_fin, ← Nat.card_eq_fintype_card, card]⟩)
-  let e := powers.trans sites.symm
-  let E := e.toEmbedding.trans D
-  have he (i : Fin (16*s)) : E i = (ReedSolomon.Smooth.a D : F) * (g.val : F)^i.val := by
-    change D (sites.symm (powers i)) = _
-    rw [hsite, sites.apply_symm_apply]
-    rfl
-  have hcode (w : I → F) : w ∘ e ∈ ReedSolomon.code E k ↔ w ∈ ReedSolomon.code D k := by
-    simp only [ReedSolomon.mem_code_iff_eval]
-    constructor
-    · rintro ⟨P,hP,heval⟩
-      exact ⟨P,hP,fun i => by simpa [E,Function.comp_def] using heval (e.symm i)⟩
-    · rintro ⟨P,hP,heval⟩
-      exact ⟨P,hP,fun i => heval (e i)⟩
-  have hm := mass hs E _ _ (ReedSolomon.Smooth.a D).ne_zero hfield he hk hc hf width
-  rw [epsMCA_interleaved_eq, epsMCA_eq_mcaError] at hm ⊢
-  rwa [CoreDefinitions.mcaError_comp_equiv _ _ _ e hcode] at hm
+  apply SmoothOrderedMca.transfer D hn width
+  intro E u g hu hg hd
+  exact mass hs E u g hu hg hd hk hc hf width
 
 /-- Budgets below the six-head population fail by the indicated radius on every smooth
 domain. The denominator Q permits any positive reciprocal-integer error tolerance. -/
