@@ -234,6 +234,21 @@ def regularOnPlaneBranches (F : R[X][X]) [Fact (Irreducible
     (localNormalization (K := FractionRing L[X]) (Curve (L := L) F) hp)),
     ∀ b ∈ branchRing hp w, D b ∈ branchRing hp w
 
+/-- A compatible derivation regular at the branches of a generically irreducible plane
+equation preserves its integral closure whenever the equation admits a simple section. -/
+theorem plane_regular_preserves_normalization [UniqueFactorizationMonoid R] [IsNoetherianRing R]
+    (F : R[X][X]) [Fact (Irreducible (F.map (genericCoeffs (R := R) (L := L))))]
+    (z q : R) (h₁ : (F.derivative.map (evalRingHom z)).eval q ≠ 0)
+    (D : Derivation ℤ (Curve (L := L) F) (Curve (L := L) F))
+    (hD : regularOnPlaneBranches F D) :
+    ∀ x, (planeBase (L := L) F).IsIntegralElem x → (planeBase F).IsIntegralElem (D x) := by
+  let : Algebra R[X] (Curve (L := L) F) := (planeBase (L := L) F).toAlgebra
+  let : IsScalarTower R[X] (FractionRing L[X]) (Curve (L := L) F) :=
+    IsScalarTower.of_algebraMap_eq' rfl
+  let : Algebra.IsSeparable (FractionRing L[X]) (Curve (L := L) F) := curveSeparable F z q h₁
+  exact derivation_preserves_normalization (A := R[X]) (K := FractionRing L[X])
+    (E := Curve (L := L) F) D hD
+
 /-- Tangent divisibility on every simple section follows from regularity of the
 field derivation in the actual localizations above the prime divisors of the plane. -/
 theorem implicit_derivative_divides_of_regular_at_branches [UniqueFactorizationMonoid R]
@@ -248,13 +263,8 @@ theorem implicit_derivative_divides_of_regular_at_branches [UniqueFactorizationM
     (a : R[X]) (ha : AdjoinRoot.root _ ≠ planeBase (L := L) F a) :
     (F.derivative.map (evalRingHom z)).eval q ∣
       (F.eval a).eval z * ((coefficientDerivative δ F).map (evalRingHom z)).eval q := by
-  let : Algebra R[X] (Curve (L := L) F) := (planeBase (L := L) F).toAlgebra
-  let : IsScalarTower R[X] (FractionRing L[X]) (Curve (L := L) F) :=
-    IsScalarTower.of_algebraMap_eq' rfl
-  let : Algebra.IsSeparable (FractionRing L[X]) (Curve (L := L) F) := curveSeparable F z q h₁
-  apply implicit_derivative_divides F z q hl h₀ h₁ D _ δ hδ a ha
-  exact derivation_preserves_normalization (A := R[X]) (K := FractionRing L[X])
-    (E := Curve (L := L) F) D hD
+  exact implicit_derivative_divides F z q hl h₀ h₁ D
+    (plane_regular_preserves_normalization F z q h₁ D hD) δ hδ a ha
 
 end Plane
 
