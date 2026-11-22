@@ -55,17 +55,22 @@ theorem smooth_mass (dom : I ↪ F) [ReedSolomon.Smooth dom] (hn : Fintype.card 
   exact TwoHeadExtraCoset.smooth_mass_of_power dom hn _ _ _ (fun base c g hc hg hi =>
     power_mass base c g hc hg hi hl hu hq) width
 
-/-- Each odd budget in this interval fails at least one Hamming step before the
-two-full-head attack alone first exceeds that budget. -/
-theorem odd_ceiling (dom : I ↪ F) [ReedSolomon.Smooth dom] (hn : Fintype.card I = n) {B : ℕ}
-    (hB : Fintype.card F / 2 ^ 128 = B) (odd : B % 2 = 1) (hl : 1319807663 ≤ B) (hu : B ≤ 1342177281)
-    (width : ℕ) [NeZero width] :
+omit [Nonempty I] [DecidableEq I] [DecidableEq F] in
+/-- Convert any two-extra-label lower bound on an interval ending at the last
+two-head error count into the corresponding family of odd-budget ceilings. -/
+theorem odd_ceiling_of_mass (dom : I ↪ F) {B lower : ℕ}
+    (hB : Fintype.card F / 2 ^ 128 = B) (odd : B % 2 = 1) (hl : 2 * lower + 3 ≤ B) (hu : B ≤ 1342177281)
+    (width : ℕ) [NeZero width]
+    (mass : ∀ {e : ℕ}, lower ≤ e → e ≤ 671088639 →
+      (2 * (e + 1) + 1).choose 2 < Fintype.card F →
+      ((2 * (e + 1) + 2 : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤
+        epsMCA (F := F) ((ReedSolomon.code dom k : Set (I → F)) ^⋈ (Fin width)) ((e : ℝ≥0) / n)) :
     let C := ((ReedSolomon.code dom k : Set (I → F)) ^⋈ (Fin width))
     tolerance < epsMCA (F := F) C (((B / 2 - 1 : ℕ) : ℝ≥0) / n) ∧
       mcaDeltaStar (F := F) C tolerance ≤ (((B / 2 - 1 : ℕ) : ℝ≥0) / n) := by
   dsimp only
   let e := B / 2 - 1
-  have he : 659903830 ≤ e := by dsimp [e]; omega
+  have he : lower ≤ e := by dsimp [e]; omega
   have he' : e ≤ 671088639 := by dsimp [e]; omega
   have cnt : 2 * (e + 1) + 2 = B + 1 := by dsimp [e]; omega
   have hf : (2 * (e + 1) + 1).choose 2 < Fintype.card F := by
@@ -77,8 +82,19 @@ theorem odd_ceiling (dom : I ↪ F) [ReedSolomon.Smooth dom] (hn : Fintype.card 
     have h := (BoundarySecurityBudget.count_ratio_le_iff (Fintype.card_pos (α := F)) (by decide : 0 < 2 ^ 128)).mp
       (by simpa only [Nat.cast_pow, Nat.cast_ofNat] using below)
     omega
-  have bad := above.trans_le (smooth_mass dom hn he he' hf width)
+  have bad := above.trans_le (mass he he' hf)
   exact ⟨bad, mcaDeltaStar_le_of_bad _ _ bad⟩
+
+/-- Each odd budget in this interval fails at least one Hamming step before the
+two-full-head attack alone first exceeds that budget. -/
+theorem odd_ceiling (dom : I ↪ F) [ReedSolomon.Smooth dom] (hn : Fintype.card I = n) {B : ℕ}
+    (hB : Fintype.card F / 2 ^ 128 = B) (odd : B % 2 = 1) (hl : 1319807663 ≤ B) (hu : B ≤ 1342177281)
+    (width : ℕ) [NeZero width] :
+    let C := ((ReedSolomon.code dom k : Set (I → F)) ^⋈ (Fin width))
+    tolerance < epsMCA (F := F) C (((B / 2 - 1 : ℕ) : ℝ≥0) / n) ∧
+      mcaDeltaStar (F := F) C tolerance ≤ (((B / 2 - 1 : ℕ) : ℝ≥0) / n) := by
+  exact odd_ceiling_of_mass (lower := 659903830) dom hB odd hl hu width
+    (fun he he' hf => smooth_mass dom hn he he' hf width)
 
 #print axioms power_mass
 #print axioms smooth_mass
