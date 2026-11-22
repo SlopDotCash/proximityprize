@@ -2872,3 +2872,23 @@ For dimension three and twelve sites over $\mathbf F_{37}$, replacing $11$ in th
 ### Any punctured half-rate candidate has large rotation distance directly in the named field
 
 For three full simple degree-$m$ fibers on the dyadic grid, $m$ odd, every nonidentity index rotation must change at least $m+2$ of their $3m$ labels. The determinant comparing a pencil to its rotation has degree at most $2m-1$, vanishes at zero, and is nonzero because an odd fiber cannot be rotation-invariant. Applied to the first named production endpoint, the minimum number of private sites leaving their private class under **every nonidentity rotation** is 357,913,939 in the six-double shape, 268,435,455 in the five-double shape and 268,435,456 in the triple shape. These bounds are independent of the complex comparison argument. [Proof and endpoint counts](half-four-fiber-parity.md#rotation-distance-over-the-production-field)
+
+### Four transpositions on arbitrary dyadic complex roots force a dihedral involution
+
+A parity descent gives a written proof at every power of two. A projective involution exchanging four disjoint pairs of dyadic complex roots is either negation or reciprocal scaling. The mixed parity pattern is excluded by the valuation above 2. The only other obstruction to descent would give three pairs in a smaller grid satisfying a conic equation with an odd-power coefficient, which the same parity split excludes. A second agent checked the algebra and the valuation cases. Lean proves the field transfer of every pair-product constraint under $12^{\varphi(n)}<p^2$, including all 128-site prize fields. The all-orders geometric descent is still being formalized. [Complete written descent](dyadic-involution-pairs.md) · [Lean determinant bound](../../../ArkLib/Research/ProximityGap/Frontier/CyclotomicPairDeterminant.lean)
+
+### Dihedral rigidity at length 128 throughout the sponsor prime range
+
+On every smooth 128-site domain in a prime field of size at least $2^{128}$, every projective involution exchanging four disjoint pairs of evaluation sites is either negation or reciprocal scaling. The Lean proof transfers pair collisions with determinant height $12^{\varphi(128)}$ and certifies the six auxiliary rows. In the specific 237-bit field, the length-1024 row at separation 16 has two-error penalty at least fifteen. [Uniform involution theorem](../../../ArkLib/Research/ProximityGap/Frontier/Smooth128Involutions.lean) · [Length-1024 obstruction](../../../ArkLib/Research/ProximityGap/Frontier/DyadicPenalty1024.lean)
+
+### Exact odd-predecessor MCA values after replacing sites in a smooth domain
+
+For $n=k+2h-1$ and odd $h\ge5$, $3\le k\le n/3$, replacing at most $\lfloor(k-3)/2\rfloor$ sites of an even smooth coset preserves the exact worst-case probability $(h+1)/q$ at $h-1$ errors. At dimension three, fixing $s=2h+1$ sites leaves at most $16s^2$ exceptional choices of the final site that give the larger numerator. [Near-smooth cutoff](../../../ArkLib/Research/ProximityGap/Frontier/ProjectivePairPadding.lean) · [Bound on exceptional completions](../../../ArkLib/Research/ProximityGap/Frontier/ProjectivePairCompletions.lean)
+
+### The cost of unrestricted higher-order interpolation
+
+At order at least three the canonical general-order error coefficient already exceeds the 128-bit budget at length $2^{30}$ and field size below $2^{256}$, even at jet degree and height one. At order two the remaining degree and height are sharply bounded. A separate exact rank calculation excludes a full homogeneous simplex of Taylor coefficients as a route beyond the half-rate quarter-radius barrier in its stated length and agreement regime. [Bounds and hypotheses](higher-order-field-budgets.md)
+
+### Cross ratios of arbitrary quadruples transfer throughout the 128-site sponsor range
+
+The four rows $(1,x,y,xy)$ have Euclidean norm two on roots of unity. Their determinant is the cleared cross-ratio equality. Hadamard bounds its cyclotomic norm by $16^{\varphi(n)}$, and inversion supplies two common roots modulo the prime. Thus every prescribed quadruple equality on order $n>2$ transfers from prime characteristic to every primitive root in coprime characteristic when $16^{\varphi(n)}<p^2$. At order 128 this requires only $p>2^{128}$. Independently, in characteristic zero or $p>n+r$, a Möbius transformation that takes all but $r$ of the sites of an $n$-site multiplicative coset to another such coset must be a scaling or reciprocal scaling whenever $n>3r+2$. Both statements passed the Lean kernel. [Cross-ratio norm](../../../ArkLib/Research/ProximityGap/Frontier/CyclotomicProjectiveTransfer.lean) · [Dense Möbius theorem](../../../ArkLib/Research/ProximityGap/Frontier/DenseMobiusRigidity.lean)
