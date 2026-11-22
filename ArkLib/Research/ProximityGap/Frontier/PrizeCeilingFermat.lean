@@ -7,8 +7,8 @@ import Mathlib.FieldTheory.Finite.Basic
 /-! # Ruling out larger prime fields in the admissible residue classes
 
 Write a candidate field size as 2²⁵⁶ − d. The congruences n ∣ q−1 for
-n = 2, 4, 8, 16 leave 358 distinct positive offsets above the corresponding
-candidate minima. Every one fails the base-two Fermat test. -/
+n = 2, 4, 8, 16 leave 358 distinct candidate integers q above the proposed
+maxima and below 2²⁵⁶. Every one fails the base-two Fermat test. -/
 
 namespace ProximityGap.PrizeFieldCeiling
 
