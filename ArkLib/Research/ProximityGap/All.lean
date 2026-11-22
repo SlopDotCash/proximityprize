@@ -341,6 +341,7 @@ import ArkLib.Research.ProximityGap.Frontier.DyadicFourCycleExclusion
 import ArkLib.Research.ProximityGap.Frontier.DyadicFrobeniusNorm
 import ArkLib.Research.ProximityGap.Frontier.DyadicGeomeanPrizeVsSqrtN
 import ArkLib.Research.ProximityGap.Frontier.DyadicListPlurality
+import ArkLib.Research.ProximityGap.Frontier.DyadicLocatorReflection
 import ArkLib.Research.ProximityGap.Frontier.DyadicLocatorSumBarrier
 import ArkLib.Research.ProximityGap.Frontier.DyadicLogWitness237
 import ArkLib.Research.ProximityGap.Frontier.DyadicOddPencilCount
@@ -507,6 +508,7 @@ import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorNonlinearPopulation
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorPuncturedList
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorSectionBudget
 import ArkLib.Research.ProximityGap.Frontier.HeightGateNormBound
+import ArkLib.Research.ProximityGap.Frontier.HeightOneNormalization
 import ArkLib.Research.ProximityGap.Frontier.HiddenDerivativeSurfaceSeparation
 import ArkLib.Research.ProximityGap.Frontier.HigherJetBigrading
 import ArkLib.Research.ProximityGap.Frontier.HigherOrderFieldBudget
@@ -738,6 +740,7 @@ import ArkLib.Research.ProximityGap.Frontier.PowMapFiberCard
 import ArkLib.Research.ProximityGap.Frontier.PowerFiberEndpoint
 import ArkLib.Research.ProximityGap.Frontier.PowerFiberProduction
 import ArkLib.Research.ProximityGap.Frontier.PowerPencilCurveCount
+import ArkLib.Research.ProximityGap.Frontier.PowerSlopeCoincidences
 import ArkLib.Research.ProximityGap.Frontier.PowerSumLogConvexSpacing
 import ArkLib.Research.ProximityGap.Frontier.PowerSumMaxBracket
 import ArkLib.Research.ProximityGap.Frontier.PowerSumRatioMeanFloor
@@ -1224,6 +1227,7 @@ import ArkLib.Research.ProximityGap.Frontier.UniversalCubicThreshold
 import ArkLib.Research.ProximityGap.Frontier.UniversalObstructionOmegaBudget
 import ArkLib.Research.ProximityGap.Frontier.UniversalSignedListNorms
 import ArkLib.Research.ProximityGap.Frontier.UniversalTwoHeadBudget
+import ArkLib.Research.ProximityGap.Frontier.UnramifiedDerivationDVR
 import ArkLib.Research.ProximityGap.Frontier.UnrestrictedSectionPopulation
 import ArkLib.Research.ProximityGap.Frontier.WF407W2_D2gspec
 import ArkLib.Research.ProximityGap.Frontier.WF407W2_D4_PerPeriodMGFWall
