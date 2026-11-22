@@ -3085,3 +3085,9 @@ For every zero-sum integer locator weight vector on either named $\mu_{64}$, equ
 ### Every balanced order-128 locator comparison lifts at weight two, sharply
 
 In both named fields every equal-degree order-128 comparison with integer weights of magnitude at most two agrees with its complex comparison. Explicit weight-three witnesses fail at exponents $0,51$ and $0,39$. Full forward and reverse runs verify 216,604 and 107,204 lattice points and 75 and 36 final separating rows. Consequently every pair of complete antipodal pairs at length 256 gives a lifting comparison on its signed populations. In an odd-degree three-split pencil, at least one quotient parity has at most one fiber containing three complete antipodal pairs of that parity. [Proof, witnesses and exact verifier](mu128-balanced-weight-two.md)
+
+### Root-product phases of the protected pencils
+
+At the first production endpoint, every odd-exponent reciprocal reflection moves at least 268,435,457 sites out of their original fiber in each protected pencil. Coincident products raise this to 268,435,459. In the triple-overlap shape at least one pencil has distinct root products and its constant is determined by their chord ratio. In the six-double shape coincidence for all four pencils forces every opposite-edge product to be the same and the puncture and all-agree site to have the same exponent parity.
+
+At both named primes on the order-256 grid, if two different fibers of a degree-at-most-63 split pencil contain complete antipodal pairs, their three root products all have the same exponent parity. For distinct products even a single complete pair lifts its prescribed folded ratio to the complex roots. The two exact 6,112-target enumerations have seven surviving lattice points altogether, each separated from the allowable weights. [Proof and arithmetic replay](split-pencil-root-products.md)

@@ -1098,6 +1098,7 @@ import ArkLib.Research.ProximityGap.Frontier.SplitCoefficientSecants
 import ArkLib.Research.ProximityGap.Frontier.SplitFiberNewton
 import ArkLib.Research.ProximityGap.Frontier.SplitPencilBlockVariance
 import ArkLib.Research.ProximityGap.Frontier.SplitPencilFiberData
+import ArkLib.Research.ProximityGap.Frontier.SplitPencilRootProducts
 import ArkLib.Research.ProximityGap.Frontier.SplitPrimeJointMoments
 import ArkLib.Research.ProximityGap.Frontier.SplitPrimeSixthDensity
 import ArkLib.Research.ProximityGap.Frontier.SpurBadPrimeCeiling
