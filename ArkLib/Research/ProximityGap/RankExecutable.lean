@@ -4,6 +4,7 @@ SPDX-License-Identifier: MIT OR Apache-2.0
 -/
 import ArkLib.Research.ProximityGap.RankReview
 import ArkLib.Research.ProximityGap.RankBinarySearch
+import ArkLib.Research.ProximityGap.DimensionOneList
 import ArkLib.Research.ProximityGap.ListCountCertificates
 import ArkLib.Research.ProximityGap.Frontier.ListSupportGaussian
 import ArkLib.Research.ProximityGap.Frontier.SimultaneousSupportGaussian
@@ -139,9 +140,10 @@ private def listSupportBoundary (points : Unit → List I) (D : I ↪ F) (n k q 
 /-- Compute the list boundary on any supplied domain. Materialize the coordinates
 on the first support-rank test and reuse them at any subsequent rank test. -/
 def listBoundaryWith (points : Unit → List I) (D : I ↪ F) (n k q m B : ℕ) : Boundary n :=
-  match packingBoundary n k q m B with
-  | some e => some e
-  | none => listSupportBoundary points D n k q m B
+  if k = 1 ∧ 0 < n ∧ 1 < q ∧ n ≤ q then DimensionOneList.boundary n q m B else
+    match packingBoundary n k q m B with
+    | some e => some e
+    | none => listSupportBoundary points D n k q m B
 
 /-- Compute the list boundary from a coordinate list, its evaluation map, and an integer budget. -/
 def listBoundary (points : List I) (D : I ↪ F) (n k q m B : ℕ) : Boundary n :=
@@ -156,24 +158,27 @@ theorem listBoundaryWith_eq [Fintype I] [Fintype F] (points : Unit → List I)
   let : Nonempty I := Fintype.card_pos_iff.mp hn
   unfold listBoundaryWith
   split
-  · rename_i e he
-    exact packingBoundary_correct D ε k m he
-  · unfold listSupportBoundary
-    let B := RankReview.budget F ε
-    have test := listSupportSafe_iff (Thunk.mk points) hp D k m B
-    rw [RankBinarySearch.search_eq_find?]
-    · apply scan_eq_firstFailure
-      intro e
-      rw [test _ hn hk, ListSupportRank.rs_vandermonde_safe_iff D k m _ _ hn hk]
-      unfold RankReview.listFails
-      push Not
-      rfl
-    · intro a b hab hb
-      apply (test _ hn hk).mpr
-      apply le_trans (Lambda_mono _) ((test _ hn hk).mp hb)
-      apply sub_le_sub_left
-      apply div_le_div_of_nonneg_right _ (by positivity)
-      exact_mod_cast Nat.sub_le_sub_left (show a.val ≤ b.val from hab) _
+  · obtain ⟨rfl, _⟩ := ‹k = 1 ∧ _›
+    exact (DimensionOneList.listAnswer_eq D ε m).symm
+  · split
+    · rename_i e he
+      exact packingBoundary_correct D ε k m he
+    · unfold listSupportBoundary
+      let B := RankReview.budget F ε
+      have test := listSupportSafe_iff (Thunk.mk points) hp D k m B
+      rw [RankBinarySearch.search_eq_find?]
+      · apply scan_eq_firstFailure
+        intro e
+        rw [test _ hn hk, ListSupportRank.rs_vandermonde_safe_iff D k m _ _ hn hk]
+        unfold RankReview.listFails
+        push Not
+        rfl
+      · intro a b hab hb
+        apply (test _ hn hk).mpr
+        apply le_trans (Lambda_mono _) ((test _ hn hk).mp hb)
+        apply sub_le_sub_left
+        apply div_le_div_of_nonneg_right _ (by positivity)
+        exact_mod_cast Nat.sub_le_sub_left (show a.val ≤ b.val from hab) _
 
 /-- Executing the list search produces the universal operational answer. -/
 theorem listBoundary_eq [Fintype I] [Fintype F] (points : List I) (hp : ∀ i, i ∈ points)
@@ -185,11 +190,12 @@ theorem listBoundary_eq [Fintype I] [Fintype F] (points : List I) (hp : ∀ i, i
 /-- Compute the smooth-domain list cutoff. Coordinates are supplied on demand, so all
 parameter-only branches can run even when materializing the domain would exhaust memory. -/
 def smoothListBoundary (points : Unit → List I) (D : I ↪ F) (n k q m B : ℕ) : Boundary n :=
-  match packingBoundary n k q m B with
-  | some e => some e
-  | none => match productBoundary n k m B with
+  if k = 1 ∧ 0 < n ∧ 1 < q ∧ n ≤ q then DimensionOneList.boundary n q m B else
+    match packingBoundary n k q m B with
     | some e => some e
-    | none => listSupportBoundary points D n k q m B
+    | none => match productBoundary n k m B with
+      | some e => some e
+      | none => listSupportBoundary points D n k q m B
 
 /-- The smooth-domain shortcuts and fallback return the same canonical first failure. -/
 theorem smoothListBoundary_eq [Fintype I] [Nonempty I] [Fintype F]
@@ -199,12 +205,16 @@ theorem smoothListBoundary_eq [Fintype I] [Nonempty I] [Fintype F]
       RankReview.listAnswer D ε k m := by
   unfold smoothListBoundary
   split
-  · exact packingBoundary_correct D ε k m ‹_›
-  · rename_i hp
+  · obtain ⟨rfl, _⟩ := ‹k = 1 ∧ _›
+    exact (DimensionOneList.listAnswer_eq D ε m).symm
+  · rename_i h
     split
-    · exact productBoundary_correct D ε k m ‹_›
-    · simpa only [listBoundaryWith, hp] using
-        listBoundaryWith_eq points hi D ε k m Fintype.card_pos hk
+    · exact packingBoundary_correct D ε k m ‹_›
+    · rename_i hp
+      split
+      · exact productBoundary_correct D ε k m ‹_›
+      · simpa only [listBoundaryWith, ite_eq_right h, hp] using
+          listBoundaryWith_eq points hi D ε k m Fintype.card_pos hk
 
 /-- Constant-time boundary when two parity checks determine the entire MCA curve. -/
 def twoCheckBoundary (n B : ℕ) : Boundary n :=

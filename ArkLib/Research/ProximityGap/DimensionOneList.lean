@@ -25,8 +25,18 @@ variable {I F : Type} [Fintype I] [Nonempty I] [Field F] [Fintype F]
 At zero required agreements every symbol belongs to the list. -/
 def listCount (n q m t : ℕ) : ℕ := if t = 0 then q ^ m else min (q ^ m) (n / t)
 
+/-- Compare the size of the constant alphabet to the budget without materializing
+a field-order power whose size can grow linearly with the interleaving width. -/
+private def powerFits (q m B : ℕ) : Decidable (q ^ m ≤ B) :=
+  if hq : 1 < q then
+    if hz : B = 0 then
+      isFalse (by have := Nat.pow_pos (Nat.zero_lt_one.trans hq) (n := m); omega)
+    else decidable_of_iff (m ≤ Nat.log q B) (Nat.le_log_iff_pow_le hq hz)
+  else inferInstance
+
 /-- The first failing error count for an integer list budget. -/
 def boundary (n q m B : ℕ) : Boundary n :=
+  letI := powerFits q m B
   if q ^ m ≤ B then none else some ⟨n - n / (B + 1), Nat.lt_succ_of_le (Nat.sub_le ..)⟩
 
 /-- The dimension-one RS code interleaved at width m. -/
