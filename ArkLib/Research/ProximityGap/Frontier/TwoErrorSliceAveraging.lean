@@ -51,29 +51,37 @@ theorem extension_sum {I : Type*} [DecidableEq I] (G : Finset I) (r : ℕ)
       rw [sum_sigma, mul_sum]
       exact sum_congr rfl fun S hS => by simp [(mem_powersetCard.mp hS).2]
 
-/-- On 66 possible extensions, a sample has mean weight at least 186/66
-whenever every predecessor admits total extension weight at least 186. -/
-theorem sample_average {I : Type*} [DecidableEq I] (G : Finset I) (l : ℕ)
+/-- Average a bound on all one-site extensions of each predecessor sample. -/
+theorem sample_average_general {I : Type*} [DecidableEq I] (G : Finset I) (l b N : ℕ)
     (w : Finset I → ℕ) (hl : 0<l)
-    (h : ∀ Q ∈ G.powersetCard (l-1), 186 ≤ ∑ x ∈ G \ Q, w (insert x Q))
-    (h66 : G.card-l+1=66) (hroom : l≤G.card) :
-    G.card.choose l * 186 ≤ 66 * ∑ S ∈ G.powersetCard l, w S := by
+    (h : ∀ Q ∈ G.powersetCard (l-1), b ≤ ∑ x ∈ G \ Q, w (insert x Q))
+    (hN : G.card-l+1=N) (hroom : l≤G.card) :
+    G.card.choose l * b ≤ N * ∑ S ∈ G.powersetCard l, w S := by
   obtain ⟨r,rfl⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.ne_of_gt hl)
   simp only [Nat.succ_sub_one] at h
   have bound := sum_le_sum h
   rw [extension_sum] at bound
   simp only [sum_const,card_powersetCard,smul_eq_mul] at bound
   have steps := Nat.choose_succ_right_eq G.card r
-  rw [show G.card-r=66 by omega] at steps
+  rw [show G.card-r=N by omega] at steps
   apply Nat.le_of_mul_le_mul_right (c:=r+1)
   · calc
-      G.card.choose (r+1)*186*(r+1) = G.card.choose r*186*66 := by
+      G.card.choose (r+1)*b*(r+1) = G.card.choose r*b*N := by
         calc
-          _ = (G.card.choose (r+1)*(r+1))*186 := by ring
+          _ = (G.card.choose (r+1)*(r+1))*b := by ring
           _ = _ := by rw [steps]; ring
-      _ ≤ ((r+1) * ∑ S ∈ G.powersetCard (r+1), w S) * 66 := Nat.mul_le_mul_right _ bound
-      _ = (66 * ∑ S ∈ G.powersetCard (r+1), w S) * (r+1) := by ring
+      _ ≤ ((r+1) * ∑ S ∈ G.powersetCard (r+1), w S) * N := Nat.mul_le_mul_right _ bound
+      _ = (N * ∑ S ∈ G.powersetCard (r+1), w S) * (r+1) := by ring
   · omega
+
+/-- On 66 possible extensions, a sample has mean weight at least 186/66
+whenever every predecessor admits total extension weight at least 186. -/
+theorem sample_average {I : Type*} [DecidableEq I] (G : Finset I) (l : ℕ)
+    (w : Finset I → ℕ) (hl : 0<l)
+    (h : ∀ Q ∈ G.powersetCard (l-1), 186 ≤ ∑ x ∈ G \ Q, w (insert x Q))
+    (h66 : G.card-l+1=66) (hroom : l≤G.card) :
+    G.card.choose l * 186 ≤ 66 * ∑ S ∈ G.powersetCard l, w S :=
+  sample_average_general G l 186 66 w hl h h66 hroom
 
 /-- Antipodal pairs form a matching in every injective field domain. -/
 theorem clean_pairs_lower {I F : Type*} [DecidableEq I] [Field F] [DecidableEq F]
