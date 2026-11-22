@@ -346,6 +346,7 @@ import ArkLib.Research.ProximityGap.Frontier.DyadicParityLemma
 import ArkLib.Research.ProximityGap.Frontier.DyadicPenalty1024
 import ArkLib.Research.ProximityGap.Frontier.DyadicPeriodCeiling
 import ArkLib.Research.ProximityGap.Frontier.DyadicSidonTriple
+import ArkLib.Research.ProximityGap.Frontier.DyadicSquareOrbit
 import ArkLib.Research.ProximityGap.Frontier.DyadicTwoCenterReflection
 import ArkLib.Research.ProximityGap.Frontier.DyadicUnitEllipsoid
 import ArkLib.Research.ProximityGap.Frontier.DyadicUnitExponentBound
@@ -542,6 +543,8 @@ import ArkLib.Research.ProximityGap.Frontier.JohnsonBudgetLadder
 import ArkLib.Research.ProximityGap.Frontier.JohnsonCountFromNonprincipalWick
 import ArkLib.Research.ProximityGap.Frontier.JohnsonGridWitness
 import ArkLib.Research.ProximityGap.Frontier.JohnsonJetDimension
+import ArkLib.Research.ProximityGap.Frontier.JohnsonQuarticDomain
+import ArkLib.Research.ProximityGap.Frontier.JohnsonQuarticMca
 import ArkLib.Research.ProximityGap.Frontier.K2Affine
 import ArkLib.Research.ProximityGap.Frontier.K2Multiplicity
 import ArkLib.Research.ProximityGap.Frontier.K2NearAffine
@@ -4035,10 +4038,12 @@ import ArkLib.Research.ProximityGap.JohnsonEqualityExamples
 import ArkLib.Research.ProximityGap.JohnsonGridEquality
 import ArkLib.Research.ProximityGap.JohnsonInvariant
 import ArkLib.Research.ProximityGap.JohnsonListBoundary
+import ArkLib.Research.ProximityGap.JohnsonMcaRealization
 import ArkLib.Research.ProximityGap.JohnsonPrimePowerDomain
 import ArkLib.Research.ProximityGap.JohnsonPrimePowerList
 import ArkLib.Research.ProximityGap.JointAdjacentFieldReview
 import ArkLib.Research.ProximityGap.JointDyadicCeilings
+import ArkLib.Research.ProximityGap.JointJohnsonEquality
 import ArkLib.Research.ProximityGap.JointLargeFieldCriterion
 import ArkLib.Research.ProximityGap.JointLargeFieldReview
 import ArkLib.Research.ProximityGap.KKH26DimGeneralSharpInterleavedPin
@@ -4156,6 +4161,8 @@ import ArkLib.Research.ProximityGap.ResolutionWitness
 import ArkLib.Research.ProximityGap.SecondBudgetSmoothReview
 import ArkLib.Research.ProximityGap.SecondPrimeJohnsonPivot
 import ArkLib.Research.ProximityGap.SecondPrimeRankReview
+import ArkLib.Research.ProximityGap.SixteenJohnsonSeparation
+import ArkLib.Research.ProximityGap.SixteenMcaJohnson
 import ArkLib.Research.ProximityGap.SmoothBaseSubfieldObstruction
 import ArkLib.Research.ProximityGap.SmoothCapacityGap
 import ArkLib.Research.ProximityGap.SmoothEighthListBoundary
