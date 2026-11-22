@@ -1,5 +1,13 @@
 # Disproof Log — ABF26 Proximity Prize Grand Challenge 1 (Issue #232)
 
+## [164-quarter-split-pencil-ramification] 2026-11-21
+
+Every first-prime quarter-rate successor pencil needs a lowest-degree member of degree at least **167,908,203**. More generally its combined ramification index at zero and infinity is at most **100,527,252**, or **97,129,336** for a map factoring through squaring. These exclusions use two successive negacyclic determinant bounds and the odd cardinality of the once-quotiented fibers. [Proof](quarter-successor-split-pencil.md#ramification-at-zero-and-infinity)
+
+## [164-higher-degree-locator-union] 2026-11-21
+
+At rate $1/16$ on either named length-$2^{30}$ domain, all dyadic quotient orders through 128 except order-128 degree nine, together with order-256 degrees 0–8, 18 with at most eight unpaired roots, and 19–256, leave at least 120,142,487 entries below the smaller list budget at 83,886,079 agreements. Each quotient and degree may use its own fixed numerator and multiplier. Including order-256 degree nine and retaining two, four or six unpaired roots at degree 18 leaves 40,654,546 entries below the second budget. For the separate order-128 degree-nine family, the 15-anchor product-one dictionary gives at most 2,053,061,200 words with five extra agreements when using its retained field symbols. The single-anchor transfer distinguishes those symbols from every omitted signature at each named prime. [Combined population proof](dyadic-locator-degree-caps.md#locators-on-every-dyadic-quotient-through-order-128) · [Five-agreement certificate](sixteenth-locator-union.md) · [Single-anchor transfer](mu128-unit-ellipsoid-transfer.md)
+
 ## [164-full-field-lists-on-the-named-subgroups] 2026-11-21
 
 The published shifted-cube degree bound and the Corvaja–Zannier torsion-intersection bound exclude this full-field list construction at the first open error count on all eight named prime and rate pairs. [Derivation and scope](oriented-fiber-list-bounds.md#can-the-full-field-shifted-cube-lists-reach-the-first-open-step)

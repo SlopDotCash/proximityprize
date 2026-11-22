@@ -101,3 +101,100 @@ An over-budget list must continue to contain split differences after many of its
 | $2^{31}$ | $1/8$ | 694,116,764 | 366,766,857 | 3 | 134,217,726 |
 
 For example, in the first-prime eighth-rate row, take any 893,071,997 remaining messages. The integer pair-incidence estimate with tangent parameter 315,748,631 gives more edges than any graph on this many vertices without a seven-clique. Two messages form an edge when they agree with the received word on at least 134,217,726 common selected coordinates. Their difference has degree at most 134,217,727. Dividing out the known roots leaves a polynomial of degree at most one, so the entire difference splits over the field. Remove those seven messages and reapply the same estimate while enough remain. These necessary configurations leave the named list endpoints open.
+
+## Testing the two end coefficients
+
+On a smooth coset where every site satisfies $(-x)^n=c$, a nonzero polynomial of degree at most $d$ with $d$ distinct physical roots has leading coefficient $L\ne0$ and constant coefficient $A$ satisfying $A^n=L^n c^d$. Indeed, $A/L$ is the product of the negatives of the roots. Applying this identity to message differences gives an executable necessary edge count using only two coefficients per message. For a subgroup of order $n$ coprime to $d$, every subgroup element occurs as a product of $d$ distinct sites, by rotating a fixed subset.
+
+For a family whose message coefficients satisfy $A=uL+b$ with $u^n\ne c^d$, distinct messages have at most $d-1$ common domain evaluations. The strict Johnson rank bound therefore limits every interleaved list in this subcode to $n$ whenever $t^2>n(d-1)$, for arbitrary received words. The first open agreement count at each named budget and rate meets this inequality. Deciding the full code still requires control of messages across different affine slices. [Coefficient test and interleaved bound](../../../ArkLib/Research/ProximityGap/Frontier/SplitCoefficientSecants.lean)
+
+For an explicit family, the exact number of physical roots of every difference can also be computed without enumerating the domain. For a nonzero difference $P$ on $X^{2^h}=b$, compute $X^{2^h}$ by $h$ squarings modulo the monic normalization of $P$, subtract $b$, and take the monic gcd with $P$. Its degree counts the distinct coincident sites. Substituting these counts for the pair intersections bounds the total agreements possible at any center. On both named groups, $X^2-1$ and $X^2+X-1$ have identical end coefficients but respectively two and zero physical roots, as checked by kernel reduction with $h=30$. Applying this test to supplied messages leaves the search for arbitrary over-budget families open. [Exact root counter and list test](../../../ArkLib/Research/ProximityGap/Frontier/DyadicDifferenceRoots.lean)
+
+## Affine rank from shortened pair counts
+
+At 314,491,700 errors in the half-rate code, for example, any list exceeding the first named budget has affine dimension at least **58**. Counting only cuts of a flat by a single coordinate gave 25. The certificates below apply to every injective domain and every positive interleaving width. Dimension is over the alphabet field, in the vector space of interleaved words. The bounds restrict candidate lists at the stated radii.
+
+| Rate | Budget | Errors | Required affine dimension | Maximum certified at the preceding dimension |
+| --- | ---: | ---: | ---: | ---: |
+| $1/2$ | $n$ | 314,491,700 | 58 | 886,009,082 |
+| $1/2$ | $2n$ | 314,491,700 | 60 | 1,772,018,175 |
+| $1/4$ | $n$ | 536,870,914 | 29 | 536,870,916 |
+| $1/4$ | $2n$ | 536,870,914 | 30 | 1,073,741,840 |
+| $1/8$ | $n$ | 694,116,763 | 20 | 440,738,901 |
+| $1/8$ | $2n$ | 694,116,764 | 21 | 1,246,598,273 |
+| $1/16$ | $n$ | 805,306,371 | 15 | 357,913,949 |
+| $1/16$ | $2n$ | 805,306,371 | 16 | 1,431,655,816 |
+
+Write $t=n-e$ and $D=k-1$. More generally consider distinct vector words whose pairwise agreement is at most $D$, each agreeing with one center on at least $t>D$ sites. Suppose the list lies in a flat of dimension at most $r$, and every such list in dimension at most $r-1$ has size at most $L$. Select an arbitrary sublist of exactly $M>L$ words. Let $c$ be the number of coordinates constant across the sublist. At every other site the center agreement equation cuts its affine hull in a proper affine subspace, or has no solutions. Thus at most $L$ selected words match there, even for vector columns. Counting all matches gives $Mt\le cM+(n-c)L$. Hence at least
+\[
+ b=\max\left(0,\left\lceil\frac{Mt-Ln}{M-L}\right\rceil\right)
+\]
+sites are constant. If $b>D$, any two of the selected words contradict the pair agreement limit. Otherwise delete $b$ constant sites. Each selected word has at least $t-b$ residual matches and each pair at most $D-b$ residual agreements, irrespective of the center on the deleted sites.
+
+Select exactly $t-b$ residual matches per word. Their site multiplicities $v_x$ obey $\sum v_x=M(t-b)$ and $\sum v_x^2\le M(t-b)+M(M-1)(D-b)$. By Cauchy–Schwarz, existence therefore requires
+\[
+ M(t-b)^2\le (n-b)\big(t-b+(M-1)(D-b)\big).
+\]
+A strict failure certifies $L_r=M-1$. Starting from $L_0=1$ proves the table. The verifier checks the forced number of constant sites and the exclusion at each rank with exact integers. Binary search locates candidate bounds, and correctness uses only the final excluded size because every larger list admits a sublist of that cardinality. For interleaved Reed–Solomon words two distinct words differ in at least one component polynomial, which supplies the pair agreement bound $k-1$. [Lean dimension recurrence and Reed–Solomon specialization](../../../ArkLib/Research/ProximityGap/Frontier/AffineRankMoment.lean) · [Eight certified bounds](../../../ArkLib/Research/ProximityGap/Frontier/AffineRankMomentEndpoints.lean) · [Certificate replay](../../../scripts/probes/probe_affine_rank_moments.py)
+
+## Maximum total agreements for a prescribed family
+
+For each multiplicity $r$, count the sites where at least $r$ messages share some value. Summing these counts gives the exact maximum total agreements over all centers. A center attains the sum by choosing a most frequent value independently at each site. The algorithm works on a list of polynomial messages, so repeating a message assigns it an integer weight. If a single center agrees with every member at least $t$ times, every weighted subfamily of length $m$ has computed maximum at least $mt$. This gives an unrestricted list-overflow obstruction without searching for a center. [Executable checker and exactness theorem](../../../ArkLib/Research/ProximityGap/Frontier/DyadicListPlurality.lean)
+
+For each anchor $P_i$, maintain a vector of polynomial masks for the thresholds among the comparisons processed so far. A nonzero mask divides the domain polynomial and vanishes at the corresponding sites. The zero mask denotes the whole domain. To incorporate $P_j$, the new level $r$ is the union of the old level $r$ and the intersection of the old level $r-1$ with the physical roots of $P_i-P_j$. Gcd computes intersections and polynomial lcm computes unions. Taking the union over anchors gives the global threshold. The implementation uses $O(m^3)$ mask operations. On a coset of size $2^h$, each of the $O(m^2)$ input differences requires at most $h$ modular squarings to get its physical-root factor. The remaining search is over the message families themselves.
+
+On the first named subgroup, take $i$ with $i^2=-1$. The triples $(0,X-1,1-X)$ and $(0,X-1,i(X+1))$ have one coincident site for every pair. In the first triple all three pairs coincide at site 1. In the second triple they meet at the three distinct sites $1,-1,i$. The kernel-checked maxima are respectively $2^{30}+2$ and $2^{30}+3$. Pair counts alone give the same data for both.
+
+## Independent split rectangles and primitive stars
+
+Take a hypothetical list of $M=B+1$ distinct words at any of the eight error counts in the affine-rank table above. For **every** choice of $t$ matched sites per word the following configurations must occur. A $K_{a,a}$ consists of $a$ words on each side, with all $2a$ words affinely independent. For a full edge the selected sets intersect on $D=k-1$ sites. A near edge requires at least $D-1$. Every nonzero row difference on either kind of edge splits over the field. Dividing out the prescribed distinct roots leaves degree at most one.
+
+| Rate | Budget | Full rectangle side $a$ | Near rectangle side $a$ | Independent star leaves | Common gcd degree bound for those leaves | Common gcd degree bound for the whole star |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| $1/2$ | $n$ | 12 | 19 | 51 | 53 | 10 |
+| $1/2$ | $2n$ | 15 | 21 | 53 | 25 | 7 |
+| $1/4$ | $n$ | — | 9 | 26 | 47 | 11 |
+| $1/4$ | $2n$ | — | 10 | 27 | 40 | 9 |
+| $1/8$ | $n$ | 9 | 10 | 19 | 2 | **0** |
+| $1/8$ | $2n$ | 5 | 8 | 18 | 9 | 4 |
+| $1/16$ | $n$ | 5 | 7 | 14 | 4 | 1 |
+| $1/16$ | $2n$ | 6 | 7 | 15 | 3 | 1 |
+
+The stars use full edges except in the two quarter-rate rows, where they use near edges. The rectangle and the star in a row may have different heads. In the first-prime eighth-rate case, the full $K_{9,9}$ has **81 distinct scalar difference polynomials up to scaling**, all of degree 134,217,727 with all roots on the prescribed domain and with common gcd degree at most **23,475**. Distinct edges of an affinely independent configuration cannot have proportional difference vectors. The star in the same row has at least **765,474,163 fully saturated neighbors** and the common gcd of its differences is **one**. It contains an independent substar with gcd one and between 19 and 21 leaves. The corresponding half-rate full rectangles require 144 and 225 distinct split polynomials up to scaling. These statements are necessary conditions on a hypothetical violating list. [Integer and rational certificates for all cells](../../../scripts/probes/probe_independent_split_grids.py)
+
+### Choosing both sides of the rectangle
+
+Use the graph on the $M$ words in which an edge has at least $D-j$ common selected sites, with $j=0$ or $1$. Let $Mt=nq+v$, $0\le v<n$. Balancing multiplicities gives $P=n\binom q2+vq$ as a lower bound on the sum of pair intersections. A nonedge contributes at most $D-j-1$ while an edge contributes at most $D$. Hence the edge count is at least
+\[
+ E=\left\lceil\frac{P-(D-j-1)\binom M2}{j+1}\right\rceil.
+\]
+For an integer $a\ge1$, the number of incidences between $a$-subsets and their common neighbors is $\sum_z\binom{\deg z}{a}\ge M\binom{\lfloor 2E/M\rfloor}{a}$. This follows by moving one unit of degree from the larger of two loads differing by at least two to the smaller until they balance.
+
+For $a\ge2$ each dependent $a$-subset has a word in the span of its other $a-1$ members. At most $\binom M{a-1}L_{a-2}$ such subsets occur, with at most $M$ common neighbors apiece. For $a=1$ this discarded term vanishes. Consequently some independent left side has at least
+\[
+ H=\left\lceil
+ \frac{M\binom{\lfloor2E/M\rfloor}a-M\binom M{a-1}L_{a-2}}{\binom Ma}
+ \right\rceil
+\]
+common neighbors, omitting the second numerator term for $a=1$. Fix exactly $H$ of them. For a right side of size $b$, choose $b$ ordered neighbors uniformly without replacement. Given that the first $s$ choices preserved independence, at most $L_{a+s-1}$ members of the whole list belong to the current affine hull. Thus the probability that all $a+b$ selected words are affinely independent is at least
+\[
+ \alpha=\prod_{s=0}^{b-1}\frac{H-L_{a+s-1}}{H-s}>0.
+\]
+The displayed certificates satisfy $H>L_{a+b-2}$. This proves the independent rectangles with $b=a$ and the independent stars with $a=1$. For the first-prime eighth-rate full rectangle, for example, $H=51,056,048$ and $L_{16}=19,478,091$.
+
+### Controlling the common root factor
+
+For the $H$ neighbors let $p_x$ be their selected support frequency at coordinate $x$ and write $\rho=t/n$. Counting pair intersections within this sublist gives
+\[
+ \sum_x(p_x-\rho)^2\le V=\frac{t-D}{H}+D-\frac{t^2}{n}.
+\]
+The probability all $b$ sampled neighbors contain $x$ is at most $p_x^b$. For $0\le z\le1$,
+\[
+ z^b\le\rho^b+b\rho^{b-1}(z-\rho)+K(z-\rho)^2,\qquad
+ K=\frac{1-\rho^b-b\rho^{b-1}(1-\rho)}{(1-\rho)^2}.
+\]
+Taylor's integral remainder divided by $(z-\rho)^2$ increases with $z$, since the second derivative of $z^b$ increases on $[0,1]$. Sum this bound on the intersection $U$ of the left-side supports. For $a=1$, $|U|=t$ and $\sum_{x\in U}(p_x-\rho)\le D-t\rho$ by the pair cap. For $a\ge2$, $|U|\le D$ and Cauchy–Schwarz gives $\sum_{x\in U}(p_x-\rho)\le\sqrt{DV}$. This bounds the expected common support size by $\mu$. Some independent sample has common support size at most $\lfloor\mu/\alpha\rfloor$.
+
+For a full edge every common zero of its row differences is a selected agreement. One nonzero row difference is a squarefree degree-$D$ polynomial supported on the domain, so the common gcd of **all** nonzero component differences has degree at most this common support size. For near edges, join the chosen vertices by a spanning tree of $a+b-1$ cross edges. On each edge at most $j$ additional evaluation sites can be common zeros. A common root outside the joint selected support must be exceptional on some tree edge. A single nonzero row difference contributes at most $j$ further degrees for multiplicity or roots outside the domain. This accounts for the $(a+b)j$ allowance in the verifier.
+
+For the whole star, fix one edge and consider the $g$ distinct roots of the common gcd among this edge's selected sites. Each neighbor can omit at most $j$ of these from its own selected support since it agrees with the head on them and has at least $D-j$ selected matches with the head. Cauchy–Schwarz therefore gives $[g(1-\rho)-j]_+^2\le gV$. An additional $j$ degrees suffice for the rest of the common gcd. At the first-prime eighth-rate cell $V/(1-\rho)^2<1$ and $j=0$, so no common root exists. Equivalently a list with one fixed coordinate could have at most 682,920,128 members at this $t$, fewer than the 765,474,163 neighbors. Starting from the 19-leaf independent substar with gcd degree at most two, adjoin a neighbor whenever the gcd can be reduced. Each such difference lies outside the span of the previous ones, since all their linear combinations are divisible by the current gcd. At most two additions give gcd one.
