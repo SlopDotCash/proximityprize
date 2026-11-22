@@ -329,6 +329,7 @@ import ArkLib.Research.ProximityGap.Frontier.E2W4ModSignNonCollisionFp
 import ArkLib.Research.ProximityGap.Frontier.E3RouteBridge
 import ArkLib.Research.ProximityGap.Frontier.E3StrataCharZero
 import ArkLib.Research.ProximityGap.Frontier.EffKatzConductorBarrier
+import ArkLib.Research.ProximityGap.Frontier.EighthMobiusSites
 import ArkLib.Research.ProximityGap.Frontier.EighthRatePrime159
 import ArkLib.Research.ProximityGap.Frontier.EighthTransverseCollisions
 import ArkLib.Research.ProximityGap.Frontier.EighthTransverseMobius
@@ -523,6 +524,7 @@ import ArkLib.Research.ProximityGap.Frontier.LiuZhouSplitRecursion
 import ArkLib.Research.ProximityGap.Frontier.LocatorShortening
 import ArkLib.Research.ProximityGap.Frontier.LogRatioTowerBoundedIncrement
 import ArkLib.Research.ProximityGap.Frontier.LogRatioTowerExpForm
+import ArkLib.Research.ProximityGap.Frontier.LogarithmicSectionHeights
 import ArkLib.Research.ProximityGap.Frontier.LowDimensionCubicPlateau
 import ArkLib.Research.ProximityGap.Frontier.LowDimensionThreeLinePhase
 import ArkLib.Research.ProximityGap.Frontier.MGFGeneralToConvergenceHub
@@ -605,6 +607,7 @@ import ArkLib.Research.ProximityGap.Frontier.PaleyMixedProductTraces
 import ArkLib.Research.ProximityGap.Frontier.PaleyMixedTraceSaving
 import ArkLib.Research.ProximityGap.Frontier.PaleyPairDeterminants
 import ArkLib.Research.ProximityGap.Frontier.PaleyPrescribedRectangle
+import ArkLib.Research.ProximityGap.Frontier.PaleyProductStratumNorm
 import ArkLib.Research.ProximityGap.Frontier.PaleyProjectiveMoment
 import ArkLib.Research.ProximityGap.Frontier.PaleyQuarticTraceMoment
 import ArkLib.Research.ProximityGap.Frontier.PaleyRowSampling
