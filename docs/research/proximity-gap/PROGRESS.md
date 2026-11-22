@@ -158,20 +158,23 @@ Lean has thirteen exponents, also 38, 52, 60, 72 and 88. From $p\ge2^{225}$ and 
 
 At length $2^{30}$ the written lower bounds on the first MCA failure are **306,780,001**, **524,700,001** and **671,088,386** at rates $1/2$, $1/4$ and $1/8$, on every injective domain and at every positive width. They replace the weighted and complementary bounds of the next section. The cap for a nonlinear factor comes from rational tangent heads of the sections. Lean constructs both interpolants in each window, checks every degree allocation, and proves the counting half of the cap from the tangent-head data. The geometric half uses the normalization and ramification estimates and is written. [Windows](tangent-head-windows.md) · [Lean window certificate](../../../ArkLib/Research/ProximityGap/Frontier/TangentHeadWindows.lean) · [Counting half](../../../ArkLib/Research/ProximityGap/Frontier/TangentHeadCount.lean) · [Exact certificate](../../../scripts/probes/probe_tangent_head_windows.py)
 
-## Tangent-head ladder for field sizes from $2^{160}$ to $2^{176}$
+## Tangent-head ladder for field sizes from $2^{160}$ to $2^{184}$
 
-At length $2^{30}$, over every finite field with at least $2^{128+\beta}$ elements and characteristic at least $2^{45}$, and on every injective domain, the closed ball through the listed number of errors passes the 128-bit line-MCA test at every positive width. Every prime field of that size qualifies.
+At length $2^{30}$, over every finite field with at least $2^{128+\beta}$ elements and characteristic at least $2^{47}$, and on every injective domain, the closed ball through the listed number of errors passes the 128-bit line-MCA test at every positive width. Every prime field of that size qualifies.
 
 | $\beta$ | Rate 1/2 | Rate 1/4 | Rate 1/8 | Rate 1/16 |
 |---:|---:|---:|---:|---:|
 | 32 | 307,759,023 | 527,124,673 | 671,088,385 | 738,197,249 |
 | 34 | 309,134,539 | 529,408,947 | 680,837,212 | 786,379,766 |
 | 36 | 310,191,320 | 530,904,312 | 687,671,509 | 798,744,899 |
+| 38 | 311,064,833 | 532,151,237 | 688,993,288 | 800,141,773 |
 | 40 | 311,753,565 | 533,136,284 | 690,063,301 | 801,231,080 |
 | 44 | 312,769,668 | 534,507,592 | 691,551,680 | 802,743,393 |
 | 48 | 313,401,975 | 535,375,373 | 692,503,565 | 803,694,497 |
+| 52 | 313,793,593 | 535,924,515 | 693,095,909 | 804,286,356 |
+| 56 | 314,048,997 | 536,193,245 | 693,247,147 | 804,286,356 |
 
-These are written lower bounds. They use the allocation argument of the tangent-head windows with budget $2^\beta$, the tangent-head cap for nonlinear factors, and a packing bound of $n(C-d)/(C^2-nd)$ on the number of rich affine heads. At exponent 36 they exceed the kernel-checked weighted Johnson ladder of the section above by 45,885,640, 89,903,206, 97,113,505 and 89,510,166 errors, and at exponent 48 by 3.7 to 4.8 million. From exponent 64 on that ladder is stronger, and it needs no condition on the characteristic. The exact certificate checks both interpolants, the head tests and the proportional price of every value degree in all 24 entries; it passes 7,725,997 explicit checks. Lean does not check these entries. [Table, argument and limits](tangent-head-ladder.md) · [Exact certificate](../../../scripts/probes/probe_tangent_head_ladder.py)
+These are written lower bounds. They use the allocation argument of the tangent-head windows with budget $2^\beta$, the tangent-head cap for nonlinear factors, and a packing bound of $n(C-d)/(C^2-nd)$ on the number of rich affine heads. At exponent 36 they exceed the kernel-checked weighted Johnson ladder of the section above by 45,885,640, 89,903,206, 97,113,505 and 89,510,166 errors, and at exponent 48 by 3.7 to 4.8 million. From exponent 64 on that ladder is stronger, and it needs no condition on the characteristic. The exact certificate checks both interpolants, the head tests and the proportional price of every value degree in all 35 entries; it passes 59,141,434 explicit checks with the two largest exponents included. Lean does not check these entries. [Table, argument and limits](tangent-head-ladder.md) · [Exact certificate](../../../scripts/probes/probe_tangent_head_ladder.py)
 
 ## Weighted Hodge bounds on the second named prime
 

@@ -1,7 +1,7 @@
 # A tangent-head ladder of safe line-MCA radii at length $2^{30}$
 
 Let $n=2^{30}$. Over every finite field with at least $2^{128+\beta}$ elements
-and characteristic at least $2^{45}$, and on every injective evaluation domain
+and characteristic at least $2^{47}$, and on every injective evaluation domain
 of length $n$, the closed ball through the listed number of errors passes the
 128-bit line-MCA test at every positive interleaving width. Every prime field
 of that size satisfies the characteristic condition.
@@ -11,9 +11,12 @@ of that size satisfies the characteristic condition.
 | 32 | 307,759,023 | 527,124,673 | 671,088,385 | 738,197,249 |
 | 34 | 309,134,539 | 529,408,947 | 680,837,212 | 786,379,766 |
 | 36 | 310,191,320 | 530,904,312 | 687,671,509 | 798,744,899 |
+| 38 | 311,064,833 | 532,151,237 | 688,993,288 | 800,141,773 |
 | 40 | 311,753,565 | 533,136,284 | 690,063,301 | 801,231,080 |
 | 44 | 312,769,668 | 534,507,592 | 691,551,680 | 802,743,393 |
 | 48 | 313,401,975 | 535,375,373 | 692,503,565 | 803,694,497 |
+| 52 | 313,793,593 | 535,924,515 | 693,095,909 | 804,286,356 |
+| 56 | 314,048,997 | 536,193,245 | 693,247,147 | 804,286,356 |
 | Johnson count | 314,491,699 | 536,870,913 | 694,116,762 | 805,306,370 |
 
 For comparison, the kernel-checked
@@ -26,10 +29,14 @@ gives the following counts, with no condition on the characteristic.
 | 40 | 286,064,053 | 497,724,075 | 654,203,879 | 768,608,494 |
 | 44 | 302,702,397 | 521,162,467 | 678,319,226 | 791,028,984 |
 | 48 | 309,697,726 | 530,597,867 | 687,862,086 | 799,681,249 |
+| 56 | 313,729,682 | 535,880,485 | 693,133,819 | 804,424,509 |
 
 At $\beta=36$ the new counts are larger by 45,885,640, 89,903,206, 97,113,505
 and 89,510,166 errors. At $\beta=48$ they are larger by 3,704,249, 4,777,506,
-4,641,479 and 4,013,248.
+4,641,479 and 4,013,248. At $\beta=56$ the first three rates gain 319,315,
+312,760 and 113,328 errors, and the sixteenth-rate entry is below the weighted
+Johnson count; it repeats the $\beta=52$ entry, which remains valid for every
+larger budget.
 
 **Status.** Written lower bounds with an
 [exact-arithmetic certificate](../../../scripts/probes/probe_tangent_head_ladder.py)
@@ -80,11 +87,15 @@ the certificate.
   interpolant grow as the Johnson count is approached. The search over shapes
   was a heuristic bisection with a tolerance of 20,000 errors. Nearby shapes
   may certify slightly more.
-* For $\beta\ge64$ the shapes needed exceed the range searched, and the
-  weighted Johnson ladder is stronger there.
+* The search was limited to interpolants of order and value degree at most
+  400. The entries at $\beta=52$ and 56 reach that limit, and for
+  $\beta\ge64$ the weighted Johnson ladder is stronger.
 
 ## Reproduce
 
 ```bash
 python3 -O scripts/probes/probe_tangent_head_ladder.py
 ```
+
+The entries at $\beta=52$ and 56 are checked with `--deep`, which takes about
+40 seconds.
