@@ -66,6 +66,7 @@ import ArkLib.Research.ProximityGap.Frontier.AgreementSupportBarrier
 import ArkLib.Research.ProximityGap.Frontier.AlgebraicSectionSpecialization
 import ArkLib.Research.ProximityGap.Frontier.AlignableLePinnedMaxMult
 import ArkLib.Research.ProximityGap.Frontier.AlignedAmalgamation
+import ArkLib.Research.ProximityGap.Frontier.AnchoredVeronese
 import ArkLib.Research.ProximityGap.Frontier.AntipodalSigmaUnique
 import ArkLib.Research.ProximityGap.Frontier.AntipodalVanishingCountLower
 import ArkLib.Research.ProximityGap.Frontier.ApolarAffineKernelSpan
