@@ -120,8 +120,8 @@ At eighth rate the binding allocation is far below the budget. The window
 ends because at 671,088,386 errors the test $4C>n+4d$ fails for
 $C=t-255$: four rich heads need no longer contain a collinear triple, and the
 head count used here does not cover that case. Extending this window needs a
-label bound for four rich heads without the determinant test. The known
-failure is at 679,477,249 errors.
+label bound for four rich heads without the determinant test. The four-head count now extends safety through 671,088,639 errors. The known
+failure is at 679,477,248 errors. [Four-head safety proof](eighth-rich-head-safety.md) · [Failure witness](eighth-transverse-mobius.md)
 
 ## Reproduce
 
