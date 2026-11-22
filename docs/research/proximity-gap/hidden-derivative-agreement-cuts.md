@@ -34,6 +34,18 @@ site. A joint explanation would force the direction polynomial to vanish on
 the 61 common sites and hence everywhere, contradicting its nonzero value on
 the fresh site. [Lean construction and directional injectivity](../../../ArkLib/Research/ProximityGap/Frontier/DirectionalJetObstruction.lean)
 
+Two competing heads yield **128 distinct bad scalars** on the same domain
+when the field has an off-domain element `α`. In particular every prime
+field with 128 distinct sites does. Split the sites into blocks of 62 and
+66. Take the pair `(0,0)` on the first block and `(1,x−α)` on the second.
+The polynomial lines with sections `0` and `1+z(X−α)` meet at site `x_i`
+when `z=−1/(x_i−α)`. At this scalar the opposite block's head agrees on
+that entire block and on the extra site `i`. A joint explanation of that
+support would force its intercept polynomial to equal the opposite
+intercept everywhere, contradicting its value at `i`. The labels are
+distinct. This obstruction persists above the one-head bound of 67. [Lean
+two-head witness](../../../ArkLib/Research/ProximityGap/Frontier/DirectionalJetObstruction.lean)
+
 Coexistence can also have bad scalars. Choose 30 fresh sites and give them
 distinct nonzero labels `z_i`. Both words are zero elsewhere, and on the
 fresh sites use `(u₀,u₁)=(1,−1/z_i)`. The same root argument with the 98
