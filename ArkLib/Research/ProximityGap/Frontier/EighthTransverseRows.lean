@@ -84,12 +84,30 @@ def aVal (x p q : F) : Fin 4 → F := valsA x p q (intercept + d₁ * (u + v)) (
 /-- Second-coordinate values after removing the common locator. -/
 def bVal (x p q : F) : Fin 4 → F := valsB x p q intercept d₁
 
+private theorem locator_seed_degree (J R : F[X])
+    (hJ : J.natDegree = s - 2) (hR : R.natDegree ≤ 3 * s) :
+    (J * R).natDegree ≤ 134217726 := by
+  calc
+    (J * R).natDegree ≤ J.natDegree + R.natDegree := natDegree_mul_le
+    _ ≤ (s - 2) + 3 * s := add_le_add hJ.le hR
+    _ ≤ 134217726 := by decide
+
+private theorem head_degree (J : F[X]) (hj : J.natDegree = s - 2) (i : Fin 3) :
+    (head J i).natDegree ≤ 134217726 :=
+  locator_seed_degree J (seed s i) hj (SecondPrimeSmoothSeed.degree s i)
+
+private theorem rows_of_head_degrees (J : F[X]) (i : Fin 4)
+    (hL : (head J 1).natDegree ≤ 134217726)
+    (hQ : (head J 2).natDegree ≤ 134217726) :
+    (rowA J i).degree < (k : WithBot ℕ) ∧ (rowB J i).degree < (k : WithBot ℕ) := by
+  unfold rowA rowB
+  exact degree_vector (head J 1) (head J 2) (intercept + d₁ * (u + v))
+    (d₁ * u * v) intercept d₁ i hL hQ
+
 /-- All eight polynomials lie in the permitted degree range at rate one eighth. -/
 theorem degrees (J : F[X]) (hj : J.natDegree = s - 2) (i : Fin 4) :
-    (rowA J i).degree < (k : WithBot ℕ) ∧ (rowB J i).degree < (k : WithBot ℕ) := by
-  have hd (j : Fin 3) : (head J j).natDegree ≤ 134217726 :=
-    natDegree_mul_le.trans ((add_le_add hj.le (SecondPrimeSmoothSeed.degree s j)).trans (by decide))
-  exact degree_vector (head J 1) (head J 2) _ _ _ _ i (hd 1) (hd 2)
+    (rowA J i).degree < (k : WithBot ℕ) ∧ (rowB J i).degree < (k : WithBot ℕ) :=
+  rows_of_head_degrees J i (head_degree J hj 1) (head_degree J hj 2)
 
 /-- Evaluate both rows at a physical site by indexing the 32 quotient values. -/
 theorem evals (J : F[X]) (i : Fin 4) (x : Fin N) (j : Fin 32) (hj : j.val = x.val % 32) :

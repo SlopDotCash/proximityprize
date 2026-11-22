@@ -103,8 +103,28 @@ theorem full_domain_benefit {I roots d ell : ℕ}
     (degree : I+2*d+ell≤1073741824+3*134217728-3+roots) :
     2*d+100663298+ell≤roots := by omega
 
+/-- Six test sites are covered by allowing adjacent gap sums through twenty-one. -/
+theorem short_span_six (a b c d e f : ℕ) (total : a+b+c+d+e+f=64) :
+    a+b≤21 ∨ b+c≤21 ∨ c+d≤21 ∨ d+e≤21 ∨ e+f≤21 ∨ f+a≤21 := by omega
+
+/-- Three degree-seven members with pair root benefit six would require
+at least two full seven-site fibers and a third with at least six sites. -/
+theorem almost_septic {a b c : ℕ} (ha : a≤7) (hb : b≤7) (hc : c≤7)
+    (total : 20≤a+b+c) : (a=7 ∧ b=7 ∧ 6≤c) ∨ (a=7 ∧ c=7 ∧ 6≤b) ∨ (b=7 ∧ c=7 ∧ 6≤a) := by omega
+
+/-- At a successful endpoint the integer degree and core slack force the common
+locator to use its entire degree allowance, and force the primitive direction
+degree to be one or two. -/
+theorem equality_degree {G ell d a b c : ℕ} (nonconstant : 1≤ell) (degree : d≤7)
+    (ha : a≤d) (hb : b≤d) (hc : c≤d)
+    (septic : d=7 → a+b+c≤19)
+    (locator : G+ell+16777216*d+1≤134217728)
+    (cover : 1577058299≤1073741824+2*G+16777216*(a+b+c)+134217727+ell) :
+    d=6 ∧ a=6 ∧ b=6 ∧ c=6 ∧ ell≤2 ∧ G+ell=33554431 := by omega
+
 #print axioms local_cover
 #print axioms balanced_core_cap
 #print axioms missed_pair
 #print axioms predecessor
+#print axioms equality_degree
 end ArkLib.ProximityGap.Frontier.EighthQuotientCoreCap
