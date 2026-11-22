@@ -1,5 +1,37 @@
 # Counting both locator signatures at the named production primes
 
+## Distributing the common roots across all reserved fibers
+
+At length $n=2^{30}$, one received word at each rate and each designated prime gives the following improved upper bounds on the first failing error count. Each list also works on every multiplicative coset of that order over the same field. Repeating the scalar center and every candidate row gives the same list at each positive interleaving width.
+
+| Prime | Rate | List budget | Signed labels in total | Additional agreements $g$ | Distinct words at least | First failure at or before |
+|---|---:|---:|---:|---:|---:|---:|
+| First | $1/4$ | 1,073,741,824 | 2,396 | 21,006 | 1,074,183,095 | **771,730,931** |
+| Second | $1/4$ | 2,147,483,648 | 5,404 | 9,313 | 2,148,490,550 | **771,742,624** |
+| First | $1/8$ | 1,073,741,824 | 40 | 1,468,006 | 1,077,148,233 | **921,278,875** |
+| Second | $1/8$ | 2,147,483,648 | 83 | 707,472 | 2,147,582,240 | **922,039,409** |
+
+Write $h=n/M$, where $M$ is the quotient order. Let $R$ be the number of reserved fibers, $k_a$ the number of selected signed labels at anchor $a$, $k_*=\max_a k_a$, and $K=\sum_a k_a$. Give each label $g$ sites in its own fiber. The other sites of the $R$ fibers can hold the $h-1$ common roots of $H$ exactly when each $k_a g\le h$ and $Kg+h-1\le Rh$. The maximal uniform allocation is therefore
+
+\[
+g=\min\left(\left\lfloor\frac{h}{k_*}\right\rfloor,
+             \left\lfloor\frac{(R-1)h+1}{K}\right\rfloor\right).
+\]
+
+At the ordinary quotient roots each selected candidate still matches on its 17 fibers. It also matches on the $h-1$ common roots and on $g$ distinct sites assigned to one of its selected labels. The resulting error count is $n-(18h-1+g)$. The common-center construction and its degree bound hold for arbitrary placements of the $h-1$ roots within the unused reserved sites. [Formal polynomial construction](../../../ArkLib/Research/ProximityGap/Frontier/TwoAnchorListWitness.lean) · [Formal allocation and arithmetic](../../../ArkLib/Research/ProximityGap/Frontier/DistributedAnchorListCensus.lean)
+
+Use all $R/2$ opposite pairs $(a,a+R/2)$, indexed by $a=0,\ldots,R/2-1$. At quarter rate use product exponent one and allocate 599 or 1,351 labels to each of the four fibers. For the first prime give a signature of leaf sum $s$ to pair zero if $\lfloor s/4\rfloor\bmod 5 <4$. For the second prime use $(s+2)\bmod 5<3$. Pair one takes the other sums. At eighth rate use product exponent 16. The first prime assigns the sums $\{36\},\{32,48\},\{44\},\{40\}$ in pair order and takes the five most populous available modes per anchor. The second assigns $\{36\},\{44\},\{48\},\{32,40\}$ and uses $11,11,8,10,11,11,11,10$ labels in anchor order. The explicit zero-based ranks for those labels are in the verifier. Distinct pairs cannot count the same subset because the leaf sum is invariant under all reserved rotations.
+
+For the second eighth-rate count track the sign at **both** anchors exactly. Write $e$ for the exponent sum of the $m=17$ roots relative to the first anchor, modulo $2M$. A relative exponent $j$ at the other anchor becomes $(j+M/2)\bmod M$. If $c$ of the original exponents are at least $M/2$, the opposite sum is
+\[
+ f\equiv e+mM/2-Mc\pmod{2M}.
+\]
+The existing paired tree recurrence prescribes occupations at every node. Extend each degree and exponent bucket with the parity of $c$ and exclude all reserved roots. At the inverse pair $j,M-j$, choosing only $M-j$ toggles the parity, as does choosing both roots. Convolution adds the parities. The resulting count for each pair of signed labels is their exact intersection. The four intersections are 317,856, 254,592, 328,626 and 532,480 subsets. Subtracting those from the single-anchor counts leaves 98,592 words above budget. For the other three rows the unsigned intersection upper bound already suffices. [Wrapped-exponent and union identities](../../../ArkLib/Research/ProximityGap/Frontier/DistributedAnchorListCensus.lean)
+
+Run `python3 -O scripts/probes/probe_distributed_anchor_lists.py`. It compares all 361 pairs of nonempty signed modes at order 8 and all 400,689 at order 16 against direct enumeration, then recomputes the four production populations. The numerical mode counts use the Python recurrence. Lean verifies the wrap identity, the union identity, the allocation and the arithmetic from those counts. The eight first failing errors on the designated full-length list problems remain open. [Counting verifier](../../../scripts/probes/probe_distributed_anchor_lists.py)
+
+## Earlier allocations with a dedicated common-root fiber
+
 At length $n=2^{30}$, the following closed Hamming balls contain more Reed–Solomon words than the $2^{-128}$ budget. Each row bounds the first failing error count from above. The construction uses one center per row and works at every positive interleaving width. The earlier ceilings use the same three or seven serving fibers and assign each signature class to a single anchor. Here two opposite anchors can serve the same class. [Previous serving-fiber construction](oriented-fiber-list-bounds.md) · [Formal conversion of quotient sets into codewords](../../../ArkLib/Research/ProximityGap/Frontier/TwoAnchorListWitness.lean)
 
 | Prime | Rate | Budget | Distinct words guaranteed | Previous ceiling | New ceiling |

@@ -13,8 +13,8 @@ The table gives **first failing integer error counts** at length $2^{30}$ and to
 | Rate | First prime MCA | Second prime MCA | First prime list | Second prime list |
 |---|---:|---:|---:|---:|
 | $1/2$ | 268,435,457–313,174,699 | 312,800,001–387,740,104 | 314,491,700–500,520,279 | 314,491,700–502,025,926 |
-| $1/4$ | 447,392,428–480,946,859 | 533,150,001–553,648,129 | 536,870,914–771,731,452 | 536,870,914–771,743,163 |
-| $1/8$ | **536,870,912** | 671,088,640–679,477,248 | 694,116,763–921,348,780 | 694,116,764–922,047,831 |
+| $1/4$ | 447,392,428–480,946,859 | 533,150,001–553,648,129 | 536,870,914–771,730,931 | 536,870,914–771,742,624 |
+| $1/8$ | **536,870,912** | 671,088,640–679,477,248 | 694,116,763–921,278,875 | 694,116,764–922,039,409 |
 | $1/16$ | **536,870,912** | **715,827,882** | 805,306,371–989,855,734 | 805,306,371–989,855,741 |
 
 The three exact MCA counts execute in Lean. The other three safety endpoints on the second prime use written geometry alongside Lean interpolation, determinant and counting results. Scalar and positive-width list budget tests coincide at these parameters. The list lower bounds use the all-center Johnson and puncturing proofs, while the upper bounds use explicit centers. [Named MCA evaluator](../../../ArkLib/Research/ProximityGap/SmoothProductionMcaExecutable.lean) · [Second-prime safety proofs](tangent-polar-windows.md) · [Quarter-rate common-factor count](quarter-common-factor-degrees.md) · [List safety](../../../ArkLib/Research/ProximityGap/Frontier/InterleavedListJohnsonPuncture.lean) · [Half-rate lists](oriented-fiber-list-bounds.md) · [Quarter- and eighth-rate lists](paired-signature-list-bounds.md) · [Sixteenth-rate lists](sixteenth-locator-union.md)
