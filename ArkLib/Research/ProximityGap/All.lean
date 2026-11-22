@@ -346,6 +346,7 @@ import ArkLib.Research.ProximityGap.Frontier.DyadicParityLemma
 import ArkLib.Research.ProximityGap.Frontier.DyadicPenalty1024
 import ArkLib.Research.ProximityGap.Frontier.DyadicPeriodCeiling
 import ArkLib.Research.ProximityGap.Frontier.DyadicSidonTriple
+import ArkLib.Research.ProximityGap.Frontier.DyadicSquareOrbit
 import ArkLib.Research.ProximityGap.Frontier.DyadicTwoCenterReflection
 import ArkLib.Research.ProximityGap.Frontier.DyadicUnitEllipsoid
 import ArkLib.Research.ProximityGap.Frontier.DyadicUnitExponentBound
