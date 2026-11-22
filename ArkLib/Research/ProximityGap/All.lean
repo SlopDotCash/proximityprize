@@ -437,6 +437,7 @@ import ArkLib.Research.ProximityGap.Frontier.FourFiberTripleAlignment
 import ArkLib.Research.ProximityGap.Frontier.FourHeadCommonRootObstruction
 import ArkLib.Research.ProximityGap.Frontier.FourHeadCoreDeterminant
 import ArkLib.Research.ProximityGap.Frontier.FourHeadCrossRatio
+import ArkLib.Research.ProximityGap.Frontier.FourHeadExtensionSharpness
 import ArkLib.Research.ProximityGap.Frontier.FourHeadQuotient
 import ArkLib.Research.ProximityGap.Frontier.FourHeadWitness
 import ArkLib.Research.ProximityGap.Frontier.FourInvolutionPairs
