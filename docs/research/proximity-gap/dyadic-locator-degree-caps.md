@@ -2,7 +2,7 @@
 
 At length $2^{30}$ and rate $1/16$, the locator construction on the order-128 quotient gives an over-budget list using nine roots. On **each actual named prime**, increasing the root count to any $10\le m\le128$ gives at most **22,873,536** candidates for any fixed numerator of this construction. On the order-256 quotient, the ceiling is **476,935,528** at degree 19 and **218,073,074** uniformly for degrees 20 through 256. The sums of the individual ceilings over degrees 10 through 128 and degrees 19 through 256, respectively, are both below the smaller budget $2^{30}$, even with a separate numerator allowed at each degree. These are bounds on candidate polynomials, independent of how many auxiliary fibers the received word uses. [Named witnesses and construction](sixteenth-locator-union.md)
 
-Using the prescribed root product as well, the union of both higher-degree ranges and the order-256 degree-18 locators having at most eight unpaired roots has at most **1,062,800,482** words at **83,886,079 agreements** about any received word. This leaves **10,941,342** entries below the smaller budget. Each quotient and degree may use its own fixed numerator and common multiplier.
+At **83,886,079 agreements**, taking all dyadic quotient orders through 128 except the nine-root family at order 128, together with order-256 degrees 0–8, 18 with at most eight unpaired roots, and 19–256, gives at most **953,599,337** words about any center. Each quotient and degree may use its own fixed numerator and common multiplier. On the second field the budget also accommodates degree nine at order 256 with the degree-18 configurations specified below. [Combined list sizes and agreement thresholds](#locators-on-every-dyadic-quotient-through-order-128)
 
 Let $M=128$ or $256$, let $h=2^{30}/M$, and suppose the nonzero common multiplier $H(X)$ has degree $h-1$. Write $L_T(Y)=\prod_{u\in T}(Y-u)$ for an $m$-subset of $\mu_M$ and fix a monic degree-$m$ numerator $P(Y)$. The construction uses $H(X)Q_T(X^h)$ where $YQ_T(Y)=P(Y)-L_T(Y)$. The code degree bound gives $\deg Q_T\le M/16-1$. Hence the first $t=m-(M/16+1)$ elementary symmetric functions of $T$ are prescribed. Newton's identities prescribe its power sums at frequencies $1,\ldots,t$. Dropping the extra requirement on the constant coefficients can only increase the candidate count. All powers below use the same primitive $M$-th root $\omega$ in the named field.
 
@@ -139,4 +139,41 @@ The two Python commands below reproduce the arithmetic. They check all small cyc
 ~~~sh
 python3 -B scripts/probes/probe_dyadic_locator_degree_caps.py
 python3 -B scripts/probes/probe_dyadic_locator_degree19.py
+~~~
+
+## Locators on every dyadic quotient through order 128
+
+At $t=83{,}886{,}079$ agreements, the union over all dyadic orders $1$ through $128$ and all degrees, except order-128 degree nine, contributes at most **21,002,420** candidates. Adding the order-256 degrees 0 through 8, degree 18 with at most eight unpaired roots, and all degrees 19 through 256 gives **953,599,337**, below the smaller budget by **120,142,487**. On the second prime, one can include degree nine at order 256 and keep the degree-18 configurations with two, four or six unpaired roots. That union has size at most **2,106,829,102**, below the second budget by **40,654,546**.
+
+For each quotient and degree choose one monic numerator and one nonzero multiplier $H$ with $\deg H\le h-1$, where $h=2^{30}/M$ depends on the quotient. At $M\ge16$ the code degree bound still implies $\deg Q_T\le M/16-1$, since $\deg H\ge0$. At $M=1,2,4,8$ sum the prescribed-product ceilings over all degrees, including degree zero. Shifting exponents in $\mathbb Z/M$ bounds each product layer by $\binom Mm\gcd(M,m)/M$, with value one at $m=0$. The resulting totals are $2,3,7,67$. For $M=16,32,64$, use the same product bound when $m\le M/16+1$. At the larger degrees every represented conductor $D$ lifts. Indeed the determinant bound from the first section is at most $(4(M/D)\min(m,M-m))^{D/4}\le 128^{16}=2^{112}<p$. Write $M/D=2^v$ and use $4\min(m,M-m)\le128$ and $128\cdot2^v\le128^{2^v}$. Summing the full-lifting caps and the product layers gives 45, 360 and 164,756 candidates at those three orders.
+
+For a fresh agreement at quotient coordinate $y$, the locator value $L_T(y)$ and the product of $T$ are prescribed. Consequently $T/y$ lies in $\mu_M\setminus\{1\}$ with prescribed $\prod z$ and $\prod(1-z)$. Let $C$ bound this signature multiplicity. Of the $Mh-r$ sites outside the $r$ zeros of $H$, let $A$ carry the baseline received value $H(x)P(y)/y$. Each candidate has at most $\min(A,mh)$ baseline matches there, and fresh matches can only occur at the other $Mh-r-A$ sites. Hence $N_t(t-r-\min(A,mh))\le (Mh-r-A)C$. When $t>r+mh$, the resulting bound on $N_t$ increases up to $A=mh$ and decreases thereafter. Substituting $A=mh$ gives a ratio increasing in $r$, so $r=h-1$ is a valid upper bound. At $M=128$, $t=10h-1$ and $m\le8$, this proves
+$$
+ N_t\le\min\left\{\frac{\gcd(128,m)}{128}\binom{128}m,\
+ \left\lfloor\frac{((127-m)h+1)C_m}{(9-m)h}\right\rfloor\right\}.
+$$
+In increasing degree the nine caps are $1,1,17,41,147,1738,48642,1141320,19044284$, summing to **20,236,191**. Degrees 10 through 128 add the **600,989** candidates above. [Kernel-checked incidence inequality](../../../ArkLib/Research/ProximityGap/Frontier/LocatorAgreementIncidence.lean) · [Two-parameter signature census](antipodal-locator-fresh-energy.md#a-uniform-bound-for-each-nonzero-signature)
+
+The order-256 calculation can use squared distance 32 throughout the fixed-cardinality packing bounds. For an antipodal signed vector $z$ of a size-$m$ support, $\|z\|^2$ is the number of singleton pairs and thus has the parity of $m$. For two such vectors, $\|z-z'\|^2=\|z\|^2+\|z'\|^2-2\langle z,z'\rangle$ is even, including when their weights differ. The lower bound 31 on distinct vectors can therefore be rounded up to 32. For imbalance vectors on four-root blocks, the squared length is $4k+l$ in the notation above, and $l\equiv m\bmod 2$ because only single-imbalance blocks contain an odd number of roots. The same argument applies there and after deleting identical marked coordinates. [Kernel-checked signed-vector parity inequality](../../../ArkLib/Research/ProximityGap/Frontier/LocatorSignedPacking.lean)
+
+| Order 256 degrees | Upper bound |
+|---|---:|
+| 0 through 8, summed, in the received ball | 60,855,338 |
+| 9, in the received ball | 1,786,112,669 |
+| 18, at most eight unpaired roots, in the received ball | 670,811,436 |
+| 18, two, four or six unpaired roots, in the received ball | 37,928,532 |
+| 19 | 87,921,070 |
+| 20 | 9,190,224 |
+| 21 | 103,455,374 |
+| 22 | 357,399 |
+| 23 through 256, summed | 6,076 |
+
+For the first two rows use the order-256 signature census in the same incidence inequality with $t=20h-1$. The low-degree counts in order are $1,1,14,31,100,1928,87916,3223958,57541389,1786112669$. For the degree-18 rows the common incidence factor becomes $237+1/h$. Through eight unpaired roots the fresh signature cap $2{,}830{,}428<h$ gives $237\cdot2{,}830{,}428$. For unpaired weights two, four and six the five-term uniqueness certificate prevents different weights from occurring at the same first sum, since any two distinct such weights sum to at most ten. The first two admit at most one orientation and the last admits at most $\lfloor256/6\rfloor=42$. Their fresh cap is therefore $\max(C_8,C_7,42C_6)=160{,}036$, giving the second degree-18 row. [Order-256 census and reproduction](antipodal-locator-fresh-energy.md#all-root-configurations-at-degrees-zero-through-nine-on-the-order-256-quotient)
+
+Varying $t$ in these same bounds, the union through order-256 degree eight with up to eight unpaired roots at degree 18 stays within the first budget at **83,259,878** agreements and the second at **81,211,130**. The second-budget union including order-256 degree nine, with two, four or six unpaired roots at degree 18, stays within budget at **83,185,696** agreements. Each sufficient agreement count holds for every scalar received word and for repetitions of the scalar candidates at positive interleaving width. The order-128 degree-nine witnesses still give unrestricted first-failure upper bounds of **989,855,734** and **989,855,741 errors** on the respective named domains. [Unrestricted witnesses](sixteenth-locator-union.md)
+
+Run the [quotient-classification verifier](../../../scripts/probes/probe_dyadic_locator_quotient_classification.py) from the repository root. It checks each conductor, the packing arithmetic, both aggregate sums and the integer on each side of each reported agreement threshold. An independent order-eight control compares the incidence formula against direct locator evaluation around baseline, candidate and mixed centers. The signature counts have separate full-field certificates.
+
+~~~sh
+python3 -B scripts/probes/probe_dyadic_locator_quotient_classification.py
 ~~~

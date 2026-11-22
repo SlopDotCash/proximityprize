@@ -17,19 +17,23 @@ private theorem row_arithmetic (e : ℕ) (hlo : 3 ≤ e) (hhi : e ≤ 62) :
     66*345960 ≤ (e.choose 2 - e/2) * ((128-e).choose (63-e) * 186) := by
   interval_cases e <;> simp only [Nat.choose_eq_descFactorial_div_factorial] <;> decide
 
-/-- Every word with between 3 and 62 errors receives at least 345960 units. -/
-theorem row (D : I ↪ F) (cert : PenaltyBound D) (hn : Fintype.card I=128)
-    (E : Finset I) (err : I → F) (herr : ∀ x ∈ E, err x ≠ 0)
-    (hlo : 3 ≤ E.card) (hhi : E.card ≤ 62) :
-    345960 ≤ ∑ R ∈ (univ : Finset I).powersetCard 61, credit D E err R := by
+/-- A lower bound on all one-site extensions of a pair of true errors gives
+a sum over all fixed-size samples of one codeword. -/
+theorem row_from_extensions (D : I ↪ F) (E : Finset I) (w : Finset I → ℕ)
+    {n r C : ℕ} (hn : Fintype.card I=n) (hr : r+2 ≤ n) (hlo : 3≤E.card) (hhi : E.card≤r+1)
+    (extn : ∀ A : Finset I, A.card=2 → A⊆E → (∀ u∈A,∀ v∈A,u≠v → D u≠-D v) →
+      ∀ Q ⊆ univ \ E, ((univ \ E) \ Q).card=n-r-1 →
+        C ≤ ∑ x ∈ (univ \ E) \ Q, w ((E \ A) ∪ insert x Q)) :
+    (E.card.choose 2-E.card/2)*((n-E.card).choose (r+2-E.card)*C) ≤
+      (n-r-1)*∑ R ∈ (univ : Finset I).powersetCard r,w R := by
   classical
   let G := univ \ E
-  let l := 63-E.card
+  let l := r+2-E.card
   let clean := (E.powersetCard 2).filter fun A => ∀ u∈A,∀ v∈A,u ≠ v → D u ≠ -D v
-  let samples := (univ : Finset I).powersetCard 61
+  let samples := (univ : Finset I).powersetCard r
   let pairs := clean ×ˢ G.powersetCard l
   let sample (p : Finset I × Finset I) := (E \ p.1) ∪ p.2
-  have cardG : G.card=128-E.card := by simp [G,card_sdiff_of_subset (subset_univ E),hn]
+  have cardG : G.card=n-E.card := by simp [G,card_sdiff_of_subset (subset_univ E),hn]
   have indexed {p : Finset I × Finset I} (hp : p ∈ pairs) :
       p.1 ⊆ E ∧ p.1.card=2 ∧ p.2 ⊆ G ∧ p.2.card=l := by
     obtain ⟨h1,h2⟩ := mem_product.mp hp
@@ -44,7 +48,7 @@ theorem row (D : I ↪ F) (cert : PenaltyBound D) (hn : Fintype.card I=128)
       (mem_sdiff.mp (h2 hy)).2 (mem_sdiff.mp hx).1
     apply mem_powersetCard.mpr
     use subset_univ _
-    change ((E \ p.1) ∪ p.2).card=61
+    change ((E \ p.1) ∪ p.2).card=r
     rw [card_union_of_disjoint dis,card_sdiff_of_subset h1,hc1,hc2]
     dsimp [l]; omega
   have reconstruct {p : Finset I × Finset I} (hp : p ∈ pairs) :
@@ -59,35 +63,45 @@ theorem row (D : I ↪ F) (cert : PenaltyBound D) (hn : Fintype.card I=128)
     intro p hp q hq he
     exact Prod.ext (by rw [← (reconstruct hp).1,he,(reconstruct hq).1])
       (by rw [← (reconstruct hp).2,he,(reconstruct hq).2])
-  have total : (∑ A ∈ clean, ∑ S ∈ G.powersetCard l, credit D E err (sample (A,S))) ≤
-      ∑ R ∈ samples, credit D E err R := by
-    rw [← sum_product clean (G.powersetCard l) (fun p => credit D E err (sample p))]
-    change (∑ p ∈ pairs, credit D E err (sample p)) ≤ _
+  have total : (∑ A ∈ clean, ∑ S ∈ G.powersetCard l, w (sample (A,S))) ≤
+      ∑ R ∈ samples, w R := by
+    rw [← sum_product clean (G.powersetCard l) (fun p => w (sample p))]
+    change (∑ p ∈ pairs, w (sample p)) ≤ _
     rw [← sum_image hinj]
     exact sum_le_sum_of_subset_of_nonneg image_subset (fun _ _ _ => Nat.zero_le _)
-  have each (A) (hA : A∈clean) : G.card.choose l*186 ≤
-      66*∑ S ∈ G.powersetCard l, credit D E err (sample (A,S)) := by
+  have each (A) (hA : A∈clean) : G.card.choose l*C ≤
+      (n-r-1)*∑ S ∈ G.powersetCard l, w (sample (A,S)) := by
     obtain ⟨hA',hc⟩ := mem_filter.mp hA
     obtain ⟨hsub,hcard⟩ := mem_powersetCard.mp hA'
-    apply TwoErrorSliceAveraging.sample_average G l _ (by dsimp [l]; omega) _
+    apply TwoErrorSliceAveraging.sample_average_general G l C (n-r-1) _ (by dsimp [l]; omega) _
       (by rw [cardG]; dsimp [l]; omega) (by rw [cardG]; dsimp [l]; omega)
     intro Q hQ
     obtain ⟨hq,hcQ⟩ := mem_powersetCard.mp hQ
-    apply last_site D cert E A Q err herr hcard hsub hc hq
-    change (G\Q).card=66
+    apply extn A hcard hsub hc Q hq
+    change (G\Q).card=n-r-1
     rw [card_sdiff_of_subset hq,hcQ,cardG]
     dsimp [l]; omega
   have sm := sum_le_sum each
   rw [sum_const,nsmul_eq_mul, ← mul_sum] at sm
-  have ar := row_arithmetic E.card hlo hhi
   have hc : E.card.choose 2-E.card/2 ≤ clean.card := by
     apply (TwoErrorSliceAveraging.clean_pairs_lower D E).trans_eq
     apply congrArg Finset.card
     ext A
     simp [clean]
-  rw [← cardG] at ar
-  have h := ar.trans ((Nat.mul_le_mul_right _ hc).trans (sm.trans (Nat.mul_le_mul_left 66 total)))
-  exact Nat.le_of_mul_le_mul_left h (by decide)
+  change (E.card.choose 2-E.card/2)*((n-E.card).choose l*C) ≤ (n-r-1)*∑ R ∈ samples,w R
+  rw [← cardG]
+  exact (Nat.mul_le_mul_right _ hc).trans (sm.trans (Nat.mul_le_mul_left _ total))
+
+/-- Every word with between 3 and 62 errors receives at least 345960 units. -/
+theorem row (D : I ↪ F) (cert : PenaltyBound D) (hn : Fintype.card I=128)
+    (E : Finset I) (err : I → F) (herr : ∀ x ∈ E, err x ≠ 0)
+    (hlo : 3 ≤ E.card) (hhi : E.card ≤ 62) :
+    345960 ≤ ∑ R ∈ (univ : Finset I).powersetCard 61, credit D E err R := by
+  apply Nat.le_of_mul_le_mul_left (c := 66) _ (by decide)
+  apply (row_arithmetic E.card hlo hhi).trans
+  exact row_from_extensions D E (credit D E err) (n:=128) (r:=61) (C:=186)
+    hn (by decide) hlo hhi (fun A hA sub cle Q hQ size =>
+      last_site D cert E A Q err herr hA sub cle hQ size)
 
 /-- Fix a scalar center and a finite family of distinct candidate polynomials.
 A word with at most two errors is unique. Otherwise the row and column counts

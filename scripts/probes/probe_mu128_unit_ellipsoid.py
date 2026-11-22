@@ -6,6 +6,7 @@ for pruning is checked by its inverse or its determinant.
 """
 import argparse
 import json
+from itertools import combinations
 from math import factorial, gcd, isqrt, prod
 from pathlib import Path
 
@@ -89,6 +90,10 @@ def check_shift(rows, h, logs, order, bound, reverse=False, weight_bound=None):
                 "antipodal coordinate elimination failed")
         matrix = fmpz_mat(matrix.tolist()[:-1])
         logs = [a-logs[-1] for a in logs[:-1]]
+    return check_ellipsoid(matrix, logs, order, bound, reverse, f"displacement {h}", weight_bound)
+
+
+def check_ellipsoid(matrix, logs, order, bound, reverse, case, weight_bound=None):
     dim = matrix.nrows()
     identity = fmpz_mat([[int(i == j) for j in range(dim)] for i in range(dim)])
     covariance = matrix*matrix.transpose()
@@ -119,11 +124,53 @@ def check_shift(rows, h, logs, order, bound, reverse=False, weight_bound=None):
                 support = sum(abs(int(x)) for x in (dual*matrix).tolist()[0])
                 if separation > weight_bound*support:
                     continue
-            raise ArithmeticError(f"nonzero candidate at shift {h}: {e}")
+            raise ArithmeticError(f"nonzero candidate for {case}: {e}")
         else:
             zero += 1
     require(zero == 1, "zero vector missing or repeated")
     return points
+
+
+def single_anchor(rows, logs, modulus, bound, reverse):
+    """Modulo roots of unity, one anchor has columns Phi(j), for every nonzero j."""
+    matrix = fmpz_mat([r[1:] for r in rows])
+    require(matrix.ncols() == ORDER-1 and matrix.nrows() == ORDER//4,
+            "single-anchor matrix dimensions")
+    require(all(matrix[i, 2*j] == int(i == j) for i in range(ORDER//4)
+                for j in range(ORDER//4)), "odd primitive columns generate the full image")
+    return check_ellipsoid(matrix, logs, modulus, bound, reverse, "single anchor")
+
+
+def check_signed_values(rows, prime, root):
+    """Check the leaf identification and both directions of value equality on actual nine-sets."""
+    from probe_reciprocal_fiber_lists import signature_of
+
+    odds = range(1, ORDER//2, 2)
+    leaf_positions = [signature_of({j}, ORDER).index(1) for j in odds]
+    require(len(set(leaf_positions)) == ORDER//4, "leaf order")
+    for j in range(ORDER):
+        if j % 8:
+            leaf = signature_of({j}, ORDER)
+            require([leaf[pos] for pos in leaf_positions] == [r[j] for r in rows],
+                    "leaf entry differs from primitive-unit exponent")
+    fixed = (13, 14, 15, 17, 18, 19)
+    pool = sorted({j % ORDER for i in (1, 2, 3, 4, 5, 6, 7, 9, 10, 12, 33, 34, 35, 36)
+                   for j in (i, -i)})
+    labels, values, powers, exponents = {}, {}, {}, {}
+    unsigned = set()
+    for tail in combinations(pool, 3):
+        subset = fixed + tail
+        vector = signature_of(set(subset), ORDER)
+        phase = sum(subset) % (2*ORDER)
+        label = vector, phase
+        unsigned.add((vector, phase % ORDER))
+        value = prod(1-pow(root, j, prime) for j in subset) % prime
+        power = pow(value, ORDER, prime)
+        require(labels.setdefault(label, value) == value and values.setdefault(value, label) == label,
+                "signed label / finite-field value mismatch")
+        require(powers.setdefault(vector, power) == power and exponents.setdefault(power, vector) == vector,
+                "primitive vector / root-of-unity coset mismatch")
+    require(len(labels) == 3270 and len(unsigned) == 3246, "control missed a sign split or a repetition")
 
 
 def order256_limit():
@@ -143,7 +190,7 @@ def order256_limit():
             "Minkowski estimate is insufficient")
 
 
-def run_field(cert, shifts, bound, reverse=False):
+def run_field(cert, shifts, bound, reverse=False, one_anchor=False):
     p, g, z, logs = cert['prime'], cert['generator'], cert['root'], cert['logs']
     require(p in PRIMES, "wrong prime")
     certify_prime(p)
@@ -153,6 +200,9 @@ def run_field(cert, shifts, bound, reverse=False):
     require(all(pow(g,a,p) == (1-pow(z,r,p)) % p for a,r in zip(logs,range(1,ORDER//2,2))),
             "full-field unit logarithm mismatch")
     rows = exponent_rows()
+    if one_anchor:
+        check_signed_values(rows, p, z)
+        return [single_anchor(rows, logs, (p-1)//ORDER, bound, reverse)]
     return [check_shift(rows, h, logs, (p-1)//ORDER, bound, reverse) for h in shifts]
 
 
@@ -161,14 +211,22 @@ if __name__ == '__main__':
     parser.add_argument('--reverse-basis', action='store_true')
     parser.add_argument('--field', type=int, choices=(1,2))
     parser.add_argument('--data', type=Path, default=Path(__file__).with_name('mu128_unit_logs.json'))
-    parser.add_argument('--shifts', type=int, nargs='+', choices=range(1,65))
-    parser.add_argument('--bound', type=int, default=126)
+    comparison = parser.add_mutually_exclusive_group()
+    comparison.add_argument('--shifts', type=int, nargs='+', choices=range(1,65))
+    comparison.add_argument('--single-anchor', action='store_true',
+                            help='check all single-site subset-locator values at order 128')
+    parser.add_argument('--bound', type=int, help='squared source radius (default 127 for one anchor, 126 for two)')
     args = parser.parse_args()
     order256_limit()
     certs = json.loads(args.data.read_text())
     shifts = args.shifts or range(1,65)
+    bound = args.bound if args.bound is not None else (127 if args.single_anchor else 126)
     expected = PRIMES if args.field is None else (PRIMES[args.field-1],)
     for p in expected:
         cert = next(c for c in certs if c['prime'] == p)
-        counts = run_field(cert, shifts, args.bound, args.reverse_basis)
-        print(f"p={p}  displacements={len(counts)}  total vectors={sum(counts)}", flush=True)
+        counts = run_field(cert, shifts, bound, args.reverse_basis, args.single_anchor)
+        if args.single_anchor:
+            print(f"p={p} single_anchor radius_squared={bound} lattice_points={sum(counts)} "
+                  "signed_control_modes=3270", flush=True)
+        else:
+            print(f"p={p}  displacements={len(counts)}  total vectors={sum(counts)}", flush=True)
