@@ -2573,6 +2573,10 @@ At the first half-rate successor, **1073741827** is now a kernel-checked upper b
 
 Independent replay of the scalar-count and all-width probability bounds accepted all 33,237 transitive declarations in verified mode.
 
+### A resultant bound for all tangent denominators
+
+Two derivations preserving the reduced branch divisor give a written algebraic bound on the sum of the denominator degrees of the selected section tangents. One resultant charges collisions of the reduced discriminant and its coordinate derivative, and a second charges the base points of the ordinate. At the new three-head window the largest resulting nonlinear population cap is **98,657** on a sextic. This gives an independent route to the cutoff through dimension 71,582,789 using tame lifting of derivations in place of surface intersection theory. [Full proof and numerical bounds](logarithmic-section-heights.md)
+
 ### Exact three-head window above rate one sixteenth
 
 At the second prime and length $2^{30}$, a written proof extends the exact first failure **715,827,882** to every $2\le K\le71,582,789=\lceil2^{30}/15\rceil$, on every injective evaluation domain and at every positive width. It adds 4,473,925 dimensions to the independently kernel-checked range. The multiplicity-two sextic has 658 surplus coefficients. The written surface bound caps each nonlinear factor below five million labels, and any over-budget family with exactly three noncollinear large heads forces their cores to have at least $t-1$ sites. The three-head cover then leaves every outside label five agreements short. At the next dimension the strict inequality becomes equality. [Proof and verification status](three-heads-above-one-sixteenth.md)
