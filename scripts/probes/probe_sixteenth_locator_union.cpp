@@ -36,7 +36,7 @@ int low_bit(Mask x) {
 struct Label {
     Mask signature;
     unsigned score;
-    std::array<unsigned char, 16> selected{};
+    std::array<unsigned char, 32> selected{};
 };
 struct Option {
     Mask sites;
@@ -48,16 +48,21 @@ struct Local {
     unsigned minimum = 100;
 };
 struct Work {
-    unsigned id, anchor, multiplicity;
+    unsigned id, anchor, multiplicity, mode;
+};
+struct Population {
+    Word total = 0;
+    std::array<Word, 2> exclusive{};
 };
 struct Totals {
     std::array<Word, 2> weight{}, incidences{};
 };
 
 struct Census {
-    unsigned order, degree, spare, step, per_tree, trees, leaves = 0;
+    unsigned order, degree, spare, step, per_tree, trees, lifts, leaves = 0;
     Word denominator = 1;
-    std::array<Mask, 128> atom{};
+    std::array<Mask, 128> atom{}, correction{};
+    std::array<Mask, 16> prefix{};
     std::array<int, 32> leaf_exponent{};
     std::array<int, 128> leaf_index{};
     std::array<std::array<int, 32>, 128> galois{};
@@ -65,9 +70,9 @@ struct Census {
     std::unordered_map<Mask, unsigned, MaskHash> index;
     std::vector<std::unordered_map<unsigned, Local>> locals;
 
-    Census(unsigned m, unsigned d, unsigned s)
+    Census(unsigned m, unsigned d, unsigned s, bool signed_modes)
         : order(m), degree(d), spare(s), step(m / s), per_tree(m / (2 * s)), trees(s / 2),
-          locals(trees) {
+          lifts(signed_modes ? 2 : 1), locals(trees) {
         require(m >= 8 && m <= 128 && !(m & (m - 1)) && s >= 4 && s <= 16 && !(s & (s - 1)) &&
                     s < m && per_tree <= 4 && d > 0 && d <= 9,
                 "unsupported quotient");
@@ -75,6 +80,12 @@ struct Census {
         for (unsigned u = 1; u < order; u += 2)
             for (unsigned i = 0; i < leaves; i++)
                 galois[u][i] = leaf_index[(u * leaf_exponent[i]) % order];
+        for (unsigned u = 1; u < order; u += 2)
+            for (unsigned i = 0; i < leaves; i++)
+                if ((u * leaf_exponent[i] / order + (u - 1) / 2) & 1)
+                    correction[u] |= Mask(1) << (4 * i);
+        for (unsigned d = 0; d < spare; d++)
+            prefix[d] = (Mask(1) << (d * step)) - 1;
         for (unsigned k = 1; k < spare; k++)
             denominator = std::lcm(denominator, Word(k));
     }
@@ -95,6 +106,16 @@ struct Census {
         for (unsigned i = 0; i < leaves; i++)
             out |= ((signature >> (4 * i)) & 15) << (4 * galois[u][i]);
         return out;
+    }
+    static unsigned parity(Mask x) { return __builtin_parityll(Word(x) ^ Word(x >> 64)); }
+    unsigned slot(unsigned anchor, unsigned mode) const { return lifts * (anchor / step) + mode; }
+    // Transport the high bit of the canonical exponent sum modulo 2*order.
+    unsigned image_mode(Mask sig, unsigned a, unsigned mode, unsigned u) const {
+        if (lifts == 1)
+            return 0;
+        unsigned e = (order - a * degree % order) % order + mode * order;
+        unsigned adjust = parity(sig & correction[u]) ^ (((u - 1) / 2 * degree) & 1);
+        return ((u * e + order * adjust) / order) & 1;
     }
     void read(const std::string &path) {
         std::ifstream f(path, std::ios::binary);
@@ -176,8 +197,8 @@ struct Census {
                     }
                 auto &v = locals[t][unsigned(sig >> (4 * per_tree * t))];
                 v.minimum = std::min(v.minimum, n);
-                v.all.push_back({mask, n, sum % order});
-                v.by_degree_sum[n * order + sum % order].push_back(mask);
+                v.all.push_back({mask, n, sum % (lifts * order)});
+                v.by_degree_sum[n * lifts * order + sum % (lifts * order)].push_back(mask);
             }
         }
     }
@@ -185,36 +206,49 @@ struct Census {
     std::vector<Work> jobs(bool include_unselected) const {
         std::vector<Work> work;
         for (unsigned a = step; a < order; a *= 2) {
-            std::vector<unsigned char> seen(labels.size());
-            const unsigned orbit_size = order / (2 * a);
-            for (unsigned i = 0; i < labels.size(); i++) {
-                if (seen[i] || (!include_unselected && !labels[i].selected[a / step]))
-                    continue;
-                unsigned len = 0, representative = i;
-                for (unsigned u = 1; u < order; u += 2)
-                    if (u * a % order == a) {
-                        const auto id = index.at(conjugate(labels[i].signature, u));
-                        require(labels[id].selected[a / step] == labels[i].selected[a / step],
-                                "label selection breaks anchor symmetry");
-                        if (!seen[id]) {
-                            seen[id] = 1;
-                            len++;
-                            if (labels[id].signature < labels[representative].signature)
-                                representative = id;
+            std::vector<unsigned char> seen(labels.size() * 2);
+            for (unsigned i = 0; i < labels.size(); i++)
+                for (unsigned mode = 0; mode < lifts; mode++) {
+                    if (seen[2 * i + mode] ||
+                        (!include_unselected && !labels[i].selected[slot(a, mode)]))
+                        continue;
+                    unsigned len = 0, rep = i, rep_mode = mode;
+                    for (unsigned u = 1; u < order; u += 2)
+                        if (u * a % order == a) {
+                            auto sig = conjugate(labels[i].signature, u);
+                            auto id = index.at(sig),
+                                 sg = image_mode(labels[i].signature, a, mode, u);
+                            require(labels[id].selected[slot(a, sg)] ==
+                                        labels[i].selected[slot(a, mode)],
+                                    "selection must be constant on each stabilizer orbit");
+                            if (!seen[2 * id + sg]) {
+                                seen[2 * id + sg] = 1;
+                                len++;
+                                if (sig < labels[rep].signature ||
+                                    (sig == labels[rep].signature && sg < rep_mode)) {
+                                    rep = id;
+                                    rep_mode = sg;
+                                }
+                            }
                         }
-                    }
-                work.push_back({representative, a, len * orbit_size});
-            }
+                    work.push_back({rep, a, len * (order / (2 * a)), rep_mode});
+                }
         }
         return work;
     }
     // Every chosen orbit occupies the same number of distinct bins at each related anchor.
     void choose_by_product(const std::vector<Work> &work,
                            const std::vector<std::array<Word, 2>> &scores,
-                           const std::array<unsigned, 2> &caps) {
+                           const std::array<unsigned, 2> &caps, unsigned last_anchor) {
         for (auto &label : labels)
-            label.selected.fill(0);
-        for (unsigned a = step; a < order; a *= 2) {
+            if (last_anchor) {
+                for (unsigned a = last_anchor; a < order; a += 2 * last_anchor)
+                    for (unsigned k = 0; k < lifts; k++)
+                        label.selected[slot(a, k)] = 0;
+            } else
+                label.selected.fill(0);
+        for (unsigned a = (last_anchor ? last_anchor : step);
+             a < (last_anchor ? 2 * last_anchor : order); a *= 2) {
             unsigned orbit = order / (2 * a);
             for (unsigned h = 0; h < 2; h++) {
                 std::vector<unsigned> ranked;
@@ -224,7 +258,9 @@ struct Census {
                 std::sort(ranked.begin(), ranked.end(), [&](unsigned i, unsigned j) {
                     if (scores[i][h] != scores[j][h])
                         return scores[i][h] > scores[j][h];
-                    return labels[work[i].id].signature < labels[work[j].id].signature;
+                    if (labels[work[i].id].signature != labels[work[j].id].signature)
+                        return labels[work[i].id].signature < labels[work[j].id].signature;
+                    return work[i].mode < work[j].mode;
                 });
                 unsigned used = 0;
                 for (unsigned i : ranked) {
@@ -236,7 +272,8 @@ struct Census {
                     Mask sig = labels[w.id].signature;
                     for (unsigned u = 1; u < order; u += 2) {
                         auto id = index.at(conjugate(sig, u));
-                        labels[id].selected[(u * a % order) / step] |= 1U << h;
+                        labels[id].selected[slot(u * a % order, image_mode(sig, a, w.mode, u))] |=
+                            1U << h;
                     }
                 }
             }
@@ -252,12 +289,18 @@ struct Census {
         }
         require(signatures[0] == labels[w.id].signature, "incorrect local signature");
         std::array<unsigned, 2> hits{};
+        unsigned e = (order - w.anchor * degree % order) % order + w.mode * order;
         for (unsigned d = 0; d < spare; d++)
             if ((w.anchor / step + d) % spare != 0) {
                 auto it = index.find(signatures[d]);
                 if (it == index.end())
                     continue;
-                unsigned bits = labels[it->second].selected[(w.anchor / step + d) % spare];
+                // Subtracting d*step adds order at exactly the sites below d*step.
+                unsigned shifted = e + 2 * order * degree - d * step * degree;
+                unsigned mode =
+                    lifts == 1 ? 0 : ((shifted / order) + parity(sites & prefix[d])) % 2;
+                unsigned bits =
+                    labels[it->second].selected[slot(((w.anchor / step + d) % spare) * step, mode)];
                 hits[0] += bits & 1;
                 hits[1] += (bits >> 1) & 1;
             }
@@ -275,21 +318,37 @@ struct Census {
         std::array<unsigned, 9> mins{};
         for (unsigned t = trees; t-- > 0;)
             mins[t] = mins[t + 1] + choices[t]->minimum;
-        const unsigned target = (order - w.anchor * degree % order) % order;
+        const unsigned target = (order - w.anchor * degree % order) % order + w.mode * order;
         auto recur = [&](auto &self, unsigned t, unsigned remaining, unsigned residue,
                          Mask set) -> void {
             if (t + 1 == trees) {
                 const auto &table = choices[t]->by_degree_sum;
-                auto it = table.find(remaining * order + residue);
+                auto it = table.find(remaining * lifts * order + residue);
                 if (it != table.end())
                     visit(set, it->second);
             } else
                 for (const Option &o : choices[t]->all)
                     if (o.degree + mins[t + 1] <= remaining)
-                        self(self, t + 1, remaining - o.degree, (residue + order - o.sum) % order,
-                             set | o.sites);
+                        self(self, t + 1, remaining - o.degree,
+                             (residue + lifts * order - o.sum) % (lifts * order), set | o.sites);
         };
         recur(recur, 0, degree, target, 0);
+    }
+    Population population(const Work &w, bool count_exclusive) const {
+        Population result;
+        unsigned own = labels[w.id].selected[slot(w.anchor, w.mode)];
+        enumerate(w, [&](Mask prefix, const std::vector<Mask> &tails) {
+            result.total += tails.size();
+            if (!count_exclusive)
+                return;
+            for (Mask tail : tails) {
+                auto at = hits(prefix | tail, w);
+                for (unsigned h = 0; h < 2; h++)
+                    if (at[h] == ((own >> h) & 1))
+                        result.exclusive[h]++;
+            }
+        });
+        return result;
     }
 };
 
@@ -307,14 +366,16 @@ template <class Visit> void parallel_jobs(unsigned workers, unsigned size, Visit
         task.get();
 }
 int main(int argc, char **argv) try {
-    bool product_scores = argc == 10 && std::string(argv[1]) == "--product-scores";
+    bool signed_modes = argc == 10 && std::string(argv[1]) == "--signed-scores";
+    bool product_scores =
+        signed_modes || (argc == 10 && std::string(argv[1]) == "--product-scores");
     if (product_scores) {
         argc--;
         argv++;
     }
-    require(argc == 9,
-            "usage: census POOL ORDER DEGREE SPARE CUTOFF1 CUTOFF2 CAP2 WORKERS "
-            "or census --product-scores POOL ORDER DEGREE SPARE CAP1 CAP2 ROUNDS WORKERS");
+    require(argc == 9, "usage: census POOL ORDER DEGREE SPARE CUTOFF1 CUTOFF2 CAP2 WORKERS "
+                       "or census {--product-scores|--signed-scores} POOL ORDER DEGREE SPARE CAP1 "
+                       "CAP2 ROUNDS WORKERS");
     auto param = [](const char *arg) {
         std::size_t n = 0;
         const auto value = std::stoul(arg, &n);
@@ -324,7 +385,7 @@ int main(int argc, char **argv) try {
     };
     unsigned order = param(argv[2]), degree = param(argv[3]), spare = param(argv[4]);
     require(spare >= 4 && spare <= 16, "spare subgroup must have order 4, 8 or 16");
-    Census c(order, degree, spare);
+    Census c(order, degree, spare, signed_modes);
     c.read(argv[1]);
     const unsigned workers = param(argv[8]);
     require(workers >= 1 && workers <= 3, "use 1 to 3 workers");
@@ -335,35 +396,63 @@ int main(int argc, char **argv) try {
     if (product_scores) {
         const std::array<unsigned, 2> caps{param(argv[5]), param(argv[6])};
         const unsigned rounds = param(argv[7]);
-        require(rounds <= 1, "use zero or one overlap refinement");
+        require(rounds <= (signed_modes ? 3u : 1u), "unsupported refinement count");
         std::vector<std::array<Word, 2>> scores(work.size());
         for (unsigned round = 0; round <= rounds; round++) {
             parallel_jobs(workers, work.size(), [&](unsigned j) {
                 const Work &w = work[j];
-                Word population = 0;
-                std::array<Word, 2> fresh{};
-                c.enumerate(w, [&](Mask prefix, const std::vector<Mask> &tails) {
-                    population += tails.size();
-                    if (round == 0)
-                        return;
-                    unsigned own = c.labels[w.id].selected[w.anchor / c.step];
-                    for (Mask tail : tails) {
-                        auto hits = c.hits(prefix | tail, w);
-                        for (unsigned h = 0; h < 2; h++)
-                            if (hits[h] == ((own >> h) & 1))
-                                fresh[h]++;
-                    }
-                });
+                if (round >= 2 && w.anchor != order / (1U << (round - 1)))
+                    return;
+                auto local = c.population(w, round > 0);
                 for (unsigned h = 0; h < 2; h++)
-                    scores[j][h] = population + 3 * fresh[h];
+                    scores[j][h] = round >= 2
+                                       ? local.exclusive[h]
+                                       : local.total + (signed_modes ? 2 : 3) * local.exclusive[h];
             });
-            c.choose_by_product(work, scores, caps);
+            c.choose_by_product(work, scores, caps, round >= 2 ? order / (1U << (round - 1)) : 0);
+        }
+    }
+    if (signed_modes) {
+        // The final replacement changes just one actual anchor. Its signed modes are disjoint.
+        const unsigned a = c.order / 4;
+        std::vector<std::array<Word, 2>> margins(work.size());
+        parallel_jobs(workers, work.size(), [&](unsigned j) {
+            if (work[j].anchor == a)
+                margins[j] = c.population(work[j], true).exclusive;
+        });
+        for (unsigned h = 0; h < 2; h++) {
+            std::vector<std::pair<Word, unsigned>> classes;
+            Word previous = 0, offered = 0;
+            unsigned room = param(argv[5 + h]);
+            if (!room)
+                continue;
+            for (unsigned j = 0; j < work.size(); j++)
+                if (work[j].anchor == a) {
+                    auto &w = work[j];
+                    unsigned size = w.multiplicity / (c.order / (2 * a));
+                    bool active = (c.labels[w.id].selected[c.slot(a, w.mode)] >> h) & 1;
+                    if (active)
+                        previous += margins[j][h] * size;
+                    classes.emplace_back(margins[j][h], size);
+                }
+            std::sort(classes.rbegin(), classes.rend());
+            for (auto [m, size] : classes) {
+                size = std::min(room, size);
+                offered += m * size;
+                room -= size;
+                if (!room)
+                    break;
+            }
+            require(offered >= previous,
+                    "single-anchor replacement cannot reduce its exclusive population");
+            std::cout << "response_anchor=" << a << " pool=" << h << " previous=" << previous
+                      << " offered=" << offered << " increase=" << offered - previous << "\n";
         }
     }
     std::vector<Totals> totals(work.size());
     parallel_jobs(workers, work.size(), [&](unsigned j) {
         const Work &w = work[j];
-        unsigned own = c.labels[w.id].selected[w.anchor / c.step];
+        unsigned own = c.labels[w.id].selected[c.slot(w.anchor, w.mode)];
         if (!own)
             return;
         c.enumerate(w, [&](Mask prefix, const std::vector<Mask> &tails) {
@@ -387,11 +476,14 @@ int main(int argc, char **argv) try {
         }
     std::cout << "orbits=" << work.size() << " denominator=" << c.denominator << "\n";
     for (unsigned h = 0; h < 2; h++) {
+        if (signed_modes && !param(argv[5 + h]))
+            continue;
         unsigned bins = 0;
         for (unsigned a = 1; a < c.spare; a++) {
             unsigned used = 0;
             for (const auto &v : c.labels)
-                used += (v.selected[a] >> h) & 1;
+                for (unsigned mode = 0; mode < c.lifts; mode++)
+                    used += (v.selected[c.slot(a * c.step, mode)] >> h) & 1;
             bins = std::max(bins, used);
         }
         require(all.weight[h] % c.denominator == 0, "nonintegral union");
