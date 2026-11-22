@@ -148,7 +148,7 @@ def explicit_words(order, spare, degree, selected, pool_size):
     print(f'F_{p} n={n} explicit_words={len(words)} min_agreements={least_agreements}')
 
 
-def direct_product_scores(fixed, order, spare, cap, signed=False):
+def direct_product_scores(fixed, order, spare, cap, signed=False, bound_sites=None):
     """Rerank complete root sets by product and their unshared agreements at other anchors."""
     step = order // spare
     anchors = range(step, order, step)
@@ -210,7 +210,19 @@ def direct_product_scores(fixed, order, spare, cap, signed=False):
                     used += size
         return selected
 
-    selected = choose(choose(set()))
+    initial = choose(set())
+    if bound_sites is not None:
+        hits = [sum(item in initial for item in row.items()) for row in signatures]
+        repeated = {i for i, count in enumerate(hits) if count >= 2}
+        panel, incidence = {}, 0
+        for a in anchors:
+            sizes = sorted((len(members-repeated) for members in support[a].values()), reverse=True)
+            full, next_mode = sum(sizes[:cap]), sizes[cap] if len(sizes) > cap else 0
+            incidence += 5*full+(bound_sites%5)*next_mode
+            if not a & (a-1):
+                panel[a] = (full, next_mode if bound_sites%5 else 0)
+        return panel, (sum(n == 1 for n in hits), len(repeated), len(repeated)+incidence//5)
+    selected = choose(initial)
     if signed:
         selected = choose(choose(selected, order//2), order//4)
     counts = [sum(item in selected for item in row.items()) for row in signatures]
@@ -228,7 +240,17 @@ def direct_product_scores(fixed, order, spare, cap, signed=False):
     return baseline, baseline[2]-len(covered), len(final)-len(covered)
 
 
-def small_board(program, directory, order, spare, degree, workers):
+def gain_five_cap(program, pool, order, degree, spare, sites, workers):
+    arguments = [str(x) for x in (pool, order, degree, spare, sites, workers)]
+    output = subprocess.check_output([program, '--gain-five-cap', *arguments], text=True)
+    panel = {int(a): (int(full), int(tail)) for a, full, tail in re.findall(
+        r'^anchor=(\d+) full=(\d+) next=(\d+)$', output, re.MULTILINE)}
+    totals = re.search(r'^single=(\d+) repeated=(\d+) upper=(\d+)$', output, re.MULTILINE)
+    require(totals is not None, 'gain-five cap totals')
+    return panel, tuple(map(int, totals.groups()))
+
+
+def small_board(program, directory, order, spare, degree, workers, check_cap=False):
     """Compute raw signatures, Galois orbits and anchored unions directly from root subsets."""
     pool = directory/'small.pool'
     write_pool(pool, order, spare, degree, 0)
@@ -291,6 +313,12 @@ def small_board(program, directory, order, spare, degree, workers):
             f'response_anchor={order//4} pool=0 previous={previous} offered={offered} '
             f'increase={offered-previous}' in output, 'direct signed union and single anchor replacement')
     print(f'M={order} signed={baseline} final={baseline[2]+offered-previous}')
+    if check_cap:
+        sites = 5*signed_cap+3
+        expected = direct_product_scores(fixed, order, spare, signed_cap, signed=True, bound_sites=sites)
+        actual = gain_five_cap(program, pool, order, degree, spare, sites, workers)
+        require(actual == expected, 'direct residual modal capacities and gain-five upper bound')
+        print(f'M={order} gain-five cap={actual[1]}')
     if order == 16:
         explicit_words(order, spare, degree, selected[1], len(b_pool))
 
@@ -299,6 +327,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--workers', type=int, choices=(1,2,3), default=2)
     parser.add_argument('--controls-only', action='store_true')
+    parser.add_argument('--gain-five-cap', action='store_true',
+                        help='verify the allocation upper bound on the product-one signed dictionary')
     args = parser.parse_args()
     with tempfile.TemporaryDirectory() as temp:
         directory = Path(temp)
@@ -306,14 +336,21 @@ def main():
         source = Path(__file__).with_name('probe_sixteenth_locator_union.cpp')
         subprocess.run([os.environ.get('CXX','c++'), '-std=c++17', '-Wall', '-Wextra', '-Werror',
                         '-O3', str(source), '-o', str(program)], check=True)
-        small_board(program, directory, 16, 4, 3, args.workers)
-        small_board(program, directory, 32, 8, 5, args.workers)
+        small_board(program, directory, 16, 4, 3, args.workers, args.gain_five_cap)
+        small_board(program, directory, 32, 8, 5, args.workers, args.gain_five_cap)
         if args.controls_only:
             return
         pool = directory/'production.pool'
         write_pool(pool, 128, 16, 9, 7680)
         require(pool.stat().st_size == 20*1923274, 'complete production pool size')
         h, n = 2**23, 2**30
+        if args.gain_five_cap:
+            panel, totals = gain_five_cap(program, pool, 128, 9, 16, h, args.workers)
+            require(panel == {8: (111800157,59), 16: (111398538,58),
+                              32: (111168866,58), 64: (125988044,60)} and
+                    totals == (1422335424,364739488,2053061200), 'gain-five allocation upper bound')
+            print(f'anchors={panel} single={totals[0]} repeated={totals[1]} upper={totals[2]}')
+            return
         rows, output = census(program, pool, 128, 9, 16, 9504, 8192, h//6, args.workers)
         print('Uniform pools')
         print(output, end='')
