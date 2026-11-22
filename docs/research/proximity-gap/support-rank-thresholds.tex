@@ -409,6 +409,49 @@ Across all four smooth prize rates at any tolerance, the Johnson radius is on th
 Three of the eight MCA endpoints on these two fields have numerical values in the current proof. All eight list endpoints and the five other MCA endpoints still require a matching safety bound and failure witness at adjacent counts, or an evaluation of the exact rank criterion. The comparison with Johnson answers a different question from finding those integers.
 
 \newpage
+\section*{5.2.1.\quad What would decide the quarter-rate tests?}
+Put $n=2^{30}$, $k=n/4$ and $D=k-2$. A \emph{split pencil} here means that $P,Q,P-Q$
+each have degree $D$ and $D$ distinct roots in the supplied subgroup, with all three
+root sets disjoint. The field and the subgroup are part of this condition.
+
+\begin{center}
+\begin{tabular}{@{}llll@{}}\toprule
+MCA field & Budget & Error count & Role of a split pencil\\\midrule
+First prime & $n$ & $447{,}392{,}428$ & Necessary and sufficient for failure\\
+Second prime & $2n$ & $536{,}870{,}913$ & Sufficient for failure below Johnson\\\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Second prime.} Assume the three split fibers exist. Start with the three
+polynomial pairs $(X,1)f_i$ for $f_i=0,P,Q$. Each pair agrees along its designated
+fiber of size $k-2$. Add two new sites for each of the three heads to obtain a union
+of $3k$ sites. Each head agrees with the received pair at $2k-2$ sites. A fourth
+head uses one of the split fibers and the $k$ sites outside the union; its core also
+has $2k-2$ sites. One extra folded agreement reaches the required $2k-1$ agreements.
+
+On the $3k$ sites of the union, the construction supplies $3k$ labels of the form
+$-x$. Outside the union it supplies $3k$ more. On the union outside the designated
+$(k-2)$-point fiber it contributes $2k+2$ further labels. The field is larger than
+$(2n+2)^2$, so two scalar parameters can be chosen to keep all these labels distinct.
+The \href{https://github.com/SlopDotCash/proximityprize/blob/ed1430b2385f4773356b8b84360343da09d9ef38/ArkLib/Research/ProximityGap/Frontier/SecondPrimeTransversePencil.lean}{Lean theorem}
+constructs one received pair and $8k+2=2n+2$ distinct bad scalars at the test count.
+This puts the unrestricted MCA cutoff strictly below $J$ at every positive width.
+Pencil existence remains open in each field. The second-prime implication also permits
+other ways to fail.
+
+\textbf{The first-prime list test has a different obstruction.}
+At $536{,}870{,}914$ errors, an over-budget list needs $n+1$ words, each with $n/2-2$
+agreements. Any two agree together at at most $k-1$ sites. A
+\href{https://github.com/SlopDotCash/proximityprize/blob/e2af44d81a5cf8c7fbd33b6f5ad0a60bb2d414cc/ArkLib/Research/ProximityGap/Frontier/QuarterSupportPackingBarrier.lean}{binary hyperplane construction}
+gives $n+1$ supports satisfying both constraints. Under the natural exponent indexing,
+five of these supports occupy the pairs $02,01,03,13,23$ of the four fibers of $X^k$,
+with at most two holes per mask. Multiplying by the polynomial that vanishes on the
+holes and interpolating on shared fibers forces the five words to coincide. This
+\href{https://github.com/SlopDotCash/proximityprize/blob/ed1430b2385f4773356b8b84360343da09d9ef38/ArkLib/Research/ProximityGap/Frontier/FiveHeadFiberRigidity.lean}{compatibility proof}
+rules out that naturally indexed construction. The first failing list count still
+requires a proof covering arbitrary centers or a different realizable family.
+
+\newpage
 \section*{5.3.\quad A uniform gap below capacity on smooth domains}
 
 Fix a supplied smooth domain over a field of order $q<2^{256}$ and tolerance $\varepsilon=2^{-128}$. Each bound in the table applies when the length $n$ is at least the adjacent value of $h$. It then bounds both thresholds below the sponsor's capacity $(n-k+1)/n$ at every positive interleaving width, including over extension fields.
