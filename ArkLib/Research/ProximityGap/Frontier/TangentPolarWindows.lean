@@ -47,7 +47,9 @@ private def headMass (w : Window) (j : ℕ) : ℕ :=
   else if j = 4 then max col 2125114027
   else if j=5 then max col 2058021547 else col
 
-private def component (b m W t d s a : ℕ) (polar : Bool) : ℕ :=
+/-- Logarithmic tangent height and regular-incidence budgets. A positive lineGap
+also bounds the off-line tangents using a known union of polynomial cores. -/
+def component (b m W t d s a : ℕ) (polar : Bool) (lineGap : ℕ := 0) : ℕ :=
   let ax := (2*b-2)*W-b*(b-1)*d
   let gz := (2*b-2)*m-b*(b-1)
   let height := 2*ax*gz+2*W*m
@@ -56,7 +58,9 @@ private def component (b m W t d s a : ℕ) (polar : Bool) : ℕ :=
   let h := (s+2).choose 2
   let gap := a*h*t-(a+2).choose 3*n-(s*(s+1)*(s+2)/3)*d
   let extra := s*m*(m-1)+h*(a*loss+s*height)/gap
-  gz+2*b*m+(if polar then min ordinary extra else ordinary)
+  let base := if polar then min ordinary extra else ordinary
+  let transverse := m*(m-1)+(height+loss)/lineGap
+  gz+2*b*m+(if lineGap=0 then base else min base transverse)
 
 private def price (w : Window) (f j b : ℕ) : ℕ :=
   let d := n/w.rate-1

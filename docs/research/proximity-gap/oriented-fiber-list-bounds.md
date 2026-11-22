@@ -186,9 +186,14 @@ if their normals coincide, and otherwise the homogeneous block lost a point
 in $C_i$. The two affine blocks lost their common chosen point. All pairwise
 intersections therefore have size at most $s$. Since $t>s$, the $n-1$ homogeneous
 blocks and the two affine blocks are distinct. A bijection transports them to
-the actual evaluation sites. Realizing these choices simultaneously as agreement
-sets of odd-characteristic polynomials with one received word remains open.
+the actual evaluation sites. On the natural exponent indexing, the five masks below preclude distinct words. The unrestricted list question includes other indexings and support families.
 
 The Lean theorem constructs the family at every admissible binary dimension.
 Its production specialization transports all $1{,}073{,}741{,}825$ supports to
 any index type of cardinality $2^{30}$. [General construction and production theorem](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSupportPackingBarrier.lean)
+
+### Compatibility under the natural exponent indexing
+
+Write $n=4k$. Label an exponent $j+4a$ by its low two binary digits $j$. On a cyclic domain $x=g^{j+4a}$, the value of $x^k$ depends only on $j$, with four distinct values. Five of the binary hyperplanes use the pairs of classes $02,01,03,13,23$. From each of these masks remove at most two sites. At $k=2^{28}$ these are five members of the candidate family.
+
+If a common center matched five degree-$<k$ messages on these masks, their products with the locator of the union of deleted sites could each be written $A_i+X^k B_i$, with $\deg A_i<k$ and $\deg B_i$ smaller than the number of deleted sites. On a shared fiber $X^k=s$ the products agree at every site, giving the polynomial identity $A_i+sB_i=A_j+sB_j$. At a deleted site $p$ every product vanishes. A shared fiber other than $p^k$ therefore implies $B_i(p)=B_j(p)$. The graph of the five masks remains connected through the other three fibers, so all $B_i$ agree at every deleted site and hence everywhere. The fiber identities then force equality of the $A_i$ and the original messages. The statement applies row by row to every interleaving width. [Lean theorem on naturally indexed cyclic domains](../../../ArkLib/Research/ProximityGap/Frontier/FiveHeadFiberRigidity.lean)
