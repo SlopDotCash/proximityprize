@@ -22,7 +22,9 @@ private theorem square_mod_four (a : ℕ) : a ^ 2 % 4 = a % 2 := by
   have h := Int.sq_emod_four (a : ℤ)
   exact_mod_cast h
 
-private theorem nonsquare_pow_two (s u : ℕ) (hu : u % 4 = 3) :
+/-- Multiplication by a power of two cannot turn a number congruent to three modulo four
+into a square. -/
+theorem nonsquare_pow_two (s u : ℕ) (hu : u % 4 = 3) :
     ∀ a : ℕ, a ^ 2 ≠ 2 ^ s * u := by
   induction s using Nat.twoStepInduction with
   | zero =>

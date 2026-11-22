@@ -3973,6 +3973,7 @@ import ArkLib.Research.ProximityGap.InteriorThresholdBracket
 import ArkLib.Research.ProximityGap.J1Cap
 import ArkLib.Research.ProximityGap.JohnsonBoundRealLower
 import ArkLib.Research.ProximityGap.JohnsonCommonCenterRefutation
+import ArkLib.Research.ProximityGap.JohnsonGridEquality
 import ArkLib.Research.ProximityGap.JohnsonInvariant
 import ArkLib.Research.ProximityGap.JohnsonListBoundary
 import ArkLib.Research.ProximityGap.JointAdjacentFieldReview
@@ -4092,6 +4093,7 @@ import ArkLib.Research.ProximityGap.RegimeIIBridge
 import ArkLib.Research.ProximityGap.Resolution
 import ArkLib.Research.ProximityGap.ResolutionWitness
 import ArkLib.Research.ProximityGap.SecondBudgetSmoothReview
+import ArkLib.Research.ProximityGap.SecondPrimeJohnsonPivot
 import ArkLib.Research.ProximityGap.SecondPrimeRankReview
 import ArkLib.Research.ProximityGap.SmoothBaseSubfieldObstruction
 import ArkLib.Research.ProximityGap.SmoothCapacityGap
