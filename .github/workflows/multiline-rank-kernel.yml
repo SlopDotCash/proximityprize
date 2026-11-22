@@ -151,3 +151,6 @@ jobs:
           assert result is not None
           assert {axiom.strip() for axiom in result[1].split(',')} <= {'propext', 'Classical.choice', 'Quot.sound'}
           PY
+          witness = re.search(r"'ProximityGap\.RichPencilDisjoint\.other_heads_eq_of_collinear_triples' depends on axioms:\s*\[([^\]]*)\]", text)
+          assert witness is not None
+          assert {axiom.strip() for axiom in witness[1].split(',')} <= {'propext', 'Classical.choice', 'Quot.sound'}

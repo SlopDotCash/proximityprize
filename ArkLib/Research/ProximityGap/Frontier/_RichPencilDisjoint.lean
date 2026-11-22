@@ -4,6 +4,7 @@ Released under both MIT and Apache-2.0 licenses as described in LICENSE-MIT and 
 Authors: Mikhail Izhutkin (mashingaan)
 -/
 import ArkLib.Research.ProximityGap.Frontier._IncidenceDependencyArithmetic
+import ArkLib.Research.ProximityGap.Frontier._IncidenceAffineLines
 
 /-!
 # Rich pencils are disjoint below half distance
@@ -107,6 +108,80 @@ theorem distance_le_twice_radius_of_meeting_rich_pencils {F X : Type*}
   change M.card ≤ t at he
   omega
 
+
+open ProximityGap.IncidenceAffineLines
+
+/-- For decoded heads with injective labels, two collinear triples sharing
+their first head must use the same two other heads when the radius is less
+than half distance and every line contains at most three selected heads. -/
+theorem other_heads_eq_of_collinear_triples {F I X : Type*}
+    [Field F] [Fintype X] [DecidableEq X] [DecidableEq I]
+    (C : Submodule F (X → F)) (u₀ u₁ : X → F) (γ : I → F)
+    (w : I → X → F) (G : Finset I) (Q : I → Finset X)
+    (D t : ℕ) (a b c d e : I)
+    (hinj : Function.Injective γ) (ht : 2 * t < D)
+    (ha : a ∈ G) (hb : b ∈ G) (hc : c ∈ G) (hd : d ∈ G) (he : e ∈ G)
+    (hab : a ≠ b) (hac : a ≠ c) (hbc : b ≠ c)
+    (had : a ≠ d) (hae : a ≠ e) (hde : d ≠ e)
+    (hcol : CollinearTriple γ w a b c) (hcol' : CollinearTriple γ w a d e)
+    (hw : ∀ i ∈ G, w i ∈ C)
+    (hagree : ∀ i ∈ G, ∀ x ∉ Q i, w i x = u₀ x + γ i * u₁ x)
+    (hbudget : ∀ i ∈ G, (Q i).card ≤ t)
+    (hcap : ∀ U V, (G.filter (OnLine γ w U V)).card ≤ 3)
+    (hdistance : ∀ v ∈ C, ∀ B : Finset X, B.card < D →
+      (∀ x ∉ B, v x = 0) → v = 0) : ({b, c} : Finset I) = {d, e} := by
+  classical
+  obtain ⟨U, V, haL, hbL, hcL⟩ := hcol
+  obtain ⟨U', V', haR, hdR, heR⟩ := hcol'
+  obtain ⟨hU, hV⟩ := params_mem_code_of_two γ w hinj C hab haL hbL (hw a ha) (hw b hb)
+  obtain ⟨hU', hV'⟩ := params_mem_code_of_two γ w hinj C had haR hdR (hw a ha) (hw d hd)
+  have value {U V : X → F} {i : I} (h : OnLine γ w U V i) (x : X) :
+      w i x = U x + γ i * V x := congrFun h x
+  have budget {U V : X → F} {i : I} (hi : i ∈ G) (h : OnLine γ w U V i) :
+      (affineHeadErrors u₀ u₁ U V (γ i)).card ≤ t := by
+    refine (Finset.card_le_card ?_).trans (hbudget i hi)
+    intro x hx
+    by_contra hn
+    have eq := (hagree i hi x hn).symm.trans (value h x)
+    simpa [affineHeadErrors, eq] using hx
+  have same : (U, V) = (U', V') := by
+    by_contra hne
+    have hdist := distance_le_twice_radius_of_meeting_rich_pencils C
+      u₀ u₁ U V U' V' (γ a) (γ b) (γ c) (γ d) (γ e) D t
+      hU hV hU' hV' hne (hinj.ne hab) (hinj.ne hac) (hinj.ne hbc)
+      (hinj.ne had) (hinj.ne hae) (hinj.ne hde)
+      (fun x ↦ (value haL x).symm.trans (value haR x))
+      (budget hb hbL) (budget hc hcL) (budget hd hdR) (budget he heR) hdistance
+    omega
+  have hUeq : U = U' := congrArg Prod.fst same
+  have hVeq : V = V' := congrArg Prod.snd same
+  subst U'
+  subst V'
+  let L := (G.filter (OnLine γ w U V)).erase a
+  have hL : L.card ≤ 2 := by
+    have ham : a ∈ G.filter (OnLine γ w U V) := Finset.mem_filter.mpr ⟨ha, haL⟩
+    have h := Finset.card_erase_add_one ham
+    have hcard := hcap U V
+    dsimp [L]
+    omega
+  have sub {j k : I} (hj : j ∈ G) (hk : k ∈ G) (haj : a ≠ j) (hak : a ≠ k)
+      (hjL : OnLine γ w U V j) (hkL : OnLine γ w U V k) :
+      ({j, k} : Finset I) ⊆ L := by
+    intro x hx
+    rcases Finset.mem_insert.mp hx with rfl | hx
+    · exact Finset.mem_erase.mpr ⟨haj.symm, Finset.mem_filter.mpr ⟨hj, hjL⟩⟩
+    · have h := Finset.mem_singleton.mp hx
+      subst x
+      exact Finset.mem_erase.mpr ⟨hak.symm, Finset.mem_filter.mpr ⟨hk, hkL⟩⟩
+  have hsub := sub hb hc hab hac hbL hcL
+  have hsub' := sub hd he had hae hdR heR
+  have eq : ({b, c} : Finset I) = L :=
+    Finset.eq_of_subset_of_card_le hsub (by simpa [hbc] using hL)
+  have eq' : ({d, e} : Finset I) = L :=
+    Finset.eq_of_subset_of_card_le hsub' (by simpa [hde] using hL)
+  exact eq.trans eq'.symm
+
 end ProximityGap.RichPencilDisjoint
 
 #print axioms ProximityGap.RichPencilDisjoint.distance_le_twice_radius_of_meeting_rich_pencils
+#print axioms ProximityGap.RichPencilDisjoint.other_heads_eq_of_collinear_triples
