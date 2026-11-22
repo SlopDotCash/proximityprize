@@ -532,6 +532,7 @@ import ArkLib.Research.ProximityGap.Frontier.JetMultiplierGraph
 import ArkLib.Research.ProximityGap.Frontier.JetSurfaceSafety
 import ArkLib.Research.ProximityGap.Frontier.JohnsonBudgetLadder
 import ArkLib.Research.ProximityGap.Frontier.JohnsonCountFromNonprincipalWick
+import ArkLib.Research.ProximityGap.Frontier.JohnsonGridWitness
 import ArkLib.Research.ProximityGap.Frontier.JohnsonJetDimension
 import ArkLib.Research.ProximityGap.Frontier.K2Affine
 import ArkLib.Research.ProximityGap.Frontier.K2Multiplicity
@@ -979,6 +980,7 @@ import ArkLib.Research.ProximityGap.Frontier.SixSplitListWitness
 import ArkLib.Research.ProximityGap.Frontier.SixSplitPencil
 import ArkLib.Research.ProximityGap.Frontier.SixteenCosetListLower
 import ArkLib.Research.ProximityGap.Frontier.SixteenFiberMass
+import ArkLib.Research.ProximityGap.Frontier.SixteenFiveListCap
 import ArkLib.Research.ProximityGap.Frontier.SixteenthSaturatedHeads
 import ArkLib.Research.ProximityGap.Frontier.SixthDegreeThreeHeadWindow
 import ArkLib.Research.ProximityGap.Frontier.SixthMomentAntipodalShape
@@ -4001,9 +4003,12 @@ import ArkLib.Research.ProximityGap.InteriorThresholdBracket
 import ArkLib.Research.ProximityGap.J1Cap
 import ArkLib.Research.ProximityGap.JohnsonBoundRealLower
 import ArkLib.Research.ProximityGap.JohnsonCommonCenterRefutation
+import ArkLib.Research.ProximityGap.JohnsonEqualityExamples
 import ArkLib.Research.ProximityGap.JohnsonGridEquality
 import ArkLib.Research.ProximityGap.JohnsonInvariant
 import ArkLib.Research.ProximityGap.JohnsonListBoundary
+import ArkLib.Research.ProximityGap.JohnsonPrimePowerDomain
+import ArkLib.Research.ProximityGap.JohnsonPrimePowerList
 import ArkLib.Research.ProximityGap.JointAdjacentFieldReview
 import ArkLib.Research.ProximityGap.JointDyadicCeilings
 import ArkLib.Research.ProximityGap.JointLargeFieldCriterion
