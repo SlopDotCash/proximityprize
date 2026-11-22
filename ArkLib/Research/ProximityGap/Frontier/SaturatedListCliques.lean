@@ -53,6 +53,21 @@ theorem pair_incidence (S : Fin M → Finset I) {t : ℕ}
   have hlo := Nat.mul_le_mul_left (2*a) hS
   omega
 
+/-- The integer tangent to the pair moment bounds every family with uniform
+pair-intersection cap, including punctured families on a complementary domain. -/
+theorem uniform_pair_incidence (S : Fin M → Finset I) {t d : ℕ}
+    (hsize : ∀ i, t ≤ (S i).card)
+    (hpair : ∀ i j, i ≠ j → (S i ∩ S j).card ≤ d) (a : ℕ) :
+    2*a*(M*t) ≤ M*((M-1)*d) + a*(a+1)*Fintype.card I := by
+  classical
+  have h := pair_incidence S hsize a
+  have row (i : Fin M) : (∑ j ∈ univ.erase i, (S i ∩ S j).card) ≤ (M-1)*d := by
+    calc
+      _ ≤ ∑ _j ∈ univ.erase i, d :=
+        sum_le_sum fun j hj => hpair i j (mem_erase.mp hj).1.symm
+      _ = _ := by simp
+  exact h.trans (Nat.add_le_add_right (by simpa using sum_le_sum (s := univ) (fun i _ => row i)) _)
+
 open Classical in
 /-- Count pairs having more than the baseline number of common agreements. -/
 theorem forced_edges_above (S : Fin M → Finset I) {t b c : ℕ}
@@ -129,16 +144,15 @@ theorem second_budget (S : Fin 2147483649 → Finset I)
 open Code Polynomial
 
 /-- A worst-center scalar list exceeding B produces actual distinct message
-polynomials and exactly t selected agreements per word. The pair overlaps still satisfy the degree bound when a looser clique threshold is used. -/
-theorem from_list_at_overlap {F : Type} [Field F] (D : I ↪ F) {k t B r s : ℕ} (hk : 0 < k)
+polynomials and exactly t selected agreements per word. Pairwise overlaps satisfy the degree bound. -/
+theorem from_list_family {F : Type} [Field F] (D : I ↪ F) {k t B : ℕ} (hk : 0 < k)
     (htn : t ≤ Fintype.card I) (hn : 0 < Fintype.card I)
-    (hforce : ∀ S : Fin (B+1) → Finset I, (∀ i, (S i).card = t) →
-      (∀ i j, i ≠ j → (S i ∩ S j).card ≤ k-1) → ¬(fullGraph S s).CliqueFree r)
     (hlist : (B : ℕ∞) < Lambda (ReedSolomon.code D k : Set (I → F))
       (((Fintype.card I-t : ℕ) : ℝ)/Fintype.card I)) :
     ∃ (y : I → F) (P : Fin (B+1) → F[X]) (S : Fin (B+1) → Finset I),
       Function.Injective P ∧ (∀ i, (P i).natDegree < k) ∧ (∀ i, (S i).card=t) ∧
-      (∀ i x, x ∈ S i → (P i).eval (D x) = y x) ∧ ¬(fullGraph S s).CliqueFree r := by
+      (∀ i x, x ∈ S i → (P i).eval (D x) = y x) ∧
+      (∀ i j, i ≠ j → (S i ∩ S j).card ≤ k-1) := by
   classical
   let _ : NeZero k := ⟨hk.ne'⟩
   let C := (ReedSolomon.code D k : Set (I → F))
@@ -168,7 +182,7 @@ theorem from_list_at_overlap {F : Type} [Field F] (D : I ↪ F) {k t B r s : ℕ
     rw [hδ] at hd
     exact_mod_cast (relHammingDist_le_one_sub_div_iff hn).mp hd
   choose S hs hc using fun i => exists_subset_card_eq (hA i)
-  refine ⟨y,P,S,hinP,hdeg,hc,?_,hforce S hc ?_⟩
+  refine ⟨y,P,S,hinP,hdeg,hc,?_,?_⟩
   · intro i x hx
     exact (heval i x).trans (mem_filter.mp (hs i hx)).2
   · intro i j hij
@@ -180,6 +194,20 @@ theorem from_list_at_overlap {F : Type} [Field F] (D : I ↪ F) {k t B r s : ℕ
         (mem_filter.mp (hs j hj)).2.symm⟩
     have hpair := ReedSolomon.agree_lt_of_mem_code (hclose i).1 (hclose j).1 (hin.ne hij)
     omega
+
+/-- A worst-center scalar list exceeding B produces actual distinct message
+polynomials and exactly t selected agreements per word. The pair overlaps still satisfy the degree bound when a looser clique threshold is used. -/
+theorem from_list_at_overlap {F : Type} [Field F] (D : I ↪ F) {k t B r s : ℕ} (hk : 0 < k)
+    (htn : t ≤ Fintype.card I) (hn : 0 < Fintype.card I)
+    (hforce : ∀ S : Fin (B+1) → Finset I, (∀ i, (S i).card = t) →
+      (∀ i j, i ≠ j → (S i ∩ S j).card ≤ k-1) → ¬(fullGraph S s).CliqueFree r)
+    (hlist : (B : ℕ∞) < Lambda (ReedSolomon.code D k : Set (I → F))
+      (((Fintype.card I-t : ℕ) : ℝ)/Fintype.card I)) :
+    ∃ (y : I → F) (P : Fin (B+1) → F[X]) (S : Fin (B+1) → Finset I),
+      Function.Injective P ∧ (∀ i, (P i).natDegree < k) ∧ (∀ i, (S i).card=t) ∧
+      (∀ i x, x ∈ S i → (P i).eval (D x) = y x) ∧ ¬(fullGraph S s).CliqueFree r := by
+  obtain ⟨y,P,S,hinP,hdeg,hc,he,hpair⟩ := from_list_family D hk htn hn hlist
+  exact ⟨y,P,S,hinP,hdeg,hc,he,hforce S hc hpair⟩
 
 /-- A worst-center scalar list exceeding B produces actual distinct message
 polynomials and exactly t selected agreements per word. Any clique provided by
