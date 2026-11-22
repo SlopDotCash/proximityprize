@@ -80,7 +80,8 @@ def kernel_basis(logs, modulus):
     return result
 
 
-def check_shift(rows, h, logs, order, bound, reverse=False, weight_bound=None, reject_candidate=None):
+def check_shift(rows, h, logs, order, bound, reverse=False, weight_bound=None, reject_candidate=None,
+                enumerate_coordinates=lattice_coordinates):
     """Reject every nonzero exponent in the allowed weighted comparison region."""
     size = len(rows[0])
     matrix = fmpz_mat([[r[j]-r[(j-h) % size] for j in range(size) if j not in (0,h)]
@@ -90,10 +91,12 @@ def check_shift(rows, h, logs, order, bound, reverse=False, weight_bound=None, r
                 "antipodal coordinate elimination failed")
         matrix = fmpz_mat(matrix.tolist()[:-1])
         logs = [a-logs[-1] for a in logs[:-1]]
-    return check_ellipsoid(matrix, logs, order, bound, reverse, f"displacement {h}", weight_bound, reject_candidate)
+    return check_ellipsoid(matrix, logs, order, bound, reverse, f"displacement {h}", weight_bound, reject_candidate,
+                           enumerate_coordinates)
 
 
-def check_ellipsoid(matrix, logs, order, bound, reverse, case, weight_bound=None, reject_candidate=None):
+def check_ellipsoid(matrix, logs, order, bound, reverse, case, weight_bound=None, reject_candidate=None,
+                    enumerate_coordinates=lattice_coordinates):
     dim = matrix.nrows()
     identity = fmpz_mat([[int(i == j) for j in range(dim)] for i in range(dim)])
     covariance = matrix*matrix.transpose()
@@ -114,7 +117,7 @@ def check_ellipsoid(matrix, logs, order, bound, reverse, case, weight_bound=None
             "basis reduction changed the lattice or quadratic form")
     points = zero = 0
     mu, lengths = orthogonal_lengths([[int(v) for v in row] for row in reduced.tolist()])
-    for vector in lattice_coordinates(mu, lengths, int(scale)*bound):
+    for vector in enumerate_coordinates(mu, lengths, int(scale)*bound):
         points += 1
         if any(vector):
             e = (fmpz_mat([vector])*transform*basis).tolist()[0]
