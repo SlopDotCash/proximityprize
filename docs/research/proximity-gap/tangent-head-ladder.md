@@ -55,6 +55,64 @@ exponents. The weighted Johnson ladder is a Lean theorem and is
 the stronger statement for fields of small characteristic and from
 $\beta=64$ on.
 
+## Budgets between the two named primes
+
+The two named primes have integer budgets $n$ and $2n$. For a field whose
+budget is at least $jn/8$, with the same condition on the characteristic, the
+same argument gives the following safe error counts on every injective domain
+of length $n$.
+
+| Budget | Rate 1/2 | Rate 1/4 | Rate 1/8 |
+|---:|---:|---:|---:|
+| $9n/8$ | 293,018,651 | 469,749,153 | 601,620,356 |
+| $10n/8$ | 302,936,496 | 488,619,120 | 625,533,909 |
+| $11n/8$ | 305,038,412 | 504,801,583 | |
+| $12n/8$ | 305,705,113 | 518,960,616 | |
+| $13n/8$ | 305,940,243 | 522,404,939 | |
+| $14n/8$ | 306,465,090 | 523,490,200 | |
+| $15n/8$ | 306,465,090 | 524,083,702 | |
+| $2n$ | 306,780,000 | 524,700,000 | 671,088,385 |
+
+At rate $1/8$ the exact first failure 626,349,397 is already known for budgets
+from 1,409,286,144 to 1,879,048,193, so only the two smaller budgets are
+listed. At rate $1/2$ the entry for $15n/8$ repeats the one for $14n/8$. The
+previous bounds for budgets strictly between $n$ and $2n$ were the first-prime
+floors, 268,435,456 safe errors at rate $1/2$ and 447,392,427 at rate $1/4$.
+
+At rate $1/4$ and budgets up to about $11n/8$ the binding allocation is three
+collinear rich heads. Their cores cover at least $3C-3d$ sites, a covered
+site gives one label and an uncovered one three, so they carry at most
+$3n-6C+6d$ labels. This is at most $B$ exactly when
+$e\le B/6+n/4-254$, which is 469,761,794 at $9n/8$, within the search tolerance of the
+entry, and tends to the known
+floor $5n/12$ as $B$ decreases to $n$. A matching failure needs three
+collinear heads whose pairwise coincidence sets all have $d$ sites.
+
+## Length $2^{40}$
+
+The caps for nonlinear factors are numbers that do not grow with the length,
+while the labels on affine heads do. At a longer length the same budget
+relative to $n$ therefore reaches closer to the Johnson count. For
+$n=2^{40}$, fields of characteristic at least $2^{57}$ and integer budget at
+least the listed multiple of $n$, the closed ball through the listed number of
+errors is safe on every injective domain.
+
+| Budget | Rate 1/2 | Rate 1/4 | Rate 1/8 | Rate 1/16 |
+|---:|---:|---:|---:|---:|
+| $2n$ | 319,230,068,958 | 545,382,552,916 | 687,188,686,354 | |
+| $64n$ | 320,634,784,370 | 547,825,429,161 | 707,216,801,511 | 819,792,658,433 |
+| as a fraction of $n$, $2n$ | 0.29034 | 0.49602 | 0.62499 | |
+| as a fraction of $n$, $64n$ | 0.29162 | 0.49824 | 0.64321 | 0.74560 |
+| Johnson fraction | 0.29289 | 0.50000 | 0.64645 | 0.75000 |
+
+At length $2^{30}$ and budget $2n$ the first two fractions are 0.28571 and
+0.48866. The sixteenth-rate entry at budget $2n$ is omitted because the exact
+first failure $\lfloor 2n/3\rfloor$ is already known there. The eighth-rate
+entry at $2n$ ends at the same four-head boundary $5n/8$ as at length
+$2^{30}$. The argument has absolute constants, such as the cutoff
+$1+\lfloor e/256\rfloor$ for rich heads, and it does not certify these windows
+at length $2^{20}$.
+
 ## Argument
 
 The allocation argument is the one of the
@@ -73,6 +131,9 @@ $$
 \Bigl\lfloor\frac{n(C-d)}{C^2-nd}\Bigr\rfloor
 $$
 rich heads whenever $C^2>nd$. Allocations with more rich heads do not occur.
+For $j$ collinear rich heads the union of the cores has at least
+$jC-\binom j2d$ sites, as well as the second-moment bound used in the windows;
+the certificate takes the larger of the two.
 Without this bound the trivial count $j(e+1)$ for $j$ up to the value degree
 would exceed the smaller budgets.
 

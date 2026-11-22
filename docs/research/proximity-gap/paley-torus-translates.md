@@ -1,0 +1,46 @@
+# Paley discrepancy on unions of projective torus orbits
+
+Fix an odd prime $p$. Let $H$ be a split or nonsplit maximal torus in $\mathrm{PGL}_2(\mathbb F_p)$. It acts freely and transitively on a set $\Omega$ of $p-1$ or $p+1$ projective points, respectively. Given nonempty $X,Y\subseteq\Omega$ and $T,U\subseteq H$, form the prescribed sets $A=TX$, $B=UY$. Write $x=|X|$, $y=|Y|$, $n=\min(x,y)$, $t=|T|$, $u=|U|$ and
+$$
+ m(g)=\#\{(v,w)\in T\times U:v^{-1}w=g\},\qquad R=\frac{(tu)^2}{\sum_{g\in H}m(g)^2}.
+$$
+Let $M_{ab}=\chi(\det(a,b))$ for fixed homogeneous lifts of the sites, with the quadratic character extended by zero. Changing lifts preserves its operator norm. For each integer $r\ge2$,
+$$
+ \left(\frac{\|M_{A,B}\|}{\sqrt{xytu}}\right)^{2r}
+ \le \frac{1}{R}
+ \left(|H|(2r-1)!!\,n^{1-r}+(2r-2)\sqrt p\right).                 \tag{1}
+$$
+In particular, for fixed $\epsilon,\kappa>0$, $n\ge p^\epsilon$ and $R\ge p^{1/2+\kappa}$ give $\|M_{A,B}\|\ll_{\epsilon}\sqrt{xytu}\,p^{-\kappa/(2r)}$ with $r=\max(2,\lceil1+1/(2\epsilon)\rceil)$. If the generators have bounded average multiplicity on each side, $xytu\ll|A||B|$. The estimate then gives a power saving in the normalized discrepancy for all bounded vertex weights and constant-density subsets, at each prescribed placement satisfying the hypotheses. The split action has two rational fixed points. If either input also contains these, delete them before applying (1). Restoring them adds at most two rows and two columns, changing the normalized norm by at most $\sqrt{2/|A|}+\sqrt{2/|B|}$. The nonsplit action has no rational fixed points. The additive translation estimate uses a different projective action. [Additive translate bound](paley-sums-of-translates.md) · [Projective signs and the four-site rank identity](paley-four-site-rank.md)
+
+## The character sum over the torus
+
+Use the two-dimensional $\mathbb F_p$-algebra $V=\mathbb F_p\times\mathbb F_p$ or $V=\mathbb F_{p^2}$. Multiplication by $v\in V$ is a matrix linear in the two coordinates of $v$. Its projective invertible classes give $H=V^\times/\mathbb F_p^\times$, and their lines form $\Omega$ in $\mathbf P(V)$. Multiplication acts regularly there. Conjugating this construction by any projectivity preserves all the norms, since it changes the entries only by vertex signs and a global sign. The homogeneous bracket, unique collision parameter, same-row and same-column collision identities, and the square product at a singular parameter on a four-site rectangle hold over any field. [Lean proof of the pencil identities](../../../ArkLib/Research/ProximityGap/Frontier/PaleyTorusPencil.lean)
+
+For $a,b\in\Omega$ define a linear form on the parameter plane by $\ell_{ab}(v)=\det(a,vb)$. As $b$ is a unit, this is nonzero and has one projective zero, the class $a/b\in H$. For each $g\in H$, write $M_g=M_{X,gY}$ and $L_g=\|M_g\|/\sqrt{xy}$. In the trace of $(M_gM_g^*)^r$, a closed alternating walk uses $2r$ edges. Its contribution as a function of $g$ is the character of the product of the associated linear forms. Normalizing the representatives of $gb$ introduces a sign at each occurrence of a column vertex, which occurs an even number of times. A common rescaling of the parameter representative also cancels. Hence the product defines a character value on the entire parameter projective line.
+
+If some edge label $a/b$ occurs with odd multiplicity, at least two different labels have odd multiplicity. Move one such zero to infinity by a projective change in the parameter line. The value at infinity vanishes, and the affine polynomial has at most $2r-1$ distinct roots and still has a root of odd multiplicity. The complete projective sum has absolute value at most $(2r-2)\sqrt p$ by the multiplicative character estimate. For a nonsplit torus the parameter line is exactly $H$. For a split torus, subtract the two singular parameters. At either one the matrix has rank one, say $b\mapsto f(b)c$, and $\ell_{ab}=\det(a,c)f(b)$. Both factors are nonzero on the regular orbit, since the image and kernel are the two fixed points. Each row and column factor occurs an even number of times on the walk, so the contribution at each singular parameter is $+1$. In particular the **upper** bound $(2r-2)\sqrt p$ holds for the sum over $H$ in both cases. [Weil character estimate, Theorem A.1](https://link.springer.com/article/10.1007/s40879-021-00521-5)
+
+If every label has even multiplicity, pair the positions with identical labels. Start the walk on the smaller side, transposing the matrix if necessary, and put $N=\max(x,y)$. For each of the $(2r-1)!!$ pairings there are at most $n$ starting sites. Each first edge of a pair permits at most $N$ choices of the next vertex. On the partner edge, its label and the current vertex determine the next vertex uniquely by regularity. Thus at most $(2r-1)!!\,nN^r$ walks require the trivial upper bound $|H|$. Every other walk uses the character estimate just proved. The trace dominates the $2r$-th power of the operator norm. Dividing by $(xy)^r$ gives
+$$
+ \sum_{g\in H}L_g^{2r}
+ \le |H|(2r-1)!!\,n^{1-r}+(2r-2)\sqrt p.                         \tag{2}
+$$
+For *any* two polynomial-size shapes on a regular orbit, (2) also gives a power saving for both arbitrary weights at all but a power-saving fraction of relative torus placements. For the $r$ above, the number of $g$ with $L_g>p^{-\delta}$ is $O_r(p^{1/2+2r\delta})$ for $0<\delta<1/(4r)$.
+
+## Prescribed placements and sparse examples
+
+Keep one label for each representation of each site of $TX$ or $UY$. The block indexed by $(v,w)$ has the norm of $M_{v^{-1}w}$ by simultaneous projective change of coordinates. The squared norm of the labelled matrix is at most the sum of the squared block norms by Cauchy–Schwarz on the row and column blocks. Selecting one representation per site recovers $M_{A,B}$ as a submatrix. After division by $xytu$ the squared norm is therefore at most $\sum_g m(g)L_g^2/(tu)$. Jensen with exponent $r/2$ and then Cauchy–Schwarz bound its $r$-th power by $\sum_g L_g^{2r}/R$. This proves (1). In a finite chart the determinant is the ordinary difference, so the result also bounds the usual Paley edge discrepancy.
+
+For an explicit family in either torus, write its cyclic group in exponent coordinates modulo $|H|$. Fix $\gamma,\epsilon>0$ with $2\gamma+\epsilon<1/2$, take a prime $\ell\asymp p^{1/4+\gamma}$ and $h=\lceil p^\epsilon\rceil$. Use the exponent interval $[0,h)$ on both sides. For both sets of transformations use the exponents $2hD$, where
+$$
+ D=\{2\ell j+(j^2\bmod\ell):0\le j<\ell\}.
+$$
+The nonzero ordered differences of $D$ are distinct. The low-digit difference lies strictly between $-\ell$ and $\ell$ and thus its value and the difference of the indices are determined. The latter is nonzero modulo $\ell$, so the quadratic residue difference determines the sum of the indices as well. All exponents here are $O(h\ell^2)=o(|H|)$, so equality of differences modulo $|H|$ also implies integer equality for large $p$. The resulting $\ell$ translates are disjoint, and $R=\ell^4/(2\ell^2-\ell)$. Thus (1) gives a power saving on this prescribed $N=h\ell$ element projective domain for every sufficiently large odd prime, including in the nonsplit torus. For any subset of size $z\gg N$, the proportion of singular ternary four-site principal minors is $1/4+O(1/z+p^{-2\delta})$ for some $\delta>0$. Indeed its fourth-power trace is bounded by its squared operator norm times its squared Frobenius norm, which is at most $O(N^2p^{-2\delta}z^2)$. Apply the exact four-site identity. The condition on the shifts in (1) leaves the general prescribed-domain Paley conjecture open. [Four-site identity](paley-four-site-rank.md#exact-normalization-and-the-four-site-determinant)
+
+## Scope of the square-root condition
+
+Over extension fields the split example can have maximal relative discrepancy even at $R\sim\sqrt q/2$. Take $q=\ell^4$ for odd prime $\ell$, let $X=Y=\mathbb F_\ell^\times$, and take $T=U=\theta+\mathbb F_\ell$ in the multiplicative torus, with $\theta\in\mathbb F_{\ell^2}\setminus\mathbb F_\ell$. Each nonidentity ratio $(\theta+a)/(\theta+b)$ determines $(a,b)$. Cross multiplication gives $a-b=a'-b'$ and $ab'=a'b$ for two representations, forcing equality when $a\ne b$. Every product $x(\theta+t)$ has a unique representation by comparing the coefficients of $\theta$ and $1$. Hence $R=\ell^4/(2\ell^2-\ell)$ while all $\ell(\ell-1)$ sites lie in the quadratic subfield. Every nonzero difference there is a square in $\mathbb F_q$. Any improvement that also covers this example needs an additional hypothesis. At a prime field, (1) still requires sufficient spread for the prescribed placement.
+
+The exact verifier checks the trace against individual closed walks at all parameter values on ten tori. Its controls include singular split matrices, poles of the finite chart, and paired walks of negative sign. Run it from the repository root with `python3 -B scripts/probes/probe_paley_torus_translates.py`. [Finite verifier](../../../scripts/probes/probe_paley_torus_translates.py)
+
+For consecutive powers, averaging over the generator gives a complementary bound on short arcs at a fixed relative placement, simultaneously for all common starts. [Generator average](paley-torus-generators.md)

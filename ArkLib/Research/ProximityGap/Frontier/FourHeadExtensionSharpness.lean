@@ -81,6 +81,20 @@ theorem full_capacity {r k c : ℕ} (dom : I ↪ F) (δ : ℝ≥0)
   · exact fresh j
   · exact mismatch j
 
+/-- The large-characteristic point-count estimate is positive for the named
+fields at dimensions four through eight, given the uniform degree ceilings. -/
+theorem named_size_check {q r Δ J : ℕ}
+    (lower : 2^158 < q) (dim : r ≤ 2^30) (degree : Δ ≤ 2^37) (boundary : J ≤ 2^68) :
+    2 * (r+1) * Δ^2 < q ∧ Δ^2 * 2^80 + 4*Δ^4 + Δ*J < q := by
+  constructor
+  · calc
+      _ ≤ 2 * (2^30+1) * (2^37)^2 := by gcongr
+      _ < q := lt_trans (by decide) lower
+  · calc
+      _ ≤ (2^37)^2 * 2^80 + 4*(2^37)^4 + 2^37*2^68 := by gcongr
+      _ < q := lt_trans (by decide) lower
+
+#print axioms named_size_check
 #print axioms sides
 #print axioms full_capacity
 end ArkLib.ProximityGap.Frontier.FourHeadExtensionSharpness

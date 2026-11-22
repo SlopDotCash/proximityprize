@@ -144,3 +144,74 @@ For each multiplicity $r$, count the sites where at least $r$ messages share som
 For each anchor $P_i$, maintain a vector of polynomial masks for the thresholds among the comparisons processed so far. A nonzero mask divides the domain polynomial and vanishes at the corresponding sites. The zero mask denotes the whole domain. To incorporate $P_j$, the new level $r$ is the union of the old level $r$ and the intersection of the old level $r-1$ with the physical roots of $P_i-P_j$. Gcd computes intersections and polynomial lcm computes unions. Taking the union over anchors gives the global threshold. The implementation uses $O(m^3)$ mask operations. On a coset of size $2^h$, each of the $O(m^2)$ input differences requires at most $h$ modular squarings to get its physical-root factor. The remaining search is over the message families themselves.
 
 On the first named subgroup, take $i$ with $i^2=-1$. The triples $(0,X-1,1-X)$ and $(0,X-1,i(X+1))$ have one coincident site for every pair. In the first triple all three pairs coincide at site 1. In the second triple they meet at the three distinct sites $1,-1,i$. The kernel-checked maxima are respectively $2^{30}+2$ and $2^{30}+3$. Pair counts alone give the same data for both.
+
+## Independent split rectangles and primitive stars
+
+Take a hypothetical list of $M=B+1$ distinct words at any of the eight error counts in the affine-rank table above. For **every** choice of $t$ matched sites per word the following configurations must occur. A $K_{a,a}$ consists of $a$ words on each side, with all $2a$ words affinely independent. For a full edge the selected sets intersect on $D=k-1$ sites. A near edge requires at least $D-1$. Every nonzero row difference on either kind of edge splits over the field. Dividing out the prescribed distinct roots leaves degree at most one.
+
+| Rate | Budget | Full rectangle side $a$ | Near rectangle side $a$ | Independent star leaves | Common gcd degree bound for those leaves | Common gcd degree bound for the whole star |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| $1/2$ | $n$ | 12 | 19 | 51 | 53 | 10 |
+| $1/2$ | $2n$ | 15 | 21 | 53 | 25 | 7 |
+| $1/4$ | $n$ | — | 9 | 26 | 47 | 11 |
+| $1/4$ | $2n$ | — | 10 | 27 | 40 | 9 |
+| $1/8$ | $n$ | 9 | 10 | 19 | 2 | **0** |
+| $1/8$ | $2n$ | 5 | 8 | 18 | 9 | 4 |
+| $1/16$ | $n$ | 5 | 7 | 14 | 4 | 1 |
+| $1/16$ | $2n$ | 6 | 7 | 15 | 3 | 1 |
+
+The stars use full edges except in the two quarter-rate rows, where they use near edges. The rectangle and the star in a row may have different heads. In the first-prime eighth-rate case, the full $K_{9,9}$ has **81 distinct scalar difference polynomials up to scaling**, all of degree 134,217,727 with all roots on the prescribed domain and with common gcd degree at most **23,475**. Distinct edges of an affinely independent configuration cannot have proportional difference vectors. The star in the same row has at least **765,474,163 fully saturated neighbors** and the common gcd of its differences is **one**. It contains an independent substar with gcd one and between 19 and 21 leaves. The corresponding half-rate full rectangles require 144 and 225 distinct split polynomials up to scaling. These statements are necessary conditions on a hypothetical violating list. [Integer and rational certificates for all cells](../../../scripts/probes/probe_independent_split_grids.py)
+
+### Choosing both sides of the rectangle
+
+Use the graph on the $M$ words in which an edge has at least $D-j$ common selected sites, with $j=0$ or $1$. Let $Mt=nq+v$, $0\le v<n$. Balancing multiplicities gives $P=n\binom q2+vq$ as a lower bound on the sum of pair intersections. A nonedge contributes at most $D-j-1$ while an edge contributes at most $D$. Hence the edge count is at least
+\[
+ E=\left\lceil\frac{P-(D-j-1)\binom M2}{j+1}\right\rceil.
+\]
+For an integer $a\ge1$, the number of incidences between $a$-subsets and their common neighbors is $\sum_z\binom{\deg z}{a}\ge M\binom{\lfloor 2E/M\rfloor}{a}$. This follows by moving one unit of degree from the larger of two loads differing by at least two to the smaller until they balance.
+
+For $a\ge2$ each dependent $a$-subset has a word in the span of its other $a-1$ members. At most $\binom M{a-1}L_{a-2}$ such subsets occur, with at most $M$ common neighbors apiece. For $a=1$ this discarded term vanishes. Consequently some independent left side has at least
+\[
+ H=\left\lceil
+ \frac{M\binom{\lfloor2E/M\rfloor}a-M\binom M{a-1}L_{a-2}}{\binom Ma}
+ \right\rceil
+\]
+common neighbors, omitting the second numerator term for $a=1$. Fix exactly $H$ of them. For a right side of size $b$, choose $b$ ordered neighbors uniformly without replacement. Given that the first $s$ choices preserved independence, at most $L_{a+s-1}$ members of the whole list belong to the current affine hull. Thus the probability that all $a+b$ selected words are affinely independent is at least
+\[
+ \alpha=\prod_{s=0}^{b-1}\frac{H-L_{a+s-1}}{H-s}>0.
+\]
+The displayed certificates satisfy $H>L_{a+b-2}$. This proves the independent rectangles with $b=a$ and the independent stars with $a=1$. For the first-prime eighth-rate full rectangle, for example, $H=51,056,048$ and $L_{16}=19,478,091$.
+
+### Controlling the common root factor
+
+For the $H$ neighbors let $p_x$ be their selected support frequency at coordinate $x$ and write $\rho=t/n$. Counting pair intersections within this sublist gives
+\[
+ \sum_x(p_x-\rho)^2\le V=\frac{t-D}{H}+D-\frac{t^2}{n}.
+\]
+The probability all $b$ sampled neighbors contain $x$ is at most $p_x^b$. For $0\le z\le1$,
+\[
+ z^b\le\rho^b+b\rho^{b-1}(z-\rho)+K(z-\rho)^2,\qquad
+ K=\frac{1-\rho^b-b\rho^{b-1}(1-\rho)}{(1-\rho)^2}.
+\]
+Taylor's integral remainder divided by $(z-\rho)^2$ increases with $z$, since the second derivative of $z^b$ increases on $[0,1]$. Sum this bound on the intersection $U$ of the left-side supports. For $a=1$, $|U|=t$ and $\sum_{x\in U}(p_x-\rho)\le D-t\rho$ by the pair cap. For $a\ge2$, $|U|\le D$ and Cauchy–Schwarz gives $\sum_{x\in U}(p_x-\rho)\le\sqrt{DV}$. This bounds the expected common support size by $\mu$. Some independent sample has common support size at most $\lfloor\mu/\alpha\rfloor$.
+
+For a full edge every common zero of its row differences is a selected agreement. One nonzero row difference is a squarefree degree-$D$ polynomial supported on the domain, so the common gcd of **all** nonzero component differences has degree at most this common support size. For near edges, join the chosen vertices by a spanning tree of $a+b-1$ cross edges. On each edge at most $j$ additional evaluation sites can be common zeros. A common root outside the joint selected support must be exceptional on some tree edge. A single nonzero row difference contributes at most $j$ further degrees for multiplicity or roots outside the domain. This accounts for the $(a+b)j$ allowance in the verifier.
+
+For the whole star, fix one edge and consider the $g$ distinct roots of the common gcd among this edge's selected sites. Each neighbor can omit at most $j$ of these from its own selected support since it agrees with the head on them and has at least $D-j$ selected matches with the head. Cauchy–Schwarz therefore gives $[g(1-\rho)-j]_+^2\le gV$. An additional $j$ degrees suffice for the rest of the common gcd. At the first-prime eighth-rate cell $V/(1-\rho)^2<1$ and $j=0$, so no common root exists. Equivalently a list with one fixed coordinate could have at most 682,920,128 members at this $t$, fewer than the 765,474,163 neighbors. Starting from the 19-leaf independent substar with gcd degree at most two, adjoin a neighbor whenever the gcd can be reduced. Each such difference lies outside the span of the previous ones, since all their linear combinations are divisible by the current gcd. At most two additions give gcd one.
+
+### Nineteen primitive independent differences at the first eighth-rate frontier
+
+For the first eighth-rate cell the degree sum is at least 821,921,624,952,514,482. Its ceiling after division by 1,073,741,825 gives a head with **765,474,164** full neighbors. Let $H$ be exactly this many neighbors. If 682,920,128 selected supports shared one site, puncture there and balance the multiplicities of their remaining $t-1$ sites on $n-1$ points. This forces 109,211,047 more pair incidences than the cap $(D-1)\binom{682920128}2$. In particular at most **682,920,126** neighbors can share any root of their differences: the head itself supplies one more selected support through that root. Every subfamily of 682,920,127 neighbors therefore has only unit common divisors. This remains true after deleting any **82,554,037** of the $H$ neighbors. Lean proves the scalar statement and its necessity for any overflowing interleaving over fields large enough for a separating projection. [Native theorem](../../../ArkLib/Research/ProximityGap/Frontier/PrimitiveSaturatedStar.lean)
+
+In fact **19** of the differences can be taken linearly independent with gcd one. For $x$ in the head's support let $p_x$ be its frequency among the $H$ neighbors, $m=682920126/H$, and $\rho=t/n$. For each leaf the roots of its difference are precisely its selected intersection with the head. Thus $p_x\le m$ and $\sum_{x\in S_h}p_x=D$. The variance bound above gives $\sum_{x\in S_h}(p_x-\rho)^2\le V=(t-D)/H+D-t^2/n$. At most 17 sites have $p_x\ge1/2$, and at most one has $p_x>4/5$.
+
+Suppose every 19 leaves share a root. This also holds for tuples with repetitions, by extending the distinct leaves in a tuple. Independently sample 18 leaves with replacement, and let $C$ be their common root set. The sites of $C$ must cover all leaves: for any additional leaf some site in $C$ is one of its roots. Thus $|C|\ge2$ since $m<1$. If $|C|=2$, those sites form a covering pair; one of them, say $x$, has $p_x\ge1/2$. All leaves omitting $x$ must contain its partner. There are at least $A=H-682920126$ leaves omitting $x$. These leaves cannot all contain eight distinct sites. Puncturing eight shared sites on an $A$-sublist would give $A(t-8)^2\le(n-8)((t-8)+(A-1)(D-8))$, contrary to the integer calculation. Each heavy site therefore has at most seven possible covering partners.
+
+For a covering pair $x,y$, its frequency of simultaneous occurrence is $p_x+p_y-1\le2\rho-1+\sqrt{2V}<29/50$. All 18 sampled leaves contain both sites if $C=\{x,y\}$. The union bound gives $\Pr(|C|=2)\le 17\cdot7\cdot(29/50)^{18}<0.0066$, so $\mathbb E|C|>2.9934$.
+
+In the other direction $\mathbb E|C|=\sum_{x\in S_h} p_x^{18}$. Put $K(z)=(z^{18}-\rho^{18}-18\rho^{17}(z-\rho))/(z-\rho)^2$ with its continuous value at $\rho$. The Taylor argument above shows that $K$ increases. Use $K(4/5)$ for all but the one potentially heavier site, and bound that site's excess with $K(m)$. This gives
+\[
+ \mathbb E|C|\le t\rho^{18}+18\rho^{17}(D-t\rho)+K(4/5)V+
+       (K(m)-K(4/5))(m-\rho)^2<2.965 .
+\]
+The contradiction yields a primitive subfamily of at most 19 leaves. A basis of its difference span has the same common divisors. Enlarge that basis to 19 independent differences using the same star: an affine flat of dimension at most 18 contains at most 155,824,732 of the words, below $H$. [Exact certificates](../../../scripts/probes/probe_independent_split_grids.py)

@@ -33,7 +33,7 @@
 For a Reed--Solomon code with prescribed evaluation points, two finite matrix tests determine the first error count at which an affine-line mutual correlated agreement (MCA) budget or an interleaved list budget is exceeded. One test asks whether each of several sets of joint interpolation equations raises the rank of a common matrix. The other counts distinct compatible polynomial tuples by inclusion--exclusion. Both remove received words from the search. The tests are exact at every positive width and include small fields. At $\varepsilon=2^{-128}$ and $q<2^{256}$ we characterize when a largest safe real radius exists. All eight operational boundaries are explicit on a length-32 family, a length-128 subgroup and a length-$2^{30}$ subgroup of a 129-bit prime field. At length $2^{30}$ and rate $1/16$, smooth-domain MCA thresholds follow an exact formula on 581,610,155 consecutive integer budgets. At budget $2^{31}$ all eligible smooth fields first fail at 715,827,882 errors. The general enumeration can be impractical on codes of cryptographic size.
 
 \section*{1.\quad Parameters and the operational endpoint}
-Let $D=(x_i)_{i\in I}$ be $n>0$ distinct elements of $\F$, and let $1\le k\le n$. Write $C=\rs(D,k)$ for evaluations of polynomials of degree $<k$. The sponsor specifies a multiplicative subgroup of power-of-two order and rate $k/n\in\{1/2,1/4,1/8,1/16\}$. The smooth-domain interface also admits nonzero cosets and permuted coordinates. The matrix tests apply to any injective domain, including over extension fields.
+Let $D=(x_i)_{i\in I}$ be $n>0$ distinct elements of $\F$, and let $1\le k\le n$. Write $C=\rs(D,k)$ for evaluations of polynomials of degree $<k$. The companion paper defines a smooth domain as a nonzero multiplicative coset of a subgroup of power-of-two order (Definition~2.12). The four prize rates are $k/n\in\{1/2,1/4,1/8,1/16\}$. Permuting the evaluation sites preserves these conditions. The matrix tests apply to any injective domain, including over extension fields.
 
 Fix a tolerance $\varepsilon\ge0$, a positive interleaving width $m$, an error count $0\le e\le n$, and set $B=\lfloor q\varepsilon\rfloor$, $L=B+1$, $t=n-e$. A width-$m$ codeword consists of $m$ rows in $C$. A column is erroneous if at least one of its rows disagrees with the received column. List failure means that some closed ball contains at least $L$ distinct codewords. For MCA, $\gamma$ is drawn uniformly from $\F$ and the word tested is $u+\gamma v$, for fixed $u,v\in\F^I$. Section~2 gives the precise event. The challenge selects affine lines. We extend the support inequality of Definition~4.3 to both endpoints of the challenge's interval $[0,1]$ \cite{abf}.
 
@@ -243,6 +243,52 @@ is at twelve errors, $12/16=J$. On this very same domain the
 occurs at six errors, $6/16=3/8$. At either cutoff the closed test already fails.
 
 \newpage
+\section*{4.4.\quad MCA equality and simultaneous equality}
+At $\varepsilon=2^{-128}$ and $q<2^{256}$ the following table describes all possibilities.
+Each affirmative entry means that some smooth code at those parameters realizes the
+indicated equality at every positive width. The last column requires a single supplied code.
+\begin{center}
+\begin{tabular}{@{}lccc@{}}\toprule
+Prize parameters & List at $J$ & MCA at $J$ & Both at $J$\\\midrule
+$k=1$ & Yes & Yes & Yes\\
+$(n,k)=(4,2)$ & Yes & No & No\\
+$(n,k)=(16,2)$ & Yes & Yes & No\\
+All other prize parameters & No & No & No\\\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{A sixteen-point MCA witness.} Take the prime $p=111\cdot2^{128}+1$ and its
+order-16 subgroup, with generator $g$. The budget is 111. At five agreements, every
+bad scalar has a five-site folded support with at least six triples that admit no
+joint explanation. A triple of this kind supports at most one fold scalar. The
+\href{https://github.com/SlopDotCash/proximityprize/blob/520ef4d923f79a2115c32b0d3f6a56ab425226cf/ArkLib/Research/ProximityGap/SixteenMcaJohnson.lean}{circuit-density bound}
+therefore gives at most $\lfloor\binom{16}{3}/6\rfloor=93$ bad scalars.
+
+Choose the two received rows $u(x)=x^3+g/x$, $v(x)=x^2$. For four distinct subgroup
+elements $a,b,c,d$ with $abcd=g$, put $z=-(a+b+c+d)$. For a suitable affine
+polynomial $f$, coefficient comparison gives
+\[
+                 X\bigl(u(X)+zv(X)-f(X)\bigr)
+                    =(X-a)(X-b)(X-c)(X-d).
+\]
+The folded word has four agreements, while $x^2$ cannot be affine at three distinct
+sites. A \href{https://github.com/SlopDotCash/proximityprize/blob/520ef4d923f79a2115c32b0d3f6a56ab425226cf/ArkLib/Research/ProximityGap/Frontier/JohnsonQuarticMca.lean}{finite-field certificate}
+enumerates the four-element subsets and gives 112 distinct $z$. Thus the first
+failing count is twelve, precisely $16J$. At length four the MCA errors at counts
+one and two are equal, excluding first failure at two.
+
+\textbf{Why the sixteen-point witnesses need different fields.} Each distinct
+dimension-two list word with four agreements accounts for six coordinate pairs.
+No pair can occur twice. The list size at Johnson is at most
+$\binom{16}{2}/\binom{4}{2}=20$. A budget $B\ge20$ therefore keeps this ball safe.
+For $B<20$, the two-head construction at eleven errors gives at least
+$\min(q,24)>B$ bad scalars on one received pair. Thus only dimension one can have
+both cutoffs at Johnson on one code. There the BLS witness is MCA-safe through one
+and first exceeds its list budget at one. Lean verifies the
+\href{https://github.com/SlopDotCash/proximityprize/blob/520ef4d923f79a2115c32b0d3f6a56ab425226cf/ArkLib/Research/ProximityGap/JohnsonMcaRealization.lean}{MCA classification}
+and the \href{https://github.com/SlopDotCash/proximityprize/blob/520ef4d923f79a2115c32b0d3f6a56ab425226cf/ArkLib/Research/ProximityGap/JointJohnsonEquality.lean}{joint classification}.
+
+\newpage
 \section*{5.\quad A half-rate ceiling at length \texorpdfstring{$2^{30}$}{2 to the 30}}
 For $p_1=365375409332725729550921208179070755120141565953$ take the order-$n$ subgroup, $n=2^{30}$, $k=n/2$ and $\varepsilon=2^{-128}$. Now $B=n$. A single received pair yields $n+1$ bad scalars at 313,174,699 errors. The first failure lies in $[268{,}435{,}457,313{,}174{,}699]$. Safety at $313{,}174{,}698$ remains open.
 
@@ -361,6 +407,49 @@ At 694,116,763 errors every closed ball still has at most 1,660,990,722 codeword
 Across all four smooth prize rates at any tolerance, the Johnson radius is on the Hamming grid exactly when $k=1$, or $k=2$ and $n$ is a square. Thus for $k\ge4$ both operational cutoffs are strictly to one side of Johnson. On the second field, the half- and quarter-rate MCA comparisons reduce to single closed tests at $314{,}491{,}699$ and $536{,}870{,}913$ errors. Each passes exactly when its supremum is above Johnson. See \src{1af200da4aa3d245aa6ccb0d096a428ae6f4333e}{JohnsonGridEquality} and \src{e51a6757fc1f2f1245b341c2aa3bdd4313498a45}{SecondPrimeJohnsonPivot}.
 
 Three of the eight MCA endpoints on these two fields have numerical values in the current proof. All eight list endpoints and the five other MCA endpoints still require a matching safety bound and failure witness at adjacent counts, or an evaluation of the exact rank criterion. The comparison with Johnson answers a different question from finding those integers.
+
+\newpage
+\section*{5.2.1.\quad What would decide the quarter-rate tests?}
+Put $n=2^{30}$, $k=n/4$ and $D=k-2$. A \emph{split pencil} here means that $P,Q,P-Q$
+each have degree $D$ and $D$ distinct roots in the supplied subgroup, with all three
+root sets disjoint. The field and the subgroup are part of this condition.
+
+\begin{center}
+\begin{tabular}{@{}llll@{}}\toprule
+MCA field & Budget & Error count & Role of a split pencil\\\midrule
+First prime & $n$ & $447{,}392{,}428$ & Necessary and sufficient for failure\\
+Second prime & $2n$ & $536{,}870{,}913$ & Sufficient for failure below Johnson\\\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Second prime.} Assume the three split fibers exist. Start with the three
+polynomial pairs $(X,1)f_i$ for $f_i=0,P,Q$. Each pair agrees along its designated
+fiber of size $k-2$. Add two new sites for each of the three heads to obtain a union
+of $3k$ sites. Each head agrees with the received pair at $2k-2$ sites. A fourth
+head uses one of the split fibers and the $k$ sites outside the union; its core also
+has $2k-2$ sites. One extra folded agreement reaches the required $2k-1$ agreements.
+
+On the $3k$ sites of the union, the construction supplies $3k$ labels of the form
+$-x$. Outside the union it supplies $3k$ more. On the union outside the designated
+$(k-2)$-point fiber it contributes $2k+2$ further labels. The field is larger than
+$(2n+2)^2$, so two scalar parameters can be chosen to keep all these labels distinct.
+The \href{https://github.com/SlopDotCash/proximityprize/blob/ed1430b2385f4773356b8b84360343da09d9ef38/ArkLib/Research/ProximityGap/Frontier/SecondPrimeTransversePencil.lean}{Lean theorem}
+constructs one received pair and $8k+2=2n+2$ distinct bad scalars at the test count.
+This puts the unrestricted MCA cutoff strictly below $J$ at every positive width.
+Pencil existence remains open in each field. The second-prime implication also permits
+other ways to fail.
+
+\textbf{The first-prime list test has a different obstruction.}
+At $536{,}870{,}914$ errors, an over-budget list needs $n+1$ words, each with $n/2-2$
+agreements. Any two agree together at at most $k-1$ sites. A
+\href{https://github.com/SlopDotCash/proximityprize/blob/e2af44d81a5cf8c7fbd33b6f5ad0a60bb2d414cc/ArkLib/Research/ProximityGap/Frontier/QuarterSupportPackingBarrier.lean}{binary hyperplane construction}
+gives $n+1$ supports satisfying both constraints. Under the natural exponent indexing,
+five of these supports occupy the pairs $02,01,03,13,23$ of the four fibers of $X^k$,
+with at most two holes per mask. Multiplying by the polynomial that vanishes on the
+holes and interpolating on shared fibers forces the five words to coincide. This
+\href{https://github.com/SlopDotCash/proximityprize/blob/ed1430b2385f4773356b8b84360343da09d9ef38/ArkLib/Research/ProximityGap/Frontier/FiveHeadFiberRigidity.lean}{compatibility proof}
+rules out that naturally indexed construction. The first failing list count still
+requires a proof covering arbitrary centers or a different realizable family.
 
 \newpage
 \section*{5.3.\quad A uniform gap below capacity on smooth domains}

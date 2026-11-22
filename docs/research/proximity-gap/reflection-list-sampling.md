@@ -30,7 +30,7 @@ On every proper smooth coset of a prime field, the Euler estimate supplies $T=\l
 
 ## Production length
 
-For $n=2^{30}$ and $p>2^{40}$ the certified Stepanov graph estimate bounds the number of sites a non-dihedral map carries back to the normalized subgroup by 3,960,117. Every transposition consumes two distinct sites, so $T=1,980,058$ works on every smooth coset. The graph theorem includes maps with zero entries in their matrices. Consequently the sampling estimate gives the following first over-budget counts whenever $U\le B$ and $nB<\binom n{k+1}$ for the indicated dimension. The sponsor choice is $B=\lfloor p/2^{128}\rfloor$. [Production theorem](../../../ArkLib/Research/ProximityGap/Frontier/ReflectionListMobius.lean) · [Stepanov graph bound](../../../ArkLib/Research/ProximityGap/Frontier/MobiusSubgroupBound.lean)
+For $n=2^{30}$ and $p>2^{40}$ the certified Stepanov graph estimate bounds the number of sites a non-dihedral map carries back to the normalized subgroup by 3,143,679. Every transposition consumes two distinct sites, so $T=1,571,839$ works on every smooth coset. The graph theorem includes maps with zero entries in their matrices. Consequently the sampling estimate gives the following first over-budget counts whenever $U\le B$ and $nB<\binom n{k+1}$ for the indicated dimension. The sponsor choice is $B=\lfloor p/2^{128}\rfloor$. [Production theorem](../../../ArkLib/Research/ProximityGap/Frontier/ReflectionListMobius.lean) · [Stepanov graph bound](../../../ArkLib/Research/ProximityGap/Frontier/MobiusSubgroupBound.lean)
 
 | Rate | Dimension | First over-budget error count |
 |---|---:|---:|
@@ -39,4 +39,14 @@ For $n=2^{30}$ and $p>2^{40}$ the certified Stepanov graph estimate bounds the n
 | 1/8 | 134,217,728 | 939,524,095 |
 | 1/16 | 67,108,864 | 1,006,632,959 |
 
-Compared at the same $k+2$ agreements with the bound obtained by giving equal weight to all two-error samples and using only their disjointness, the sufficient budget before rounding improves by factors of approximately 135.57, 67.78, 33.89 and 16.95. For the comparison the disjointness cap per puncture is $\lfloor(k+3)/2\rfloor$ and the endpoint row count is $\binom{n-k-2}{2}(k+2)$. The budget interval depends on the rate; the two named production fields lie below these near-capacity intervals.
+Compared at the same $k+2$ agreements with the bound obtained by giving equal weight to all two-error samples and using only their disjointness, the sufficient budget before rounding improves by factors of approximately 170.78, 85.39, 42.69 and 21.35. For the comparison the disjointness cap per puncture is $\lfloor(k+3)/2\rfloor$ and the endpoint row count is $\binom{n-k-2}{2}(k+2)$. The budget interval depends on the rate; the two named production fields lie below these near-capacity intervals.
+
+## Graded Stepanov constraints
+
+At derivative order $i<D$ the polynomial constraint has degree at most $A-1+2i$. There are $A+2i$ coefficient equations. For $J$ target cosets the total is $JD(A+D-1)$. A nonzero auxiliary exists whenever this is strictly below $BAC$. On a source subgroup of order $N$ and target subgroup of order $M$, the multiplicity bound is
+$$
+D|S|\le A-1+N(C-1)+M(B-1).
+$$
+Here $AC\le M$, $A\le N$, $D\le p$ and $A-1+N(C-1)<p$ ensure the Vandermonde and factorial tests in characteristic $p$. The estimate for one target holds for every non-dihedral projective map, including those with a zero matrix coefficient, by inverting input or output as needed. [Kernel and multiplicity proof](../../../ArkLib/Research/ProximityGap/Frontier/MobiusStepanov.lean) · [Multi-coset and graph estimates](../../../ArkLib/Research/ProximityGap/Frontier/MobiusSubgroupBound.lean)
+
+When $N=M=n$ and $J^2u^3\le n$, setting $A=D=Ju^2$, $C=Ju$, $B=2Ju$ gives $|S|\le 1+3n/u$ under the stated characteristic assumption. At $J=1$ the resulting transposition bound applies to any smooth coset. At $n=2^{30}$, the choices $A=1{,}049{,}601$, $B=2{,}043$, $C=1{,}023$, $D=1{,}046{,}527$ give 2,193,654,544,389 variables and 2,193,653,500,929 constraints. The degree ceiling is 3,289,945,998,336. Dividing by $D$ and rounding down gives 3,143,679 matched sites, a reduction of 816,438 sites from the common-width count. Lean verifies the numerical bound and the list threshold. An exhaustive integer check proves that no positive $A,B,C,D$ meeting the same graded rectangular inequalities give a smaller degree-to-multiplicity floor at this $n$. That check allows every characteristic-compatible choice and even drops the characteristic condition. [Optimum verification script](../../../scripts/probes/probe_graded_stepanov_optimum.py)

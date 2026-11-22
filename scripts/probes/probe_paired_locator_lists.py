@@ -17,6 +17,23 @@ def subtree_key(signature):
     return sum(signature), residues
 
 
+def paired_children(order, node, positive, negative, a, b):
+    """The two subtrees have the same leaves after swapping sibling occupancies."""
+    half = len(positive) // 2
+    left_pos = tuple(v-a for v in positive[:half])
+    left_neg = tuple(v-b for v in negative[:half])
+    right_pos = tuple(v-a for v in positive[half:])
+    right_neg = tuple(v-b for v in negative[half:])
+    difference, remainder = divmod(sum(left_pos)-sum(left_neg), half)
+    if remainder:
+        return
+    for left in range(3):
+        right = left - difference
+        if 0 <= right <= 2:
+            yield ((node//2, left_pos, left_neg, left, right),
+                   ((order-node)//2, right_pos, right_neg, right, left))
+
+
 class JointCensus:
     """Count original and antipodally rotated signatures at once, by cardinality and product."""
 
@@ -49,21 +66,10 @@ class JointCensus:
                 weights = (1 << (node*order)) + (1 << ((order-node)*order))
             return ((a, weights),)
 
-        half = leaves // 2
-        left_pos = tuple(v-a for v in positive[:half])
-        left_neg = tuple(v-b for v in negative[:half])
-        right_pos = tuple(v-a for v in positive[half:])
-        right_neg = tuple(v-b for v in negative[half:])
-        difference, remainder = divmod(sum(left_pos)-sum(left_neg), half)
-        if remainder:
-            return ()
         convolution = defaultdict(int)
-        for left_occupancy in range(3):
-            right_occupancy = left_occupancy - difference
-            if not 0 <= right_occupancy <= 2:
-                continue
-            left = self.subtree(node//2, left_pos, left_neg, left_occupancy, right_occupancy)
-            right = self.subtree((order-node)//2, right_pos, right_neg, right_occupancy, left_occupancy)
+        for left_args, right_args in paired_children(order, node, positive, negative, a, b):
+            left = self.subtree(*left_args)
+            right = self.subtree(*right_args)
             for i, first in left:
                 for j, second in right:
                     degree = a + i + j
@@ -103,12 +109,10 @@ def small_control(order, size):
     print(f"Order {order}: all joint multiplicities match direct enumeration.")
 
 
-def receipt(order, size, reserved, root, histograms, group_of, slots, joint):
-    """Assign each rotation-invariant leaf sum to one pair of opposite serving fibers."""
+def paired_palettes(order, size, reserved, root, histograms, group_of, groups):
+    """Each sign and signature belongs to the unique anchor group assigned its invariant sum."""
     step = order // reserved
-    groups = [[a, a + reserved//2] for a in range(reserved//2 - 1)]
-    groups.append([reserved//2 - 1])
-    palettes = [[] for _ in range(reserved - 1)]
+    palettes = [[] for _ in range(reserved)]
     for v, histogram in histograms.items():
         group = group_of(sum(v))
         if group is None:
@@ -116,24 +120,35 @@ def receipt(order, size, reserved, root, histograms, group_of, slots, joint):
         for a in groups[group]:
             residue = (root - size*a*step) % order
             palettes[a].extend((histogram[e], v, e) for e in (residue, residue+order))
+    return [sorted(row, reverse=True) for row in palettes]
 
+
+def unsigned_overlap(positive, negative, residue, joint):
+    """Discard sign and reserve restrictions for an upper bound on repeated candidates."""
+    by_key = []
+    for chosen in (positive, negative):
+        values = defaultdict(set)
+        for _, v, _ in chosen:
+            values[subtree_key(v)].add(v)
+        by_key.append(values)
+    first, second = by_key
+    return sum(joint.population(v, w, residue)
+               for key, plus in first.items() for v in plus for w in second[key])
+
+
+def receipt(order, size, reserved, root, histograms, group_of, slots, joint):
+    """Assign each rotation-invariant leaf sum to one pair of opposite serving fibers."""
+    step = order // reserved
+    groups = [[a, a + reserved//2] for a in range(reserved//2 - 1)]
+    groups.append([reserved//2 - 1])
+    palettes = paired_palettes(order, size, reserved, root, histograms, group_of, groups)
     single, overlaps = [], []
     for anchors in groups:
-        by_key = []
-        for a in anchors:
-            chosen = sorted(palettes[a], reverse=True)[:slots]
-            single.append(sum(count for count, _, _ in chosen))
-            values = defaultdict(set)
-            for _, v, _ in chosen:
-                values[subtree_key(v)].add(v)
-            by_key.append(values)
+        chosen = [palettes[a][:slots] for a in anchors]
+        single.extend(sum(count for count, _, _ in row) for row in chosen)
         if len(anchors) == 2:
-            # Remove the omission and sign restrictions only when upper-bounding overlap.
-            positive, negative = by_key
             residue = (root - size*anchors[0]*step) % order
-            overlaps.append(sum(joint.population(v, w, residue)
-                                for key, plus in positive.items()
-                                for v in plus for w in negative[key]))
+            overlaps.append(unsigned_overlap(*chosen, residue, joint))
     h = 2**30 // order
     words = sum(single) - sum(overlaps)
     errors = 2**30 - ((size+1)*h - 1 + h//slots)

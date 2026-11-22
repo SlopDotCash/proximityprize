@@ -154,3 +154,46 @@ first unresolved steps. A proof of extra coefficient cancellation, including
 after reduction modulo $X^n-1$, could certify other parameter choices. Linear maps $f(X)=cX$ allow a separate count that includes different seed sizes giving the same center. When $\ell\ge2$, the degree certificate gives $\ell t\le2(k-1)<n$, and $T>4k/3$ forces $\ell\le3$. The center $X^{\ell t}$ determines its exponent uniquely on $H$ in this range. Hence at most one $t$ occurs for each $\ell=2,3$. A coset of $\mu_t$ intersects $H$ in zero or $g=\gcd(n,t)$ sites. All selected cosets must be distinct and meet $H$, since $(\ell-1)t<T$. Then $g\ge T/\ell$, and the number $n/g$ of eligible cosets is a power of two strictly below 13, hence at most eight. Even across both amplifications there are at most $\binom82+\binom83=84$ messages at this center. Unamplified monomials injective on the seed give at most four agreeing constants, including when their center exponents coincide modulo $n$. A noninjective monomial has at most $t/2<k<T$ image points in the remaining unamplified degree-two and degree-three cases. The combined bound of 88 is below both budgets.
 
 The obstruction is a written application of the two papers. Safety at the eight closed balls remains open.
+
+## Pairwise support packing at the first open quarter-rate step
+
+At length $n=2^{30}$ and dimension $k=n/4$, the first named prime allows $n$ codewords
+per list. The last certified safe error count is $536{,}870{,}913$. At the next count each
+word needs $t=n/2-2=536{,}870{,}910$ agreements. Two distinct words can share at most
+$s=k-1=n/4-1$ agreements with a common center. The following construction satisfies
+both support conditions with **$n+1$ distinct blocks**. Consequently a proof of
+safety at this step must use a further property of Reed–Solomon agreement sets.
+[Four-rate safe counts](../../../ArkLib/Research/ProximityGap/Frontier/InterleavedListJohnsonRank.lean)
+
+**Construction.** For every $m\ge4$ put $n=2^m$ and index the sites by
+$V=\mathbb F_2^m$. For each nonzero binary linear form $a$, begin with the
+hyperplane $H_a=\{x:a(x)=0\}$ and delete the origin. Add two blocks
+$C_i=\{x:x_i=1\}$ for $i=1,2$. Every initial hyperplane has $n/2$ points.
+Two hyperplanes with distinct nonzero normals intersect in $n/4$ points,
+because their two forms define a surjection onto $\mathbb F_2^2$.
+
+Delete one further point from each $H_a$. If $a=x_i$ for $i=1,2$, take
+a point of $H_a$ in the other $C_j$. For every other $a$, take a point of
+$H_a\cap C_1\cap C_2$. Such a point exists: for $a=x_1+x_2$, the vector
+$(1,1,0,\ldots,0)$ works. Otherwise $a$ has a nonzero coefficient outside
+the first two coordinates. Set $x_1=x_2=1$ and solve for that coordinate.
+All the deleted points are nonzero. Finally, remove a common point of
+$C_1\cap C_2$ from both $C_i$, then remove one further point from each.
+
+Every final block has size $t$. Two homogeneous blocks lost the origin from
+their intersection. A homogeneous block and $C_i$ were initially disjoint
+if their normals coincide, and otherwise the homogeneous block lost a point
+in $C_i$. The two affine blocks lost their common chosen point. All pairwise
+intersections therefore have size at most $s$. Since $t>s$, the $n-1$ homogeneous
+blocks and the two affine blocks are distinct. A bijection transports them to
+the actual evaluation sites. On the natural exponent indexing, the five masks below preclude distinct words. The unrestricted list question includes other indexings and support families.
+
+The Lean theorem constructs the family at every admissible binary dimension.
+Its production specialization transports all $1{,}073{,}741{,}825$ supports to
+any index type of cardinality $2^{30}$. [General construction and production theorem](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSupportPackingBarrier.lean)
+
+### Compatibility under the natural exponent indexing
+
+Write $n=4k$. Label an exponent $j+4a$ by its low two binary digits $j$. On a cyclic domain $x=g^{j+4a}$, the value of $x^k$ depends only on $j$, with four distinct values. Five of the binary hyperplanes use the pairs of classes $02,01,03,13,23$. From each of these masks remove at most two sites. At $k=2^{28}$ these are five members of the candidate family.
+
+If a common center matched five degree-$<k$ messages on these masks, their products with the locator of the union of deleted sites could each be written $A_i+X^k B_i$, with $\deg A_i<k$ and $\deg B_i$ smaller than the number of deleted sites. On a shared fiber $X^k=s$ the products agree at every site, giving the polynomial identity $A_i+sB_i=A_j+sB_j$. At a deleted site $p$ every product vanishes. A shared fiber other than $p^k$ therefore implies $B_i(p)=B_j(p)$. The graph of the five masks remains connected through the other three fibers, so all $B_i$ agree at every deleted site and hence everywhere. The fiber identities then force equality of the $A_i$ and the original messages. The statement applies row by row to every interleaving width. [Lean theorem on naturally indexed cyclic domains](../../../ArkLib/Research/ProximityGap/Frontier/FiveHeadFiberRigidity.lean)
