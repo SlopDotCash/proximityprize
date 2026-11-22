@@ -153,6 +153,52 @@ theorem tight_support_separation {X : Type*} [Fintype X] [DecidableEq X]
     hABC.ge (by simpa using hABE.le)
   omega
 
+/-- Removing prescribed roots leaves a factor of degree at most the support excess. -/
+theorem residual_mul_nodal_complement_of_degree_band {F X : Type*} [Field F] [DecidableEq X]
+    (z : X ↪ F) (G B : Finset X) (hB : B ⊆ G) (v : F[X]) (hv : v ≠ 0) (J : ℕ)
+    (hdeg : v.natDegree ≤ (G \ B).card + J)
+    (hroot : ∀ x ∈ G \ B, v.eval (z x) = 0) :
+    ∃ R : F[X], R ≠ 0 ∧ R.natDegree ≤ J ∧
+      v * Lagrange.nodal B z = R * Lagrange.nodal G z := by
+  classical
+  obtain ⟨R, hR⟩ : Lagrange.nodal (G \ B) z ∣ v :=
+    Polynomial.prod_X_sub_C_dvd (G \ B) z z.injective.injOn v hroot
+  have hR0 : R ≠ 0 := by
+    intro h
+    apply hv
+    simp [hR, h]
+  have hRdeg : R.natDegree ≤ J := by
+    rw [hR, Polynomial.natDegree_mul Lagrange.nodal_ne_zero hR0,
+      Lagrange.natDegree_nodal] at hdeg
+    omega
+  have hpartition : Lagrange.nodal (G \ B) z * Lagrange.nodal B z =
+      Lagrange.nodal G z := Finset.prod_sdiff hB
+  exact ⟨R, hR0, hRdeg, by rw [hR, mul_right_comm, hpartition, mul_comm]⟩
+
+open Polynomial in
+/-- Clearing denominators in an affine relation of three band locators costs at most `3J`. -/
+theorem locator_cross_numerator_degree {F : Type*} [Field F]
+    (p q r a b c : F[X]) (u v : F) (k J : ℕ)
+    (hp : p.natDegree ≤ k + J) (hq : q.natDegree ≤ k + J) (hr : r.natDegree ≤ k + J)
+    (ha : a.natDegree ≤ J) (hb : b.natDegree ≤ J) (hc : c.natDegree ≤ J) :
+    (C u * p * b * c + C v * q * a * c - r * a * b).natDegree ≤ k + 3 * J := by
+  have leftTerm (f g h : F[X]) (w : F)
+      (hf : f.natDegree ≤ k + J) (hg : g.natDegree ≤ J) (hh : h.natDegree ≤ J) :
+      (C w * f * g * h).natDegree ≤ k + 3 * J := by
+    have h₁ : (C w * f).natDegree ≤ (C w).natDegree + f.natDegree := natDegree_mul_le
+    have h₂ : (C w * f * g).natDegree ≤ (C w * f).natDegree + g.natDegree := natDegree_mul_le
+    have h₃ : (C w * f * g * h).natDegree ≤ (C w * f * g).natDegree + h.natDegree :=
+      natDegree_mul_le
+    rw [natDegree_C] at h₁
+    omega
+  have hright : (r * a * b).natDegree ≤ k + 3 * J := by
+    have h₁ : (r * a).natDegree ≤ r.natDegree + a.natDegree := natDegree_mul_le
+    have h₂ : (r * a * b).natDegree ≤ (r * a).natDegree + b.natDegree := natDegree_mul_le
+    omega
+  exact (natDegree_sub_le _ _).trans (max_le
+    ((natDegree_add_le _ _).trans (max_le (leftTerm p b c u hp hb hc) (leftTerm q a c v hq ha hc)))
+    hright)
+
 /-- A residual with a full set of prescribed roots has a complementary locator. -/
 theorem residual_mul_nodal_complement {F X : Type*} [Field F] [DecidableEq X]
     (z : X ↪ F) (G B : Finset X) (hB : B ⊆ G) (v : F[X]) (hv : v ≠ 0)
@@ -276,3 +322,5 @@ end ProximityGap.MinimumSupportHeadPlane
 #print axioms ProximityGap.MinimumSupportHeadPlane.near_minimal_support_separation
 #print axioms ProximityGap.MinimumSupportHeadPlane.first_sponsor_near_minimal_locator_margins
 #print axioms ProximityGap.MinimumSupportHeadPlane.first_sponsor_weighted_locator_margins
+#print axioms ProximityGap.MinimumSupportHeadPlane.residual_mul_nodal_complement_of_degree_band
+#print axioms ProximityGap.MinimumSupportHeadPlane.locator_cross_numerator_degree
