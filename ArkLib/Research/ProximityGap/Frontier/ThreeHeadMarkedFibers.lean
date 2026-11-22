@@ -22,8 +22,8 @@ variable {F I : Type} [Field F] [Fintype I]
 
 /-- A folded polynomial with a large joint core and extra marked agreements
 gives a native bad event when at least one marked site has a row mismatch. -/
-theorem marked_event [Finite F] [Nonempty I] (dom : I ↪ F) (k : ℕ) (δ : ℝ≥0) (u : WordStack F (Fin 2) I)
-    (z : F) (a b : F[X]) (C₀ S : Finset I) (ha : a.degree < k) (hb : b.degree < k)
+theorem marked_event [Finite F] [Nonempty I] (dom : I ↪ F) (k : ℕ) (δ : ℝ≥0)
+    (u : WordStack F (Fin 2) I) (z : F) (a b : F[X]) (C₀ S : Finset I) (ha : a.degree < k) (hb : b.degree < k)
     (large : k ≤ C₀.card) (sub : C₀ ⊆ S)
     (size : (1 - δ) * (Fintype.card I : ℝ≥0) ≤ S.card)
     (core : ∀ x ∈ C₀, a.eval (dom x) = u 0 x ∧ b.eval (dom x) = u 1 x)
@@ -31,7 +31,7 @@ theorem marked_event [Finite F] [Nonempty I] (dom : I ↪ F) (k : ℕ) (δ : ℝ
     (mismatch : ∃ x ∈ S, (a.eval (dom x), b.eval (dom x)) ≠ (u 0 x, u 1 x)) :
     _root_.ProximityGap.mcaEvent (ReedSolomon.code dom k : Set (I → F)) δ (u 0) (u 1) z := by
   classical
-  letI := Fintype.ofFinite F
+  let _ := Fintype.ofFinite F
   obtain ⟨x, hx, bad⟩ := mismatch
   apply McaDecode.mcaEvent
   refine ⟨S, a + C z * b, ?_, size, fold, ?_⟩
