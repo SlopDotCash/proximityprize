@@ -28,7 +28,7 @@ def scalar_times_square(f, p):
     return multiply(root, root, p) == reverse
 
 
-def check(p, delta, rows, cols, r):
+def check(p, delta, rows, cols, r, offset):
     # A=(a,b) acts by multiplication by a+b*sqrt(delta).
     parameters = [(a, 1) for a in range(p)] + [(1, 0)]
     square = [0] + [1 if pow(z, (p - 1) // 2, p) == 1 else -1 for z in range(1, p)]
@@ -56,7 +56,8 @@ def check(p, delta, rows, cols, r):
         return (a * pow(b, -1, p) % p, 1) if b else (1, 0)
 
     def signs(vertices):
-        return [[square[bracket(vertices[i], vertices[j])] for j in cols] for i in rows]
+        return [[square[bracket(vertices[i], action(shift, vertices[j]))] for j in cols]
+                for i in rows]
 
     def order(g):
         v = (1, 0)
@@ -66,6 +67,9 @@ def check(p, delta, rows, cols, r):
                 return k
         raise AssertionError("torus order")
 
+    wanted_order = {"identity": 1, "half-turn": 2, "generator": m}[offset]
+    shift = next(g for g in group if order(g) == wanted_order)
+    ca, cb = shift
     start = (1, 0)
     second_start = action(next(g for g in group if g[1]), start)
     traces = []
@@ -82,9 +86,23 @@ def check(p, delta, rows, cols, r):
     assert sum(generator) == sum(gcd(k, m) == 1 for k in range(m))
     assert any(order(g) < diameter for g in group)
 
-    # U_d(a) is the sqrt(delta) coefficient of (a+sqrt(delta))^d, on the b=1 chart.
-    u = {d: [comb(d, d - j) * pow(delta, (d - j - 1) // 2, p) % p
-             if (d - j) % 2 else 0 for j in range(d)] for d in range(1, diameter + 1)}
+    # These are the real and sqrt(delta) coefficients of (a+sqrt(delta))^d.
+    # After removing det(A)^min(i,j), the bracket is cb*R_d +/- ca*U_d.
+    @cache
+    def factor(d, sign):
+        coefficients = []
+        for exponent in range(d + 1):
+            k = d - exponent
+            scale = sign * ca if k % 2 else cb
+            coefficients.append(scale * comb(d, k) * pow(delta, k // 2, p) % p)
+        while len(coefficients) > 1 and not coefficients[-1]:
+            coefficients.pop()
+        return coefficients
+
+    def label(i, j):
+        orientation = 1 if j >= i or wanted_order <= 2 else -1
+        return abs(j - i), orientation
+
     for g in group:
         a, b = g
         if not b:
@@ -92,44 +110,47 @@ def check(p, delta, rows, cols, r):
         raw = iterates(g, start)
         for i in rows:
             for j in cols:
-                if i == j:
-                    continue
-                d = abs(i - j)
-                value = sum(c * pow(a, k, p) for k, c in enumerate(u[d])) % p
-                value *= (1 if j > i else -1) * pow(a * a - delta, min(i, j), p)
-                assert value % p == bracket(raw[i], raw[j])
+                coefficients = factor(abs(j - i), 1 if j >= i else -1)
+                value = sum(c * pow(a, k, p) for k, c in enumerate(coefficients)) % p
+                value *= pow(a * a - delta, min(i, j), p)
+                assert value % p == bracket(raw[i], action(shift, raw[j]))
 
     @cache
-    def odd_obstruction(odd_distances, determinant_parity):
+    def odd_obstruction(odd_labels, determinant_parity):
         polynomial = [(-delta) % p, 0, 1] if determinant_parity else [1]
-        for d in odd_distances:
-            polynomial = multiply(polynomial, u[d], p)
+        for d, sign in odd_labels:
+            polynomial = multiply(polynomial, factor(d, sign), p)
         return not scalar_times_square(polynomial, p)
 
     walked = [0] * m
-    exceptional = ordinary = zero = larger_even = 0
+    exceptional = ordinary = zero = larger_even = oriented_only = nonzero_equal = 0
     for row in product(range(len(rows)), repeat=r):
         for col in product(range(len(cols)), repeat=r):
             edges = [(row[(k + offset) % r], col[k]) for k in range(r) for offset in (0, 1)]
             distances = Counter(abs(rows[i] - cols[j]) for i, j in edges)
-            if 0 in distances:
+            if 0 in distances and wanted_order == 1:
                 zero += 1
                 continue
+            if 0 in distances:
+                nonzero_equal += 1
             values = [prod(matrix[i][j] for i, j in edges) for matrix in matrices]
             for index, value in enumerate(values):
                 walked[index] += value
-            odd = tuple(sorted(d for d, count in distances.items() if count % 2))
+            labels = Counter(label(rows[i], cols[j]) for i, j in edges if rows[i] != cols[j])
+            odd = tuple(sorted(key for key, count in labels.items() if count % 2))
             if odd:
                 ordinary += 1
-                larger_even += max(distances) > max(odd)
+                larger_even += max(distances) > max(d for d, _ in odd)
+                oriented_only += all(multiplicity % 2 == 0 for multiplicity in distances.values())
                 parity = sum(min(rows[i], cols[j]) for i, j in edges) % 2
                 assert odd_obstruction(odd, parity)
                 # Complete on the rational affine chart, including singular parameters.
                 affine = 0
                 for a in range(p):
                     raw = iterates((a, 1), start)
-                    affine += prod(square[bracket(raw[rows[i]], raw[cols[j]])] for i, j in edges)
-                distinct_bound = 2 + sum(distances)
+                    affine += prod(square[bracket(raw[rows[i]], action(shift, raw[cols[j]]))]
+                                   for i, j in edges)
+                distinct_bound = 2 + sum(d for d, _ in labels)
                 assert affine**2 <= (distinct_bound - 1)**2 * p
             else:
                 exceptional += 1
@@ -143,23 +164,25 @@ def check(p, delta, rows, cols, r):
     assert 0 <= generator_sum <= sum(traces)
     excess = max(0, sum(traces) - m * exceptional - 3 * ordinary)
     assert excess**2 <= (ordinary * (2 * r * diameter + 1))**2 * p
-    return zero, ordinary, exceptional, larger_even
+    return zero, ordinary, exceptional, larger_even, oriented_only, nonzero_equal
 
 
 def main():
-    total = [0, 0, 0, 0]
+    total = [0] * 6
     cases = 0
     for p in (11, 13, 17, 23):
         nonsquare = next(z for z in range(2, p) if pow(z, (p - 1) // 2, p) == p - 1)
         for delta in (1, nonsquare):
             for rows, cols, r in [((0, 2, 4), (1, 2, 3, 5), 2), ((0, 2, 5), (1, 3, 7), 3)]:
-                counts = check(p, delta, rows, cols, r)
-                total = [a + b for a, b in zip(total, counts)]
-                cases += 1
+                for shift in ("identity", "half-turn", "generator"):
+                    counts = check(p, delta, rows, cols, r, shift)
+                    total = [a + b for a, b in zip(total, counts)]
+                    cases += 1
     assert all(total)
     print(f"{cases} torus/template cases, {total[0]} zero-edge walks, "
           f"{total[1]} nonsquare walks, {total[2]} paired walks; "
-          f"{total[3]} nonsquare walks with an even larger distance")
+          f"{total[3]} nonsquare walks with an even larger distance, "
+          f"{total[4]} needing orientations, {total[5]} walks with nonvanishing equal-exponent edges")
 
 
 if __name__ == "__main__":
