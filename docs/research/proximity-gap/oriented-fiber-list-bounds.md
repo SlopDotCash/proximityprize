@@ -154,3 +154,69 @@ first unresolved steps. A proof of extra coefficient cancellation, including
 after reduction modulo $X^n-1$, could certify other parameter choices. Linear maps $f(X)=cX$ allow a separate count that includes different seed sizes giving the same center. When $\ell\ge2$, the degree certificate gives $\ell t\le2(k-1)<n$, and $T>4k/3$ forces $\ell\le3$. The center $X^{\ell t}$ determines its exponent uniquely on $H$ in this range. Hence at most one $t$ occurs for each $\ell=2,3$. A coset of $\mu_t$ intersects $H$ in zero or $g=\gcd(n,t)$ sites. All selected cosets must be distinct and meet $H$, since $(\ell-1)t<T$. Then $g\ge T/\ell$, and the number $n/g$ of eligible cosets is a power of two strictly below 13, hence at most eight. Even across both amplifications there are at most $\binom82+\binom83=84$ messages at this center. Unamplified monomials injective on the seed give at most four agreeing constants, including when their center exponents coincide modulo $n$. A noninjective monomial has at most $t/2<k<T$ image points in the remaining unamplified degree-two and degree-three cases. The combined bound of 88 is below both budgets.
 
 The obstruction is a written application of the two papers. Safety at the eight closed balls remains open.
+
+## Pairwise support packing at the first open quarter-rate step
+
+At length $n=2^{30}$ and dimension $k=n/4$, the first named prime allows $n$ codewords
+per list. The last certified safe error count is $536{,}870{,}913$. At the next count each
+word needs $t=n/2-2=536{,}870{,}910$ agreements. Two distinct words can share at most
+$s=k-1=n/4-1$ agreements with a common center. The following construction satisfies
+both support conditions with **$n+1$ distinct blocks**. Consequently a proof of
+safety at this step must use a further property of Reed–Solomon agreement sets.
+[Four-rate safe counts](../../../ArkLib/Research/ProximityGap/Frontier/InterleavedListJohnsonRank.lean)
+
+**Construction.** For every $m\ge4$ put $n=2^m$ and index the sites by
+$V=\mathbb F_2^m$. For each nonzero binary linear form $a$, begin with the
+hyperplane $H_a=\{x:a(x)=0\}$ and delete the origin. Add two blocks
+$C_i=\{x:x_i=1\}$ for $i=1,2$. Every initial hyperplane has $n/2$ points.
+Two hyperplanes with distinct nonzero normals intersect in $n/4$ points,
+because their two forms define a surjection onto $\mathbb F_2^2$.
+
+Delete one further point from each $H_a$. If $a=x_i$ for $i=1,2$, take
+a point of $H_a$ in the other $C_j$. For every other $a$, take a point of
+$H_a\cap C_1\cap C_2$. Such a point exists: for $a=x_1+x_2$, the vector
+$(1,1,0,\ldots,0)$ works. Otherwise $a$ has a nonzero coefficient outside
+the first two coordinates. Set $x_1=x_2=1$ and solve for that coordinate.
+All the deleted points are nonzero. Finally, remove a common point of
+$C_1\cap C_2$ from both $C_i$, then remove one further point from each.
+
+Every final block has size $t$. Two homogeneous blocks lost the origin from
+their intersection. A homogeneous block and $C_i$ were initially disjoint
+if their normals coincide, and otherwise the homogeneous block lost a point
+in $C_i$. The two affine blocks lost their common chosen point. All pairwise
+intersections therefore have size at most $s$. Since $t>s$, the $n-1$ homogeneous
+blocks and the two affine blocks are distinct. A bijection transports them to
+the actual evaluation sites. Realizing these choices simultaneously as agreement
+sets of odd-characteristic polynomials with one received word remains open.
+
+The following Python check constructs every block and checks every pair at lengths
+16 through 256. The hyperplane argument above supplies the production count.
+
+```python
+from itertools import combinations
+
+for m in range(4, 9):
+    n = 2**m
+    def hyperplane(a, bit):
+        return {x for x in range(n) if (a & x).bit_count() % 2 == bit}
+
+    affine = [hyperplane(a, 1) for a in (1, 2)]
+    blocks = []
+    for a in range(1, n):
+        block = hyperplane(a, 0) - {0}
+        choices = block.copy()
+        for other in affine:
+            if block & other:
+                choices &= other
+        block.remove(min(choices))
+        blocks.append(block)
+    common = min(affine[0] & affine[1])
+    for block in affine:
+        block.remove(common)
+        block.remove(min(block))
+        blocks.append(block)
+
+    assert len(blocks) == n + 1
+    assert all(len(block) == n//2 - 2 for block in blocks)
+    assert all(len(a & b) <= n//4 - 1 for a, b in combinations(blocks, 2))
+```
