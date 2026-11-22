@@ -629,6 +629,7 @@ import ArkLib.Research.ProximityGap.Frontier.NearRamanujanFromDCSaddle
 import ArkLib.Research.ProximityGap.Frontier.NearRamanujanFromSaddle
 import ArkLib.Research.ProximityGap.Frontier.NegSymCountDiagonalFloor
 import ArkLib.Research.ProximityGap.Frontier.NonprincipalWickIsDCWick
+import ArkLib.Research.ProximityGap.Frontier.NormalizedSectionSpecialization
 import ArkLib.Research.ProximityGap.Frontier.NormalizedTraceRecurrenceWidth
 import ArkLib.Research.ProximityGap.Frontier.NormalizedTripleEnergy
 import ArkLib.Research.ProximityGap.Frontier.NvIReconcile

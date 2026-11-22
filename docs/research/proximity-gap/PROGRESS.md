@@ -2734,9 +2734,22 @@ finite base algebra. Lifting separable residue minimal polynomials and
 differentiating $\pi=u^e v$ with $e$ invertible reduces its exponent
 one step at a time. Independent verified kernel replay accepted all 10,568
 declarations needed by the full local theorem. The geometric identification of the height-one local
-rings and the subsequent section specializations are still written steps.
+rings remains a written step. The next theorem formalizes simple-section specialization.
 [Local Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/TameLogarithmicDVR.lean) ·
 [Use in the height argument](logarithmic-section-heights.md)
+
+**Simple-section specialization and its denominator over the original base.**
+At a retained scalar $z$ the generic root algebra maps into fractions of
+$k(X)[[T]]$ by the actual Hensel root on the branch $Z=z+T$. Lean constructs
+a single $k[X]$-valued evaluation on a ring containing every integral
+element and the generic ordinate. The scaled reciprocal $F(a)/(Y-a)$ is
+integral for an arbitrary coefficient polynomial. For a base derivation
+$\delta$ whose field extension preserves the integral closure the formal
+conclusion is $F_Y(z,q_z)\mid F(z,a) F^\delta(z,q_z)$ in $k[X]$.
+Independent kernel replay accepted 21,521 transitive declarations.
+The height-one assembly proving that preservation and the repeated-root
+site argument remain separate. [Formal denominator theorem](../../../ArkLib/Research/ProximityGap/Frontier/NormalizedSectionSpecialization.lean) ·
+[Application to tangent heights](logarithmic-section-heights.md)
 
 ### Exact three-head window above rate one sixteenth
 
