@@ -91,6 +91,51 @@ theorem rich_of_jets (dom : ι ↪ F) (u v₁ : ι → F) {r : ℕ} (hr : 0 < r)
     simpa only [fiber_eval] using hv.dvd_eval q (hag x hx)
   · exact degree_le_natDegree.trans_lt (by exact_mod_cast specialize_degree c g q hq (Nat.mul_pos hr ht))
 
+/-- Site-dependent jet orders. A section is captured whenever its agreement sites
+carry at least the monomial weight cutoff in total. -/
+theorem exists_order_surface (dom : ι ↪ F) (u v₁ : ι → F) (order : ι → ℕ)
+    (hpos : 0 < t) (hs : ∀ x, order x ≤ s+1)
+    (hcount : Fintype.card ((x : ι) × JetRows s (order x)) < Fintype.card (Monomials s v d t)) :
+    ∃ c : Monomials s v d t → F, c ≠ 0 ∧
+      (∀ x i j, i+j<order x → ∑ m, C (c m)*jetTerm m i j (dom x) (u x) (v₁ x) = 0) ∧
+      ∀ g : F, ∀ q : F[X], q.natDegree ≤ d → ∀ S : Finset ι, t ≤ ∑ x ∈ S, order x →
+        (∀ x ∈ S, q.eval (dom x) = u x + g * v₁ x) → specialize c g q = 0 := by
+  classical
+  let M : Matrix ((x : ι) × JetRows s (order x)) (Monomials s v d t) F := fun z m =>
+    (jetTerm m z.2.2.1.val z.2.1.val (dom z.1) (u z.1) (v₁ z.1)).coeff z.2.2.2.val
+  have hfr : Module.finrank F (((x : ι) × JetRows s (order x)) → F) <
+      Module.finrank F (Monomials s v d t → F) := by
+    simpa only [Module.finrank_fintype_fun_eq_card] using hcount
+  obtain ⟨c,hc,hker⟩ := GSMultInterp.exists_ne_zero_map_eq_zero M.mulVecLin hfr
+  change M.mulVec c = 0 at hker
+  have hjets (x i j) (h : i+j<order x) :
+      ∑ m, C (c m)*jetTerm m i j (dom x) (u x) (v₁ x) = 0 := by
+    ext k
+    rw [finsetSum_coeff,coeff_zero]
+    by_cases hk : k < s+1-j
+    · have he := congrFun hker ⟨x,⟨j,by omega⟩,⟨i,by change i < order x - j; omega⟩,⟨k,hk⟩⟩
+      simpa only [M,Matrix.mulVec,dotProduct,Pi.zero_apply,coeff_C_mul,mul_comm] using he
+    · apply sum_eq_zero
+      intro m _
+      rw [coeff_C_mul,coeff_eq_zero_of_natDegree_lt ((jetTerm_degree m i j _ _ _ (by have := hs x; omega)).trans_le
+        (by omega : s+1-j ≤ k)),mul_zero]
+  refine ⟨c,hc,hjets,?_⟩
+  intro g q hq S hS hag
+  by_contra hn
+  have H (x) (hx : x ∈ S) : order x ≤ (specialize c g q).rootMultiplicity (dom x) := by
+    have hv : GS.vanishesToOrder (order x) (fiber c g) (dom x) (u x+g*v₁ x) := by
+      apply (GS.vanishesToOrder_iff_hasseCoeff ..).mpr
+      intro i j h
+      rw [fiber_jet,hjets x i j h,eval_zero]
+    apply (le_rootMultiplicity_iff hn).mpr
+    simpa only [fiber_eval] using hv.dvd_eval q (hag x hx)
+  have rootBound : (∑ x ∈ S, order x) ≤ (specialize c g q).natDegree := calc
+    _ ≤ ∑ x ∈ S, (specialize c g q).rootMultiplicity (dom x) := sum_le_sum H
+    _ = ∑ y ∈ S.image dom, (specialize c g q).rootMultiplicity y :=
+      by rw [sum_image dom.injective.injOn]
+    _ ≤ _ := Polynomial.sum_rootMultiplicity_le_natDegree _
+  exact (specialize_degree c g q hq hpos).not_ge (hS.trans rootBound)
+
 /-- A nonzero polynomial with every mixed jet vanishing identically along all the received
 lines. Every sufficiently rich polynomial section is a root on its scalar fiber. -/
 theorem exists_surface (dom : ι ↪ F) (u v₁ : ι → F) {r : ℕ} (hr : 0 < r) (ht : 0 < t)
@@ -100,24 +145,10 @@ theorem exists_surface (dom : ι ↪ F) (u v₁ : ι → F) {r : ℕ} (hr : 0 < 
       (∀ x i j, i+j<r → ∑ m, C (c m)*jetTerm m i j (dom x) (u x) (v₁ x) = 0) ∧
       ∀ g : F, ∀ q : F[X], q.natDegree ≤ d → ∀ S : Finset ι, t ≤ S.card →
         (∀ x ∈ S, q.eval (dom x) = u x + g * v₁ x) → specialize c g q = 0 := by
-  classical
-  let M := jetMatrix dom u v₁ s v d t r
-  have hfr : Module.finrank F ((ι × JetRows s r) → F) <
-      Module.finrank F (Monomials s v d (r*t) → F) := by
-    simpa only [Module.finrank_fintype_fun_eq_card,Fintype.card_prod] using hcount
-  obtain ⟨c,hc,hker⟩ := GSMultInterp.exists_ne_zero_map_eq_zero M.mulVecLin hfr
-  change M.mulVec c = 0 at hker
-  have hjets (x i j) (h : i+j<r) : ∑ m, C (c m)*jetTerm m i j (dom x) (u x) (v₁ x) = 0 := by
-    ext k
-    rw [finsetSum_coeff,coeff_zero]
-    by_cases hk : k < s+1-j
-    · have he := congrFun hker (x,⟨⟨j,by omega⟩,⟨i,by change i < r-j; omega⟩,⟨k,hk⟩⟩)
-      simpa only [M,jetMatrix,Matrix.mulVec,dotProduct,Pi.zero_apply,coeff_C_mul,mul_comm] using he
-    · apply sum_eq_zero
-      intro m _
-      rw [coeff_C_mul,coeff_eq_zero_of_natDegree_lt ((jetTerm_degree m i j _ _ _ (by omega)).trans_le
-        (by omega : s+1-j ≤ k)),mul_zero]
-  exact ⟨c,hc,hjets,rich_of_jets dom u v₁ hr ht c hjets⟩
+  obtain ⟨c,hc,hj,hf⟩ := exists_order_surface dom u v₁ (fun _ => r) (Nat.mul_pos hr ht) (fun _ => hs)
+    (by simpa only [Fintype.card_sigma, sum_const,card_univ,nsmul_eq_mul,Nat.cast_id] using hcount)
+  refine ⟨c,hc,hj,fun g q hq S hS hag => hf g q hq S ?_ hag⟩
+  simpa only [sum_const,nsmul_eq_mul,Nat.cast_id,mul_comm] using Nat.mul_le_mul_left r hS
 
 /-- At the last production agreement count covered by the residual-module argument, a
 quartic of total scalar/value degree fourteen has all the required site jets and sections. -/
@@ -157,6 +188,7 @@ theorem production_dim (dom : ι ↪ F) (u v : ι → F) (hn : Fintype.card ι =
 #print axioms interpolation_dim
 #print axioms production_dim
 #print axioms exists_surface
+#print axioms exists_order_surface
 #print axioms production
 #print axioms production_surface
 end ArkLib.ProximityGap.Frontier.HalfSuccessorJetInterpolation
