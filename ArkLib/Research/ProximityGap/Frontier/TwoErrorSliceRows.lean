@@ -12,12 +12,12 @@ open Finset
 
 variable {I F : Type*} [Fintype I] [DecidableEq I] [Field F]
 
-private theorem on_sample (D : I ↪ F) (E A S : Finset I) (err : I → F)
+theorem sampleWeight_on_pair (D : I ↪ F) (reward : I → I → F → ℕ) (E A S : Finset I) (err : I → F)
     (hA : A.card=2) (hsub : A ⊆ E) (hS : S ⊆ univ \ E)
     (hc : ∀ u∈A, ∀ v∈A, u ≠ v → D u ≠ -D v) :
-    credit D E err ((E \ A) ∪ S) = 3-penalty (alternatives D (ends A hA).1 (ends A hA).2
+    sampleWeight D reward E err ((E \ A) ∪ S) = reward (ends A hA).1 (ends A hA).2
       (err (ends A hA).2 / err (ends A hA).1 *
-        ∏ x ∈ (univ \ E) \ S, ratio D (ends A hA).1 (ends A hA).2 x)).card := by
+        ∏ x ∈ (univ \ E) \ S, ratio D (ends A hA).1 (ends A hA).2 x) := by
   classical
   have he : E \ ((E \ A) ∪ S) = A := by
     ext x
@@ -33,7 +33,7 @@ private theorem on_sample (D : I ↪ F) (E A S : Finset I) (err : I → F)
   have hv : p.2 ∈ A := hpair ▸ mem_insert_of_mem (mem_singleton_self _)
   have hn := hc _ hu _ hv hd
   change D (ends A hA).1 ≠ -D (ends A hA).2 at hn
-  simp [credit,he,hg,hA,hn]
+  simp [sampleWeight,he,hg,hA,hn]
 
 /-- Fix all but the final added site and both true errors. The domain-wide
 penalty bound applies to one multiplicative scale throughout the resulting row. -/
@@ -68,7 +68,7 @@ theorem last_site (D : I ↪ F) (cert : PenaltyBound D) (E A Q : Finset I) (err 
       (cert p.1 p.2 hnep (hc _ h1 _ h2 hnep) μ hμ)
   have weight {x} (hx : x ∈ X) : credit D E err ((E \ A) ∪ insert x Q)+costs x=3 := by
     have hpart : (univ \ E) \ insert x Q = X.erase x := by ext; simp [X]; tauto
-    rw [on_sample D E A (insert x Q) err hA hsub
+    rw [credit,sampleWeight_on_pair D _ E A (insert x Q) err hA hsub
       (insert_subset (mem_sdiff.mp hx).1 hQ) hc,hpart]
     have prod' := prod_erase_mul (s := X) f hx
     have same : err p.2 / err p.1 * (∏ y ∈ X.erase x, f y) = μ/f x := by

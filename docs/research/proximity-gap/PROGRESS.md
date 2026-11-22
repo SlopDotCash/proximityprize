@@ -2954,3 +2954,13 @@ The four rows $(1,x,y,xy)$ have Euclidean norm two on roots of unity. Their dete
 ### Five complete residue classes constrain the density of a third split fiber
 
 At either named prime's production length, two fibers of a degree-$2^{28}-1$ three-split pencil cannot each contain three full exponent classes modulo 16. If one fiber contains three and another two, **every pair** of other classes omits at least 4,979,231 sites from the third fiber. These restrictions allow arbitrary site assignments on all unselected classes. The first exclusion holds at every dyadic length 128 through $2^{30}$. Two exact least-squares computations use the weighted quotient comparisons and the rotation bound. Both were replayed in reverse elimination order. [Proof and verifier](dyadic-orbit-norm-split-pencils.md#two-fibers-cannot-each-contain-three-whole-classes)
+
+### An all-width list threshold from any bound on non-dihedral transpositions
+
+For $r=n-k-3\ge2$, put $L=(\binom{r+1}{2}-\lfloor(r+1)/2\rfloor)(k+1)$. If every non-dihedral involution exchanges at most $T$ pairs of domain sites, Lean bounds the list through $r+1$ errors by $\max(1,\lfloor T\binom nr/L\rfloor)$ at every width. This holds for $r\le k$ or for $k\ge6144$ and $r+1\le16k$. Whenever the bound fits the budget and $nB<\binom n{k+1}$ on a smooth coset, the first over-budget error count is exactly $r+2$. Rational-function scalar packing removes any restriction comparing the size of the list with the field order. Every proper prime-field coset admits the Euler cap $T=\lfloor(n+1)/3\rfloor$. The length-128 theorem supplies $T=3$ at every sponsor-size prime. [Formula, proof and limits](reflection-list-sampling.md)
+
+### Order-two interpolation on every injected prime-field domain
+
+Lean proves the half-rate line-MCA bound of $2^{-128}$ through 324 errors at length 1024, and through 81,920 or 81,984 errors at length 262,144 under the respective exact field-size hypotheses. The named 237-bit witness prime satisfies all three. The proof counts Taylor coefficients by degree and derivative weight and carries the resulting local rank bound to the full symbolic interpolation matrix. [Thresholds and integer replay](restricted-order-two-interpolation.md)
+
+For lengths divisible by 4096 up to 262,144 in the named 237-bit field, the scaled construction covers error fractions 1281/4096, 2203/4096, 2817/4096 and 3221/4096 at rates one half through one sixteenth. The same proof works at arbitrary positive multiples under its explicit field budget. [Scaled theorem](../../../ArkLib/Research/ProximityGap/Frontier/ScaledSecondOrderPrimeCuts.lean)
