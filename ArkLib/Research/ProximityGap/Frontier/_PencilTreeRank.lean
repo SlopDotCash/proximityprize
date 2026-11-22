@@ -4,7 +4,7 @@ Released under both MIT and Apache-2.0 licenses as described in LICENSE-MIT and 
 Authors: Mikhail Izhutkin (mashingaan)
 -/
 import Mathlib.Tactic
-import Mathlib.LinearAlgebra.Dimension.Finrank
+import ArkLib.Research.ProximityGap.Frontier._IncidenceDependencyArithmetic
 
 /-!
 # Rank of an ordered tree of meeting affine pencils
@@ -84,7 +84,91 @@ theorem finrank_coefficients_le {F M : Type*} [Field F]
       (Nat.succ_le_succ ((Finset.card_insert_le _ _).trans (Nat.succ_le_succ hD)))
   exact (Submodule.finrank_mono hle).trans ((finrank_span_finset_le_card G).trans hG)
 
+
+/-- After translating the root coefficients to zero, the joint coefficient
+span is exactly the span of the parent-edge slope jumps. -/
+theorem span_coefficient_differences_eq_span_jumps {F M : Type*} [Field F]
+    [AddCommGroup M] [Module F M] {m : ℕ}
+    (U V : Fin (m + 1) → M) (parent : Fin m → Fin (m + 1))
+    (a : Fin m → F)
+    (hparent : ∀ i, (parent i).val < i.succ.val)
+    (hmeet : ∀ i, U i.succ + a i • V i.succ =
+      U (parent i) + a i • V (parent i)) :
+    Submodule.span F (Set.range (fun i ↦ U i - U 0) ∪ Set.range (fun i ↦ V i - V 0)) =
+      Submodule.span F (Set.range (fun i ↦ V i.succ - V (parent i))) := by
+  let U' := fun i ↦ U i - U 0
+  let V' := fun i ↦ V i - V 0
+  let W := Submodule.span F (Set.range (fun i ↦ V i.succ - V (parent i)))
+  have diff (i : Fin m) : V' i.succ - V' (parent i) = V i.succ - V (parent i) := by
+    dsimp [V']
+    abel
+  have meet (i : Fin m) : U' i.succ + a i • V' i.succ =
+      U' (parent i) + a i • V' (parent i) := by
+    dsimp [U', V']
+    simp only [smul_sub]
+    calc
+      U i.succ - U 0 + (a i • V i.succ - a i • V 0) =
+          (U i.succ + a i • V i.succ) - (U 0 + a i • V 0) := by abel
+      _ = _ := by
+        rw [hmeet i]
+        abel
+  have mem := coefficients_mem_of_parent_jumps U' V' parent a W hparent meet
+    (by simp [U']) (by simp [V']) (fun i ↦ by
+      rw [diff i]
+      exact Submodule.subset_span ⟨i, rfl⟩)
+  apply le_antisymm
+  · apply Submodule.span_le.mpr
+    rintro _ (⟨i, rfl⟩ | ⟨i, rfl⟩)
+    · exact (mem i).1
+    · exact (mem i).2
+  · apply Submodule.span_le.mpr
+    rintro _ ⟨i, rfl⟩
+    rw [← diff i]
+    exact Submodule.sub_mem _
+      (Submodule.subset_span (Or.inr ⟨i.succ, rfl⟩))
+      (Submodule.subset_span (Or.inr ⟨parent i, rfl⟩))
+
+/-- A common support of the parent slope jumps shortens the whole coefficient
+difference space, so the distance penalty is paid once for the component. -/
+theorem coefficient_difference_rank_add_distance_le {F X : Type*} [Field F]
+    [Fintype X] [DecidableEq X] {m : ℕ}
+    (C : Submodule F (X → F)) (U V : Fin (m + 1) → X → F)
+    (parent : Fin m → Fin (m + 1)) (a : Fin m → F) (S : Finset X) (D : ℕ)
+    (hparent : ∀ i, (parent i).val < i.succ.val)
+    (hmeet : ∀ i, U i.succ + a i • V i.succ =
+      U (parent i) + a i • V (parent i))
+    (hV : ∀ i, V i ∈ C)
+    (hsupport : ∀ i x, x ∉ S → V i.succ x = V (parent i) x)
+    (hne : ∃ i, V i.succ ≠ V (parent i))
+    (hD : 0 < D)
+    (hdistance : ∀ v ∈ C, ∀ E : Finset X, E.card < D →
+      (∀ x ∉ E, v x = 0) → v = 0) :
+    Module.finrank F
+      (Submodule.span F (Set.range (fun i ↦ U i - U 0) ∪ Set.range (fun i ↦ V i - V 0))) + D
+      ≤ S.card + 1 := by
+  rw [span_coefficient_differences_eq_span_jumps U V parent a hparent hmeet]
+  apply ProximityGap.IncidenceDependencyArithmetic.shortened_subspace_bound C _ D hD _ S
+  · apply Submodule.span_le.mpr
+    rintro _ ⟨i, rfl⟩
+    exact C.sub_mem (hV i.succ) (hV (parent i))
+  · intro v hv x hx
+    refine Submodule.span_induction (p := fun z _ ↦ z x = 0) ?_ ?_ ?_ ?_ hv
+    · rintro _ ⟨i, rfl⟩
+      exact sub_eq_zero.mpr (hsupport i x hx)
+    · rfl
+    · intro f g _ _ hf hg
+      change f x + g x = 0
+      simp [hf, hg]
+    · intro c f _ hf
+      change c * f x = 0
+      simp [hf]
+  · obtain ⟨i, hi⟩ := hne
+    exact ⟨_, Submodule.subset_span ⟨i, rfl⟩, sub_ne_zero.mpr hi⟩
+  · exact hdistance
+
 end ProximityGap.PencilTreeRank
 
 #print axioms ProximityGap.PencilTreeRank.coefficients_mem_of_parent_jumps
 #print axioms ProximityGap.PencilTreeRank.finrank_coefficients_le
+#print axioms ProximityGap.PencilTreeRank.span_coefficient_differences_eq_span_jumps
+#print axioms ProximityGap.PencilTreeRank.coefficient_difference_rank_add_distance_le

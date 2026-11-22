@@ -148,8 +148,8 @@ jobs:
           from pathlib import Path
           text = Path('pencil-tree-axioms.log').read_text()
           results = re.findall(r"'ProximityGap\.PencilTreeRank\.([^']+)' depends on axioms:\s*\[([^\]]*)\]", text)
-          assert {name for name, _ in results} == {'coefficients_mem_of_parent_jumps', 'finrank_coefficients_le'}
-          assert len(results) == 2
+          assert {name for name, _ in results} == {'coefficients_mem_of_parent_jumps', 'finrank_coefficients_le', 'span_coefficient_differences_eq_span_jumps', 'coefficient_difference_rank_add_distance_le'}
+          assert len(results) == 4
           for name, axioms in results:
               assert {axiom.strip() for axiom in axioms.split(',')} <= {'propext', 'Classical.choice', 'Quot.sound'}, name
           PY
