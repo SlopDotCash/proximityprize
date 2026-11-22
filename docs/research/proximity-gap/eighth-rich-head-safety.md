@@ -63,3 +63,19 @@ $$
 Every head owns at least $x_2-2d$ double sites, because each double it misses is a zero of the triangle of the other three heads. Thus their total singleton count $S$ satisfies $S+3x_2\le I_3+6d$. Let $A,M$ be the populations on the first three heads and on the fourth. Among $5M$ chosen fourth-head positions, all but at most $S+x_0+x_3$ are doubles owned by two first-three heads. The constant pairing again lets the first three select at most $M$ of those reserved slots. Combining $A\le3n-I_3$ and $A+5M\le3n-I_3+S+x_0+x_3+M$ gives $A+M\le2113929236$, below the available head budget. Hence a surviving $q=5$ configuration must have a genuinely varying opposite pairing and $1\le s\le4$. [Triangle multiplicities](four-arbitrary-head-cap.md#core-multiplicity) · [Checked slot arithmetic](../../../ArkLib/Research/ProximityGap/Frontier/EighthRichDeficits.lean)
 
 Reducing the value-degree cap of the primary interpolant to three cannot force a three-head cover by the standard positive-surplus test. At multiplicity $r\ge1$ and scalar/value total-degree cap $l$, the monomial count is at most $\sum_{j=0}^3(l+1-j)_+(rt-jd)$, where $(u)_+=\max(0,u)$. The first two orders of jet conditions already cost $n((l+1)r+l(r-1))$. The former is strictly smaller for every $r,l$. At $r=1$ the four possible coefficient lengths sum to $6k+6<n$. For $l\ge1$ increasing $r$ adds at most $4(l+1)3k$ monomials while those two orders add $(2l+1)8k$ conditions. At $l=0$ the counts are $rt$ and $rn$. Lean checks the integer inequality for every multiplicity and cap. [Cubic surplus obstruction](../../../ArkLib/Research/ProximityGap/Frontier/EighthRichDeficits.lean)
+
+### Minimum value degree of a mixed-Hasse interpolant
+
+The positive-surplus test at exactly $5n/8$ errors has the following complete list of feasible shapes with value degree $v\le16$. All use the same weight condition $i+jd<rt$ and total scalar/value degree cap $l$. The listed cap is the smallest possible for that pair $(v,r)$. Increasing $l$ keeps the surplus positive.
+
+| Value cap $v$ | Multiplicity $r$ | Minimum total degree $l$ |
+|---:|---:|---:|
+| 14 | 5 | 511,305,640 |
+| 15 | 5 | 447,392,437 |
+| 15 | 6 | 715,827,893 |
+| 16 | 5 | 447,392,437 |
+| 16 | 6 | 335 |
+
+In particular the existing $(6,16,335)$ primary surface already has the smallest total degree among all positive-surplus windows of value degree at most sixteen. A degree-fourteen surface exists for every received pair, but at its minimum total degree the monomial surplus is only 90 despite the scalar cap exceeding half a billion. The exact feasibility result concerns this monomial space and the standard count of jet equations. [Lean shape classification and degree-fourteen surface](../../../ArkLib/Research/ProximityGap/Frontier/EighthHasseDegree.lean)
+
+For a scalar coefficient column of allowed value degree $h$, let $B_r(h)=\sum_{j=0}^h((rt-jd)_+-n(r-j)_+)$. The total available surplus is at most $\sum_{h=0}^l B_r(\min(v,h))$, since dropping any remaining jet equations only enlarges the surplus. For $r\ge23$ and $j\le16$, the single-order difference is nonpositive. For $1\le r\le22$, the 17 possible column counts have positive values only when $r=5$ and $h\ge14$, or $r=6$ and $h\ge15$. In these cases all jet orders are included. Up through $l=16$ the total score is nonpositive. Each increment after 16 adds the fixed $B_r(v)$. Evaluating the integer crossing in the five remaining cases gives the table.
