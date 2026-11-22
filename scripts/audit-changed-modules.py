@@ -7,16 +7,20 @@ of its imports, in two ways: an imported module changed after its importer was c
 or the cache holds an import compiled from another checkout's version of the source. This
 tool closes both gaps without a Lake build and without the build lock.
 
-It recompiles, in dependency order,
+It selects
 
 * every tracked module under the audited trees that changed since BASE,
 * every module there whose cached compiled module was built from a different source text,
   according to the source hash Lake recorded in its trace file,
-* every tracked module there that imports one of those, directly or not, and
-* any of their dependencies in those trees that has no compiled module in the cache.
+* any dependency of a selected module, in those trees, that has no compiled module, and
+* every tracked module there that imports a selected module, directly or not,
 
-Compiled modules go to a private mirror of the cache, so later modules see the fresh
-ones. The shared `.lake` is only read.
+and compiles the selection in dependency order. Compiled modules go to a private mirror
+of the cache, so later modules see the fresh ones. The shared `.lake` is only read.
+
+A work directory can be kept and passed again. The tool then skips a changed module that
+it already compiled there from the current source text, and compiles again every module
+that failed there.
 
 The tool runs `lean` directly. The build-time plugins and Lake's linter options do not
 apply. Modules outside the audited trees are not rebuilt: a cached module there that does
@@ -49,19 +53,33 @@ IMPORT = re.compile(r"^(?:public\s+)?(?:meta\s+)?import\s+(?:all\s+)?(\S+)", re.
 MASK = (1 << 64) - 1
 MURMUR = 0xC6A4A7935BD1E995
 SIDECAR = ".source-hash"
+FAILED = ".audit-failed"
 
 
 def research_exclusions() -> set[str]:
-    """Sources the research umbrella deliberately leaves out.
-
-    The umbrella itself stays in the audit: it imports every module, so it compiles last
-    and checks that all of them are present.
-    """
+    """Sources the generated research umbrella leaves out."""
     spec = importlib.util.spec_from_file_location(
         "update_research_lib", SCRIPTS / "update-research-lib.py")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    return set(module.EXCLUDED) - {module.TARGET}
+    return set(module.EXCLUDED)
+
+
+def audited(imports: dict[str, list[str]], excluded: set[str]) -> set[str]:
+    """The tracked sources the audit covers.
+
+    A source the umbrella leaves out is covered only when a covered source imports it.
+    That keeps the umbrella and the workbench, which the library root reaches, and drops
+    the files no build compiles.
+    """
+    keep = {source for source in imports if source not in excluded}
+    stack = list(keep)
+    while stack:
+        for dependency in imports[stack.pop()]:
+            if dependency in imports and dependency not in keep:
+                keep.add(dependency)
+                stack.append(dependency)
+    return keep
 
 
 def module_path(name: str) -> str:
@@ -162,6 +180,18 @@ def select(imports: dict[str, list[str]], changed: set[str], compiled: set[str])
     return todo
 
 
+def outdated(imports: dict[str, list[str]], here: dict[str, float]) -> set[str]:
+    """Modules that predate a module this work directory compiled and that they import.
+
+    `here` maps each module compiled in the work directory to the time its compiled module
+    was written. A finished run leaves none: it compiles every importer after its imports.
+    An interrupted run, or a module that was not covered before, does.
+    """
+    return {source for source, dependencies in imports.items()
+            if any(d in here and (source not in here or here[d] > here[source])
+                   for d in dependencies)}
+
+
 def git(root: Path, *args: str) -> str:
     return subprocess.check_output(["git", *args], cwd=root, text=True)
 
@@ -185,7 +215,8 @@ def compile_module(root: Path, source: str, mirror: Path, logs: Path, env: dict[
                    timeout: int) -> tuple[str, int, float, list[str]]:
     target = mirror / source[:-5]
     target.parent.mkdir(parents=True, exist_ok=True)
-    for suffix in (".olean", ".ilean", ".trace", ".olean.hash", ".ilean.hash", SIDECAR):
+    for suffix in (".olean", ".ilean", ".trace", ".olean.hash", ".ilean.hash", SIDECAR,
+                   FAILED):
         stale = Path(str(target) + suffix)
         if stale.is_symlink() or stale.exists():
             stale.unlink()   # never write through a link into the shared cache
@@ -198,8 +229,8 @@ def compile_module(root: Path, source: str, mirror: Path, logs: Path, env: dict[
         code, output = done.returncode, done.stdout + done.stderr
     except subprocess.TimeoutExpired as expired:
         code, output = 124, (expired.stdout or "") + "\naudit: timed out"
-    if code == 0:
-        Path(str(target) + SIDECAR).write_text(text_hash + "\n", encoding="utf-8")
+    Path(str(target) + (SIDECAR if code == 0 else FAILED)).write_text(
+        text_hash + "\n", encoding="utf-8")
     (logs / (source[:-5].replace("/", ".") + ".log")).write_text(output, encoding="utf-8")
     errors = [line for line in output.splitlines() if ": error" in line or "timed out" in line]
     return source, code, time.time() - start, errors[:3]
@@ -224,10 +255,12 @@ def outside_mismatches(root: Path, library: Path, audited: set[str]) -> list[str
 def run(root: Path, base: str, lake: Path, work: Path, jobs: int, trees: tuple[str, ...],
         timeout: int) -> int:
     excluded = research_exclusions()
-    tracked = [path for path in git(root, "ls-files", "--", *trees).splitlines()
-               if path.endswith(".lean") and path not in excluded and (root / path).is_file()]
     imports = {path: parse_imports((root / path).read_text(encoding="utf-8"))
-               for path in tracked}
+               for path in git(root, "ls-files", "--", *trees).splitlines()
+               if path.endswith(".lean") and (root / path).is_file()}
+    covered = audited(imports, excluded)
+    imports = {path: imports[path] for path in covered}
+    tracked = sorted(covered)
     diff = [path for path in git(root, "diff", "--name-only", base, "--",
                                  "*.lean").splitlines() if path]
     changed = {path for path in diff if path in imports}
@@ -248,10 +281,19 @@ def run(root: Path, base: str, lake: Path, work: Path, jobs: int, trees: tuple[s
     present = {path for path in tracked if (mirror / (path[:-5] + ".olean")).exists()}
     mismatched = {path for path in present if origin[path] != current[path]}
     compiled = present - mismatched
-    todo = select(imports, changed | mismatched, compiled)
-    print(f"{len(changed)} sources changed since {base}, {len(mismatched)} cached modules "
-          f"built from another source text, {len(todo)} modules to compile, logs in {logs}",
-          flush=True)
+    here = {path: (mirror / (path[:-5] + ".olean")).stat().st_mtime for path in compiled
+            if not (mirror / (path[:-5] + ".olean")).is_symlink()}
+    failed_before = {path for path in tracked if (mirror / (path[:-5] + FAILED)).exists()}
+    sourceless = {path: [d for d in imports[path] if not (root / d).is_file()]
+                  for path in tracked}
+    sourceless = {path: missing for path, missing in sourceless.items() if missing}
+    todo = select(imports, (changed - set(here)) | mismatched | failed_before
+                  | set(sourceless) | outdated(imports, here), compiled)
+    print(f"{len(changed)} sources changed since {base} "
+          f"({len((changed & set(here)) - todo)} already compiled in this work directory), "
+          f"{len(mismatched)} compiled modules built from another source text, "
+          f"{len(failed_before)} failed here before, {len(todo)} modules to compile, "
+          f"logs in {logs}", flush=True)
     foreign = outside_mismatches(root, library, set(tracked))
     if foreign:
         print(f"WARNING: {len(foreign)} cached modules outside the selected trees were built "
@@ -266,13 +308,11 @@ def run(root: Path, base: str, lake: Path, work: Path, jobs: int, trees: tuple[s
 
     status: dict[str, str] = {}
     report: dict[str, dict] = {}
-    for source in sorted(todo):
-        missing = [d for d in imports[source] if not (root / d).is_file()]
-        if missing:
-            status[source] = "failed"
-            report[source] = {"exit": 1, "seconds": 0.0,
-                              "errors": [f"imports {missing[0]}, which has no source file"]}
-            print(f"FAILED {source}: {report[source]['errors']}", flush=True)
+    for source, missing in sorted(sourceless.items()):
+        status[source] = "failed"
+        report[source] = {"exit": 1, "seconds": 0.0,
+                          "errors": [f"imports {missing[0]}, which has no source file"]}
+        print(f"FAILED {source}: {report[source]['errors']}", flush=True)
     waiting = {source: {d for d in imports[source] if d in todo}
                for source in todo if source not in status}
     running: dict[futures.Future, str] = {}

@@ -62,6 +62,37 @@ class Select(unittest.TestCase):
         self.assertEqual(audit.select(self.imports, {"docs/notes.lean"}, compiled=set()), set())
 
 
+class Outdated(unittest.TestCase):
+    def setUp(self):
+        self.imports = {A: [LIB], B: [A], C: [B], D: [A]}
+
+    def test_a_finished_run_leaves_nothing_outdated(self):
+        self.assertEqual(audit.outdated(self.imports, {}), set())
+        self.assertEqual(audit.outdated(self.imports, {A: 1.0, B: 2.0, C: 3.0, D: 2.0}), set())
+
+    def test_importer_older_than_a_module_compiled_here_is_outdated(self):
+        # A was compiled again after B; C imports only B and is not affected directly
+        self.assertEqual(audit.outdated(self.imports, {A: 5.0, B: 2.0, C: 3.0, D: 6.0}), {B})
+
+    def test_importer_never_compiled_here_is_outdated(self):
+        self.assertEqual(audit.outdated(self.imports, {A: 1.0}), {B, D})
+        self.assertEqual(audit.outdated(self.imports, {B: 1.0}), {C})
+
+
+class Audited(unittest.TestCase):
+    def test_keeps_an_excluded_source_only_when_a_covered_source_imports_it(self):
+        root = "ArkLib/Research/ProximityGap.lean"
+        bench = "ArkLib/Research/ProximityGap/Bench.lean"
+        umbrella = "ArkLib/Research/ProximityGap/All.lean"
+        scratch = "ArkLib/Research/ProximityGap/Scratch.lean"
+        dead = "ArkLib/Research/ProximityGap/Dead.lean"
+        imports = {root: [bench, LIB], bench: [umbrella, A], umbrella: [A], A: [],
+                   scratch: [dead, A], dead: []}
+        excluded = {bench, umbrella, scratch, dead}
+        self.assertEqual(audit.audited(imports, excluded), {root, bench, umbrella, A})
+        self.assertEqual(audit.audited(imports, set()), set(imports))
+
+
 class LakeTextHash(unittest.TestCase):
     def test_matches_values_computed_by_lean(self):
         # `#eval (mixHash 1723 (hash s)).toNat` in Lean 4.35.0

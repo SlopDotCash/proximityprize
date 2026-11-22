@@ -152,11 +152,13 @@ and every such module whose cached compiled module was built from a different so
 It reads that from the source hash Lake records in the module's `.trace` file. It then adds
 any research dependency of a selected module that has no compiled module in the cache, and
 every module that imports a selected one. The selection is compiled in dependency order. The
-research umbrella is included, so it compiles last.
+research umbrella, the workbench and the library root are included, so they compile last.
+Files that the umbrella leaves out and nothing imports are skipped.
 
 Compiled modules go to a private mirror; the shared `.lake` is read and never written. Pass
-`--work DIR` to keep the mirror: a later run with the same directory reuses the modules it
-compiled from the current source text. Each module has its own log under the work directory.
+`--work DIR` to keep the mirror. A later run with the same directory skips the changed modules
+it already compiled from the current source text, compiles again whatever failed there, and
+finishes an interrupted run. Each module has its own log under the work directory.
 
 Exit status 1 means a module failed, timed out, was blocked by a failed import, or imports a
 module with no source file, or that the cache replaced a module the run relied on. The tool
