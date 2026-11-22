@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify the production three-head predecessor bounds and the free-domain witness sizes."""
+"""Verify the production three-head predecessor bounds on arbitrary injective domains."""
 from math import comb
 
 from probe_tangent_polar_windows import component_price

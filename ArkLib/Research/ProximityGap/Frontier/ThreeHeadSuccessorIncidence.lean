@@ -20,7 +20,8 @@ def faceCost (w : ℕ) := if w = 4 then 8 else if w = 3 then 5 else if w = 2 the
 
 private theorem local_mix (m j b y : ℕ) (hm : 3 ≤ m) (hj : j ≤ 3) (hb : b ≤ 1)
     (out : b = 0 → y ≤ 1) (onCore : b = 1 → y = m) :
-    4 * y + (4 * m - 2) * j ≤ 4 * m + 2 * (m - 1) * (j - 1) + 2 * j * y + (m - 1) * faceCost (j + b) := by
+    4 * y + (4 * m - 2) * j ≤
+      4 * m + 2 * (m - 1) * (j - 1) + 2 * j * y + (m - 1) * faceCost (j + b) := by
   interval_cases j <;> interval_cases b <;> simp [faceCost] at * <;> omega
 
 private theorem local_nine (j b y : ℕ) (hj : j ≤ 3) (hb : b ≤ 1)
@@ -93,7 +94,7 @@ open HalfPredecessorThirdMomentUpper
 
 /-- A supporting line for the discrete third binomial moment forces a true
 triple with more than a degree's worth of common complementary sites. -/
-theorem popular_triple {P J : Type*} [DecidableEq P] [DecidableEq J] [Fintype J]
+theorem popular_triple {P J : Type*} [DecidableEq J] [Fintype J]
     (G : Finset P) (A : P → Finset J) (p q d τ cap : ℕ)
     (sites : Fintype.card J ≤ cap) (rich : ∀ z ∈ G, τ ≤ (A z).card)
     (support : ∀ w ≤ G.card, p * w ≤ w.choose 3 + q)
@@ -130,7 +131,7 @@ theorem three_force_line {τ s d joint : ℕ} (three : 3 * τ ≤ s + 2 * joint)
 
 /-- Weighted intersections use the same physical site, so a fold matching two
 old cores at a double spends two polynomial root incidences. -/
-theorem fold_intersections {I P : Type*} [Fintype I] [DecidableEq I] [DecidableEq P]
+theorem fold_intersections {I P : Type*} [Fintype I] [DecidableEq I]
     (G : Finset P) (core : Fin 3 → Finset I) (A : P → Finset I) (d : ℕ)
     (roots : ∀ z ∈ G, ∀ i, (core i ∩ A z).card ≤ d) :
     (∑ x, (univ.filter (fun i => x ∈ core i)).card *
@@ -164,13 +165,14 @@ theorem fold_intersections {I P : Type*} [Fintype I] [DecidableEq I] [DecidableE
   simpa [Nat.mul_assoc] using sum_le_sum (s := univ) (fun i _ => bounds i)
 
 /-- One double interpolant suffices for every endpoint in the successor table. -/
-theorem common_surface {F I : Type} [Field F] [Fintype I] [DecidableEq F] (dom : I ↪ F)
+theorem common_surface {F I : Type} [Field F] [Fintype I] (dom : I ↪ F)
     (v w : I → F) (hn : Fintype.card I = 1073741824) :
     ∃ Q : Polynomial (Polynomial F[X]), Q ≠ 0 ∧
       (∀ j i a, ((Q.coeff j).coeff i).coeff a ≠ 0 →
         j ≤ 7 ∧ i + j ≤ 25 ∧ a + j * 77807385 < 2 * 357913944) ∧
       ∀ z : F, ∀ q : F[X], q.natDegree ≤ 77807385 → ∀ S : Finset I, 357913944 ≤ S.card →
         (∀ i ∈ S, q.eval (dom i) = v i + z * w i) → Q.eval₂ (evalRingHom (C z)) q = 0 := by
+  classical
   open SecondPrimeQuarticInterpolation in
     obtain ⟨c, hc, hall⟩ := exists_curve_double (s := 25) (v := 7) (d := 77807385) (t := 357913944)
       dom v w (by decide) (by decide) (by

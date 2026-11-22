@@ -177,12 +177,12 @@ open scoped Classical in
 /-- Total incidence of actual cores when the four triangle determinants factor
 through one cyclic quotient. The common locator can consume three excess core
 incidences per root, independently of its multiplicities. -/
-theorem quotient_core_incidence {K : Type} [Field K] [DecidableEq K]
+theorem quotient_core_incidence {K : Type} [Field K]
     (S : Finset K) (zeroFree : ∀ x ∈ S, x ≠ 0) (u v : K → K)
     (L : Fin 4 → K[X] × K[X]) (h : K[X]) (P : Fin 4 → K[X])
     (l j b : ℕ) (hn : h ≠ 0) (hd : ∀ i, (P i).natDegree ≤ b)
-    (factor : ∀ i, threeLineDeterminant (L (triangleIndices i 0)) (L (triangleIndices i 1)) (L (triangleIndices i 2))
-      = h ^ 2 * X ^ j * expand K l (P i))
+    (factor : ∀ i, threeLineDeterminant (L (triangleIndices i 0))
+      (L (triangleIndices i 1)) (L (triangleIndices i 2)) = h ^ 2 * X ^ j * expand K l (P i))
     (nz : ∀ i, h ^ 2 * X ^ j * expand K l (P i) ≠ 0) :
     (∑ x ∈ S, (univ.filter (fun i => AgreesAt (u x) (v x) x (L i))).card) ≤
       S.card + 3 * h.natDegree + 2 * (l * b) := by
@@ -201,7 +201,8 @@ theorem quotient_core_incidence {K : Type} [Field K] [DecidableEq K]
     exact ⟨fun he => hnz (mem_filter.mpr ⟨hs, he⟩), zeroFree x hs⟩
   have wm (x : K) : (∑ i, bit (B x) i) = W x := by simp [W, B, bit]
   have bound (i : Fin 4) : ∑ x ∈ T, charge (B x) i ≤ l * b := by
-    apply le_trans (sum_le_sum (g := fun x => (h ^ 2 * X ^ j * expand K l (P i)).rootMultiplicity x) ?_)
+    apply le_trans (sum_le_sum
+      (g := fun x => (h ^ 2 * X ^ j * expand K l (P i)).rootMultiplicity x) ?_)
     · exact (quotient_root_budget _ _ _ _ _ (nz i) reg).trans (Nat.mul_le_mul_left l (hd i))
     · intro x _
       have ntr := (factor i) ▸ nz i
