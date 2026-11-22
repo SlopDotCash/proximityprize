@@ -8,6 +8,8 @@ At half rate on the second named prime, a written proof gives first failure at *
 
 At the first quarter-rate successor, **447,392,428 errors**, every potential over-budget pencil has combined ramification index at zero and infinity at most **100,527,252**. Its lowest-degree nonzero polynomial has degree at least **167,908,203**. Equal power sums at odd frequencies and at twice-odd frequencies force two of the three fibers to consist of whole four-point blocks, contrary to their required size, whenever the index bound is exceeded. For a pencil factoring through squaring the combined index is at most **97,129,336**. Candidates with smaller ramification remain open. [Proof and exact arithmetic](quarter-successor-split-pencil.md#ramification-at-zero-and-infinity)
 
+Any first-prime quarter-successor pencil has an indecomposable rational factor of degree **at least 19,173,961** whose geometric monodromy is the full alternating or symmetric group on its sheets. The whole pencil has that alternating group as a composition factor. A squarefree-degree classification and a finite order test leave two classical point actions, and both violate the published genus-zero bound. This excludes solvable monodromy even for pencils with a quadratic inner map. Existence with the required large monodromy remains open. [Proof and verification scope](quarter-split-pencil-pullbacks.md#a-primitive-factor-must-have-alternating-or-symmetric-monodromy)
+
 At quarter rate on the second named prime, every injective length-$2^{30}$ domain is safe through **525,150,000 errors** at every positive width. A third interpolant lowers its jet order at sites belonging to any of three rich cores. It contains every remaining polynomial witness and bounds the total bad-scalar count by **2,081,389,015**, including scalar-only factors. This extends the earlier tangent-height estimate by **450,000 errors**. The tangent determinant bound reaches **529,350,000 errors** at this rate. Lean checks the interpolants and count. The nonlinear estimate uses the written tangent-height argument. [Proof and verification scope](quarter-core-weighted-jets.md)
 
 At rate one eighth on the second named prime, every injective length-$2^{30}$ domain is safe through **671,088,639 errors** at every positive width. On the named subgroup the first failure is in **[671,088,640, 679,477,248]**. The safety proof bounds all 3,370 factor allocations and uses one constant projective involution to control the only saturated four-head case. Lean checks the two interpolants, finite degree allocations, deficit arithmetic and the constant-form identity. The nonlinear tangent estimate uses a written geometric argument. [Safety proof and verification scope](eighth-rich-head-safety.md) · [Kernel-checked failure witness](../../../ArkLib/Research/ProximityGap/Frontier/EighthTransverseAttack.lean)
@@ -36,6 +38,7 @@ At the second production prime and length $2^{30}$, the written lower bounds on 
 
 | Question | Result | Verification |
 |---|---|---|
+| Pairwise support constraints at the first open quarter-rate list count | At 536,870,914 errors on the first named prime, Lean constructs $2^{30}+1$ distinct candidate supports, each of size 536,870,910 with every pair overlapping in at most 268,435,455 sites. These supports meet the usual agreement constraints and exceed the list budget. Simultaneous realization by polynomial codewords and one center remains open. | [Formal packing](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSupportPackingBarrier.lean) · [Construction](oriented-fiber-list-bounds.md#pairwise-support-packing-at-the-first-open-quarter-rate-step) |
 | Actual MCA and simultaneous equality with Johnson | At 128-bit tolerance a smooth code over a field below $2^{256}$ can have MCA cutoff equal to Johnson exactly when $k=1$, or when $n=16$ and $k=2$. A single supplied code can realize both list and MCA equality exactly in dimension one. At length 16 the two individual witnesses use different fields. | [MCA classification](../../../ArkLib/Research/ProximityGap/JohnsonMcaRealization.lean) · [Simultaneous classification](../../../ArkLib/Research/ProximityGap/JointJohnsonEquality.lean) |
 | Actual list equality with Johnson | At 128-bit tolerance there exists a field below $2^{256}$ and a smooth domain whose list cutoff equals Johnson at all positive widths exactly for $k=1$, or $k=2$ with $n=4$ or $16$. On the 16-point subgroup of $\mathrm{GF}(17^{32})$, the first list failure is at 12 errors and the first MCA failure is at six. | [Classification and witnesses](../../../ArkLib/Research/ProximityGap/JohnsonEqualityClassification.lean) · [Joint example](../../../ArkLib/Research/ProximityGap/JohnsonPrimePowerList.lean) |
 | Earlier four-rate bounds at every larger smooth length | Write $n=mh$, where $h$ is 256, 256, 256 or 512 in descending rate order, and $j=hk/n$. At $q<2^{256}$ both 128-bit budgets fail by $(h-j-2)m+1$ errors, uniformly over fields and positive widths. The rate-$1/8$ maximum $223/256$ can therefore be attained only at length 256. The same count with $h=1024,1024,1024,2048$ gives MCA probability one and some list larger than $q^2$. | [List proof and equality case](../../../ArkLib/Research/ProximityGap/SmoothReservedListBoundary.lean) · [MCA proof and numerical counts](../../../ArkLib/Research/ProximityGap/SmoothReservedMcaBoundary.lean) |
@@ -2625,6 +2628,10 @@ When $p>2^{40}$, every invertible fractional linear map other than a scaling or 
 
 The four signed face determinants of a saturated quartet give three rational functions with product one after at most a quadratic extension. Quadratic characters of the coarse opposite-pair locators determine all three orientations up to four possibilities in the nonsplit case. In the split case, quartic characters give affine binary constraints on those orientations. At length 16, exact enumeration at both named primes leaves **1,344** oriented layouts satisfying the signed face identity, out of 10,510,500 coarse partitions before orientation. A cyclotomic norm bound transfers these face ranks and the associated fresh-direction rank tests to characteristic zero and every prime splitting the sixteenth roots with $p>432000^8$. The production-length existence question remains open. [Proof and bounds](quarter-opposite-edge-characters.md) · [Lean identities](../../../ArkLib/Research/ProximityGap/Frontier/QuarterOppositeEdgeCharacters.lean) · [Enumeration](../../../scripts/probes/probe_quarter_opposite_pairs.py)
 
+### A common 256-site locator comparison at both named primes transfers exactly
+
+On the canonical 256th roots in the two designated fields, a comparison for the same pair of labelled locators agrees at both primes exactly when it agrees in characteristic zero. This rules out a shared saturated quarter-rate quartet layout, even though each prime individually admits nonlifting four-centre ratios. Exact congruence and ellipsoid checks covered all 128 displacements, visiting 4,227,091,567 search nodes. [Theorem, verification and scope](mu256-joint-transfer.md)
+
 ### Five consecutive evaluations distinguish every dyadic locator in characteristic zero
 
 Five consecutive exponent sites determine any monic locator on complex dyadic roots from its evaluation magnitudes up to common scale, when the sites avoid its roots. Four sites fail at every dyadic length at least 32, by an explicit pair of degree-eight locators on the 32nd roots and its pullbacks. At production length the two named fields simultaneously admit nonlifting ratios on **2,735,180 prescribed mixed-parity sites** satisfying the residue criterion. On **1,342,146 arbitrary sites of one parity**, a single signed ratio can send at least **671,073 distinct complex values** to one value in each field. The one-field counts are larger. These counterexamples have degree below $2^{28}$ and leave the complete-fiber pencil criterion open. [Sharp theorem and finite-field counts](five-dyadic-centres.md) · [General Lean collision](../../../ArkLib/Research/ProximityGap/Frontier/TernaryLocatorCollision.lean) · [Integer verifier](../../../scripts/probes/probe_five_dyadic_centres.py)
@@ -2731,9 +2738,22 @@ finite base algebra. Lifting separable residue minimal polynomials and
 differentiating $\pi=u^e v$ with $e$ invertible reduces its exponent
 one step at a time. Independent verified kernel replay accepted all 10,568
 declarations needed by the full local theorem. The geometric identification of the height-one local
-rings and the subsequent section specializations are still written steps.
+rings remains a written step. The next theorem formalizes simple-section specialization.
 [Local Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/TameLogarithmicDVR.lean) ·
 [Use in the height argument](logarithmic-section-heights.md)
+
+**Simple-section specialization and its denominator over the original base.**
+At a retained scalar $z$ the generic root algebra maps into fractions of
+$k(X)[[T]]$ by the actual Hensel root on the branch $Z=z+T$. Lean constructs
+a single $k[X]$-valued evaluation on a ring containing every integral
+element and the generic ordinate. The scaled reciprocal $F(a)/(Y-a)$ is
+integral for an arbitrary coefficient polynomial. For a base derivation
+$\delta$ whose field extension preserves the integral closure the formal
+conclusion is $F_Y(z,q_z)\mid F(z,a) F^\delta(z,q_z)$ in $k[X]$.
+Independent kernel replay accepted 21,521 transitive declarations.
+The height-one assembly proving that preservation and the repeated-root
+site argument remain separate. [Formal denominator theorem](../../../ArkLib/Research/ProximityGap/Frontier/NormalizedSectionSpecialization.lean) ·
+[Application to tangent heights](logarithmic-section-heights.md)
 
 ### Exact three-head window above rate one sixteenth
 
@@ -2979,6 +2999,10 @@ On every smooth 128-site domain in a prime field of size at least $2^{128}$, eve
 
 For $n=k+2h-1$ and odd $h\ge5$, $3\le k\le n/3$, replacing at most $\lfloor(k-3)/2\rfloor$ sites of an even smooth coset preserves the exact worst-case probability $(h+1)/q$ at $h-1$ errors. At dimension three, fixing $s=2h+1$ sites leaves at most $16s^2$ exceptional choices of the final site that give the larger numerator. [Near-smooth cutoff](../../../ArkLib/Research/ProximityGap/Frontier/ProjectivePairPadding.lean) · [Bound on exceptional completions](../../../ArkLib/Research/ProximityGap/Frontier/ProjectivePairCompletions.lean)
 
+### Rotation symmetry at the first undecided eighth-rate count
+
+At **671,088,640 errors** on the second named subgroup, any budget violation needs four rich heads for which every proposed rotation of order at least sixteen changes at least one particular side direction on **805,306,370** or more sites. This allows a constant projective change of direction coordinates and any permutation of the four heads. Even a labeled quarter turn is impossible. If the antipode fixes all six directions, the quartet and its residual factors carry at most **1,899,655,758** labels. A nonscalar labeled antipode forces deficit five and a saturated degree-67,108,863 quartet on the subgroup of half the size. Lean checks the quotient incidence bound on actual cores, the degree restrictions and the two-site direction count. The projective reduction and equality classification are written. The unrestricted first failure remains within **[671,088,640, 679,477,248]**. [Proof and verification](eighth-dyadic-head-directions.md)
+
 ### The cost of unrestricted higher-order interpolation
 
 At order at least three the canonical general-order error coefficient already exceeds the 128-bit budget at length $2^{30}$ and field size below $2^{256}$, even at jet degree and height one. At order two the remaining degree and height are sharply bounded. A separate exact rank calculation excludes a full homogeneous simplex of Taylor coefficients as a route beyond the half-rate quarter-radius barrier in its stated length and agreement regime. [Bounds and hypotheses](higher-order-field-budgets.md)
@@ -3008,3 +3032,17 @@ At length $2^{30}$ in the BLS scalar field, Lean proves the rate-one-sixteenth l
 At both named primes on $\mu_{256}$, one full order-four center orbit forces an antireflection of the signed opposite-pair population difference. Two such orbits force that difference to vanish everywhere. In an odd-degree three-split pencil, if one fiber contains two four-site orbits, the other two fibers together contain at most one. On complex dyadic grids two antipodal pairs of equal centers already force the support to be antipodally invariant. The weighted $\mu_{64}$ transfer also extends to arbitrary coset populations of size at most 32.
 
 At either named prime on $\mu_{1024}$ a degree-at-most-180 ratio can be constant on **any two prescribed order-four orbits** while its opposite-pair populations differ. At production length the same construction works on any two prescribed order-$2^{22}$ cosets, totaling 8,388,608 centers, with degree at most 188,743,680. For two prescribed four-site production orbits the degrees are at most 24 in the first field and 28 in the second. The counting proof supplies equal-cardinality, disjoint locators; their ratio has the stated selected centers. [Proof, scope and integer certificates](dyadic-four-centre-blocks.md)
+
+### Sharp six-site projective bound at every dyadic order
+
+Lean now proves that a nonsingular projectivity carrying seven distinct dyadic sites into a second grid of the same order is a scaling or reciprocal scaling. This applies in characteristic zero and, for order $n$, in any split prime field with $p>2^n$. Source and target cosets can be prescribed independently. A non-dihedral involution attains six matches at every dyadic order at least eight. The proof excludes five matches on the exceptional conic, including fixed sites, and then descends by parity. [Proof and theorem links](six-dyadic-projective-matches.md)
+
+### A smaller Stepanov bound on prime-field projective intersections
+
+At length $2^{30}$ and prime characteristic greater than $2^{40}$, a nonsingular projectivity that is neither a scaling nor a reciprocal scaling matches at most **3,143,679** subgroup sites. Counting the independent coefficient slots at each derivative order lowers the previous bound of 3,960,117. The transposition cap is consequently **1,571,839**. Lean verifies the resulting sufficient list budgets through $n-k-2$ errors at all four prize rates on every smooth domain. The named production budgets are below this near-capacity range. [Thresholds, parameters and independent integer optimization](reflection-list-sampling.md)
+
+On the BLS scalar field at length $2^{30}$, counting each jet degree once along the separant chain gives 128-bit line-MCA security through 2176/4096, 2800/4096 and 3216/4096 of the sites at rates one quarter, one eighth and one sixteenth. This holds for every injected domain. [Stratified production proof](../../../ArkLib/Research/ProximityGap/Frontier/StratifiedSecondOrderProduction.lean)
+
+### Sharp balanced weighted transfer on the order-64 quotient
+
+For every zero-sum integer locator weight vector on either named $\mu_{64}$, equal ratio evaluations lift to characteristic zero through maximum weight **67 in the first field and 62 in the second**. Explicit equal-degree weight vectors of maxima 68 and 63 give finite equalities with distinct complex values. The proof retains the inversion phase and checks all 32 displacements by exact integer lattice enumeration and separating inequalities, replayed with reversed bases. At first-prime length 4,096 this certifies all complete-coset product comparisons of equal-degree simple locators; at the second prime an explicit quotient-product equality fails to lift at that length. [Proof and full certificates](mu64-balanced-weight-threshold.md)

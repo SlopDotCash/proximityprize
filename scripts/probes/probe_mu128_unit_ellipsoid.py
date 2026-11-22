@@ -80,7 +80,7 @@ def kernel_basis(logs, modulus):
     return result
 
 
-def check_shift(rows, h, logs, order, bound, reverse=False, weight_bound=None):
+def check_shift(rows, h, logs, order, bound, reverse=False, weight_bound=None, reject_candidate=None):
     """Reject every nonzero exponent in the allowed weighted comparison region."""
     size = len(rows[0])
     matrix = fmpz_mat([[r[j]-r[(j-h) % size] for j in range(size) if j not in (0,h)]
@@ -90,10 +90,10 @@ def check_shift(rows, h, logs, order, bound, reverse=False, weight_bound=None):
                 "antipodal coordinate elimination failed")
         matrix = fmpz_mat(matrix.tolist()[:-1])
         logs = [a-logs[-1] for a in logs[:-1]]
-    return check_ellipsoid(matrix, logs, order, bound, reverse, f"displacement {h}", weight_bound)
+    return check_ellipsoid(matrix, logs, order, bound, reverse, f"displacement {h}", weight_bound, reject_candidate)
 
 
-def check_ellipsoid(matrix, logs, order, bound, reverse, case, weight_bound=None):
+def check_ellipsoid(matrix, logs, order, bound, reverse, case, weight_bound=None, reject_candidate=None):
     dim = matrix.nrows()
     identity = fmpz_mat([[int(i == j) for j in range(dim)] for i in range(dim)])
     covariance = matrix*matrix.transpose()
@@ -124,6 +124,8 @@ def check_ellipsoid(matrix, logs, order, bound, reverse, case, weight_bound=None
                 support = sum(abs(int(x)) for x in (dual*matrix).tolist()[0])
                 if separation > weight_bound*support:
                     continue
+            if reject_candidate is not None and reject_candidate(list(map(int,e))):
+                continue
             raise ArithmeticError(f"nonzero candidate for {case}: {e}")
         else:
             zero += 1
