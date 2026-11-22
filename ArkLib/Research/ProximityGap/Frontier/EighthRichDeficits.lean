@@ -241,6 +241,21 @@ theorem next_cubic_no_surplus (r l : ℕ) (hr : 0<r) :
     norm_num [n,t]
     nlinarith [Nat.zero_le (l*r)]
 
+/-- With fifth deficit five, any quartet with a constant nonsingular opposite
+pairing fits the budget, even if up to four units of incidence slack remain.
+Here `xj` counts sites in exactly `j` cores. The three deficit-one cores have
+`single` singleton sites. The triangle opposite each head vanishes on every
+double site that the head misses, bounding the number of such sites by `2*deg`. -/
+theorem next_five_constant_pairing {s x0 x2 x3 x4 single coreSum A M : ℕ}
+    (slack : s≤4) (inc : x2+2*x3+3*x4+s=4*deg+x0)
+    (triangles : 2*x2+5*x3+8*x4≤8*deg)
+    (coreMass : coreSum+s=1207959553) (singles : single+3*x2≤coreSum+6*deg)
+    (totalSlots : A+coreSum≤3*n)
+    (lost : A+coreSum+5*M≤3*n+single+x0+x3+M) : A+M≤2113929236 := by
+  simp only [deg,n] at *
+  omega
+
+#print axioms next_five_constant_pairing
 #print axioms next_cubic_no_surplus
 #print axioms next_four_profile
 #print axioms next_four_incidence
