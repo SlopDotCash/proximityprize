@@ -2745,8 +2745,7 @@ $u$ into $uB$. A single denominator is derived for a localization of a
 finite base algebra. Lifting separable residue minimal polynomials and
 differentiating $\pi=u^e v$ with $e$ invertible reduces its exponent
 one step at a time. Independent verified kernel replay accepted all 10,568
-declarations needed by the full local theorem. The geometric identification of the height-one local
-rings remains a written step. The next theorem formalizes simple-section specialization.
+declarations needed by the full local theorem. The next two theorems formalize specialization and identify the height-one local rings.
 [Local Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/TameLogarithmicDVR.lean) ·
 [Use in the height argument](logarithmic-section-heights.md)
 
@@ -2759,9 +2758,26 @@ integral for an arbitrary coefficient polynomial. For a base derivation
 $\delta$ whose field extension preserves the integral closure the formal
 conclusion is $F_Y(z,q_z)\mid F(z,a) F^\delta(z,q_z)$ in $k[X]$.
 Independent kernel replay accepted 21,521 transitive declarations.
-The height-one assembly proving that preservation and the repeated-root
-site argument remain separate. [Formal denominator theorem](../../../ArkLib/Research/ProximityGap/Frontier/NormalizedSectionSpecialization.lean) ·
+The next result reduces that preservation to the concrete local DVRs; the repeated-root site argument remains separate. [Formal denominator theorem](../../../ArkLib/Research/ProximityGap/Frontier/NormalizedSectionSpecialization.lean) ·
 [Application to tangent heights](logarithmic-section-heights.md)
+
+**Height-one assembly on the normalized plane curve.**
+For a finite separable extension of the fraction field of any Noetherian UFD,
+Lean tests integrality in the actual DVRs above its prime divisors. Above
+each base DVR its finite normalization is Dedekind. Intersecting its branches
+and then clearing the reduced denominators of the minimal-polynomial
+coefficients descends to the original base. The plane theorem derives generic
+separability from the simple section and proves tangent denominator divisibility
+for any compatible field derivation regular on every branch. Identifying the
+ramified divisors for the two specific derivations and establishing their
+branchwise regularity are the remaining local inputs. Lean also proves the
+local lifting criterion for a base derivation transverse to an unramified
+divisor by applying logarithmic lifting to its uniformizer multiple. Independent
+kernel replay accepted 33,313 declarations for the combined plane theorem and
+10,602 for unramified lifting.
+[Unramified lifting](../../../ArkLib/Research/ProximityGap/Frontier/UnramifiedDerivationDVR.lean) ·
+[Intersection and denominator theorem](../../../ArkLib/Research/ProximityGap/Frontier/HeightOneNormalization.lean) ·
+[Height proof](logarithmic-section-heights.md)
 
 ### Exact three-head window above rate one sixteenth
 

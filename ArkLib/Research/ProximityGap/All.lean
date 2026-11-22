@@ -507,6 +507,7 @@ import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorNonlinearPopulation
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorPuncturedList
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorSectionBudget
 import ArkLib.Research.ProximityGap.Frontier.HeightGateNormBound
+import ArkLib.Research.ProximityGap.Frontier.HeightOneNormalization
 import ArkLib.Research.ProximityGap.Frontier.HiddenDerivativeSurfaceSeparation
 import ArkLib.Research.ProximityGap.Frontier.HigherJetBigrading
 import ArkLib.Research.ProximityGap.Frontier.HigherOrderFieldBudget
@@ -1220,6 +1221,7 @@ import ArkLib.Research.ProximityGap.Frontier.UniversalCubicThreshold
 import ArkLib.Research.ProximityGap.Frontier.UniversalObstructionOmegaBudget
 import ArkLib.Research.ProximityGap.Frontier.UniversalSignedListNorms
 import ArkLib.Research.ProximityGap.Frontier.UniversalTwoHeadBudget
+import ArkLib.Research.ProximityGap.Frontier.UnramifiedDerivationDVR
 import ArkLib.Research.ProximityGap.Frontier.UnrestrictedSectionPopulation
 import ArkLib.Research.ProximityGap.Frontier.WF407W2_D2gspec
 import ArkLib.Research.ProximityGap.Frontier.WF407W2_D4_PerPeriodMGFWall
