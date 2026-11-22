@@ -818,6 +818,7 @@ import ArkLib.Research.ProximityGap.Frontier.ScalarRegularJetSurface
 import ArkLib.Research.ProximityGap.Frontier.ScaledFirstOrderSecurity
 import ArkLib.Research.ProximityGap.Frontier.SchurMinorStaircase
 import ArkLib.Research.ProximityGap.Frontier.SchurRatioRotationEquivariance
+import ArkLib.Research.ProximityGap.Frontier.SecantGraphIncidence
 import ArkLib.Research.ProximityGap.Frontier.SecondBudgetCharacteristic
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeActualCubicCap
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeActualPolarGcd
