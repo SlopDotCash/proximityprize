@@ -330,6 +330,20 @@ theorem first_sponsor_near_minimal_locator_margins :
       g * (g - n) * (g - 2 * n) := by
   norm_num
 
+/-- The affine minorant used to sum the local margins over all pairs. -/
+theorem locator_margin_tangent (s a l : ℚ) (hs : 0 < s) (ha : 0 < a) (hl : 0 ≤ l) :
+    (a + l)^3 / (4 * a^2) + a +
+        (5 / 4 - 3 * l^2 / (4 * a^2) - l^3 / (2 * a^3)) * (s - a) ≤
+      (s + l)^3 / (4 * s^2) + s := by
+  have identity : (s + l)^3 / (4 * s^2) + s -
+      ((a + l)^3 / (4 * a^2) + a +
+        (5 / 4 - 3 * l^2 / (4 * a^2) - l^3 / (2 * a^3)) * (s - a)) =
+      (s - a)^2 * (3 * l^2 / (4 * s * a^2) + l^3 * (2 * s + a) / (4 * s^2 * a^3)) := by
+    field_simp [ne_of_gt hs, ne_of_gt ha] <;> ring
+  apply sub_nonneg.mp
+  rw [identity]
+  positivity
+
 /-- Exact arithmetic for the pair-weighted locator surplus at the improved radius. -/
 theorem first_sponsor_weighted_locator_margins :
     let n : ℤ := 1073741824
@@ -373,3 +387,4 @@ end ProximityGap.MinimumSupportHeadPlane
 #print axioms ProximityGap.MinimumSupportHeadPlane.locator_cross_numerator_degree
 #print axioms ProximityGap.MinimumSupportHeadPlane.locator_common_agreement_bound
 #print axioms ProximityGap.MinimumSupportHeadPlane.locator_collinear_numerator_root
+#print axioms ProximityGap.MinimumSupportHeadPlane.locator_margin_tangent
