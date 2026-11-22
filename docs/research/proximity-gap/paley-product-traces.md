@@ -304,3 +304,104 @@ supplies that premise; the signed identity holds without it for the sum
 of the two separate rectangles.
 [Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/PaleyMixedProductTraces.lean) ·
 [Production Sidon scan](../../../scripts/probes/probe_sponsor_phi.cpp)
+
+## Arbitrary subsets of one product stratum
+
+At the first prime the Paley matrix on each complete $T_e$ has operator norm
+at most **115,376,587**, and at the second the bound is **115,376,586**.
+Consequently any two subsets $A,B$ of the same prescribed stratum satisfy
+$|S(A,B)|\le115376587\sqrt{|A||B|}$. Its relative discrepancy is below
+$0.86$ as soon as both sizes are at least $2^{27}$. The sets may have
+arbitrary shapes. The same operator bounds hold after applying a common
+projective transformation, since its action on the character matrix only
+permutes the points and multiplies rows and columns by signs.
+[Projective covariance](paley-production-spectrum.md)
+
+Put $h_j=\chi(1-g^j)$, with $h_0=0$. Up to row signs the exponent-indexed
+matrix is $M_{ij}=h_{i-j}h_{i+j-e}$. Partition both axes into cosets of the
+order-$b$ subgroup of $\mathbb Z/n$, with $b=512$ and $d=n/b$. Let
+$Q_e$ be the sum of the squared entries of the row Gram matrices of
+all $d^2$ blocks. For shifts $u,v$ in the subgroup set
+$$
+H_{u,v}^{\sigma}=\sum_{r\equiv\sigma\pmod2}
+ h_r h_{r+u}h_{r+v}h_{r+u+v}.
+$$
+Expanding the squared row inner products in each block gives the
+four entries at $(i,j),(i+u,j),(i+u,j+v),(i,j+v)$. With $r=i-j$,
+$s=i+j-e$, their product splits into two four-point products with
+steps $(u,-v)$ and $(u,v)$. Each $r,s$ of the required parities has two
+lifts. As $v$ is even, shifting $r$ by $v$ removes the minus sign in the
+first steps. Thus
+$$
+Q_e=2\sum_{u,v}\sum_{\sigma=0}^1 H_{u,v}^{\sigma}H_{u,v}^{\sigma-e}.
+$$
+Both steps are even, so independent negations of $u,v$ and interchange
+of the steps preserve each $H^{\sigma}$. The exact calculation uses these
+symmetries and counts signed parallelograms with packed bits, explicitly
+removing all occurrences of $h_0$.
+
+Write $Q_e^*$ for the same sum with the block Gram diagonals removed. Their
+contribution is exactly the $u=0$ slice. Then $H_{0,v}^1=n/2$,
+and $H_{0,v}^0=n/2-1$ for $v=0$, $n/2-2$ otherwise.
+Each block $W$ satisfies
+$\|W\|^2\le b+\sqrt{\sum_{i\ne k}(WW^*)_{ik}^2}$ by separating the
+diagonal of $WW^*$ and bounding the remaining operator norm by the
+Frobenius norm. For the whole matrix, Cauchy–Schwarz on the block test
+vectors gives $\|M\|^2\le\sum_W\|W\|^2$. A second Cauchy–Schwarz gives
+$$
+\|M\|^2\le d^2b+d\sqrt{Q_e^*}.
+$$
+
+| Prime | Product exponent parity | $Q_e^*$ | Lifted operator bound $U$ |
+| --- | --- | ---: | ---: |
+| First | Even | 590296949372502962488 | 230660492 |
+| First | Odd | 590295812519962396416 | 230660386 |
+| Second | Even | 590296930755274869304 | 230660490 |
+| Second | Odd | 590295805086770100480 | 230660385 |
+
+Every regular image point has two lifts, so the restriction of the ordinary
+matrix to regular points has norm at most $U/2$, by assigning half its
+test weight to each lift. There are at most two remaining points. All
+entries involving them have squared Frobenius norm at most $4|T_e|\le2n+4$.
+This proves the stated bounds; for odd products the sharper norm $U/2$
+already applies. More directly for arbitrary subsets in the original chart,
+$|S(A,B)|\le(U/2)\sqrt{(|A|+2)(|B|+2)}$ by the same weighted lift.
+
+The indicator estimate improves on centering. If $a=|A|$ and $e_A\le2$
+is the number of branch points in $A$, put
+$x_A^2=n(a+e_A)/(2a^2)-1$ for nonempty $A$ and define $x_B$ likewise.
+Lift each indicator with weight equal to the reciprocal of the fiber
+size. Its squared norm is $(a+e_A)/2$, and its mean is $a/n$. Subtracting
+both means before applying the lifted bound gives
+$$
+ \frac{|S(A,B)|}{ab}\le \frac Un x_Ax_B+
+ \frac{\sqrt2 K}{n}(x_A+x_B)+\frac{|D|}{n^2},
+ \qquad b=|B|.
+$$
+Indeed the row sum at $i$ of the actual lifted matrix equals
+$\epsilon^{i+e}(h*h)(2i-e)$. Its vector norm is at most $\sqrt{2n}K$
+by Parseval, since each frequency of $h$ has magnitude at most $K$ and
+$\sum|h|^2=n-1$. The matrix is symmetric, giving the same bound for
+the column sums. The complete multiset sum $D$ was computed above from
+the four residue classes of $h$. At either named prime $|D|/n^2<10^{-6}$
+and $K\le197063$. For $a,b\ge9n/100$ we have $x_A^2,x_B^2<4.556$,
+so the relative discrepancy is below **0.982** on every such rectangle.
+For $a,b\ge n/8=2^{27}$ it is below **0.646**. These centered estimates
+use the constant indicator on the original stratum; the uncentered
+operator norm continues to apply after projective transformations.
+[Full Fourier certificate](paley-production-spectrum.md)
+
+The pinned Lean file checks the four-point transformation and the finite
+Gram inequalities. The two prime-specific moment evaluations are external
+integer computations. The verifier's four small fields recompute the block
+traces directly from the original field matrices at every eligible block
+size and both product parities. To reproduce the production table, generate
+each packed row using `probe_sponsor_paley_signs.cpp` and run the norm probe
+with the field name, row path, block size 512 and a worker count from one to
+four. The SHA-256 digests of the two input rows are
+`d197a97e55a6a3bdce7a13a0727e6991918aa613fe14258341fcbb7ca30b753d` and
+`5c869aca0b411bb192525d7484e518beb3fc530610175017923cb282e5422264`.
+The bound concerns two subsets of one stratum. For individual pairs from
+different strata the one-dimensional factorization used here is unavailable.
+[Lean algebra](../../../ArkLib/Research/ProximityGap/Frontier/PaleyProductStratumNorm.lean) ·
+[Integer verifier](../../../scripts/probes/probe_sponsor_product_stratum_norm.cpp)
