@@ -10,7 +10,7 @@ import Mathlib.LinearAlgebra.Lagrange
 
 namespace ProximityGap.DenseMobiusRigidity
 open Polynomial Finset
-variable {F : Type} [Field F]
+variable {F : Type*} [Field F]
 
 private noncomputable def term (n : ℕ) (a b : F) (U : F[X]) := (C a*X+C b)^n*U
 

@@ -16,7 +16,7 @@ large coprime powers to divide the same surviving polynomial.
 
 namespace ProximityGap.EulerSparsePower
 open Polynomial
-variable {F : Type} [Field F]
+variable {F : Type*} [Field F]
 
 private noncomputable def euler (j : ℕ) (P : F[X]) := X*P.derivative-C (j:F)*P
 
