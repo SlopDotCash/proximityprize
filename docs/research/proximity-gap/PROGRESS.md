@@ -2774,7 +2774,7 @@ integral for an arbitrary coefficient polynomial. For a base derivation
 $\delta$ whose field extension preserves the integral closure the formal
 conclusion is $F_Y(z,q_z)\mid F(z,a) F^\delta(z,q_z)$ in $k[X]$.
 Independent kernel replay accepted 21,521 transitive declarations.
-The next result reduces that preservation to the concrete local DVRs; the repeated-root site argument remains separate. [Formal denominator theorem](../../../ArkLib/Research/ProximityGap/Frontier/NormalizedSectionSpecialization.lean) ·
+The next result reduces that preservation to the concrete local DVRs; the repeated-root site argument is formalized below. [Formal denominator theorem](../../../ArkLib/Research/ProximityGap/Frontier/NormalizedSectionSpecialization.lean) ·
 [Application to tangent heights](logarithmic-section-heights.md)
 
 **Height-one assembly on the normalized plane curve.**
@@ -2794,6 +2794,19 @@ kernel replay accepted 33,313 declarations for the combined plane theorem and
 [Unramified lifting](../../../ArkLib/Research/ProximityGap/Frontier/UnramifiedDerivationDVR.lean) ·
 [Intersection and denominator theorem](../../../ArkLib/Research/ProximityGap/Frontier/HeightOneNormalization.lean) ·
 [Height proof](logarithmic-section-heights.md)
+
+**Both tangent coordinates at a repeated received root.**
+Lean proves that the actual reduced tangent denominator is nonzero and both
+tangent coordinates equal the received rows at every good agreement site,
+for any multiplicity whose factorial survives in the field. The finite or
+infinite field needs more elements than the value degree. The proof constructs
+a good constant anchor. Clearing by the integral reciprocal gives
+$h^jt=(X-x)Q$ inside the full integral closure, with $h=S(Y-L)$ and $t$ nonzero
+at the site. Applying the checked repeated-derivative identity to $ht$ avoids
+any local regularity requirement beyond the previously identified branch DVRs.
+Independent verified kernel replay accepted all 33,355 transitive declarations.
+[Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/RepeatedSectionSpecialization.lean) ·
+[Argument](logarithmic-section-heights.md#ordinary-differentiation-at-a-repeated-received-root)
 
 ### Exact three-head window above rate one sixteenth
 

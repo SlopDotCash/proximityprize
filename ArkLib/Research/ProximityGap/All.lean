@@ -935,6 +935,7 @@ import ArkLib.Research.ProximityGap.Frontier.ReflectionRowTransfer
 import ArkLib.Research.ProximityGap.Frontier.RegimePin
 import ArkLib.Research.ProximityGap.Frontier.RegularTaylorPole
 import ArkLib.Research.ProximityGap.Frontier.RepeatedParabola
+import ArkLib.Research.ProximityGap.Frontier.RepeatedSectionSpecialization
 import ArkLib.Research.ProximityGap.Frontier.RepetitionFirstPrimeThreshold
 import ArkLib.Research.ProximityGap.Frontier.RepetitionFourCenterAttack
 import ArkLib.Research.ProximityGap.Frontier.RepetitionSecondPrimeThreshold
@@ -4136,6 +4137,7 @@ import ArkLib.Research.ProximityGap.LineDecodingSpec
 import ArkLib.Research.ProximityGap.LineDecodingSpecLowOutput
 import ArkLib.Research.ProximityGap.LineDecodingT421Faithful
 import ArkLib.Research.ProximityGap.ListClosedForm
+import ArkLib.Research.ProximityGap.ListCountCertificates
 import ArkLib.Research.ProximityGap.ListDecodingConjectureRefutation
 import ArkLib.Research.ProximityGap.ListDecodingUnconditionalRefute
 import ArkLib.Research.ProximityGap.MCABadCount2
