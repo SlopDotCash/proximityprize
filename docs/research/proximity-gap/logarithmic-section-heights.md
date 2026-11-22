@@ -1,6 +1,6 @@
 # Bounding tangent denominators by two plane resultants
 
-For a nonlinear factor of a received-line interpolant, one can bound the sum of the heights of its rational tangent heads using the reduced binary discriminant. The proof below uses the tame lifting of derivations at a discrete valuation ring. It gives an algebraic route to the nonlinear step in the [three-head threshold through dimension 71,582,789](three-heads-above-one-sixteenth.md). At the sextic parameters it bounds the populations in degrees two through six by **8,489, 23,267, 44,589, 70,367 and 98,657**. The normalization and specialization argument is a written proof. Lean proves the local iterated-derivative identity, reciprocal clearance, the total two-resultant height budget given its fiber divisibilities, and the five prices. Independent kernel checks accepted 19,217 declarations for these steps and 16,367 for the incidence count. [Resultant and derivative theorems](../../../ArkLib/Research/ProximityGap/Frontier/LogarithmicSectionHeights.lean) · [Counting inequality](../../../ArkLib/Research/ProximityGap/Frontier/TangentHeadCount.lean)
+For a nonlinear factor of a received-line interpolant, one can bound the sum of the heights of its rational tangent heads using the reduced binary discriminant. The proof below uses the tame lifting of derivations at a discrete valuation ring. It gives an algebraic route to the nonlinear step in the [three-head threshold through dimension 71,582,789](three-heads-above-one-sixteenth.md). At the sextic parameters it bounds the populations in degrees two through six by **8,489, 23,267, 44,589, 70,367 and 98,657**. Lean proves the tame local lifting step for a derivation of the fraction field. The assembly over the height-one primes and specialization on the selected sections are given below. Lean proves the local iterated-derivative identity, reciprocal clearance, the total two-resultant height budget given its fiber divisibilities, and the five prices. Independent kernel checks accepted 19,217 declarations for these steps and 16,367 for the incidence count. [Resultant and derivative theorems](../../../ArkLib/Research/ProximityGap/Frontier/LogarithmicSectionHeights.lean) · [Counting inequality](../../../ArkLib/Research/ProximityGap/Frontier/TangentHeadCount.lean)
 
 ## Hypotheses and bound
 
@@ -17,7 +17,36 @@ First discard the at most $(2b-1)m$ labels at which the value resultant of $F,F_
 
 On this affine chart omit from the scalar base the horizontal components $Z=z$ of the discriminant, losing at most $G$ labels. Factor the reduced discriminant remaining there into the vertical part $U(X)$ and the product $H(X,Z)$ of the other irreducible factors, using $1$ for an empty product. In the quadratic or higher function-field extension cut out by $F$, consider the lifts of
 $$D_1=H\partial_Z,\qquad D_2=U(H_X\partial_Z-H_Z\partial_X).$$
-Both derivations preserve each ramified height-one prime on the base. They preserve the corresponding normalized coordinate ring. In detail, off the binary discriminant the root algebra of the binary form is étale. At a ramified divisor its local extension has ramification index prime to the characteristic and separable residue extension because its degree is at most $b$. After strict henselization a tame uniformizer can be written $s^e=\pi$. Any base derivation preserving $(\pi)$ extends across the étale part, and $Ds=s(D\pi)/(e\pi)$ is integral. Descent through these local extensions and intersection of the height-one valuation rings establish the claim on the normal ring. This is the tame case of the lifting theorem for logarithmic derivations. [Källström, liftable derivations](https://arxiv.org/abs/math/0604559) · [Tame extensions of discrete valuation rings](https://stacks.math.columbia.edu/tag/0EXT)
+Both derivations preserve each ramified height-one prime on the base.
+Off the binary discriminant the root algebra of the binary form is étale.
+At a ramified divisor let $R$ be the base DVR and $B$ the localization of
+its finite normalization at the chosen prime. The ramification index $e$
+is invertible in $B$, and the residue extension is separable, because
+the field degree is at most $b$ and the characteristic exceeds $b$.
+Write the base uniformizer as $\pi=u^e v$ with $u$ a uniformizer of $B$
+and $v$ a unit. Each field derivation $D$ preserves $R$ and satisfies
+$D\pi\in\pi R$.
+
+A common denominator for the derivatives of finite module generators
+clears every derivative on the finite normalization by the product rule.
+The denominator becomes a unit times $u^m$ in $B$. The quotient rule
+extends the same bound to every element of its localization.
+Write $\delta=u^mD$, so $\delta(B)\subseteq B$. Differentiating $u^ev$,
+canceling $u^{e-1}$ and using $\delta\pi\in u^e B$ gives
+$e v\,\delta u\in uB$, hence $\delta u\in uB$. If $m>0$, $\delta$
+also vanishes on $R$ modulo $u$. For any $b\in B$, lift the residue
+minimal polynomial of $\bar b$ to $f\in R[T]$. Then $f(b)\in uB$
+and $f'(b)$ is nonzero modulo $u$. Differentiating gives
+$f'(b)\delta b=0$ modulo $u$, so $u^{m-1}$ already clears every
+$D b$. Descent to $m=0$ proves $D(B)\subseteq B$ and $D u\in uB$.
+Lean proves this theorem for the actual fraction-field derivation with
+the finite algebra, localization and residue extension as inputs. Independent
+verified kernel replay accepted all 10,568 declarations of its dependency closure.
+[Local lifting theorem](../../../ArkLib/Research/ProximityGap/Frontier/TameLogarithmicDVR.lean)
+
+Intersecting the height-one valuation rings now gives the claimed
+preservation of the normal ring. For the general geometric lifting
+theorem and the local structure see [Källström, liftable derivations](https://arxiv.org/abs/math/0604559) · [Tame extensions of discrete valuation rings](https://stacks.math.columbia.edu/tag/0EXT)
 
 For a constant $a$ put $A_a=F(X,Z,a)$. The reciprocal root $S_a=A_a/(Y-a)$ is integral, by reversing the polynomial $F(X,Z,a+Y)$ and scaling the root of its reciprocal equation by the leading coefficient. Thus $D_i S_a$ is integral as well. At a retained label, evaluation along the simple section maps each of these integral elements into $k[X]$. Indeed the simple root lifts in the henselization of $k(X)[Z]_{(Z-z)}$, giving a residue map to $k(X)$, and the image is integral over $k[X]$. The identity
 $$A_a D_iY=(D_i A_a)(Y-a)-(D_i S_a)(Y-a)^2$$

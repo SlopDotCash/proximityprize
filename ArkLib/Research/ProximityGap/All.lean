@@ -1089,6 +1089,7 @@ import ArkLib.Research.ProximityGap.Frontier.TameBranchDerivative
 import ArkLib.Research.ProximityGap.Frontier.TameBranchPolarOrders
 import ArkLib.Research.ProximityGap.Frontier.TameConjugateSeparation
 import ArkLib.Research.ProximityGap.Frontier.TameCubicPowerSeries
+import ArkLib.Research.ProximityGap.Frontier.TameLogarithmicDVR
 import ArkLib.Research.ProximityGap.Frontier.TamePowerSeriesOrbit
 import ArkLib.Research.ProximityGap.Frontier.TameResultantOrders
 import ArkLib.Research.ProximityGap.Frontier.TangentHeadCount
@@ -4003,6 +4004,7 @@ import ArkLib.Research.ProximityGap.InteriorThresholdBracket
 import ArkLib.Research.ProximityGap.J1Cap
 import ArkLib.Research.ProximityGap.JohnsonBoundRealLower
 import ArkLib.Research.ProximityGap.JohnsonCommonCenterRefutation
+import ArkLib.Research.ProximityGap.JohnsonEqualityClassification
 import ArkLib.Research.ProximityGap.JohnsonEqualityExamples
 import ArkLib.Research.ProximityGap.JohnsonGridEquality
 import ArkLib.Research.ProximityGap.JohnsonInvariant
