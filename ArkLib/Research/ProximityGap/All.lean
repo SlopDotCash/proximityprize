@@ -562,6 +562,7 @@ import ArkLib.Research.ProximityGap.Frontier.ListSupportForcedPair
 import ArkLib.Research.ProximityGap.Frontier.ListSupportGaussian
 import ArkLib.Research.ProximityGap.Frontier.ListSupportRank
 import ArkLib.Research.ProximityGap.Frontier.LiuZhouSplitRecursion
+import ArkLib.Research.ProximityGap.Frontier.LocatorAgreementIncidence
 import ArkLib.Research.ProximityGap.Frontier.LocatorConjugateCentres
 import ArkLib.Research.ProximityGap.Frontier.LocatorPadding
 import ArkLib.Research.ProximityGap.Frontier.LocatorShortening
