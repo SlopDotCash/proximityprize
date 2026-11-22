@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check the two named affine-list endpoints against Lewko's pinned external proof."""
+"""Check the affine and quadratic list endpoints against Lewko's pinned external proof."""
 
 import argparse
 import os
@@ -22,7 +22,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", default=SOURCE, help="upstream URL or local Git clone")
     args = parser.parse_args()
-    run("./scripts/lake-locked.sh", "build", f"{FRONTIER}.AffineListIncidences",
+    run("./scripts/lake-locked.sh", "build", f"{FRONTIER}.QuadraticListIncidences",
         f"{FRONTIER}._PrizeShapePrimeP30", f"{FRONTIER}._PrizeShapePrimeP30Second")
     library_path = run("lake", "env", "printenv", "LEAN_PATH", capture_output=True).stdout.strip()
     lean = run("lake", "env", "which", "lean", capture_output=True).stdout.strip()
@@ -53,8 +53,9 @@ def main():
         checked = run(lean, "-R", adapter.parent, adapter, env=env, capture_output=True)
         report = checked.stdout + checked.stderr
         expected = {"propext", "Classical.choice", "Quot.sound"}
-        for prime in ("First", "Second"):
-            name = f"ProximityGap.AffineNamedEndpoints.{prime}.affine_list_budget"
+        for decl in ("First.affine_list_budget", "Second.affine_list_budget",
+                     "quadratic_eight", "quadratic_sixty_four", "near_capacity"):
+            name = f"ProximityGap.AffineNamedEndpoints.{decl}"
             match = re.search(rf"'{re.escape(name)}' depends on axioms:\s*\[([^\]]+)\]", report)
             if not match or {item.strip() for item in match[1].split(",")} != expected:
                 raise RuntimeError(f"Unexpected axiom report for {name}: {report}")
