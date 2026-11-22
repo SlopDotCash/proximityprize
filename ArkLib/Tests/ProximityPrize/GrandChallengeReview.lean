@@ -246,4 +246,19 @@ run_cmd do
       [some 268435457, some 402653185, some 469762049, some 503316481] do
     throwError "The distance certificate disagrees with a production list boundary"
 
+/- The universal classification, the production evaluator and the theorems stated in this file
+may use only the three standard axioms. The check follows every dependency, so an axiom or an
+unfinished proof anywhere behind them stops the build. -/
+open Lean Elab Command in
+run_cmd do
+  let allowed := #[``propext, ``Classical.choice, ``Quot.sound]
+  for n in #[
+      ``RankReview.correctForEveryDomain,
+      ``SmoothProductionMcaExecutable.knownCount_correct,
+      ``SmoothProductionMcaExecutable.answer_correct,
+      ``lists128, ``mca128, ``halfRateWindow, ``allRadii, ``list64] do
+    let axioms ← collectAxioms n
+    unless axioms.all allowed.contains do
+      throwError "{n} depends on unexpected axioms: {axioms}"
+
 end ProximityPrize.Review
