@@ -22,7 +22,9 @@ def slice (D : I ↪ F) (k width : ℕ) (J : Finset I) (v : I → Fin width → 
     Set (I → Fin width → F) :=
   {w ∈ interleavedCodeSet (κ := Fin width) (ReedSolomon.code D k : Set (I → F)) | ∀ x ∈ J, w x = v x}
 
-private theorem card_on_complement (S J : Finset I) :
+omit [Nonempty I] in
+/-- Counting after restriction to the complement agrees with set subtraction. -/
+theorem card_on_complement (S J : Finset I) :
     (S.subtype (fun x => x ∈ Jᶜ)).card = (S \ J).card := by
   classical
   rw [Finset.card_subtype]

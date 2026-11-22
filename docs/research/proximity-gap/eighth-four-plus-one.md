@@ -50,3 +50,15 @@ $$
 m\left(\frac5{b_1}+\frac4{b_2}+\frac3{b_3}+\frac2{b_4}+\frac5z\right)+16R+1.
 $$
 The parenthesis is at most $46/3$. If $b_1\ge2$ or $b_2\ge2$, the corresponding sorted lower bounds already suffice. For $b_1=b_2=1$ with $z=3$, either $b_3\ge2$ or $b_4\ge6$. With $z=2$, the triple bound forces $b_3\ge2$. Finally $z=1$ gives $b_3\ge3$ and $b_3+b_4\ge9$. The maximum comes from $b_3=3$, $b_4=6$. For $b_3=4$ use $b_4\ge5$, and for $b_3\ge5$ both last terms sum to at most one. Rounding down $46m/3+16385$ gives the stated **2,058,021,547**.
+
+## Three collinear heads and a transverse fourth
+
+At the same error threshold the four heads together represent at most **2,013,265,929** labels, which is $15m+9$. This leaves **134,217,719** labels for the remaining factors. The bound applies through $e=671088640$ and requires no lower population on any head. [Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/EighthThreePlusOne.lean)
+
+Order the three deficits $a\le b\le c$ and let $z$ be the outside deficit. Write $P(j)=1+\lfloor 5m/j\rfloor$. If at least two deficits exceed one, the four heads carry at most $2P(1)+2P(2)=15m+4$ labels. Otherwise $a=b=1$. If the primitive direction is constant, the first two cores alone cover at least $5m-1$ sites. The three heads on their line therefore have at most $1+3(3m+1)$ labels, and the transverse head adds at most $P(1)$.
+
+With positive primitive degree, the triangle and the outlier give $a+b+c+z\ge6$. If $c=1$, then $z\ge3$. The cluster union has at least $6m$ sites and the triple has at most $12m$ labels, before adding $P(3)$. Otherwise $z=1$ and $c\ge3$. If the first two heads carry $u$ assigned labels and the third carries $v$, the weighted two- and three-head bounds give
+$$
+u\le9m-2+c,\qquad u+cv\le12m-8+2c .
+$$
+For $3\le c\le5$, combine two copies of the first inequality with one of the second. For $6\le c\le10$, use $v\le P(6)$. For $11\le c<m/2$, use $v\le P(11)$. For $m/2\le c<m-11$, the first inequality leaves room for $v\le11$. Finally $c\ge m-11$ implies $v\le6$, while all other heads together have at most $3P(1)$ labels. The largest of these bounds is $15m+9$.

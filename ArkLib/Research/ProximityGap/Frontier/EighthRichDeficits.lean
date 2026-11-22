@@ -173,6 +173,94 @@ theorem five_positive {a b c d z A B C D Z : ℕ}
     norm_num [price] at c6 d6 z1
     omega
 
+/-- At exactly five eighths, with the existing four-head residual allowance, the
+only sorted deficit profiles that can overrun have the form `(1,1,1,q)`, `q≤5`. -/
+theorem next_four_profile {a b c d : ℕ} (ha : 0<a) (hab : a≤b) (hbc : b≤c) (hcd : c≤d)
+    (tooMany : 2*n < price (e+1) a+price (e+1) b+price (e+1) c+price (e+1) d+20607410) :
+    a=1 ∧ b=1 ∧ c=1 ∧ d≤5 := by
+  have a1 := mono (e+1) (by decide : 0<1) ha
+  have b1 := mono (e+1) (by decide : 0<1) (show 1≤b by omega)
+  have c1 := mono (e+1) (by decide : 0<1) (show 1≤c by omega)
+  by_cases hc : 2≤c
+  · have c2 := mono (e+1) (by decide : 0<2) hc
+    have d2 := mono (e+1) (by decide : 0<2) (hc.trans hcd)
+    norm_num [n,e,price] at tooMany a1 b1 c2 d2
+    omega
+  · by_contra! h
+    have d6 := mono (e+1) (by decide : 0<6) (show 6≤d by omega)
+    norm_num [n,e,price] at tooMany a1 b1 c1 d6
+    omega
+
+/-- The excess incidence is within `q-1` of saturation. The same
+calculation bounds twice the primitive direction degree in the collinear-triple case. -/
+theorem next_four_incidence {A B C D q r : ℕ} (hA : deficit (t-1) A=1)
+    (hB : deficit (t-1) B=1) (hC : deficit (t-1) C=1) (hD : deficit (t-1) D=q)
+    (bound : A+B+C+D+2*r≤n+4*deg) :
+    n+4*deg≤A+B+C+D+(q-1) ∧ 2*r≤q-1 := by
+  simp only [deficit,t,n,deg] at *
+  omega
+
+/-- If the primitive direction is constant, the line union supplies at most
+one scalar across all three line heads. Each head has at least `coreFloor-1` sites. -/
+theorem next_three_constant {U line extra : ℕ} (cover : 3*(coreFloor-1)≤U+3*deg)
+    (hl : line≤1+3*(n-U)) (he : extra≤e+2) : line+extra≤1476468720 := by
+  simp only [n,deg,coreFloor,e] at *
+  omega
+
+/-- For a positive-degree line triple, the incidence lemma forces `q≥3`.
+Two deficit-one heads lose a common slot on each private site of the third. -/
+theorem next_three_positive {a b c d q lost : ℕ} (high : 3≤q)
+    (priv : coreFloor-1≤lost+2*deg) (ab : a+b+lost≤2*(e+2))
+    (hc : c≤e+2) (hd : d≤price (e+1) q) : a+b+c+d≤2102752598 := by
+  have small := hd.trans (mono (e+1) (by decide : 0<3) high)
+  norm_num [e,price,coreFloor,deg] at priv ab hc small
+  omega
+
+/-- For every multiplicity and scalar-degree cap, the value-degree-three
+mixed-Hasse monomial count falls strictly below the cost of the first two
+jet orders alone at five eighths. The omitted higher orders only add conditions. -/
+theorem next_cubic_no_surplus (r l : ℕ) (hr : 0<r) :
+    (l+1)*(r*(t-1)) + l*(r*(t-1)-deg) +
+      (l-1)*(r*(t-1)-2*deg) + (l-2)*(r*(t-1)-3*deg)
+      < n*((l+1)*r + l*(r-1)) := by
+  obtain ⟨r,rfl⟩ := Nat.exists_eq_succ_of_ne_zero (by omega : r≠0)
+  have h1 : (r+1)*(t-1)-deg = r*(t-1)+268435457 := by
+    norm_num [t,deg,Nat.add_mul]
+  have h2 : (r+1)*(t-1)-2*deg = r*(t-1)+134217730 := by
+    norm_num [t,deg,Nat.add_mul]
+  have h3 : (r+1)*(t-1)-3*deg = r*(t-1)+3 := by
+    norm_num [t,deg,Nat.add_mul]
+  simp only [Nat.succ_eq_add_one, h1, h2, h3, Nat.add_sub_cancel]
+  rcases l with _ | l
+  · norm_num [n,t] <;> omega
+  rcases l with _ | l
+  · norm_num [n,t] <;> omega
+  · simp only [Nat.succ_eq_add_one, Nat.add_sub_cancel]
+    have hl : l+1+1-2=l := by omega
+    rw [hl]
+    norm_num [n,t]
+    nlinarith [Nat.zero_le (l*r)]
+
+/-- With fifth deficit five, any quartet with a constant nonsingular opposite
+pairing fits the budget, even if up to four units of incidence slack remain.
+Here `xj` counts sites in exactly `j` cores. The three deficit-one cores have
+`single` singleton sites. The triangle opposite each head vanishes on every
+double site that the head misses, bounding the number of such sites by `2*deg`. -/
+theorem next_five_constant_pairing {s x0 x2 x3 x4 single coreSum A M : ℕ}
+    (slack : s≤4) (inc : x2+2*x3+3*x4+s=4*deg+x0)
+    (triangles : 2*x2+5*x3+8*x4≤8*deg)
+    (coreMass : coreSum+s=1207959553) (singles : single+3*x2≤coreSum+6*deg)
+    (totalSlots : A+coreSum≤3*n)
+    (lost : A+coreSum+5*M≤3*n+single+x0+x3+M) : A+M≤2113929236 := by
+  simp only [deg,n] at *
+  omega
+
+#print axioms next_five_constant_pairing
+#print axioms next_cubic_no_surplus
+#print axioms next_four_profile
+#print axioms next_four_incidence
+#print axioms next_three_constant
+#print axioms next_three_positive
 #print axioms four_except
 #print axioms exceptional_cores
 #print axioms prior_exceptional
