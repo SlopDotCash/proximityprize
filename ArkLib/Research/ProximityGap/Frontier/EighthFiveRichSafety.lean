@@ -189,6 +189,41 @@ private theorem count_sorted (fam : BadScalarRichPointFamily dom 134217728 δ u)
   have h₂' := each 2 9 (by decide) (by omega); have h₃' := each 3 9 (by decide) (by omega)
   omega
 
+/-- Sort the heads and assign each covered label to its first representative. -/
+theorem cover_of_sorted_assignments {s B : ℕ} {Label : Type*} [DecidableEq Label]
+    (T : Fin s → Finset Label) (O : Finset Label) (deficit : Fin s → ℕ)
+    (bound : ∀ (p : Equiv.Perm (Fin s)), Monotone (deficit ∘ p) →
+      ∀ (G : Fin s → Finset Label), (∀ i, G i ⊆ T (p i)) →
+      (∀ i j, i ≠ j → Disjoint (G i) (G j)) →
+      (∑ i, (G i).card) + O.card ≤ B) : ((univ.biUnion T) ∪ O).card ≤ B := by
+  classical
+  let p := Tuple.sort deficit
+  let S (i : Fin s) := T (p i)
+  let G (i : Fin s) := S i \ (Iio i).biUnion S
+  have assigned (i : Fin s) : G i ⊆ T (p i) := sdiff_subset
+  have dis (i j : Fin s) (ij : i ≠ j) : Disjoint (G i) (G j) := by
+    rw [disjoint_left]
+    intro x xi xj
+    have hi := mem_sdiff.mp xi
+    have hj := mem_sdiff.mp xj
+    rcases lt_or_gt_of_ne ij with h | h
+    · exact hj.2 (mem_biUnion.mpr ⟨i,mem_Iio.mpr h,hi.1⟩)
+    · exact hi.2 (mem_biUnion.mpr ⟨j,mem_Iio.mpr h,hj.1⟩)
+  have bd := bound p (Tuple.monotone_sort deficit) G assigned dis
+  have sub : (univ.biUnion T) ⊆ univ.biUnion G := by
+    intro x hx
+    obtain ⟨i,_,hi⟩ := mem_biUnion.mp hx
+    let W := univ.filter fun j : Fin s => x ∈ S j
+    have hw : W.Nonempty := ⟨p.symm i,mem_filter.mpr ⟨mem_univ _,
+      by simpa [S] using hi⟩⟩
+    let j := W.min' hw
+    have hj := mem_filter.mp (W.min'_mem hw)
+    exact mem_biUnion.mpr ⟨j,mem_univ _,mem_sdiff.mpr ⟨hj.2,by
+      intro use
+      obtain ⟨i,ij,xi⟩ := mem_biUnion.mp use
+      exact (mem_Iio.mp ij).not_ge (W.min'_le _ (mem_filter.mpr ⟨mem_univ _,xi⟩))⟩⟩
+  exact (card_union_le ..).trans ((Nat.add_le_add_right ((card_le_card sub).trans card_biUnion_le) _).trans bd)
+
 /-- Four collinear heads each carrying at least 20,000 labels, together with an
 arbitrary transverse head, carry at most 2,049,000,000 distinct bad scalars at
 this step or any earlier step. Fresh scalar assignments are constructed internally. -/
@@ -199,37 +234,11 @@ theorem covered (fam : BadScalarRichPointFamily dom 134217728 δ u)
     (coll : ∀ i, lineDeterminant (L 0) (L 1) (L i) = 0)
     (z : LineParameter F) (hz : z ∈ lineParameters fam) (out : threeLineDeterminant (L 0) (L 1) z ≠ 0) :
     ((univ.biUnion fun i => pointsOn fam (L i)) ∪ pointsOn fam z).card ≤ 2049000000 := by
-  classical
-  let deficit (i : Fin 4) := max 1 (402653186 - (core dom u (L i)).card)
-  let p := Tuple.sort deficit
-  let M (i : Fin 4) := L (p i)
-  let S (i : Fin 4) := pointsOn fam (M i)
-  let G (i : Fin 4) := S i \ (Iio i).biUnion S
-  have assigned (i : Fin 4) : G i ⊆ pointsOn fam (M i) := sdiff_subset
-  have dis (i j : Fin 4) (ij : i ≠ j) : Disjoint (G i) (G j) := by
-    rw [disjoint_left]
-    intro x xi xj
-    have hi := mem_sdiff.mp xi
-    have hj := mem_sdiff.mp xj
-    rcases lt_or_gt_of_ne ij with h | h
-    · exact hj.2 (mem_biUnion.mpr ⟨i,mem_Iio.mpr h,hi.1⟩)
-    · exact hi.2 (mem_biUnion.mpr ⟨j,mem_Iio.mpr h,hj.1⟩)
-  have bd := count_sorted fam n ht (L 0) (L 1) z (inj.ne (by decide)) out M
+  apply cover_of_sorted_assignments _ _ (fun i => max 1 (402653186 - (core dom u (L i)).card))
+  intro p sorted G assigned dis
+  exact count_sorted fam n ht (L 0) (L 1) z (inj.ne (by decide)) out (L ∘ p)
     (inj.comp p.injective) (hl 0) hz (fun _ => hl _) (fun _ => coll _) G assigned dis
-    (fun _ => large _) (Tuple.monotone_sort deficit)
-  have sub : (univ.biUnion fun i => pointsOn fam (L i)) ⊆ univ.biUnion G := by
-    intro x hx
-    obtain ⟨i,_,hi⟩ := mem_biUnion.mp hx
-    let W := univ.filter fun j : Fin 4 => x ∈ S j
-    have hw : W.Nonempty := ⟨p.symm i,mem_filter.mpr ⟨mem_univ _,
-      by simpa [S,M] using hi⟩⟩
-    let j := W.min' hw
-    have hj := mem_filter.mp (W.min'_mem hw)
-    exact mem_biUnion.mpr ⟨j,mem_univ _,mem_sdiff.mpr ⟨hj.2,by
-      intro use
-      obtain ⟨i,ij,xi⟩ := mem_biUnion.mp use
-      exact (mem_Iio.mp ij).not_ge (W.min'_le _ (mem_filter.mpr ⟨mem_univ _,xi⟩))⟩⟩
-  exact (card_union_le ..).trans ((Nat.add_le_add_right ((card_le_card sub).trans card_biUnion_le) _).trans bd)
+    (fun _ => large _) sorted
 
 #print axioms covered
 end ArkLib.ProximityGap.Frontier.EighthFiveRichSafety

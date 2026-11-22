@@ -49,6 +49,8 @@ M\ \le\ B_X+\left\lfloor\frac{m\,n\,(2t+n)+2C'(t+n)}{t^2-nd}\right\rfloor,
 \qquad C'=2B_XB_Z+b\bigl(W(m-b)+m(W-bd)\bigr). \tag{1}
 $$
 
+At the second-prime half- and quarter-rate Johnson comparisons the decisive Hamming counts are $g=314491699$ and $536870913$. For $t=n-g$ the two strict inequalities $(t-1)^2<nd<t^2$ put $nJ$ between $g$ and $g+1$. Safety at $g$ gives a supremum strictly above $J$, and failure puts it strictly below $J$. For any nonlinear factor $m\ge2$, the right-hand side of (1) is at least $\lfloor 2n(2t+n)/(t^2-nd)\rfloor$. The denominators are $1082833961$ and $1$, giving lower bounds on that allowance of **5140952044** and **4611686014132420608**. Both exceed the budget $2147483648$ before counting any other factor. A proof of safety using (1) alone would therefore need to exclude all such factors or sharpen the estimate for the ones that actually occur.
+
 The proof is in the section-incidence note. Each retained section $(z,q_z)$
 has a rational *tangent head* $(R_z,V_z)$ with
 $V_z=-F_Z(X,z,q_z)/F_Y(X,z,q_z)$ and $R_z=q_z-zV_z$. The pair takes the
@@ -118,8 +120,8 @@ At eighth rate the binding allocation is far below the budget. The window
 ends because at 671,088,386 errors the test $4C>n+4d$ fails for
 $C=t-255$: four rich heads need no longer contain a collinear triple, and the
 head count used here does not cover that case. Extending this window needs a
-label bound for four rich heads without the determinant test. The known
-failure is at 679,477,249 errors.
+label bound for four rich heads without the determinant test. The four-head count now extends safety through 671,088,639 errors. The known
+failure is at 679,477,248 errors. [Four-head safety proof](eighth-rich-head-safety.md) · [Failure witness](eighth-transverse-mobius.md)
 
 ## Reproduce
 

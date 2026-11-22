@@ -165,10 +165,81 @@ def check_half_density_witness():
     print("All 64 differences are nonsquares at density 1/2 on the named control")
 
 
+def check_universal_masks():
+    for n in (2, 4, 8):
+        limit = (1 << n)-1
+        even = sum(1 << j for j in range(0, n, 2))
+        full = n.bit_length()-1
+
+        def balances(mask):
+            levels = 0
+            for j in range(1, full+1):
+                half = 1 << (j-1)
+                counts = [sum((mask >> i) & 1 for i in range(t, n, 2*half))
+                          for t in range(2*half)]
+                if counts[:half] == counts[half:]:
+                    levels |= 1 << (j-1)
+            return levels
+
+        levels = {m: balances(m) for m in range(1, limit+1)}
+        minimal = n*n
+        cases = 0
+        for a in levels:
+            for b in levels:
+                cycled = b
+                counts = []
+                signed = []
+                for _ in range(n):
+                    both = a & cycled
+                    counts.append(both.bit_count())
+                    signed.append(2*(even & both).bit_count()-both.bit_count())
+                    cycled = (cycled >> 1) | ((cycled & 1) << (n-1))
+                parity = bool(levels[a] & levels[b] & 1)
+                zeros = all(t == 0 for t in signed)
+                assert zeros == (parity and levels[a] | levels[b] == (1 << full)-1)
+                assert zeros == (parity and min(counts) == max(counts))
+                if zeros:
+                    product = a.bit_count()*b.bit_count()
+                    assert product % (2*n) == 0
+                    minimal = min(minimal, product)
+                    cases += 1
+        assert minimal == 2*n
+        print(f"All {limit**2} nonempty mask pairs at length {n} checked; {cases} cancel")
+
+
+def check_sharp_second_masks():
+    r = 30
+    n = 1 << r
+    rng = Random(20261121)
+
+    def tree(free_bits):
+        sites = [0]
+        for j in range(r):
+            step = 1 << j
+            if j in free_bits:
+                sites += [v+step for v in sites]
+            else:
+                sites = [v+rng.randrange(2)*step for v in sites]
+        return set(sites)
+
+    a = tree(set(range(0, r, 2)))
+    b = tree({0} | set(range(1, r, 2)))
+    assert len(a) == 32768 and len(b) == 65536 and len(a)*len(b) == 2*n
+    even = {i for i in a if not i % 2}
+    odd = a-even
+    lags = [0, 1, n-1, n//2] + [rng.randrange(n) for _ in range(48)]
+    for d in lags:
+        assert sum((i+d) % n in b for i in even) == 1
+        assert sum((i+d) % n in b for i in odd) == 1
+    print(f"Sharp period-2^30 masks retain one representation of each sign at {len(lags)} checked lags")
+
+
 if __name__ == "__main__":
     check_energy()
     check_field()
     check_half_density_witness()
+    check_universal_masks()
+    check_sharp_second_masks()
     k = 2**20
     positive = complementary(k)[0]
     assert sum(positive) == 1024

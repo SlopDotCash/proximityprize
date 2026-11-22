@@ -1,6 +1,6 @@
 # Four collinear eighth-rate heads and one transverse head
 
-Let $m=2^{27}$, $n=8m$, and $d=m-1$. At agreement threshold at least $3m$ (at most $5m=671088640$ errors), fix four distinct degree-at-most-$d$ polynomial heads on one polynomial line and a fifth head outside that line. On every injective evaluation domain, their union carries at most **2,058,021,547** distinct selected MCA-bad scalars. This leaves **89,462,101** labels of room below the second named prime's $2n$ budget. The bound applies to the actual selected polynomial for each scalar, so it can be used directly in a factor allocation.
+Let $m=2^{27}$, $n=8m$, and $d=m-1$. At agreement threshold at least $3m$ (at most $5m=671088640$ errors), fix four distinct degree-at-most-$d$ polynomial heads on one polynomial line and a fifth head outside that line. On every injective evaluation domain, their union carries at most **2,058,021,547** distinct selected MCA-bad scalars. This leaves **89,462,101** labels of room below the second named prime's $2n$ budget. The Lean theorem takes the actual rich family and its five line parameters. [Five-head theorem](../../../ArkLib/Research/ProximityGap/Frontier/EighthFourPlusOne.lean)
 
 ## Deficits and the union of cores
 
@@ -23,11 +23,11 @@ A site in any cluster core can supply at most one fresh scalar across **all** cl
 
 ## Bounds on the four partial sums
 
-Set $R=1024$ and call a head active if $a_i\le R$. With at most two active cluster heads the total is at most $3(5m+1)+2(5m/(R+1)+1)<2,058,021,547$. With three or four active heads, the union bound gives $|U_3|\ge6m-3R$, and $|U_4|\ge6m-4R$ when all four are active.
+Set $R=1024$ and call a head active if $a_i\le R$. With at most two active cluster heads the total is at most $3(5m+1)+2(5m/(R+1)+1)<2,058,021,547$. With at least three active heads, the union bound gives $|U_3|\ge6m-3R$. Every cluster head can charge fresh sites against this same union.
 
-If $z\ge4$, four active cluster heads supply at most $4n-3|U_4|\le14m+12R$. With three active heads they supply at most $3n-2|U_3|+5m/(R+1)+1\le14m+12R$ including the inactive fourth head. The outer head adds at most $5m/4+1$, staying below the claimed cap.
+If $z\ge4$, the four cluster heads supply at most $4n-3|U_3|\le14m+9R$. The outer head adds at most $5m/4+1$, staying below the claimed cap.
 
-If $h=0$, the primitive scalar is constant throughout the domain. After discarding this one possible label, every active cluster head needs a fresh site outside the active cluster union. For $j=3$ or $4$ active heads its population bound is therefore $1+j(n-|U_j|)$. Adding the possible inactive head and the outer head again stays below the claimed cap.
+If $h=0$, the primitive scalar is constant throughout the domain. After discarding this one possible label, all four cluster heads need a fresh site outside their union. They carry at most $1+4(n-|U_3|)$ distinct labels. Adding the outer head stays below the claimed cap.
 
 It remains to consider $z\le3$, $h\ge1$, and at least three active cluster heads. Write $J=|C_1\cap C_2|$. The two other pair intersections in $U_3$ have size at most $d-h$ each, so
 $$
@@ -41,7 +41,7 @@ Y_1\le5m+R,\qquad Y_1+Y_2\le9m+7R,\qquad
 Y_1+Y_2+Y_3\le12m+6R,\qquad
 Y_1+Y_2+Y_3+Y_4\le14m+16R.
 $$
-For the last inequality, when the fourth head is inactive its contribution is at most $12(5m/(R+1)+1)<2m$. Otherwise use $4n-3|U_4|$. All four prefix estimates therefore hold with the common additive allowance $16R$.
+The last inequality follows from $4n-3|U_3|\le14m+9R$ for the full four-head prefix. All four prefix estimates therefore hold with the common additive allowance $16R$.
 
 ## Integer optimization
 
