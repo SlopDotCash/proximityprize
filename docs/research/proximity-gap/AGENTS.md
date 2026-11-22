@@ -25,7 +25,8 @@ can check a file against an import compiled from another branch. Before merging 
 module that other modules import, run
 `scripts/audit-changed-modules.py origin/main --lake <shared .lake>`. It recompiles the changed
 modules, the cached modules that do not match their source, and all their importers against the
-current sources, without the build lock. Details are in
+current sources, without the build lock. With `--axioms` it also runs the kernel-level axiom
+sweep on the result, which is the direct check of the honesty contract below. Details are in
 [`docs/wiki/quickstart.md`](../../wiki/quickstart.md#rechecking-merged-modules-against-current-sources).
 
 ## Honesty contract

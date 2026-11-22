@@ -162,8 +162,15 @@ repeatedly, pass `--keep DIR` instead. The directory is then used in place by on
 time. A later run there skips the changed modules it already compiled from the current source
 text, compiles again whatever failed, and finishes an interrupted run.
 
+Add `--axioms` to finish with the repository's axiom sweep (`scripts/AxiomSweep.lean`) on the
+covered modules, read through the same mirror. It lists every declaration that depends on
+`sorryAx` or on an axiom other than `propext`, `Classical.choice` and `Quot.sound`. On the
+whole research library this takes about a minute. `lake exe axiomsweep --check` remains the
+gate for the full library and its baseline.
+
 Exit status 1 means a module failed, timed out, was blocked by a failed import, or imports a
-module with no source file, or that the cache replaced a module the run relied on. The tool
+module with no source file, that the cache replaced a module the run relied on, or that the
+axiom sweep listed a declaration. The tool
 does not rebuild sources outside those trees. It reports the ones that changed since the base
 commit and the cached modules there that were built from another source text; importers of
 the latter were checked against that other version. This is a direct `lean` run: the
