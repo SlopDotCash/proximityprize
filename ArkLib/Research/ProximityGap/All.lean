@@ -320,6 +320,7 @@ import ArkLib.Research.ProximityGap.Frontier.DyadicOddPencilExclusion
 import ArkLib.Research.ProximityGap.Frontier.DyadicParityLemma
 import ArkLib.Research.ProximityGap.Frontier.DyadicPeriodCeiling
 import ArkLib.Research.ProximityGap.Frontier.DyadicSidonTriple
+import ArkLib.Research.ProximityGap.Frontier.DyadicTwoCenterReflection
 import ArkLib.Research.ProximityGap.Frontier.E2GenuineQuadStrictExcess
 import ArkLib.Research.ProximityGap.Frontier.E2GuaranteedQuadsExact
 import ArkLib.Research.ProximityGap.Frontier.E2RigidityCountTransfer
