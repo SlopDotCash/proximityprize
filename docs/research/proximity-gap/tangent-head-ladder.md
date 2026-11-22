@@ -88,6 +88,31 @@ entry, and tends to the known
 floor $5n/12$ as $B$ decreases to $n$. A matching failure needs three
 collinear heads whose pairwise coincidence sets all have $d$ sites.
 
+## Length $2^{40}$
+
+The caps for nonlinear factors are numbers that do not grow with the length,
+while the labels on affine heads do. At a longer length the same budget
+relative to $n$ therefore reaches closer to the Johnson count. For
+$n=2^{40}$, fields of characteristic at least $2^{57}$ and integer budget at
+least the listed multiple of $n$, the closed ball through the listed number of
+errors is safe on every injective domain.
+
+| Budget | Rate 1/2 | Rate 1/4 | Rate 1/8 | Rate 1/16 |
+|---:|---:|---:|---:|---:|
+| $2n$ | 319,230,068,958 | 545,382,552,916 | 687,188,686,354 | |
+| $64n$ | 320,634,784,370 | 547,825,429,161 | 707,216,801,511 | 819,792,658,433 |
+| as a fraction of $n$, $2n$ | 0.29034 | 0.49602 | 0.62499 | |
+| as a fraction of $n$, $64n$ | 0.29162 | 0.49824 | 0.64321 | 0.74560 |
+| Johnson fraction | 0.29289 | 0.50000 | 0.64645 | 0.75000 |
+
+At length $2^{30}$ and budget $2n$ the first two fractions are 0.28571 and
+0.48866. The sixteenth-rate entry at budget $2n$ is omitted because the exact
+first failure $\lfloor 2n/3\rfloor$ is already known there. The eighth-rate
+entry at $2n$ ends at the same four-head boundary $5n/8$ as at length
+$2^{30}$. The argument has absolute constants, such as the cutoff
+$1+\lfloor e/256\rfloor$ for rich heads, and it does not certify these windows
+at length $2^{20}$.
+
 ## Argument
 
 The allocation argument is the one of the
