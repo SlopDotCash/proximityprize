@@ -78,21 +78,17 @@ theorem falling_cubic_lower {X : Type*} [Fintype X] (m : X → ℕ) (g : ℤ)
   push_cast
   exact (mul_le_mul_left hn').mp bound
 
-/-- The distinct-triple estimate at radius 221512374 contradicts the
-four-head line-cap upper ledger, with room for its larger collinear penalty. -/
-theorem first_sponsor_distinct_triple_ledgers_incompatible
-    (mass : ℤ)
-    (hlower : let n : ℤ := 1073741824
-      let g : ℤ := (n + 1) * (n - 221512374)
-      g * (g - n) * (g - 2 * n) ≤ n^2 * mass)
-    (hupper : let n : ℤ := 1073741824
-      let b : ℤ := n + 1
-      mass ≤ (n - 536870913) * b * (b - 1) * (b - 2) +
-        2 * 221512374 * b * (b - 1)) : False := by
-  norm_num at hlower hupper
-  omega
+/-- Even after deleting the entire collinear penalty, the distinct-triple
+ledger does not give a contradiction at radius numerator 221512374. -/
+theorem first_sponsor_distinct_triple_ledger_has_slack :
+    let n : ℤ := 1073741824
+    let b : ℤ := n + 1
+    let g : ℤ := b * (n - 221512374)
+    g * (g - n) * (g - 2 * n) <
+      n^2 * ((n - 536870913) * b * (b - 1) * (b - 2)) := by
+  norm_num
 
 end ProximityGap.IncidenceDistinctTripleMoment
 
 #print axioms ProximityGap.IncidenceDistinctTripleMoment.falling_cubic_lower
-#print axioms ProximityGap.IncidenceDistinctTripleMoment.first_sponsor_distinct_triple_ledgers_incompatible
+#print axioms ProximityGap.IncidenceDistinctTripleMoment.first_sponsor_distinct_triple_ledger_has_slack

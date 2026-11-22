@@ -148,7 +148,7 @@ jobs:
           from pathlib import Path
           text = Path('distinct-triple-axioms.log').read_text()
           results = re.findall(r"'ProximityGap\.IncidenceDistinctTripleMoment\.([^']+)' (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)", text)
-          assert {name for name, _ in results} == {'falling_cubic_lower', 'first_sponsor_distinct_triple_ledgers_incompatible'}
+          assert {name for name, _ in results} == {'falling_cubic_lower', 'first_sponsor_distinct_triple_ledger_has_slack'}
           assert len(results) == 2
           for name, axioms in results:
               assert {axiom.strip() for axiom in axioms.split(',') if axiom.strip()} <= {'propext', 'Classical.choice', 'Quot.sound'}, name
