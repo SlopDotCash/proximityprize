@@ -230,4 +230,30 @@ theorem attainment_requires [Nonempty I] (D : I ↪ F) [ReedSolomon.Smooth D] (i
   exact lt_of_not_ge fun small => (subfield_predecessor_fails D f i width len divides small
     field).not_ge safe
 
+/-- A passing predecessor limits the extension degree above every subfield containing
+the domain's roots of unity. For the three open rates the limits are two, three and six. -/
+theorem extension_degree_le [Algebra K F] (D : I ↪ F) [ReedSolomon.Smooth D]
+    (i : Fin 4) (width : ℕ) [NeZero width] (hlen : Fintype.card I = failureLength i)
+    (divides : failureLength i ∣ Fintype.card K - 1) (field : Fintype.card F < 2 ^ 256)
+    (safe : (Lambda (ListInterpolationBoundary.words D (prizeDimension (ι := I) i) width)
+      (gridPt (ι := I) (errorCoefficient i) : ℝ) : ℝ≥0∞) ≤
+      ((prizeThreshold : ℝ≥0) : ℝ≥0∞) * Fintype.card F) :
+    Module.finrank K F ≤ (![2, 3, 31, 6] : Fin 4 → ℕ) i := by
+  let d := (![2, 3, 31, 6] : Fin 4 → ℕ) i
+  let b := max (subfieldLimit i + 1) (failureLength i + 1)
+  have avoid : subfieldLimit i < Fintype.card K := lt_of_not_ge fun small =>
+    (subfield_predecessor_fails D (algebraMap K F) i width hlen divides small field).not_ge safe
+  have pos := Fintype.one_lt_card (α := K)
+  have group := Nat.le_of_dvd (show 0 < Fintype.card K - 1 by omega) divides
+  have lower : b ≤ Fintype.card K := max_le avoid (by omega)
+  have tooLarge : 2 ^ 256 ≤ b ^ (d + 1) := by fin_cases i <;> decide
+  change Module.finrank K F ≤ d
+  by_contra! large
+  apply field.not_ge
+  calc
+    2 ^ 256 ≤ b ^ (d + 1) := tooLarge
+    _ ≤ Fintype.card K ^ (d + 1) := Nat.pow_le_pow_left lower _
+    _ ≤ Fintype.card K ^ Module.finrank K F := Nat.pow_le_pow_right pos.le large
+    _ = Fintype.card F := Module.card_eq_pow_finrank.symm
+
 end ProximityPrize.SmoothBaseSubfieldObstruction
