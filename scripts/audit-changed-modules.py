@@ -2,27 +2,31 @@
 """Recompile the modules changed since a base commit against their current sources.
 
 `scripts/pg-iterate.sh` checks one file against whatever compiled modules the shared cache
-holds. When an imported module changed after the cache was built, that check can pass
-although the file no longer compiles against the current source of its imports. This tool
-closes that gap without a Lake build and without the build lock.
+holds. That check can pass although the file does not compile against the current source
+of its imports, in two ways: an imported module changed after its importer was checked,
+or the cache holds an import compiled from another checkout's version of the source. This
+tool closes both gaps without a Lake build and without the build lock.
 
 It recompiles, in dependency order,
 
 * every tracked module under the audited trees that changed since BASE,
-* every tracked module there that imports one of them, directly or not, and
+* every module there whose cached compiled module was built from a different source text,
+  according to the source hash Lake recorded in its trace file,
+* every tracked module there that imports one of those, directly or not, and
 * any of their dependencies in those trees that has no compiled module in the cache.
 
 Compiled modules go to a private mirror of the cache, so later modules see the fresh
 ones. The shared `.lake` is only read.
 
 The tool runs `lean` directly. The build-time plugins and Lake's linter options do not
-apply, and module-system sources outside the audited trees are not rebuilt. The project
-build remains the authoritative check.
+apply. Modules outside the audited trees are not rebuilt: a cached module there that does
+not match its source is reported, and the result is then not trustworthy for its
+importers. The project build remains the authoritative check.
 
     scripts/audit-changed-modules.py BASE [--lake DIR] [--work DIR] [--jobs N]
 
 Exit status 0 means every selected module compiled; 1 means a failure, a module blocked
-by a failed import, or a timeout.
+by a failed import, a timeout, or an import that has no source file.
 """
 from __future__ import annotations
 
@@ -33,6 +37,7 @@ import json
 import os
 from pathlib import Path
 import re
+import struct
 import subprocess
 import sys
 import tempfile
@@ -41,6 +46,9 @@ import time
 SCRIPTS = Path(__file__).resolve().parent
 DEFAULT_TREES = ("ArkLib/Research/", "ArkLib/Tests/ProximityPrize/")
 IMPORT = re.compile(r"^(?:public\s+)?(?:meta\s+)?import\s+(?:all\s+)?(\S+)", re.M)
+MASK = (1 << 64) - 1
+MURMUR = 0xC6A4A7935BD1E995
+SIDECAR = ".source-hash"
 
 
 def research_exclusions() -> set[str]:
@@ -66,11 +74,74 @@ def parse_imports(text: str) -> list[str]:
     return [module_path(name) for name in IMPORT.findall(text) if name.startswith("ArkLib")]
 
 
+def lake_text_hash(data: bytes) -> str:
+    """Lake's hash of a source file, in the form its trace files record.
+
+    Lake normalizes line endings, applies Lean's `String.hash` (MurmurHash64A with
+    seed 11) and mixes the result into its empty hash 1723 with `mixHash`.
+    """
+    data = data.replace(b"\r\n", b"\n")
+    size = len(data)
+    whole = size - size % 8
+    h = (11 ^ (size * MURMUR)) & MASK
+    for (k,) in struct.iter_unpack("<Q", data[:whole]):
+        k = (k * MURMUR) & MASK
+        k ^= k >> 47
+        k = (k * MURMUR) & MASK
+        h = ((h ^ k) * MURMUR) & MASK
+    if size > whole:
+        h = ((h ^ int.from_bytes(data[whole:], "little")) * MURMUR) & MASK
+    h ^= h >> 47
+    h = (h * MURMUR) & MASK
+    h ^= h >> 47
+    k = (h * MURMUR) & MASK
+    k ^= k >> 47
+    k ^= MURMUR
+    return f"{((1723 ^ k) * MURMUR) & MASK:016x}"
+
+
+def recorded_source_hash(trace: Path, source: str) -> str | None:
+    """The hash a Lake trace file records for the module's own source, if any."""
+    try:
+        inputs = json.loads(trace.read_text(encoding="utf-8")).get("inputs")
+    except (OSError, ValueError, AttributeError):
+        return None
+    stack = [inputs]
+    while stack:
+        node = stack.pop()
+        if not isinstance(node, list):
+            continue
+        if (len(node) == 2 and isinstance(node[0], str) and isinstance(node[1], str)
+                and (node[0] == source or node[0].endswith("/" + source))):
+            return node[1]
+        stack.extend(node)
+    return None
+
+
+def cached_source_hash(library: Path, mirror: Path, source: str) -> str | None:
+    """Hash of the source text the usable compiled module was built from.
+
+    A module this tool compiled earlier into the mirror carries a sidecar file; a module
+    linked from the cache is described by its Lake trace file. `None` means there is no
+    compiled module or its origin is unknown.
+    """
+    stem = source[:-5]
+    private = mirror / (stem + ".olean")
+    if private.exists() and not private.is_symlink():
+        try:
+            return (mirror / (stem + SIDECAR)).read_text(encoding="utf-8").strip() or None
+        except OSError:
+            return None
+    if not (library / (stem + ".olean")).exists():
+        return None
+    return recorded_source_hash(library / (stem + ".trace"), source)
+
+
 def select(imports: dict[str, list[str]], changed: set[str], compiled: set[str]) -> set[str]:
     """Modules to rebuild: the changed ones, their importers, and uncompiled dependencies.
 
     `imports` maps each audited source to the audited or external sources it imports.
-    `compiled` holds the sources that already have a compiled module in the cache.
+    `compiled` holds the sources that already have a usable compiled module.
     """
     importers: dict[str, list[str]] = {}
     for source, dependencies in imports.items():
@@ -79,13 +150,12 @@ def select(imports: dict[str, list[str]], changed: set[str], compiled: set[str])
     todo = {source for source in changed if source in imports}
     stack = list(todo)
     while stack:
-        for importer in importers.get(stack.pop(), []):
+        current = stack.pop()
+        for importer in importers.get(current, []):
             if importer not in todo:
                 todo.add(importer)
                 stack.append(importer)
-    stack = list(todo)
-    while stack:
-        for dependency in imports.get(stack.pop(), []):
+        for dependency in imports.get(current, []):
             if dependency in imports and dependency not in todo and dependency not in compiled:
                 todo.add(dependency)
                 stack.append(dependency)
@@ -115,10 +185,11 @@ def compile_module(root: Path, source: str, mirror: Path, logs: Path, env: dict[
                    timeout: int) -> tuple[str, int, float, list[str]]:
     target = mirror / source[:-5]
     target.parent.mkdir(parents=True, exist_ok=True)
-    for suffix in (".olean", ".ilean", ".trace", ".olean.hash", ".ilean.hash"):
+    for suffix in (".olean", ".ilean", ".trace", ".olean.hash", ".ilean.hash", SIDECAR):
         stale = Path(str(target) + suffix)
         if stale.is_symlink() or stale.exists():
             stale.unlink()   # never write through a link into the shared cache
+    text_hash = lake_text_hash((root / source).read_bytes())
     start = time.time()
     try:
         done = subprocess.run(
@@ -127,19 +198,37 @@ def compile_module(root: Path, source: str, mirror: Path, logs: Path, env: dict[
         code, output = done.returncode, done.stdout + done.stderr
     except subprocess.TimeoutExpired as expired:
         code, output = 124, (expired.stdout or "") + "\naudit: timed out"
+    if code == 0:
+        Path(str(target) + SIDECAR).write_text(text_hash + "\n", encoding="utf-8")
     (logs / (source[:-5].replace("/", ".") + ".log")).write_text(output, encoding="utf-8")
     errors = [line for line in output.splitlines() if ": error" in line or "timed out" in line]
     return source, code, time.time() - start, errors[:3]
+
+
+def outside_mismatches(root: Path, library: Path, audited: set[str]) -> list[str]:
+    """Cached `ArkLib` modules outside the audit that were built from another source text."""
+    found = []
+    for directory, _, files in os.walk(library / "ArkLib"):
+        for name in files:
+            if not name.endswith(".olean"):
+                continue
+            source = str((Path(directory) / name).relative_to(library))[:-6] + ".lean"
+            if source in audited or not (root / source).is_file():
+                continue
+            recorded = recorded_source_hash(library / (source[:-5] + ".trace"), source)
+            if recorded != lake_text_hash((root / source).read_bytes()):
+                found.append(source)
+    return sorted(found)
 
 
 def run(root: Path, base: str, lake: Path, work: Path, jobs: int, trees: tuple[str, ...],
         timeout: int) -> int:
     excluded = research_exclusions()
     tracked = [path for path in git(root, "ls-files", "--", *trees).splitlines()
-               if path.endswith(".lean") and path not in excluded]
+               if path.endswith(".lean") and path not in excluded and (root / path).is_file()]
     imports = {path: parse_imports((root / path).read_text(encoding="utf-8"))
                for path in tracked}
-    diff = [path for path in git(root, "diff", "--name-only", base, "HEAD", "--",
+    diff = [path for path in git(root, "diff", "--name-only", base, "--",
                                  "*.lean").splitlines() if path]
     changed = {path for path in diff if path in imports}
     outside = [path for path in diff if path not in imports and path not in excluded
@@ -153,10 +242,21 @@ def run(root: Path, base: str, lake: Path, work: Path, jobs: int, trees: tuple[s
     mirror.mkdir(parents=True, exist_ok=True)
     logs.mkdir(parents=True, exist_ok=True)
     mirror_cache(library, mirror)
-    compiled = {path for path in tracked if (mirror / (path[:-5] + ".olean")).exists()}
-    todo = select(imports, changed, compiled)
-    print(f"{len(changed)} changed sources, {len(todo)} modules to compile, "
-          f"logs in {logs}", flush=True)
+
+    current = {path: lake_text_hash((root / path).read_bytes()) for path in tracked}
+    origin = {path: cached_source_hash(library, mirror, path) for path in tracked}
+    present = {path for path in tracked if (mirror / (path[:-5] + ".olean")).exists()}
+    mismatched = {path for path in present if origin[path] != current[path]}
+    compiled = present - mismatched
+    todo = select(imports, changed | mismatched, compiled)
+    print(f"{len(changed)} sources changed since {base}, {len(mismatched)} cached modules "
+          f"built from another source text, {len(todo)} modules to compile, logs in {logs}",
+          flush=True)
+    foreign = outside_mismatches(root, library, set(tracked))
+    if foreign:
+        print(f"WARNING: {len(foreign)} cached modules outside the selected trees were built "
+              f"from another source text, for example {foreign[0]}; their importers are "
+              "checked against that other version", flush=True)
 
     search = [str(mirror), str(library)] + [
         str(package / ".lake" / "build" / "lib" / "lean")
@@ -166,7 +266,15 @@ def run(root: Path, base: str, lake: Path, work: Path, jobs: int, trees: tuple[s
 
     status: dict[str, str] = {}
     report: dict[str, dict] = {}
-    waiting = {source: {d for d in imports[source] if d in todo} for source in todo}
+    for source in sorted(todo):
+        missing = [d for d in imports[source] if not (root / d).is_file()]
+        if missing:
+            status[source] = "failed"
+            report[source] = {"exit": 1, "seconds": 0.0,
+                              "errors": [f"imports {missing[0]}, which has no source file"]}
+            print(f"FAILED {source}: {report[source]['errors']}", flush=True)
+    waiting = {source: {d for d in imports[source] if d in todo}
+               for source in todo if source not in status}
     running: dict[futures.Future, str] = {}
     with futures.ThreadPoolExecutor(max_workers=jobs) as pool:
         while waiting or running:
@@ -198,15 +306,23 @@ def run(root: Path, base: str, lake: Path, work: Path, jobs: int, trees: tuple[s
                 built = sum(1 for state in status.values() if state in ("ok", "failed"))
                 if built % 50 == 0:
                     print(f"{built}/{len(todo)} compiled", flush=True)
+
+    moved = sorted(path for path in compiled - todo
+                   if cached_source_hash(library, mirror, path) != origin[path])
+    if moved:
+        print(f"WARNING: the cache replaced {len(moved)} compiled modules during the run, "
+              f"for example {moved[0]}; run the audit again", flush=True)
     (work / "summary.json").write_text(
-        json.dumps({"base": base, "status": status, "report": report}, indent=1),
+        json.dumps({"base": base, "status": status, "report": report,
+                    "mismatched": sorted(mismatched), "outside_mismatched": foreign,
+                    "replaced_during_run": moved}, indent=1),
         encoding="utf-8")
     counts: dict[str, int] = {}
     for state in status.values():
         counts[state] = counts.get(state, 0) + 1
     print("result:", ", ".join(f"{count} {state}" for state, count in sorted(counts.items()))
           or "nothing to compile")
-    return 0 if set(counts) <= {"ok"} else 1
+    return 0 if set(counts) <= {"ok"} and not moved else 1
 
 
 def main() -> int:
@@ -216,7 +332,10 @@ def main() -> int:
     parser.add_argument("--lake", help="a .lake directory with compiled modules "
                                        "(default: .lake in this checkout)")
     parser.add_argument("--work", help="directory for the mirror and logs (default: a new "
-                                       "temporary directory)")
+                                       "temporary directory); a directory from an earlier "
+                                       "run is reused, and modules it compiled from the "
+                                       "current source text are not compiled again unless "
+                                       "an import changed")
     parser.add_argument("--jobs", type=int, default=4, help="concurrent compilations")
     parser.add_argument("--timeout", type=int, default=3600, help="seconds per module")
     parser.add_argument("--tree", action="append", help="audited source prefix; repeatable")
