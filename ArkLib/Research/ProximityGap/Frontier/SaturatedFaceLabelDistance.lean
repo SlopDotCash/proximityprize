@@ -67,6 +67,31 @@ theorem residual_rows (l a b : Fin 3 → K[X]) {E D : ℕ}
   exact ⟨u,v,hu,hv,du.le.trans (Nat.sub_le_sub_right (degree_pairing l a hl ha) _),
     dv.le.trans (Nat.sub_le_sub_right (degree_pairing l b hl hb) _)⟩
 
+/-- If a set of marked agreements exceeds the degree bound, both target rows preserve
+every labelled pair encoded by the comparison faces, including those outside the set. -/
+theorem recover_all_pairs (l a b : Fin 3 → K[X]) {E D : ℕ}
+    (hl : ∀ i, (l i).natDegree ≤ E)
+    (ha : ∀ i, (a i).natDegree ≤ D) (hb : ∀ i, (b i).natDegree ≤ D)
+    (S : Finset K) (hs : E+D < S.card) (hmatch : ∀ x ∈ S, PreservesPair l a b x)
+    (x : K) (i j : Fin 4) (u : K) (hu : u ≠ 0)
+    (hf : ∀ k, faces l x k = (if k = i then u else 0) - (if k = j then u else 0)) :
+    heads a x i = heads a x j ∧ heads b x i = heads b x j := by
+  classical
+  have hr (y : K) (hy : y ∈ S) : (pairing l a).eval y = 0 ∧ (pairing l b).eval y = 0 := by
+    obtain ⟨i',j',v,_,_,h,ha',hb'⟩ := hmatch y hy
+    exact ⟨eval_pairing_eq_zero l a y i' j' v h ha', eval_pairing_eq_zero l b y i' j' v h hb'⟩
+  have recover (w : Fin 3 → K[X]) (hw : ∀ i, (w i).natDegree ≤ D)
+      (hz : ∀ y ∈ S, (pairing l w).eval y = 0) : heads w x i = heads w x j := by
+    have hzero := eq_zero_of_natDegree_lt_card_of_eval_eq_zero' (pairing l w) S hz
+      ((degree_pairing l w hl hw).trans_lt hs)
+    have he := congrArg (Polynomial.eval x) hzero
+    have hh : ∑ t, faces l x t * heads w x t = 0 := by
+      simpa [faces, heads, pairing, Fin.sum_univ_four] using he
+    simp_rw [hf, sub_mul, ite_mul, zero_mul, sum_sub_distrib] at hh
+    apply sub_eq_zero.mp
+    simpa [hu, ← mul_sub] using hh
+  exact ⟨recover a ha (fun y hy => (hr y hy).1), recover b hb (fun y hy => (hr y hy).2)⟩
+
 /-- A target face vanishes simply on its marked sites in the saturated application.
 Only set-theoretic vanishing and the rank of its two rows at those sites are needed here. -/
 def OtherMinorNonzero (a b : Fin 3 → K[X]) (x : K) : Prop :=
@@ -142,6 +167,7 @@ theorem production_distance (l a b : Fin 3 → K[X])
   have h := label_agreement_bound l a b hl0 hl ha hb S T hmatch (by omega) hrank
   omega
 
+#print axioms recover_all_pairs
 #print axioms residual_rows
 #print axioms label_agreement_bound
 #print axioms pullback_distance
