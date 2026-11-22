@@ -44,8 +44,14 @@ for every entry. They rest on Theorem D′ of the
 [section-incidence note](section-incidence-hodge-index.md#a-second-route-below-the-johnson-radius-tangent-heads),
 whose counting half is kernel-checked in
 [TangentHeadCount.lean](../../../ArkLib/Research/ProximityGap/Frontier/TangentHeadCount.lean)
-and whose geometric half is a written argument. Lean does not check the
-entries of this table. The weighted Johnson ladder is a Lean theorem and is
+and whose geometric half is a written argument. For the twelve entries at
+$\beta=32$, 34 and 36, Lean checks both interpolant counts, the Johnson-type
+conditions, the head tests and every degree allocation with at most the
+packing number of rich heads, in
+[TangentHeadLadder.lean](../../../ArkLib/Research/ProximityGap/Frontier/TangentHeadLadder.lean).
+The cap enters there as the definition of a price, and the packing bound on
+rich heads as a hypothesis. Lean does not check the entries at larger
+exponents. The weighted Johnson ladder is a Lean theorem and is
 the stronger statement for fields of small characteristic and from
 $\beta=64$ on.
 
