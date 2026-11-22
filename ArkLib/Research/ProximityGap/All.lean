@@ -1069,6 +1069,10 @@ import ArkLib.Research.ProximityGap.Frontier.TwoHeadExtraWitness
 import ArkLib.Research.ProximityGap.Frontier.TwoHeadLinearBudget
 import ArkLib.Research.ProximityGap.Frontier.TwoParityMca
 import ArkLib.Research.ProximityGap.Frontier.TwoParityPrize
+import ArkLib.Research.ProximityGap.Frontier.TwoProjectiveExtraColors
+import ArkLib.Research.ProximityGap.Frontier.TwoProjectiveExtraCoset
+import ArkLib.Research.ProximityGap.Frontier.TwoProjectiveExtraFibers
+import ArkLib.Research.ProximityGap.Frontier.TwoProjectiveExtraWitness
 import ArkLib.Research.ProximityGap.Frontier.UncertaintyCapacitySidePrime
 import ArkLib.Research.ProximityGap.Frontier.UncertaintyTwoPowerBounds
 import ArkLib.Research.ProximityGap.Frontier.UncertaintyTwoPowerDonohoStarkBridge
