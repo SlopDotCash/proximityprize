@@ -54,7 +54,7 @@ def main():
         report = checked.stdout + checked.stderr
         expected = {"propext", "Classical.choice", "Quot.sound"}
         for decl in ("First.affine_list_budget", "Second.affine_list_budget",
-                     "quadratic_eight", "quadratic_sixty_four"):
+                     "quadratic_eight", "quadratic_sixty_four", "near_capacity"):
             name = f"ProximityGap.AffineNamedEndpoints.{decl}"
             match = re.search(rf"'{re.escape(name)}' depends on axioms:\s*\[([^\]]+)\]", report)
             if not match or {item.strip() for item in match[1].split(",")} != expected:
