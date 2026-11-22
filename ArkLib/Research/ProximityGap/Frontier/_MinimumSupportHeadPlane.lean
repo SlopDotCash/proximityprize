@@ -3,6 +3,7 @@ Copyright (c) 2026 Mikhail Izhutkin. All rights reserved.
 Released under both MIT and Apache-2.0 licenses as described in LICENSE-MIT and LICENSE.
 Authors: Mikhail Izhutkin (mashingaan)
 -/
+import CompPoly.ToMathlib.Polynomial.Roots
 import Mathlib.Tactic
 import Mathlib.LinearAlgebra.Lagrange
 
