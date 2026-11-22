@@ -23,22 +23,29 @@ WINDOWS = (
 )
 
 
+def branch_price(b, m, w, t, d, s, a, use_polar, line_gap=0):
+    """Population bound on a single range of actual scalar/value degrees."""
+    ax = (2*b-2)*w-b*(b-1)*d
+    gz = (2*b-2)*m-b*(b-1)
+    height = 2*ax*gz+2*w*m
+    loss = (gz+m)*N
+    population = (2*t*loss+N*(2*height+m*N))//(t*t-N*d)
+    if use_polar:
+        h = comb(s+2, 2)
+        degree_sum = s*(s+1)*(s+2)//3
+        gap = a*h*t-comb(a+2, 3)*N-degree_sum*d
+        if gap <= 0:
+            raise ValueError('the tangent determinant has no positive gap')
+        population = min(population, s*m*(m-1)+h*(a*loss+s*height)//gap)
+    if line_gap > 0:
+        population = min(population, m*(m-1)+(height+loss)//line_gap)
+    return gz+2*b*m+population
+
+
 def component_price(b, m, w, t, d, s, a):
     """Uniform in the factor's actual total degree m0 <= m."""
     def price_at(bound, use_polar):
-        ax = (2*b-2)*w-b*(b-1)*d
-        gz = (2*b-2)*bound-b*(b-1)
-        height = 2*ax*gz+2*w*bound
-        loss = (gz+bound)*N
-        population = (2*t*loss+N*(2*height+bound*N))//(t*t-N*d)
-        if use_polar:
-            h = comb(s+2, 2)
-            degree_sum = s*(s+1)*(s+2)//3
-            gap = a*h*t-comb(a+2, 3)*N-degree_sum*d
-            if gap <= 0:
-                raise ValueError('the tangent determinant has no positive gap')
-            population = min(population, s*bound*(bound-1)+h*(a*loss+s*height)//gap)
-        return gz+2*b*bound+population
+        return branch_price(b, bound, w, t, d, s, a, use_polar)
 
     split = s*(s-1)
     if s == 0 or m <= split:

@@ -285,10 +285,9 @@ private theorem constraint_degree {m B : ℕ} (a b K : F) (n : ℕ) (e d : Fin m
   apply natDegree_mul_le.trans
   simpa only [natDegree_C, natDegree_X_pow, zero_add] using hd j
 
-/-- Coefficient extraction as a linear map on the auxiliary weights. -/
-noncomputable def constraintMap {m B : ℕ} (a b K : F) (n : ℕ) (e d : Fin m → ℕ) (D W : ℕ) :
-    Weights F m B →ₗ[F] (Fin D × Fin W → F) where
-  toFun w l := (constraint a b K n e d w (l.1 : ℕ)).coeff (l.2 : ℕ)
+private noncomputable def extractCoefficients {m B : ℕ} (a b K : F) (n : ℕ) (e d : Fin m → ℕ)
+    {I : Type*} (order index : I → ℕ) : Weights F m B →ₗ[F] (I → F) where
+  toFun w l := (constraint a b K n e d w (order l)).coeff (index l)
   map_add' x y := by
     funext l
     simp [constraint, add_mul, sum_add_distrib]
@@ -296,15 +295,38 @@ noncomputable def constraintMap {m B : ℕ} (a b K : F) (n : ℕ) (e d : Fin m �
     funext l
     simp [constraint, mul_assoc, mul_sum]
 
+/-- Coefficient extraction as a linear map on the auxiliary weights. -/
+noncomputable def constraintMap {m B : ℕ} (a b K : F) (n : ℕ) (e d : Fin m → ℕ) (D W : ℕ) :
+    Weights F m B →ₗ[F] (Fin D × Fin W → F) :=
+  extractCoefficients a b K n e d (fun l => l.1.val) (fun l => l.2.val)
+
+/-- The coefficient indices at order `r` stop at the actual degree bound. -/
+abbrev GradedCoefficients (A D : ℕ) := (r : Fin D) × Fin (A + 2*r.val)
+
+private theorem graded_card (A D : ℕ) :
+    Fintype.card (GradedCoefficients A D) = D*(A+(D-1)) := by
+  rw [Fintype.card_sigma]
+  simp only [Fintype.card_fin]
+  rw [Fin.sum_univ_eq_sum_range (fun r => A+2*r), sum_add_distrib]
+  simp only [sum_const, card_range, nsmul_eq_mul]
+  rw [← mul_sum, Nat.mul_comm 2 _, sum_range_id_mul_two, Nat.mul_add]
+  rfl
+
+private noncomputable def gradedMap {m B : ℕ} (a b K : F) (n : ℕ) (e d : Fin m → ℕ) (A D : ℕ) :
+    Weights F m B →ₗ[F] (GradedCoefficients A D → F) :=
+  extractCoefficients a b K n e d (fun l => l.1.val) (fun l => l.2.val)
+
 private theorem exists_joint_kernel {m B J : ℕ} (a b : F) (K : Fin J → F)
-    (n : ℕ) (e d : Fin m → ℕ) (D W : ℕ) (gap : J * (D * W) < B * m) :
-    ∃ w : Weights F m B, w ≠ 0 ∧ ∀ i, constraintMap a b (K i) n e d D W w = 0 := by
+    (n : ℕ) (e d : Fin m → ℕ) (A D : ℕ) (gap : J * (D * (A+(D-1))) < B * m) :
+    ∃ w : Weights F m B, w ≠ 0 ∧ ∀ i, gradedMap a b (K i) n e d A D w = 0 := by
   classical
-  let L := LinearMap.pi (fun i => @constraintMap F _ m B a b (K i) n e d D W)
-  have hdim : Module.finrank F (Fin J → Fin D × Fin W → F) <
+  let L := LinearMap.pi (fun i => @gradedMap F _ m B a b (K i) n e d A D)
+  have hdim : Module.finrank F (Fin J → GradedCoefficients A D → F) <
       Module.finrank F (Weights F m B) := by
-    simpa [Weights, Module.finrank_pi_fintype, Module.finrank_pi,
-      Module.finrank_fintype_fun_eq_card, Nat.mul_comm, Nat.mul_left_comm, Nat.mul_assoc] using gap
+    change Module.finrank F (Fin J → GradedCoefficients A D → F) < Module.finrank F (Fin B → Fin m → F)
+    rw [Module.finrank_pi_fintype F, Module.finrank_pi_fintype F (M := fun _ : Fin B => Fin m → F)]
+    simpa only [Module.finrank_pi, graded_card, Fintype.card_fin, sum_const, card_univ,
+      nsmul_eq_mul, Nat.cast_id] using gap
   have hn : ¬Function.Injective L := fun hi => (not_le_of_gt hdim)
     (LinearMap.finrank_le_finrank_of_injective hi)
   rw [← LinearMap.ker_eq_bot] at hn
@@ -313,12 +335,12 @@ private theorem exists_joint_kernel {m B J : ℕ} (a b : F) (K : Fin J → F)
 
 private theorem constraint_zero_of_kernel {m B : ℕ} (a b K : F) (n : ℕ) (e d : Fin m → ℕ)
     {A D : ℕ} (hA : 0 < A) (hd : ∀ j, d j < A) {w : Weights F m B}
-    (hk : constraintMap a b K n e d D (A+2*(D-1)) w = 0) {r : ℕ} (hr : r<D) :
+    (hk : gradedMap a b K n e d A D w = 0) {r : ℕ} (hr : r<D) :
     constraint a b K n e d w r = 0 := by
   ext t
   rw [coeff_zero]
-  by_cases ht : t < A + 2*(D-1)
-  · exact congrFun hk (⟨r,hr⟩,⟨t,ht⟩)
+  by_cases ht : t < A + 2*r
+  · exact congrFun hk ⟨⟨r,hr⟩,⟨t,ht⟩⟩
   · apply coeff_eq_zero_of_natDegree_lt
     have h := constraint_degree a b K n e d w (A := A-1) (fun j => by have := hd j; omega) r
     omega
@@ -377,15 +399,15 @@ private theorem aux_degree {m B : ℕ} (a b : F) (n : ℕ) (e : Fin m → ℕ) (
 /-- Multiplicity count for simultaneous subgroup values of a fractional linear function.
 The target value may depend on the site. Each permitted target imposes one
 additional block of derivative conditions on the same auxiliary polynomial. -/
-theorem mobius_count_many {m B n A D E J : ℕ} {a b : F} (K : Fin J → F) (ha : a ≠ 0) (hab : a ≠ b)
+theorem mobius_count_many_graded {m B n A D E J : ℕ} {a b : F} (K : Fin J → F) (ha : a ≠ 0) (hab : a ≠ b)
     {e d : Fin m → ℕ} (hV : (Matrix.vandermonde (fun j => (e j : F))).det ≠ 0)
     (hm : m ≤ n) (hE : ∀ j, e j ≤ E) (hA : 0 < A) (hd : ∀ j, d j < A)
-    (hgap : J * (D * (A + 2*(D-1))) < B*m) (hfac : IsUnit (((D-1).factorial : ℕ) : F))
+    (hgap : J * (D * (A + (D-1))) < B*m) (hfac : IsUnit (((D-1).factorial : ℕ) : F))
     (S : Finset F) (hreg : ∀ x ∈ S, x ≠ 0 ∧ x ≠ a ∧ x ≠ b)
     (hxe : ∀ x ∈ S, ∀ j, x ^ e j = x ^ d j)
     (hratio : ∀ x ∈ S, ∃ i, (x-a)^n = K i * (x-b)^n) : D * S.card ≤ E + n * (B-1) := by
   classical
-  obtain ⟨w,hw,hk⟩ := exists_joint_kernel a b K n e d D (A+2*(D-1)) hgap
+  obtain ⟨w,hw,hk⟩ := exists_joint_kernel a b K n e d A D hgap
   let P := aux a b n e w
   have hP : P ≠ 0 := aux_ne_zero ha hab hV hm hw
   have hmult : ∀ x ∈ S, D ≤ P.rootMultiplicity x := by
@@ -415,6 +437,17 @@ theorem mobius_count_many {m B n A D E J : ℕ} {a b : F} (K : Fin J → F) (ha 
     _ ≤ P.natDegree := P.card_roots'
     _ ≤ _ := aux_degree a b n e w hE
 
+/-- The coarser common-width constraint count also suffices. -/
+theorem mobius_count_many {m B n A D E J : ℕ} {a b : F} (K : Fin J → F) (ha : a ≠ 0) (hab : a ≠ b)
+    {e d : Fin m → ℕ} (hV : (Matrix.vandermonde (fun j => (e j : F))).det ≠ 0)
+    (hm : m ≤ n) (hE : ∀ j, e j ≤ E) (hA : 0 < A) (hd : ∀ j, d j < A)
+    (hgap : J * (D * (A + 2*(D-1))) < B*m) (hfac : IsUnit (((D-1).factorial : ℕ) : F))
+    (S : Finset F) (hreg : ∀ x ∈ S, x ≠ 0 ∧ x ≠ a ∧ x ≠ b)
+    (hxe : ∀ x ∈ S, ∀ j, x ^ e j = x ^ d j)
+    (hratio : ∀ x ∈ S, ∃ i, (x-a)^n = K i * (x-b)^n) : D * S.card ≤ E + n * (B-1) := by
+  apply mobius_count_many_graded K ha hab hV hm hE hA hd _ hfac S hreg hxe hratio
+  exact lt_of_le_of_lt (Nat.mul_le_mul_left J (Nat.mul_le_mul_left D (by omega))) hgap
+
 /-- Multiplicity count for simultaneous subgroup values of a fractional linear function.
 The two affine factors are normalized to leading coefficient one. Their leading-coefficient
 ratio in the original map is absorbed by `K`. -/
@@ -429,6 +462,7 @@ theorem mobius_count {m B n A D E : ℕ} {a b K : F} (ha : a ≠ 0) (hab : a ≠
     (by simpa using hgap) hfac S hreg hxe
   exact fun x hx => ⟨0, hratio x hx⟩
 
+#print axioms mobius_count_many_graded
 #print axioms mobius_count_many
 #print axioms aux_ne_zero
 #print axioms mobius_count

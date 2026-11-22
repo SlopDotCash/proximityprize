@@ -233,6 +233,20 @@ theorem two_head_obstruction [Fintype F] [DecidableEq F] (dom : Fin 128 ↪ F)
       simp [u,v,hx]
     · simp [u,v,z,hi,sub_ne_zero.mpr (hoff i)]
 
+/-- Every prime field supporting this domain supplies the offset used by the
+two-head witness. -/
+theorem prime_offset {p : ℕ} [Fact p.Prime] (dom : Fin 128 ↪ ZMod p) :
+    ∃ α : ZMod p, ∀ i, dom i ≠ α := by
+  by_contra! h
+  have hi := Fintype.card_le_of_injective dom dom.injective
+  have hs := Fintype.card_le_of_surjective dom h
+  rw [Fintype.card_fin,ZMod.card] at hi hs
+  have hp := Fact.out (p:=p.Prime)
+  have eq : p=128 := by omega
+  rw [eq] at hp
+  exact (by decide : ¬Nat.Prime 128) hp
+
+#print axioms prime_offset
 #print axioms two_head_obstruction
 #print axioms rich_obstruction
 #print axioms kernel_eq_zero
