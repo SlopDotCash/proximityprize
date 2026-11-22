@@ -37,6 +37,7 @@ import ArkLib.Research.ProximityGap.CurveUDRBound
 import ArkLib.Research.ProximityGap.DG25Sampling
 import ArkLib.Research.ProximityGap.Decision
 import ArkLib.Research.ProximityGap.DesignatedPrimeJohnson
+import ArkLib.Research.ProximityGap.DimensionOneList
 import ArkLib.Research.ProximityGap.EtaAutocorrInvolutionPaired
 import ArkLib.Research.ProximityGap.EtaInvolutionFixedPointReal
 import ArkLib.Research.ProximityGap.EtaNormSqRealShiftForm
@@ -4116,6 +4117,7 @@ import ArkLib.Research.ProximityGap.JohnsonPrimePowerList
 import ArkLib.Research.ProximityGap.JointAdjacentFieldReview
 import ArkLib.Research.ProximityGap.JointDyadicCeilings
 import ArkLib.Research.ProximityGap.JointJohnsonEquality
+import ArkLib.Research.ProximityGap.JointJohnsonFieldCeiling
 import ArkLib.Research.ProximityGap.JointJohnsonTolerance
 import ArkLib.Research.ProximityGap.JointLargeFieldCriterion
 import ArkLib.Research.ProximityGap.JointLargeFieldReview

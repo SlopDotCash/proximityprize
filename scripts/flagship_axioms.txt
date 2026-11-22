@@ -473,3 +473,11 @@ ArkLib.Research.ProximityGap.Frontier.FiveHeadFiberRigidity ProximityGap.FiveHea
 # A split-pencil sufficient condition at the second-prime quarter-rate Johnson test
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeTransversePencil ArkLib.ProximityGap.Frontier.SecondPrimeTransversePencil.actual_events
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeTransversePencil ArkLib.ProximityGap.Frontier.SecondPrimeTransversePencil.quarter_below_of_split
+
+# Constant codes and simultaneous Johnson equality for any supplied tolerance
+ArkLib.Research.ProximityGap.DimensionOneList ProximityPrize.DimensionOneList.lambda_radius
+ArkLib.Research.ProximityGap.DimensionOneList ProximityPrize.DimensionOneList.listAnswer_eq
+ArkLib.Research.ProximityGap.JointJohnsonTolerance ProximityPrize.JointJohnsonTolerance.supplied_iff
+ArkLib.Research.ProximityGap.JointJohnsonTolerance ProximityPrize.JointJohnsonTolerance.exists_above_iff
+ArkLib.Research.ProximityGap.CappedJohnsonTolerance ProximityPrize.CappedJohnsonTolerance.at_maximal_prime
+ArkLib.Research.ProximityGap.JointJohnsonFieldCeiling ProximityPrize.JointJohnsonFieldCeiling.realizable_iff
