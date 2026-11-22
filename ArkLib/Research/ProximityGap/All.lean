@@ -350,6 +350,7 @@ import ArkLib.Research.ProximityGap.Frontier.EighthMobiusSites
 import ArkLib.Research.ProximityGap.Frontier.EighthOutlierArithmetic
 import ArkLib.Research.ProximityGap.Frontier.EighthQuotientCoreCap
 import ArkLib.Research.ProximityGap.Frontier.EighthRatePrime159
+import ArkLib.Research.ProximityGap.Frontier.EighthRichDeficits
 import ArkLib.Research.ProximityGap.Frontier.EighthRichHeadSafety
 import ArkLib.Research.ProximityGap.Frontier.EighthTransverseAttack
 import ArkLib.Research.ProximityGap.Frontier.EighthTransverseCollisions
@@ -1090,6 +1091,8 @@ import ArkLib.Research.ProximityGap.Frontier.TransverseSectionBudget
 import ArkLib.Research.ProximityGap.Frontier.TruncatedJetMultipliers
 import ArkLib.Research.ProximityGap.Frontier.TwistedLineCollisionParseval
 import ArkLib.Research.ProximityGap.Frontier.TwoAnchorListWitness
+import ArkLib.Research.ProximityGap.Frontier.TwoCubicExtraCoset
+import ArkLib.Research.ProximityGap.Frontier.TwoCubicExtraFibers
 import ArkLib.Research.ProximityGap.Frontier.TwoCubicExtraSeed
 import ArkLib.Research.ProximityGap.Frontier.TwoDAnnihilatorLineParseval
 import ArkLib.Research.ProximityGap.Frontier.TwoErrorDomain237
