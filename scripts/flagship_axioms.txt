@@ -387,3 +387,8 @@ ArkLib.Research.ProximityGap.Frontier.QuarterSplitPencilProduct ArkLib.Proximity
 
 # Latest possible first list failure for long smooth rate-one-eighth codes
 ArkLib.Research.ProximityGap.SmoothEighthListBoundary ProximityPrize.SmoothEighthListBoundary.all_fail_iff
+
+# A full safe grid count beyond Johnson on every domain at four linear list budgets
+ArkLib.Research.ProximityGap.Frontier.MultipleOmissionJohnson ProximityGap.MultipleOmissionJohnson.four_rate_safe
+ArkLib.Research.ProximityGap.Frontier.MultipleOmissionJohnson ProximityGap.MultipleOmissionJohnson.johnson_grid
+ArkLib.Research.ProximityGap.Frontier.MultipleOmissionJohnson ProximityGap.MultipleOmissionJohnson.named_omission_budgets

@@ -543,6 +543,7 @@ import ArkLib.Research.ProximityGap.Frontier.MuNIteratedDoubling
 import ArkLib.Research.ProximityGap.Frontier.MultEmptyFiberBelowBand
 import ArkLib.Research.ProximityGap.Frontier.MultUniformAgreementSizeCap
 import ArkLib.Research.ProximityGap.Frontier.MultUpperAgreementBinom
+import ArkLib.Research.ProximityGap.Frontier.MultipleOmissionJohnson
 import ArkLib.Research.ProximityGap.Frontier.NAShaoFloorBridge
 import ArkLib.Research.ProximityGap.Frontier.NVMDyadicTowerObstruction
 import ArkLib.Research.ProximityGap.Frontier.NamedCharacterBlocks
