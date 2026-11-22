@@ -55,6 +55,39 @@ exponents. The weighted Johnson ladder is a Lean theorem and is
 the stronger statement for fields of small characteristic and from
 $\beta=64$ on.
 
+## Budgets between the two named primes
+
+The two named primes have integer budgets $n$ and $2n$. For a field whose
+budget is at least $jn/8$, with the same condition on the characteristic, the
+same argument gives the following safe error counts on every injective domain
+of length $n$.
+
+| Budget | Rate 1/2 | Rate 1/4 | Rate 1/8 |
+|---:|---:|---:|---:|
+| $9n/8$ | 293,018,651 | 469,749,153 | 601,620,356 |
+| $10n/8$ | 302,936,496 | 488,619,120 | 625,533,909 |
+| $11n/8$ | 305,038,412 | 504,801,583 | |
+| $12n/8$ | 305,705,113 | 518,960,616 | |
+| $13n/8$ | 305,940,243 | 522,404,939 | |
+| $14n/8$ | 306,465,090 | 523,490,200 | |
+| $15n/8$ | 306,465,090 | 524,083,702 | |
+| $2n$ | 306,780,000 | 524,700,000 | 671,088,385 |
+
+At rate $1/8$ the exact first failure 626,349,397 is already known for budgets
+from 1,409,286,144 to 1,879,048,193, so only the two smaller budgets are
+listed. At rate $1/2$ the entry for $15n/8$ repeats the one for $14n/8$. The
+previous bounds for budgets strictly between $n$ and $2n$ were the first-prime
+floors, 268,435,456 safe errors at rate $1/2$ and 447,392,427 at rate $1/4$.
+
+At rate $1/4$ and budgets up to about $11n/8$ the binding allocation is three
+collinear rich heads. Their cores cover at least $3C-3d$ sites, a covered
+site gives one label and an uncovered one three, so they carry at most
+$3n-6C+6d$ labels. This is at most $B$ exactly when
+$e\le B/6+n/4-254$, which is 469,761,794 at $9n/8$, within the search tolerance of the
+entry, and tends to the known
+floor $5n/12$ as $B$ decreases to $n$. A matching failure needs three
+collinear heads whose pairwise coincidence sets all have $d$ sites.
+
 ## Argument
 
 The allocation argument is the one of the
@@ -73,6 +106,9 @@ $$
 \Bigl\lfloor\frac{n(C-d)}{C^2-nd}\Bigr\rfloor
 $$
 rich heads whenever $C^2>nd$. Allocations with more rich heads do not occur.
+For $j$ collinear rich heads the union of the cores has at least
+$jC-\binom j2d$ sites, as well as the second-moment bound used in the windows;
+the certificate takes the larger of the two.
 Without this bound the trivial count $j(e+1)$ for $j$ up to the value degree
 would exceed the smaller budgets.
 
