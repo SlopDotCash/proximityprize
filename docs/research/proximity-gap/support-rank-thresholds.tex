@@ -320,6 +320,8 @@ At 694,116,763 errors every closed ball still has at most 1,660,990,722 codeword
 
 \textbf{The unresolved quarter-rate count.} On the first prime, let $D=268{,}435{,}454$. At 447,392,428 errors a line exceeds budget exactly when there exist polynomials $P,Q$ for which $P$, $Q$ and $P-Q$ each have degree $D$ and their three root sets are disjoint $D$-element subsets of the evaluation domain. Any such failure has worst-case mass $(n+2)/q$. Deriving the completely split fibers uses one uncovered coordinate and three exact overlaps of size $D$. Existence on this particular subgroup remains open. See the \href{https://github.com/SlopDotCash/proximityprize/blob/a02856495cec86860a159750a210d2a19f5e32ca/ArkLib/Research/ProximityGap/Frontier/QuarterSuccessorSplitCriterion.lean}{split-pencil equivalence}.
 
+Across all four smooth prize rates at any tolerance, the Johnson radius is on the Hamming grid exactly when $k=1$, or $k=2$ and $n$ is a square. Thus for $k\ge4$ both operational cutoffs are strictly to one side of Johnson. On the second field, the half- and quarter-rate MCA comparisons reduce to single closed tests at $314{,}491{,}699$ and $536{,}870{,}913$ errors. Each passes exactly when its supremum is above Johnson. See \src{1af200da4aa3d245aa6ccb0d096a428ae6f4333e}{JohnsonGridEquality} and \src{e51a6757fc1f2f1245b341c2aa3bdd4313498a45}{SecondPrimeJohnsonPivot}.
+
 Three of the eight MCA endpoints on these two fields have numerical values in the current proof. All eight list endpoints and the five other MCA endpoints still require a matching safety bound and failure witness at adjacent counts, or an evaluation of the exact rank criterion. The comparison with Johnson answers a different question from finding those integers.
 
 \newpage

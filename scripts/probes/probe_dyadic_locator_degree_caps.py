@@ -2,7 +2,7 @@
 
 from collections import Counter
 from itertools import combinations
-from math import comb
+from math import comb, gcd
 
 
 PRIMES = (
@@ -39,11 +39,22 @@ def first_sum_cap(size):
     return min(comb(128, size), (31 // (31 - 2 * size)) * comb(64, size // 2))
 
 
-def mixed_cap(size):
+def product_layer_cap(order, size):
+    """A shift changes the label sum by size, giving order/gcd equal populations."""
+    return comb(order, size) * gcd(order, size) // order
+
+
+def first_sum_product_cap(size):
+    """At fixed sum and product, bound each orientation's possible full-pair labels."""
+    full_pairs = max(product_layer_cap(64, k) for k in range(size // 2 + 1))
+    return min(comb(128, size), (31 // (31 - 2 * size)) * full_pairs)
+
+
+def mixed_cap(size, completion_cap=first_sum_cap):
     total = 0
     for weight in range(size % 2, size + 1, 2):
         pairs = (size - weight) // 2
-        total += signed_support_cap(128, weight, 31) * first_sum_cap(pairs)
+        total += signed_support_cap(128, weight, 31) * completion_cap(pairs)
     return total
 
 
@@ -68,6 +79,11 @@ def check_small_fields():
                 if max(counts.values()) > full_lift_cap(order, size, moments):
                     raise ArithmeticError((order, prime, size, moments))
                 checks += 1
+    for order in (4, 8, 16):
+        for size in range(order + 1):
+            bins = Counter(sum(sites) % order for sites in combinations(range(order), size))
+            if max(bins.values()) > product_layer_cap(order, size):
+                raise ArithmeticError(("product layer", order, size))
     return checks
 
 
