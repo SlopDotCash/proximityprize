@@ -936,6 +936,7 @@ import ArkLib.Research.ProximityGap.Frontier.RegularTaylorPole
 import ArkLib.Research.ProximityGap.Frontier.RepeatedParabola
 import ArkLib.Research.ProximityGap.Frontier.RepetitionFirstPrimeThreshold
 import ArkLib.Research.ProximityGap.Frontier.RepetitionFourCenterAttack
+import ArkLib.Research.ProximityGap.Frontier.RepetitionLightLineDeficit
 import ArkLib.Research.ProximityGap.Frontier.RepetitionSecondPrimeThreshold
 import ArkLib.Research.ProximityGap.Frontier.ReservedFiberList
 import ArkLib.Research.ProximityGap.Frontier.ResolveFieldIndependent
