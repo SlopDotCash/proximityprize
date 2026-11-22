@@ -9,6 +9,7 @@ import re
 import struct
 import subprocess
 import tempfile
+from math import prod
 from collections import Counter, defaultdict
 from functools import lru_cache
 from itertools import combinations, product
@@ -84,13 +85,14 @@ def write_pool(path, order, spare, degree, minimum):
         visit(0, degree, (), (1,), 0)
 
 
-def census(program, pool, order, degree, spare, cut_a, cut_b, cap, workers, product_scores=False):
+def census(program, pool, order, degree, spare, cut_a, cut_b, cap, workers, option=None):
     args = (pool, order, degree, spare, cut_a, cut_b, cap, workers)
-    command = [program, "--product-scores"] if product_scores else [program]
+    command = [program, option] if option else [program]
     result = subprocess.check_output([*command, *map(str, args)], text=True)
     rows = [tuple(map(int, match)) for match in re.findall(
         r'^bins=(\d+) incidences=(\d+) unique=(\d+)$', result, re.MULTILINE)]
-    require(len(rows) == 2, 'two census rows')
+    expected = sum(bool(n) for n in (cut_a, cut_b)) if option == '--signed-scores' else 2
+    require(len(rows) == expected, 'one census row per active allocation')
     return rows, result
 
 
@@ -146,12 +148,29 @@ def explicit_words(order, spare, degree, selected, pool_size):
     print(f'F_{p} n={n} explicit_words={len(words)} min_agreements={least_agreements}')
 
 
-def direct_product_scores(fixed, order, spare, cap):
+def direct_product_scores(fixed, order, spare, cap, signed=False):
     """Rerank complete root sets by product and their unshared agreements at other anchors."""
     step = order // spare
     anchors = range(step, order, step)
-    signatures = [{a: packed(signature_of({(j-a) % order for j in t}, order)) for a in anchors}
-                  for t in fixed]
+    prime = 65537
+    root = pow(3, (prime-1)//order, prime)
+    values = {}
+
+    def mode(relative):
+        v = packed(signature_of(set(relative), order))
+        return (v, (sum(relative)//order) % 2) if signed else v
+
+    signatures = []
+    for sites in fixed:
+        row = {}
+        for a in anchors:
+            relative = [(j-a) % order for j in sites]
+            row[a] = mode(relative)
+            if signed:
+                value = prod(1-pow(root, j, prime) for j in relative) % prime
+                require(values.setdefault((a, row[a]), value) == value,
+                        'each signed mode has one actual finite-field locator value')
+        signatures.append(row)
     support = {a: defaultdict(set) for a in anchors}
     orbits = {}
     for i, row in enumerate(signatures):
@@ -160,16 +179,16 @@ def direct_product_scores(fixed, order, spare, cap):
             if a & (a-1) or (a, v) in orbits:
                 continue
             relative = [(j-a) % order for j in fixed[i]]
-            image = {(u*a % order, packed(signature_of({r*u % order for r in relative}, order)))
+            image = {(u*a % order, mode([r*u % order for r in relative]))
                      for u in range(1, order, 2)}
             for b, other in image:
                 if b == a:
                     orbits[a, other] = image
 
-    def choose(current):
-        selected = set()
+    def choose(current, target=0):
+        selected = {entry for entry in current if target and entry[0] & -entry[0] != target}
         for a in anchors:
-            if a & (a-1):
+            if a & (a-1) or (target and a != target):
                 continue
             ranked = []
             seen = set()
@@ -181,7 +200,9 @@ def direct_product_scores(fixed, order, spare, cap):
                 seen.update(local)
                 fresh = sum(not any((b, signatures[i][b]) in current for b in anchors if b != a)
                             for i in members)
-                ranked.append((-(len(members)+3*fresh), min(local), len(local), orbit))
+                score = fresh if target else len(members)+(2 if signed else 3)*fresh
+                if score:
+                    ranked.append((-score, min(local), len(local), orbit))
             used = 0
             for _, _, size, orbit in sorted(ranked):
                 if used + size <= cap:
@@ -190,9 +211,21 @@ def direct_product_scores(fixed, order, spare, cap):
         return selected
 
     selected = choose(choose(set()))
+    if signed:
+        selected = choose(choose(selected, order//2), order//4)
     counts = [sum(item in selected for item in row.items()) for row in signatures]
     bins = max(sum((a, v) in selected for v in support[a]) for a in anchors)
-    return (bins, sum(counts), sum(count > 0 for count in counts))
+    baseline = (bins, sum(counts), sum(count > 0 for count in counts))
+    if not signed:
+        return baseline
+    a = order//4
+    unchanged = {item for item in selected if item[0] != a}
+    covered = {i for i, row in enumerate(signatures) if any(item in unchanged for item in row.items())}
+    ranked = sorted(support[a], key=lambda v: (-len(support[a][v]-covered), v))
+    final = set(covered)
+    for v in ranked[:cap]:
+        final.update(support[a][v])
+    return baseline, baseline[2]-len(covered), len(final)-len(covered)
 
 
 def small_board(program, directory, order, spare, degree, workers):
@@ -247,9 +280,17 @@ def small_board(program, directory, order, spare, degree, workers):
     fixed = [t for t in all_sites if sum(t) % order == 0]
     caps = (1, 3) if order == 16 else (35, 100)
     refined = [direct_product_scores(fixed, order, spare, cap) for cap in caps]
-    computed, _ = census(program, pool, order, degree, spare, *caps, 1, workers, product_scores=True)
+    computed, _ = census(program, pool, order, degree, spare, *caps, 1, workers, option="--product-scores")
     require(computed == refined, 'independent product and unshared-population ranking')
     print(f'M={order} refined={computed}')
+    signed_cap = 3 if order == 16 else 70
+    baseline, previous, offered = direct_product_scores(fixed, order, spare, signed_cap, signed=True)
+    signed_rows, output = census(program, pool, order, degree, spare, signed_cap, 0, 3, workers,
+                                 option="--signed-scores")
+    require(signed_rows == [baseline] and
+            f'response_anchor={order//4} pool=0 previous={previous} offered={offered} '
+            f'increase={offered-previous}' in output, 'direct signed union and single anchor replacement')
+    print(f'M={order} signed={baseline} final={baseline[2]+offered-previous}')
     if order == 16:
         explicit_words(order, spare, degree, selected[1], len(b_pool))
 
@@ -279,7 +320,7 @@ def main():
         require(rows == [(517954,1551671296,1132216224),(1398090,3367652416,2459641984)],
                 'production receipts')
         rows, output = census(program, pool, 128, 9, 16, h//20, h//8, 1, args.workers,
-                              product_scores=True)
+                              option="--product-scores")
         print('Product-conditioned pools after one overlap refinement')
         print(output, end='')
         require(rows == [(419430,1276465776,1124276896),(1048576,2659659888,2183380672)],
@@ -288,6 +329,17 @@ def main():
             gain = h//(2*bins)
             require(size > budget, 'over-budget list')
             print(f'budget={budget} list={size} gain={gain} first_bad<={n-10*h+1-gain}')
+        cap = h//11
+        signed_rows, output = census(program, pool, 128, 9, 16, cap, 0, 3, args.workers,
+                                     option="--signed-scores")
+        print('Signed modes at the first budget')
+        print(output, end='')
+        require(signed_rows == [(762600,1240417392,1073709616)] and
+                'response_anchor=32 pool=0 previous=61386048 offered=63078124 increase=1692076'
+                in output, 'signed census and one-anchor substitution')
+        size = signed_rows[0][2] - 61386048 + 63078124
+        require(size == 1075401692 and size > n and cap*11 <= h, 'over-budget signed witness')
+        print(f'budget={n} list={size} gain=11 first_bad<={n-10*h+1-11}')
 
 
 if __name__ == '__main__':

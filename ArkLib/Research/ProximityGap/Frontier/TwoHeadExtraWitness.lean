@@ -18,7 +18,7 @@ open CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame
 variable {I F : Type} [Fintype I] [Nonempty I] [DecidableEq I] [Field F] [Fintype F] [DecidableEq F]
 
 /-- Choose a parameter separating the affine lines indexed by a finite set of distinct keys. -/
-private theorem separate {S : Type} [Fintype S] (key : S ↪ F × F)
+theorem separate {S : Type} [Fintype S] (key : S ↪ F × F)
     (hq : (Fintype.card S).choose 2 < Fintype.card F) :
     ∃ θ : F, Function.Injective (fun s => (key s).1 + θ * (key s).2) := by
   classical
