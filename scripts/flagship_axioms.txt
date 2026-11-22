@@ -71,6 +71,11 @@ ArkLib.Research.ProximityGap.Frontier.SmoothPlanarQuartetCoset ArkLib.ProximityG
 ArkLib.Research.ProximityGap.Frontier.FourHeadCommonRootObstruction ArkLib.ProximityGap.Frontier.FourHeadCommonRootObstruction.predecessor_cap
 ArkLib.Research.ProximityGap.Frontier.SmoothCosetFourHeadMass ArkLib.ProximityGap.Frontier.SmoothCosetFourHeadMass.operational_ceiling
 
+# Cluster intersections and the collision count on the named eighth-rate slice
+ArkLib.Research.ProximityGap.Frontier.EighthCollinearOutlier ArkLib.ProximityGap.Frontier.EighthCollinearOutlier.covered
+ArkLib.Research.ProximityGap.Frontier.EighthCollinearOutlier ArkLib.ProximityGap.Frontier.EighthCollinearOutlier.six
+ArkLib.Research.ProximityGap.Frontier.EighthCollinearOutlier ArkLib.ProximityGap.Frontier.EighthCollinearOutlier.saturated_four
+
 # Fixed-dimension puncture retention and the neighboring second-prime lengths
 ArkLib.Research.ProximityGap.Frontier.OnePunctureRetention ArkLib.ProximityGap.Frontier.OnePunctureRetention.at_most_one_repair
 ArkLib.Research.ProximityGap.Frontier.OnePunctureRetention ArkLib.ProximityGap.Frontier.OnePunctureRetention.count
@@ -388,3 +393,22 @@ ArkLib.Research.ProximityGap.Frontier.QuarterSplitPencilProduct ArkLib.Proximity
 
 # Latest possible first list failure for long smooth rate-one-eighth codes
 ArkLib.Research.ProximityGap.SmoothEighthListBoundary ProximityPrize.SmoothEighthListBoundary.all_fail_iff
+
+# A full safe grid count beyond Johnson on every domain at four linear list budgets
+ArkLib.Research.ProximityGap.Frontier.MultipleOmissionJohnson ProximityGap.MultipleOmissionJohnson.four_rate_safe
+ArkLib.Research.ProximityGap.Frontier.MultipleOmissionJohnson ProximityGap.MultipleOmissionJohnson.johnson_grid
+ArkLib.Research.ProximityGap.Frontier.MultipleOmissionJohnson ProximityGap.MultipleOmissionJohnson.named_omission_budgets
+
+# Earlier failure and saturation on reserved power fibers
+ArkLib.Research.ProximityGap.Frontier.SmoothReservedProductList ProximityGap.SmoothReservedProductList.smooth_list_exceeds
+ArkLib.Research.ProximityGap.SmoothReservedListBoundary ProximityPrize.SmoothReservedListBoundary.failure
+ArkLib.Research.ProximityGap.SmoothReservedListBoundary ProximityPrize.SmoothReservedListBoundary.longer_failure
+ArkLib.Research.ProximityGap.SmoothReservedListBoundary ProximityPrize.SmoothReservedListBoundary.first_failure_le
+ArkLib.Research.ProximityGap.SmoothReservedListBoundary ProximityPrize.SmoothReservedListBoundary.exceeds_field_square
+ArkLib.Research.ProximityGap.SmoothReservedListBoundary ProximityPrize.SmoothReservedListBoundary.length_of_eighth_attainment
+ArkLib.Research.ProximityGap.SmoothListRankBracket ProximityPrize.SmoothListRankBracket.first_failure
+ArkLib.Research.ProximityGap.SmoothListRankBracket ProximityPrize.SmoothListRankBracket.first_failure_reserved
+ArkLib.Research.ProximityGap.Frontier.LocatorPadding ProximityGap.LocatorPadding.epsMCA_le
+ArkLib.Research.ProximityGap.SmoothReservedMcaBoundary ProximityPrize.SmoothReservedMcaBoundary.failure
+ArkLib.Research.ProximityGap.SmoothReservedMcaBoundary ProximityPrize.SmoothReservedMcaBoundary.saturated
+ArkLib.Research.ProximityGap.SmoothReservedMcaBoundary ProximityPrize.SmoothReservedMcaBoundary.production_counts
