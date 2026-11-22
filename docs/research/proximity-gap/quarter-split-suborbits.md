@@ -35,6 +35,6 @@ The denominator is positive at all four possible prefix degrees. [Quadratic pull
 
 For the full cover, let $F$ be the Galois closure of $R$ over its target function field $K$, let $L$ be the function field of the target of $W$ embedded in $F$, and let $M$ be the Galois closure of $W$ over $L$. Then $M\subseteq F$ since $F/L$ is normal. We have $[L:K]=\deg V=D/t$. All ramification is tame since the monodromy embeds in $S_D$ and $p>D$. Write $E_R$ for the analogous excess of $R$. Galois Riemann–Hurwitz on the two closures and ordinary Riemann–Hurwitz from $F$ to $M$ give
 \[
- [F:K]E_R=2g(F)-2\ \ge [F:M](2g(M)-2)=[F:M][M:L]E.
+ [F:K]E_R=2g(F)-2\ \ge [F:M]\,(2g(M)-2)=[F:M][M:L]E.
 \]
 Hence $E_R\ge E/(D/t)>0.070063$ in all four cases. In particular **the whole pencil** also excludes every $(2,3,b)$ signature with $b\le10$. The existence of pencils with the remaining signatures is open. The group and curve arguments above are written proofs. Lean verifies the subdegree floor, rank count, excess elimination and four numerical inequalities.

@@ -517,6 +517,7 @@ import ArkLib.Research.ProximityGap.Frontier.HalfRateJetCapacity
 import ArkLib.Research.ProximityGap.Frontier.HalfRateLinearPopulation
 import ArkLib.Research.ProximityGap.Frontier.HalfRatePopulationCover
 import ArkLib.Research.ProximityGap.Frontier.HalfRateUnrestrictedJetBudget
+import ArkLib.Research.ProximityGap.Frontier.HalfSparseGaussWindow
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorFourHeadCover
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorJetInterpolation
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorJetRank
