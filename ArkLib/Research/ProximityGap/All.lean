@@ -1006,6 +1006,7 @@ import ArkLib.Research.ProximityGap.Frontier.SpectrumGFAlternatingSum
 import ArkLib.Research.ProximityGap.Frontier.SpectrumGFCoeffPalindrome
 import ArkLib.Research.ProximityGap.Frontier.SpectrumGFFunctionalEquation
 import ArkLib.Research.ProximityGap.Frontier.SphereVolumeMCA
+import ArkLib.Research.ProximityGap.Frontier.SplitPencilBlockVariance
 import ArkLib.Research.ProximityGap.Frontier.SplitPrimeJointMoments
 import ArkLib.Research.ProximityGap.Frontier.SplitPrimeSixthDensity
 import ArkLib.Research.ProximityGap.Frontier.SpurBadPrimeCeiling
