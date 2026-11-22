@@ -58,6 +58,30 @@ private theorem mult_sq (T : Finset J) (S : J → Finset I) (t s : ℕ)
     _ ≤ ∑ _i ∈ T, (t+(T.card-1)*s) := sum_le_sum row
     _ = _ := by simp
 
+/-- The single-block second-moment bound, including the list cardinality in
+the diagonal term. -/
+theorem plotkin (T : Finset J) (S : J → Finset I) (t d : ℕ)
+    (ht : ∀ i ∈ T, (S i).card = t)
+    (hp : ∀ i ∈ T, ∀ j ∈ T, i ≠ j → (S i ∩ S j).card ≤ d) :
+    T.card * t ^ 2 ≤ Fintype.card I * (t + (T.card - 1) * d) := by
+  classical
+  obtain he | hne := T.eq_empty_or_nonempty
+  · simp [he]
+  let c (x : I) := ∑ j ∈ T, if x ∈ S j then 1 else 0
+  have hs : ∑ x, c x = T.card * t := mult_sum T S univ t (by simpa using ht)
+  have h := sq_sum_le_card_mul_sum_sq (s := (univ : Finset I)) (f := c)
+  rw [hs, card_univ] at h
+  have ss := mult_sq T S t d ht hp
+  change (∑ x, c x ^ 2) ≤ _ at ss
+  have aux : T.card * (T.card * t ^ 2) ≤
+      T.card * (Fintype.card I * (t + (T.card - 1) * d)) := by
+    calc
+      _ = (T.card * t) ^ 2 := by ring
+      _ ≤ Fintype.card I * (T.card * (t + (T.card - 1) * d)) :=
+        h.trans (Nat.mul_le_mul_left _ ss)
+      _ = _ := by ring
+  exact Nat.le_of_mul_le_mul_left aux (card_pos.mpr hne)
+
 /-- The local Plotkin inequality for blocks with exactly `a` marked and `b`
 unmarked sites, in regions of size `w` and `z`. -/
 theorem slice_bound (T : Finset J) (S : J → Finset I) (R : Finset I) (w z t s a b : ℕ)
