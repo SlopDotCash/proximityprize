@@ -60,6 +60,39 @@ def whole_star_gcd(rate, errors, missing, neighbors):
     return size - 1 + missing
 
 
+def primitive_nineteen():
+    """The clipped support moments exclude a root common to every 19-tuple."""
+    t, d, h = 379625061, 134217727, 765474164
+    # The punctured integral pair moment excludes this many supports at one site.
+    total_at_site = 682920128
+    a, rem = divmod(total_at_site*(t-1), N-1)
+    pairs = (N-1)*comb(a, 2) + rem*a
+    assert pairs > (d-1)*comb(total_at_site, 2)
+    max_load = total_at_site - 2  # Exclude the head from the leaf count.
+    rho, high = Q(t, N), Q(max_load, h)
+    variance = Q(t-d, h) + d - Q(t*t, N)
+    assert 2*(Q(4, 5)-rho)**2 > variance
+    assert 18*(Q(1, 2)-rho)**2 > variance
+    assert (1+Q(29, 50)-2*rho)**2 > 2*variance
+    avoid = h-max_load
+    # The leaves omitting a fixed site cannot all contain eight other sites.
+    assert avoid*(t-8)**2 > (N-8)*((t-8)+(avoid-1)*(d-8))
+
+    def quad(z):
+        return (z**18-rho**18-18*rho**17*(z-rho))/(z-rho)**2
+
+    # At most one site exceeds 4/5. Charge its extra curvature independently.
+    low, top = quad(Q(4, 5)), quad(high)
+    expected = t*rho**18 + 18*rho**17*(d-t*rho) + low*variance + (top-low)*(high-rho)**2
+    rare = 17*7*Q(29, 50)**18
+    assert expected < Q(2965, 1000) < 3-rare
+    assert rare < Q(66, 10000)
+    caps = [1] + [v for v, _ in profile(N, t, d, N+1)]
+    assert caps[18] == 155824732 < h
+    print(f"first eighth-rate primitive independent leaves=19 neighbors={h} "
+          f"uniform_gcd_one_at={max_load+1} max_cover_partners=7")
+
+
 if __name__ == "__main__":
     full = (12, 15, 0, 0, 9, 5, 5, 6)
     near = (19, 21, 9, 10, 10, 8, 7, 7)
@@ -76,3 +109,4 @@ if __name__ == "__main__":
         print(f"star 1/{r} B={b}n deficit={missing} independent_differences={star_size} "
               f"neighbors={h} common_support<={common} gcd<={gcd} "
               f"whole_gcd<={whole_star_gcd(r, errors, missing, h)}")
+    primitive_nineteen()
