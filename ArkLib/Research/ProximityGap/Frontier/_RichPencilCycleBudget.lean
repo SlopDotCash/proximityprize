@@ -261,6 +261,68 @@ theorem affine_path_distance_budget {F I X : Type*} [Field F] [Fintype I]
   · simp only [H, if_pos rfl, two_mul]
     exact (Finset.card_union_le _ _).trans (Nat.add_le_add (ha last) (hb (σ last)))
 
+
+/-- Nine ordered rich pencils with consecutive shared heads cannot occur at the
+first sponsor radius. The error rows may be supersets of the true error sets,
+as in canonical bad-witness data. -/
+theorem first_sponsor_no_nine_pencil_path {F J X : Type*} [Field F] [Fintype X]
+    [DecidableEq X] (C : Submodule F (X → F)) (u₀ u₁ : X → F)
+    (γ : J → F) (w : J → X → F) (Q : J → Finset X)
+    (U V : Fin 9 → X → F) (p a b : Fin 9 → J)
+    (hinj : Function.Injective γ)
+    (hlabels : ∀ i, p i ≠ a i ∧ p i ≠ b i ∧ a i ≠ b i)
+    (hshare : ∀ i : Fin 8, a i.castSucc = b i.succ)
+    (hdistinct : ∀ i : Fin 8, (U i.castSucc, V i.castSucc) ≠ (U i.succ, V i.succ))
+    (hU : ∀ i, U i ∈ C) (hV : ∀ i, V i ∈ C)
+    (hhead : ∀ i j, (j = p i ∨ j = a i ∨ j = b i) →
+      ∀ x, w j x = U i x + γ j * V i x)
+    (hagree : ∀ j x, x ∉ Q j → w j x = u₀ x + γ j * u₁ x)
+    (hbudget : ∀ j, (Q j).card ≤ 221512373)
+    (hdistance : ∀ v ∈ C, ∀ E : Finset X, E.card < 536870913 →
+      (∀ x ∉ E, v x = 0) → v = 0) : False := by
+  classical
+  have step (i : Fin 9) (hi : i ≠ Fin.last 8) :
+      ∃ j : Fin 8, i = j.castSucc ∧ finRotate 9 i = j.succ := by
+    have hval : i.val < 8 := by
+      have hne : i.val ≠ 8 := fun he ↦ hi (Fin.ext he)
+      omega
+    let j : Fin 8 := ⟨i.val, hval⟩
+    refine ⟨j, Fin.ext rfl, Fin.ext ?_⟩
+    exact coe_finRotate_of_ne_last hi
+  have shared (i : Fin 9) (hi : i ≠ Fin.last 8) : a i = b (finRotate 9 i) := by
+    obtain ⟨j, hj, hk⟩ := step i hi
+    calc
+      a i = a j.castSucc := congrArg a hj
+      _ = b j.succ := hshare j
+      _ = b (finRotate 9 i) := congrArg b hk.symm
+  have cost (i : Fin 9) (j : J) (hj : j = p i ∨ j = a i ∨ j = b i) :
+      (affineHeadErrors u₀ u₁ (U i) (V i) (γ j)).card ≤ 221512373 := by
+    refine (Finset.card_le_card ?_).trans (hbudget j)
+    intro x hx
+    by_contra hnot
+    have he := (hagree j x hnot).symm.trans (hhead i j hj x)
+    simpa [affineHeadErrors, he] using hx
+  have h := affine_path_distance_budget (finRotate 9) (Fin.last 8)
+    u₀ u₁ U V (γ ∘ p) (γ ∘ a) (γ ∘ b) 536870913 221512373
+    (fun i ↦ ⟨hinj.ne (hlabels i).1, hinj.ne (hlabels i).2.1, hinj.ne (hlabels i).2.2⟩)
+    (fun i hi x ↦ by
+      have left := hhead i (a i) (Or.inr (Or.inl rfl)) x
+      have right := hhead (finRotate 9 i) (b (finRotate 9 i)) (Or.inr (Or.inr rfl)) x
+      rw [← shared i hi] at right
+      exact left.symm.trans right)
+    C hU hV
+    (fun i hi ↦ by
+      obtain ⟨j, hj, hk⟩ := step i hi
+      rw [hk, hj]
+      exact hdistinct j)
+    hdistance
+    (fun i hi ↦ congrArg γ (shared i hi))
+    (fun i ↦ cost i (p i) (Or.inl rfl))
+    (fun i ↦ cost i (a i) (Or.inr (Or.inl rfl)))
+    (fun i ↦ cost i (b i) (Or.inr (Or.inr rfl)))
+  have impossible := first_sponsor_path_card_le_eight 9 (by simpa using h)
+  omega
+
 end ProximityGap.RichPencilCycleBudget
 
 #print axioms ProximityGap.RichPencilCycleBudget.adjacent_exception_mass_le
@@ -270,3 +332,4 @@ end ProximityGap.RichPencilCycleBudget
 #print axioms ProximityGap.RichPencilCycleBudget.path_distance_budget
 #print axioms ProximityGap.RichPencilCycleBudget.first_sponsor_path_card_le_eight
 #print axioms ProximityGap.RichPencilCycleBudget.affine_path_distance_budget
+#print axioms ProximityGap.RichPencilCycleBudget.first_sponsor_no_nine_pencil_path
