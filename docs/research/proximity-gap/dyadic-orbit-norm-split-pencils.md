@@ -71,3 +71,31 @@ Thus a comparison with $O\ne0$ and $K=0$ is impossible. Otherwise it yields $V/q
 The exhaustive calculation runs over the 560 choices of $T$ of size three and an unordered pair of disjoint two-element subsets of the remaining 13 sites. It considers every pair of centers in every role and all four primitive units. Among **1,201,200 placements**, the minimum of the largest lower bound available to a placement is exactly $8/99$. A quicker mode first identifies size-three center sets up to translation and multiplication by odd integers, leaving nine representatives and 19,305 layouts. Translation permutes the site columns; odd multiplication also permutes the primitive-unit indices up to sign. Both modes compare integers by cross multiplication. Reproduce the full run with `python3 scripts/probes/probe_split_pencil_six_blocks.py --all-layouts`. [Exact placement verifier](../../../scripts/probes/probe_split_pencil_six_blocks.py)
 
 Finally $8q^2/99>(10q+6)/9$ for $q\ge16$. Hence neither distribution of seven complete classes occurs. The Lean module verifies the variance identity, the application of Cauchy–Schwarz, and both numerical contradictions. The quotient factorization, application of the polynomial rotation theorem, and two finite certificates are the written and executable parts of this proof. [Lean variance inequalities](../../../ArkLib/Research/ProximityGap/Frontier/SplitPencilBlockVariance.lean)
+
+## Two fibers cannot each contain three whole classes
+
+For either named field, even six full classes are impossible when three belong to each of two fibers. This holds from $n=128$ through $2^{30}$. To prove it, select three classes from each of $A,B$. Write $t_{ij}$ for the populations on the ten unassigned blocks. Their row totals are $q-1,q-1,4q-1$. The rotation count above gives $\sum t_{ij}^2\le2q^2+1$. Put $s_{ij}=(t_{ij}+1/10)/q$, giving row sums $1,1,4$. Then
+$$
+ q^2\sum s_{ij}^2 \le 2q^2+6q/5+7/10 .
+$$
+The same offset in every row cancels in the signed population equations. At each pair of centers in $A$, every order-16 primitive-unit row $h$ therefore imposes
+$$
+ \sum_{j\text{ unassigned}} h_j(s_{Bj}-s_{Cj})=-\sum_{j\in B}h_j.
+$$
+The roles of $A,B$ may be exchanged. Here the letters on the right denote the three selected complete class indices.
+
+There are 2,574 placements after normalizing the first triple by affine exponent changes. Over the rationals, 233 linear systems are inconsistent. In the other 2,341 the minimum possible $\sum s_{ij}^2$ is always at least $11/5$, with equality for first triple $\{0,2,8\}$ and second triple $\{4,10,12\}$. This contradicts the rotation inequality for $q\ge8$.
+
+The verifier orthogonalizes the integer equations and their right-hand sides simultaneously. A resulting $0=c$ with $c\ne0$ detects inconsistency. The mutually orthogonal equations $a_i\cdot s=c_i$ have least squared solution norm $\sum_i c_i^2/(a_i\cdot a_i)$, by projection onto their row span. Clearing integer factors in elimination preserves the equations. Both forward and reverse elimination give the stated counts and minimum. [Exact linear systems](../../../scripts/probes/probe_split_pencil_dense_blocks.py)
+
+## Five complete classes force millions of deficits in a pair of other blocks
+
+Suppose $A$ contains three complete classes and $B$ contains two. Choose **any** two other class indices as targets for $C$, and let $e$ be the total number of sites there outside $C$. At length $2^{30}$, **$e\ge4,979,231$**. Thus the conclusion restricts the placement of $C$ even if it contains no whole block.
+
+Use the seven-class reference population $u$ from the preceding variance argument. It consists of three full $A$ blocks, two full $B$ blocks and two target $C$ blocks. On the nine remaining blocks it assigns each row its mean for that reference, namely $(q-1)/9,(2q-1)/9,(2q-1)/9$. Let $W=\sum(t_{ij}-u_{ij})^2$ over all 16 blocks. The rotation bound gives $\sum t_{ij}^2\le8q^2+1$. Let $\alpha,\beta$ be the numbers of actual $A,B$ sites in the two target blocks. Disjointness gives $\alpha+\beta\le e$. The scalar product $\sum u_{ij}(t_{ij}-u_{ij})$ equals
+$$
+ -qe+\frac{-(q-1)\alpha-(2q-1)\beta+(2q-1)e}{9}\ \ge -qe .
+$$
+Consequently $W\le (10q+6)/9+2qe$ by expanding the square and inserting the displayed reference values.
+
+For the lower bound, on the 11 blocks outside the five selected full classes put $d_{ij}=9(t_{ij}-u_{ij})/q$. Its three row sums vanish. Each unit comparison with centers in $A$ or $B$ takes the form $\sum h_j(d_{ij}-d_{Cj})=-O$, where $i$ is the other full-block fiber and $O$ is the integer gap from the seven-block reference. This system requires no pointwise ratio comparison on the two target blocks. Its least squared solution norm divided by 81 gives a lower bound on $W/q^2$. Among 38,610 choices the verifier finds 37,290 consistent systems, with minimum $68585/462186$. At $q=2^{26}$ the two bounds force the stated integer deficit. [Finite certificate](../../../scripts/probes/probe_split_pencil_dense_blocks.py) · [Lean arithmetic](../../../ArkLib/Research/ProximityGap/Frontier/SplitPencilBlockVariance.lean)
