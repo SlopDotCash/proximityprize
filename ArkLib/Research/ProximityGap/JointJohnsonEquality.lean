@@ -54,6 +54,48 @@ theorem dimension_one {n : ℕ} (hr : hasPrizeRate n 1) (withLists : Bool) :
     rw [cutoff, list]
     simp [Nat.sub_add_cancel hn, hn.ne']
 
+/-- For every tolerance, the four-point dimension-two code is excluded from the
+MCA grid equalities. This leaves dimension one and the sixteen-point case. -/
+theorem mca_parameters {I F : Type} [Field F] [Fintype F] [DecidableEq F]
+    [Fintype I] [Nonempty I] (D : I ↪ F) [ReedSolomon.Smooth D]
+    (ε : ℝ≥0) {k : ℕ} (hr : hasPrizeRate (Fintype.card I) k)
+    (mca : (cutoff (RankReview.mcaAnswer D ε k) : ℝ) / Fintype.card I =
+      1 - Real.sqrt (((k - 1 : ℕ) : ℝ) / Fintype.card I)) :
+    k = 1 ∨ k = 2 ∧ Fintype.card I = 16 := by
+  rcases JohnsonEqualityExamples.parameters_of_grid D hr _ mca with one | ⟨rfl, four | sixteen⟩
+  · exact Or.inl one
+  · have h := SixteenMcaJohnson.four_cutoff_ne_two D four ε
+    have size : (Fintype.card I : ℝ) = 4 := by exact_mod_cast four
+    rw [size] at mca
+    norm_num [Real.sqrt_div] at mca
+    exact False.elim (h (by exact_mod_cast (show
+      (cutoff (RankReview.mcaAnswer D ε 2) : ℝ) = 2 by linarith)))
+  · exact Or.inr ⟨rfl, sixteen⟩
+
+/-- If both cutoffs equal Johnson on a single smooth input at the supplied
+tolerance and list width, then its Reed–Solomon dimension is one. -/
+theorem dimension_one_of_both {I F : Type} [Field F] [Fintype F] [DecidableEq F]
+    [Fintype I] [Nonempty I] (D : I ↪ F) [ReedSolomon.Smooth D]
+    (ε : ℝ≥0) {k : ℕ} (hr : hasPrizeRate (Fintype.card I) k) (m : ℕ)
+    (mca : (cutoff (RankReview.mcaAnswer D ε k) : ℝ) / Fintype.card I =
+      1 - Real.sqrt (((k - 1 : ℕ) : ℝ) / Fintype.card I))
+    (list : (cutoff (RankReview.listAnswer D ε k m) : ℝ) / Fintype.card I =
+      1 - Real.sqrt (((k - 1 : ℕ) : ℝ) / Fintype.card I)) : k = 1 := by
+  rcases mca_parameters D ε hr mca with one | ⟨rfl, sixteen⟩
+  · exact one
+  · have size : (Fintype.card I : ℝ) = 16 := by exact_mod_cast sixteen
+    rw [size] at mca list
+    norm_num [Real.sqrt_div] at mca list
+    have first : cutoff (RankReview.mcaAnswer D ε 2) = 12 := by
+      exact_mod_cast (show (cutoff (RankReview.mcaAnswer D ε 2) : ℝ) = 12 by linarith)
+    have second : cutoff (RankReview.listAnswer D ε 2 m) = 12 := by
+      exact_mod_cast (show (cutoff (RankReview.listAnswer D ε 2 m) : ℝ) = 12 by linarith)
+    by_cases tiny : RankReview.budget F ε < Fintype.card F
+    · have sep := SixteenJohnsonSeparation.separate_of_budget_lt D sixteen ε m tiny
+      omega
+    · rw [SixteenJohnsonSeparation.all_safe_of_field_budget D ε 2 (by omega)] at first
+      simp [cutoff, sixteen] at first
+
 /-- Equality for MCA can occur only in dimension one or at the sixteen-point
 dimension-two code parameters. In the second case the list cutoff must differ. -/
 theorem necessary {n k : ℕ} {withLists : Bool} (hr : hasPrizeRate n k)
@@ -61,28 +103,14 @@ theorem necessary {n k : ℕ} {withLists : Bool} (hr : hasPrizeRate n k)
     k = 1 ∨ k = 2 ∧ n = 16 ∧ withLists = false := by
   obtain ⟨F, I, _, _, _, _, _, D, ⟨sm⟩, card, _, mca, lists⟩ := existsCode
   subst n
-  rcases JohnsonEqualityExamples.parameters_of_grid D hr _ mca with one | ⟨rfl, four | sixteen⟩
+  rcases mca_parameters D (prizeThreshold : ℝ≥0) hr mca with one | ⟨rfl, sixteen⟩
   · exact Or.inl one
-  · have h := SixteenMcaJohnson.four_cutoff_ne_two D four (prizeThreshold : ℝ≥0)
-    have size : (Fintype.card I : ℝ) = 4 := by exact_mod_cast four
-    rw [size] at mca
-    norm_num [Real.sqrt_div] at mca
-    exact False.elim (h (by exact_mod_cast (show
-      (cutoff (RankReview.mcaAnswer D (prizeThreshold : ℝ≥0) 2) : ℝ) = 2 by
-        linarith)))
   · refine Or.inr ⟨rfl, sixteen, ?_⟩
     cases withLists with
     | false => rfl
     | true =>
-      have list := lists rfl 1 (by decide)
-      have size : (Fintype.card I : ℝ) = 16 := by exact_mod_cast sixteen
-      rw [size] at mca list
-      norm_num [Real.sqrt_div] at mca list
-      have first : cutoff (RankReview.mcaAnswer D (prizeThreshold : ℝ≥0) 2) = 12 := by
-        exact_mod_cast (show (cutoff (RankReview.mcaAnswer D _ 2) : ℝ) = 12 by linarith)
-      have second : cutoff (RankReview.listAnswer D (prizeThreshold : ℝ≥0) 2 1) = 12 := by
-        exact_mod_cast (show (cutoff (RankReview.listAnswer D _ 2 1) : ℝ) = 12 by linarith)
-      have sep := SixteenJohnsonSeparation.separate D sixteen 1
+      have impossible := dimension_one_of_both D (prizeThreshold : ℝ≥0) hr 1 mca
+        (lists rfl 1 (by decide))
       omega
 
 /-- A single supplied code can have both operational cutoffs equal to Johnson
