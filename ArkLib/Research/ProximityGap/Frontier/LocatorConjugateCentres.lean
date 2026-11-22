@@ -36,6 +36,7 @@ theorem conjugate_centre (σ : K ≃+* K) (P Q : Finset K)
   change loc P (σ x) / loc Q (σ x) = loc P a / loc Q a
   simpa only [map_div₀, loc_map, hP, hQ, ha] using congrArg σ hx
 
+omit [DecidableEq K] in
 /-- The same orbit extension applies to squared complex magnitudes. In a
 cyclotomic field complex conjugation commutes with every field automorphism. -/
 theorem conjugate_squared_value (σ τ : K ≃+* K) (hc : Function.Commute σ τ)
