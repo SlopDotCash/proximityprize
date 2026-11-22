@@ -13,6 +13,8 @@ Write $E_3=1+\lfloor(3489660928-S)/6\rfloor$. This is the **exact first error co
 \]
 Thus $S\ge671088641$ gives the exact unrestricted value $E=E_3$. If $S\le671088640$, every count through 469762048 is secure and the remaining unrestricted interval is $[469762049,E_3]$. The known bounds on $S$ are **603979776 through 805306362**. Determining $S$ and excluding any earlier four-head or outsider overrun in the second case remain open. The unrestricted reduction invokes the written geometric interval theorem. [Quartic classification and its formalization boundary](quarter-collinear-interval.md) · [Known cubic witness](quarter-three-heads-32-fibers.md#attainment)
 
+The exact maximum over geometrically Galois maps is 402653184. A degree-fourteen search through more than 151 million reflection-invariant endpoint pairs on the 64-site quotient also falls below the incumbent. [Symmetry proof and fixed-prime search](quarter-root-score-symmetry.md)
+
 ## The best allocation on fixed polynomial differences
 
 An over-budget three-head family in this bracket has distinct scalar labels assigned to the heads. Every head receives at least $n+1-2(e+1)$ labels because a single head has at most $e+1$. Each has core size at least $t-\lfloor e/(n-2(e+1))\rfloor$, for $t=n-e$. The core union and the count of fresh labels exclude constant direction just as in the quartic proof, also at the single additional endpoint $e=480946859$. The determinant inequality forces any three heads covering an overrun to be collinear. Normalize their polynomial row differences along a primitive direction to obtain scalar polynomials $0,f,g$ of degrees at most $D$. The three heads are distinct, hence $f,g,f-g$ are nonzero.

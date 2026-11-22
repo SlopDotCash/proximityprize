@@ -65,3 +65,37 @@ The first three factors are nonzero. The two fibers therefore supply more than $
 For the successor apply the theorem after subtracting one scalar head from all four, which preserves equality and gives $d=2h-2$ by the primitive-direction bound. A scalar received value $y(x)$ exists on each triple site because there the received pair equals the base pair plus $(P(x),Q(x))f_i(x)$ for each matching head, and coprimality makes $(P(x),Q(x))$ nonzero. Extend $y$ arbitrarily elsewhere. On a triple site exactly one head differs, so alignment precisely tests the prescribed omitted label. A classifier of height $r\le h$ can match at most $3h-2$ of the $4h-8$ or more triple sites. The mismatch count is at least $h-6=268435450$. In particular this applies to $G/B=X^h$ on the order-$4h$ subgroup under every labeling of its four values. Exact matching by any four-valued rational map on the whole domain would require height at least $2h-6=536870906$. This argument leaves arbitrary assignments of the omitted labels open.
 
 A small sharp example is the order-eight subgroup of $\mathbb F_{17}^{\times}$ with $G/B=X^2$ and $d=2$. Choose $p_0,p_1,p_2,p_3=1,2,4,8$, one from each square fiber, and set $y(x)=x^3$. The distinct quadratics $f_i(X)=X^3-\prod_{j\ne i}(X-p_j)$ give exactly the prescribed three matches at every $p_i$. Thus four aligned sites attain $r+d=4$. [Finite-field check](../../../scripts/probes/probe_quarter_successor_four_heads.py)
+
+## Split polynomials with a common remainder
+
+This section concerns the profile with one single-core site and three two-core sites. It restates that profile as a statement about four vanishing polynomials, shows that any realization is over budget, and records an exhaustive search at small lengths. It does not decide the production case.
+
+**Structure.** All six pair overlaps sum to $12h-12=6(2h-2)$, so every difference $f_a-f_b$ has degree exactly $2h-2$ and its roots are exactly $C_a\cap C_b$. Each perfect matching of the heads carries one two-core site. A star of three pairs through one head would force $2|S|=2h-3$ for the three other omitted classes, so the three two-core pairs form a triangle. Number the heads so that the triangle is $\{0,1,2\}$, let $S_i$ be the triple sites that omit head $i$, and let $v_i$ be the monic polynomial vanishing on $S_i$. Then $|S_0|=|S_1|=|S_2|=h-1$, $|S_3|=h-2$, the single-core site lies in $C_3$, and
+$$
+f_0-f_3=\lambda_{03}v_1v_2,\qquad f_1-f_3=\lambda_{13}v_0v_2,\qquad f_2-f_3=\lambda_{23}v_0v_1 .
+$$
+Subtracting these in pairs and cancelling the common factor gives, with the two-core sites $r_{01},r_{02},r_{12}$,
+$$
+\lambda_{03}v_1-\lambda_{13}v_0=\lambda_{01}(X-r_{01})v_3,\quad
+\lambda_{03}v_2-\lambda_{23}v_0=\lambda_{02}(X-r_{02})v_3,\quad
+\lambda_{13}v_2-\lambda_{23}v_1=\lambda_{12}(X-r_{12})v_3 .
+$$
+So $v_0,v_1,v_2$ are proportional on $S_3$: up to scalars they have **one common remainder modulo $v_3$**. Equivalently $v_0/v_3$ agrees with three linear functions on $S_0$, $S_1$ and $S_2$, and the three lines meet pairwise above the sites $r_{01},r_{02},r_{12}$.
+
+**Converse.** Suppose pairwise disjoint sets $S_0,S_1,S_2$ of size $h-1$ and $S_3$ of size $h-2$ in a domain of size $4h$ satisfy the three relations with nonzero constants and three distinct further sites $r_{ab}$. Put $f_3=0$ and define $f_0,f_1,f_2$ by the first display. Let $y$ be zero on $S_0\cup S_1\cup S_2$ and on one of the two remaining sites, the common value of $f_0,f_1,f_2$ on $S_3$, and $f_a=f_b$ at $r_{ab}$. Each core then has exactly $3h-2$ sites and one site is uncovered. With a coprime linear direction $(P,Q)$ having no root on the domain, the heads $(Pf_i,Qf_i)$ have degree below $2h$. At a covered site $x$ outside the core of head $i$ the scalar $z(x)=-P(x)/Q(x)$ makes that head agree on its core and on $x$, which is $3h-1$ sites, and the pair is not jointly explained there. The map $x\mapsto z(x)$ is injective, so the covered sites give $4h-1$ distinct bad scalars. The received values at the uncovered site can be chosen so that the four heads contribute four further scalars. The total is $4h+3$. **A realization on the first designated domain would therefore fix the first failure at 268435457.**
+
+**The concurrent case stays within budget.** If the three sites $r_{ab}$ coincide, the four polynomials $v_0,v_1,v_2,(X-r)v_3$ lie in one pencil and vanish on four disjoint fibers of size $h-1$. Each of the four remaining sites can join only one core, because the four heads take pairwise distinct values there. Giving one remaining site to each core covers every site, and these heads then have exactly $4h$ bad scalars, which equals the budget. One family of such pencils needs $h-1=2m$ with $m$ dividing $4h$: the map $x^m+c\,x^{-m}$ has fibers of size $2m$ inside the group of $4h$-th roots of unity. This forces $h\in\{3,5,9\}$. For $h$ a power of two the degree $h-1$ is odd and coprime to $4h$, so no power map can be a factor.
+
+**Search.** For $h=4,5,6$ and a prime just below $2^{31}$, every choice of $S_3$ and $S_0$ up to rotation was examined for further split members of the span of $v_0$, $v_3$ and $Xv_3$.
+
+| $h$ | Sites | Pairs $(S_3,S_0)$ | With a further split member | With two on disjoint sets | Configurations |
+|---:|---:|---:|---:|---:|---:|
+| 4 | 16 | 5460 | 1348 | 152 | 0 |
+| 5 | 20 | 406980 | 1272 | 108 | 0 |
+| 6 | 24 | 27457584 | 80 | 0 | 0 |
+
+At $h=5$ the 108 cases are the pencils $x^2+c\,x^{-2}$ with coincident sites. At $h=4$ the counts are the same at a second prime. No case has three distinct two-core sites on the domain.
+
+Small fields behave differently. At $h=4$ the field $\mathbb F_{17}$ has 4104 configurations and the thirteen primes from 97 to 641 have none. At $h=5$ the field $\mathbb F_{41}$ has nine and the thirteen primes from 61 to 661 have none. Exhaustive decoding of one $\mathbb F_{41}$ configuration finds **23 bad scalars on 20 sites**, which is $4h+3$ and confirms the converse numerically. These realizations disappear as the field grows, as with the earlier small-field counts.
+
+These are finite checks at three small lengths. They are evidence that this profile is not realized, and they are not a proof at the production length. The two profiles with five or six two-core sites, and received pairs without four large cores, are not covered. [Search program](../../../scripts/probes/probe_successor_common_remainder.cpp) · [Exhaustive check over $\mathbb F_{41}$](../../../scripts/probes/probe_successor_converse_check.py)
