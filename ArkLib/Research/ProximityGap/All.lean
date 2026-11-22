@@ -579,6 +579,7 @@ import ArkLib.Research.ProximityGap.Frontier.LiuZhouSplitRecursion
 import ArkLib.Research.ProximityGap.Frontier.LocatorAgreementIncidence
 import ArkLib.Research.ProximityGap.Frontier.LocatorConjugateCentres
 import ArkLib.Research.ProximityGap.Frontier.LocatorPadding
+import ArkLib.Research.ProximityGap.Frontier.LocatorProductRamification
 import ArkLib.Research.ProximityGap.Frontier.LocatorShortening
 import ArkLib.Research.ProximityGap.Frontier.LocatorSignedPacking
 import ArkLib.Research.ProximityGap.Frontier.LogRatioTowerBoundedIncrement
@@ -686,6 +687,7 @@ import ArkLib.Research.ProximityGap.Frontier.PaleySingleSizeQuadratic
 import ArkLib.Research.ProximityGap.Frontier.PaleySliceSampling
 import ArkLib.Research.ProximityGap.Frontier.PaleySubgroupSignedEnergy
 import ArkLib.Research.ProximityGap.Frontier.PaleySubgroupTransversal
+import ArkLib.Research.ProximityGap.Frontier.PaleyTorusPencil
 import ArkLib.Research.ProximityGap.Frontier.PaleyTranslateInterpolation
 import ArkLib.Research.ProximityGap.Frontier.PaleyTranslationEnergy
 import ArkLib.Research.ProximityGap.Frontier.PaleyVirtualSign
