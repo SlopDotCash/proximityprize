@@ -319,6 +319,7 @@ import ArkLib.Research.ProximityGap.Frontier.DoubleQuadraticHeadCount
 import ArkLib.Research.ProximityGap.Frontier.DoubleQuadraticPhase
 import ArkLib.Research.ProximityGap.Frontier.DoubleQuadraticThreshold
 import ArkLib.Research.ProximityGap.Frontier.DyadicCharacterCirculant
+import ArkLib.Research.ProximityGap.Frontier.DyadicDifferenceRoots
 import ArkLib.Research.ProximityGap.Frontier.DyadicFourCycleCount
 import ArkLib.Research.ProximityGap.Frontier.DyadicFourCycleExclusion
 import ArkLib.Research.ProximityGap.Frontier.DyadicFrobeniusNorm
