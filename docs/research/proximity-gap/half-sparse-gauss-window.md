@@ -2,6 +2,8 @@
 
 For the second named prime, every length-$2^{30}$ injective domain and every positive interleaving width has first half-rate MCA failure at **312,800,001 errors or later**. At its predecessor the proof bounds the number of bad scalars by **2,115,023,520**, leaving **32,460,128** below budget. The upper bound on the designated subgroup is **387,740,104**. Lean checks the two production interpolants, the arithmetic of the geometric bounds and every factor-degree allocation. The sparse intersection and tangent-duality arguments below are written mathematics. [Lean certificates](../../../ArkLib/Research/ProximityGap/Frontier/HalfSparseGaussWindow.lean) · [Integer probe](../../../scripts/probes/probe_half_sparse_gauss_window.py) · [Upper witness](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeTetrahedron.lean)
 
+At **314,491,700** half-rate errors, a universal Lean theorem rules out a positive dimension surplus for every ordinary mixed-jet multiplicity and pair of degree cutoffs. [Exact limit of the rank argument](johnson-jet-room.md)
+
 ## Newton volume for the surface gradient
 
 Use the normalized graph from the preceding surface proof. Its gradient hyperplane class is $L$, its projected slope class is $A$, and $H_Y$ denotes the class of a point in the ordinate coordinate. For a factor $F(X,Z,Y)$ with value degree $b$, total scalar/value degree $m$ and coordinate/value weight at most $W$ with value weight $d$, that proof gives

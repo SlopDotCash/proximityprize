@@ -481,3 +481,5 @@ ArkLib.Research.ProximityGap.JointJohnsonTolerance ProximityPrize.JointJohnsonTo
 ArkLib.Research.ProximityGap.JointJohnsonTolerance ProximityPrize.JointJohnsonTolerance.exists_above_iff
 ArkLib.Research.ProximityGap.CappedJohnsonTolerance ProximityPrize.CappedJohnsonTolerance.at_maximal_prime
 ArkLib.Research.ProximityGap.JointJohnsonFieldCeiling ProximityPrize.JointJohnsonFieldCeiling.realizable_iff
+# A full quartet edge yields a scalar pencil on three complete root sets
+ArkLib.Research.ProximityGap.Frontier.SaturatedQuartetFullEdge ArkLib.ProximityGap.Frontier.SaturatedQuartetFullEdge.projected_pencil
