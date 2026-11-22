@@ -4,6 +4,7 @@ Released under both MIT and Apache-2.0 licenses as described in LICENSE-MIT and 
 Authors: Mikhail Izhutkin (mashingaan)
 -/
 import Mathlib.Tactic
+import Mathlib.LinearAlgebra.Lagrange
 
 /-!
 # Affine heads on a minimum-distance support
@@ -14,7 +15,7 @@ multiple of one residual codeword. Agreement at any coordinate of the support
 then cuts a single affine line in the resulting two-parameter family.
 -/
 
-open scoped BigOperators
+open scoped BigOperators Polynomial
 
 set_option autoImplicit false
 
@@ -126,6 +127,45 @@ theorem tight_support_separation {X : Type*} [Fintype X] [DecidableEq X]
   change D ≤ 2 * t + (S \ T).card
   omega
 
+/-- A residual with a full set of prescribed roots has a complementary locator. -/
+theorem residual_mul_nodal_complement {F X : Type*} [Field F] [DecidableEq X]
+    (z : X ↪ F) (G B : Finset X) (hB : B ⊆ G) (v : F[X]) (hv : v ≠ 0)
+    (hdeg : v.natDegree ≤ (G \ B).card)
+    (hroot : ∀ x ∈ G \ B, v.eval (z x) = 0) :
+    ∃ a : F, a ≠ 0 ∧ v * Lagrange.nodal B z = Polynomial.C a * Lagrange.nodal G z := by
+  classical
+  obtain ⟨R, hR⟩ : Lagrange.nodal (G \ B) z ∣ v :=
+    Polynomial.prod_X_sub_C_dvd (G \ B) z z.injective.injOn v hroot
+  have hR0 : R ≠ 0 := by
+    intro h
+    apply hv
+    simp [hR, h]
+  have hRdeg : R.natDegree = 0 := by
+    rw [hR, Polynomial.natDegree_mul Lagrange.nodal_ne_zero hR0,
+      Lagrange.natDegree_nodal] at hdeg
+    omega
+  have hRC := Polynomial.eq_C_of_natDegree_eq_zero hRdeg
+  refine ⟨R.coeff 0, ?_, ?_⟩
+  · intro h
+    exact hR0 (by simpa [h] using hRC)
+  · have hpartition : Lagrange.nodal (G \ B) z * Lagrange.nodal B z =
+        Lagrange.nodal G z := Finset.prod_sdiff hB
+    rw [hR, hRC, mul_right_comm, hpartition, mul_comm]
+
+/-- Evaluation of a reciprocal locator on a coordinate explained by the received line. -/
+theorem reciprocal_locator_evaluation {F : Type*} [Field F]
+    (v L P a delta s : F) (ha : a ≠ 0) (hd : delta ≠ 0)
+    (hfactor : v * L = a * P) (hvalue : v = s * delta) :
+    s / a * L = P / delta := by
+  apply (eq_div_iff hd).mpr
+  calc
+    (s / a * L) * delta = (1 / a) * (v * L) := by
+      rw [hvalue]
+      ring
+    _ = P := by
+      rw [hfactor]
+      field_simp
+
 /-- Exact integer margins for the reciprocal-locator incidence argument.
 The first inequality caps the surviving tight completions below 6830. The
 second guarantees more than 30 percent long triples after counting high-union
@@ -153,3 +193,5 @@ end ProximityGap.MinimumSupportHeadPlane
 #print axioms ProximityGap.MinimumSupportHeadPlane.affine_heads_on_minimum_support
 #print axioms ProximityGap.MinimumSupportHeadPlane.tight_support_separation
 #print axioms ProximityGap.MinimumSupportHeadPlane.first_sponsor_reciprocal_locator_margins
+#print axioms ProximityGap.MinimumSupportHeadPlane.residual_mul_nodal_complement
+#print axioms ProximityGap.MinimumSupportHeadPlane.reciprocal_locator_evaluation

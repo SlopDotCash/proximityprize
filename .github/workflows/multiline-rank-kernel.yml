@@ -60,8 +60,8 @@ jobs:
           from pathlib import Path
           text = Path('minimum-support-axioms.log').read_text()
           results = re.findall(r"'ProximityGap\.MinimumSupportHeadPlane\.([^']+)' (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)", text)
-          assert {name for name, _ in results} == {'residual_on_minimum_support', 'agreement_on_residual_line', 'affine_heads_on_minimum_support', 'tight_support_separation', 'first_sponsor_reciprocal_locator_margins'}
-          assert len(results) == 5
+          assert {name for name, _ in results} == {'residual_on_minimum_support', 'agreement_on_residual_line', 'affine_heads_on_minimum_support', 'tight_support_separation', 'first_sponsor_reciprocal_locator_margins', 'residual_mul_nodal_complement', 'reciprocal_locator_evaluation'}
+          assert len(results) == 7
           for name, axioms in results:
               assert {axiom.strip() for axiom in axioms.split(',') if axiom.strip()} <= {'propext', 'Classical.choice', 'Quot.sound'}, name
           PY
