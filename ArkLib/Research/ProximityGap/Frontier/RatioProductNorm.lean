@@ -92,12 +92,12 @@ theorem norm_height {n s : ℕ} [NeZero n] (a b : Fin s → ℕ) (d : ℕ) :
   rw [Int.natCast_natAbs]
   exact_mod_cast realbound
 
-/-- Two distinct reciprocal primitive roots force divisibility by the whole
-cyclotomic polynomial when the integer norm is smaller than the prime squared. -/
-theorem dvd_of_reciprocal_roots {p n : ℕ} [Fact p.Prime] [NeZero n] [NeZero (n : ZMod p)]
+/-- Two distinct reciprocal primitive roots contribute two factors of the
+split prime to the integer cyclotomic norm. -/
+theorem square_dvd_of_reciprocal_roots {p n : ℕ} [Fact p.Prime] [NeZero n] [NeZero (n : ZMod p)]
     (hn : 2<n) {z : ZMod p} (hz : IsPrimitiveRoot z n) (C : ℤ[X])
     (direct : C.eval₂ (Int.castRingHom _) z=0) (reverse : C.eval₂ (Int.castRingHom _) z⁻¹=0)
-    (small : (cycloNorm n C).natAbs < p^2) : cyclotomic n ℤ ∣ C := by
+    : (p:ℤ)^2 ∣ cycloNorm n C := by
   have nz : z≠0 := by
     intro zero
     have impossible := hz.pow_eq_one
@@ -113,13 +113,20 @@ theorem dvd_of_reciprocal_roots {p n : ℕ} [Fact p.Prime] [NeZero n] [NeZero (n
     have positive := Nat.totient_pos.mpr (by omega : 0<n)
     by_contra! small
     rcases Nat.totient_eq_one_iff.mp (by omega : n.totient=1) with h | h <;> omega
-  have div : (p:ℤ)^2 ∣ cycloNorm n C := by
-    apply ModularResultantMultiplicity.two_roots _ _ le_rfl le_rfl
-      (by rw [natDegree_cyclotomic];omega) distinct
-    · rw [map_cyclotomic];exact hz.isRoot_cyclotomic (by omega)
-    · rw [map_cyclotomic];exact hz.inv.isRoot_cyclotomic (by omega)
-    · rwa [eval_map]
-    · rwa [eval_map]
+  apply ModularResultantMultiplicity.two_roots _ _ le_rfl le_rfl
+    (by rw [natDegree_cyclotomic];omega) distinct
+  · rw [map_cyclotomic];exact hz.isRoot_cyclotomic (by omega)
+  · rw [map_cyclotomic];exact hz.inv.isRoot_cyclotomic (by omega)
+  · rwa [eval_map]
+  · rwa [eval_map]
+
+/-- Two distinct reciprocal primitive roots force divisibility by the whole
+cyclotomic polynomial when the integer norm is smaller than the prime squared. -/
+theorem dvd_of_reciprocal_roots {p n : ℕ} [Fact p.Prime] [NeZero n] [NeZero (n : ZMod p)]
+    (hn : 2<n) {z : ZMod p} (hz : IsPrimitiveRoot z n) (C : ℤ[X])
+    (direct : C.eval₂ (Int.castRingHom _) z=0) (reverse : C.eval₂ (Int.castRingHom _) z⁻¹=0)
+    (small : (cycloNorm n C).natAbs < p^2) : cyclotomic n ℤ ∣ C := by
+  have div := square_dvd_of_reciprocal_roots hn hz C direct reverse
   apply dvd_of_norm_zero
   by_contra nonzero
   have divides := Int.natAbs_dvd_natAbs.mpr div

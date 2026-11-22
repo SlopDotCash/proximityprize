@@ -70,39 +70,39 @@ private theorem stage_le_unit (r n k L A H t h : ℕ) (hk : 0<k) (ht : 0<t) (hh 
         exact_mod_cast last
     _ = _ := by simp only [stageUnit,Nat.cast_mul,Nat.cast_pow,τ]; ring
 
-private theorem cube_bound (n k L A H C t h : ℕ) (s : Fin 3) (hk : 0<k)
+private theorem degree_bound {d : ℕ} (n k L A H C t h : ℕ) (s : Fin (d+1)) (hk : 0<k)
     (ht : 0<t) (hh : h≤H) (hs : stageUnit s.val n k L A H ≤ C) :
-    regularPowerBatchedAgreementSharpBound s.val n 1 k k L A t h ≤ (C:ℚ)*(t:ℚ)^3 := by
+    regularPowerBatchedAgreementSharpBound s.val n 1 k k L A t h ≤ (C:ℚ)*(t:ℚ)^(d+1) := by
   have hx : (1:ℚ) ≤ t := by exact_mod_cast ht
-  have hj : s.val+1 ≤ 3 := s.isLt
+  have hj : s.val+1 ≤ d+1 := s.isLt
   exact (stage_le_unit s.val n k L A H t h hk ht hh).trans
     (mul_le_mul hs (pow_le_pow_right₀ hx hj) (by positivity) (Nat.cast_nonneg _))
 
-private theorem cast_budget {H C v cap : ℕ}
-    (hb : H + C*(∑ t ∈ range (v+1), t^3) ≤ cap) :
-    (H:ℚ) + ∑ t ∈ range (v+1), (C:ℚ)*(t:ℚ)^3 ≤ cap := by
+private theorem cast_budget {d H C v cap : ℕ}
+    (hb : H + C*(∑ t ∈ range (v+1), t^(d+1)) ≤ cap) :
+    (H:ℚ) + ∑ t ∈ range (v+1), (C:ℚ)*(t:ℚ)^(d+1) ≤ cap := by
   rw [← mul_sum]
   exact_mod_cast hb
 
 set_option maxHeartbeats 2000000 in
 open Classical in
-/-- A second-order line certificate gives a base-field exceptional count under
-the three explicit mixed-degree unit bounds and a finite sum of cubes. -/
-theorem exact_of_cubics {F : Type} [Field F] {n k A v h H L C cap : ℕ}
+/-- At every derivative order d, a line certificate gives a base-field exceptional
+count by charging a degree-t stage at most C times t to the power d+1. -/
+theorem exact_of_degree_charges {F : Type} [Field F] {d n k A v h H L C cap : ℕ}
     (dom : Fin n ↪ F) (u w : Fin n → F)
-    (cert : SymbolicReceivedCurve.Certificate A k 1 v 2 h dom
+    (cert : SymbolicReceivedCurve.Certificate A k 1 v d h dom
       (fun i => powerBatchedCoordinate (ℓ := 1) fun j => (![u,w] : Fin 2 → Fin n → F) j i))
-    (hk : 2 < k) (hkL : k≤L) (hLA : L≤A) (hh : h≤H)
+    (hk : d < k) (hkL : k≤L) (hLA : L≤A) (hh : h≤H)
     (hchar : ringChar F=0 ∨ max (k-1) v < ringChar F)
-    (hs : ∀ r : Fin 3, stageUnit r.val n k L A H ≤ C)
-    (hbudget : H + C*(∑ t ∈ range (v+1), t^3) ≤ cap) :
+    (hs : ∀ r : Fin (d+1), stageUnit r.val n k L A H ≤ C)
+    (hbudget : H + C*(∑ t ∈ range (v+1), t^(d+1)) ≤ cap) :
     ∃ E : Finset F, E.card ≤ cap ∧ ∀ z ∉ E, ∀ P : F[X], P.degree < k →
       A ≤ (polynomialAgreementSet dom (fun i => u i+z*w i) P).card →
       HasExactCorrelatedPair dom u w (RingHom.id F) k z P := by
   classical
   apply sharp_line_of_stage_budget dom u w cert hk hkL hLA hchar
   intro stages term hc
-  let F3 (t : ℕ) : ℚ := (C:ℚ)*t^3
+  let F3 (t : ℕ) : ℚ := (C:ℚ)*t^(d+1)
   have hf (t : ℕ) : 0≤F3 t := by dsimp [F3]; positivity
   have hsum := sum_degree_le hc F3 hf
   have hfinal : ∑ t ∈ range (jetTotalDegree cert.Q+1), F3 t ≤ ∑ t ∈ range (v+1), F3 t :=
@@ -115,7 +115,7 @@ theorem exact_of_cubics {F : Type} [Field F] {n k A v h H L C cap : ℕ}
         have hact := (isHighestActiveJet_of_highestActiveJet_eq_some
           (hc.highestActiveJet_eq_of_mem (List.mem_toFinset.mp hst))).1
         have ht : 0 < jetTotalDegree s.1 := hact.trans_le (jetDegree_le_total _ _)
-        exact cube_bound n k L A H C (jetTotalDegree s.1) h s.2 (by omega) ht hh (hs s.2)
+        exact degree_bound n k L A H C (jetTotalDegree s.1) h s.2 (by omega) ht hh (hs s.2)
     _ ≤ (H:ℚ) + ∑ t ∈ range (v+1), F3 t := add_le_add le_rfl (hsum.trans hfinal)
     _ ≤ _ := cast_budget hbudget
 
@@ -183,7 +183,7 @@ theorem exact_recovery {F : Type} [Field F] (i : Fin 3) (dom : Fin n ↪ F) (u w
   obtain ⟨cert⟩ := certificate_of_origin_rank hd le_rfl (show c.k ≤ c.k-1+1 by omega) dom
     (fun i => powerBatchedCoordinate (ℓ := 1) fun j => (![u,w] : Fin 2 → Fin n → F) j i)
     (fun _ => powerBatchedCoordinate_natDegree_le _) hv hr (surplus.trans_le lo)
-  apply exact_of_cubics dom u w cert (by fin_cases i <;> decide)
+  apply exact_of_degree_charges dom u w cert (by fin_cases i <;> decide)
     (by fin_cases i <;> decide) (by fin_cases i <;> decide) _ hchar (unit_bounds i) (total_cap i)
   apply (Nat.div_le_div_left (Nat.sub_le_sub_right lo _) (Nat.sub_pos_of_lt surplus)).trans
   fin_cases i <;> decide
@@ -210,6 +210,6 @@ theorem bls_three_rates (i : Fin 3) (dom : Fin n ↪ ZMod BlsScalarSubgroup.P) :
   exact (BoundarySecurityBudget.count_ratio_le_iff (by decide) (by decide)).mpr le_rfl
 
 end ProximityGap.StratifiedSecondOrderProduction
-#print axioms ProximityGap.StratifiedSecondOrderProduction.exact_of_cubics
+#print axioms ProximityGap.StratifiedSecondOrderProduction.exact_of_degree_charges
 
 #print axioms ProximityGap.StratifiedSecondOrderProduction.bls_three_rates
