@@ -1,4 +1,4 @@
-# Exact interleaved Reed–Solomon list sizes from capacity to radius one
+# Exact interleaved Reed–Solomon list sizes from $n-k$ errors to radius one
 
 Let $D$ consist of $n$ distinct points of $\mathbb F_q$, let $1\le k\le n$, and let $m\ge1$ be the interleaving width. Write $Q=q^m$. Let $L_t$ be the maximum, over received words, of the number of codewords agreeing in at least $t$ columns. The closed ball at Hamming radius $n-t$ has this list size.
 
