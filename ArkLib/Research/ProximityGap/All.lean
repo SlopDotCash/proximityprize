@@ -1082,6 +1082,7 @@ import ArkLib.Research.ProximityGap.Frontier.SquarefreeRetentionFloor
 import ArkLib.Research.ProximityGap.Frontier.StackMaximizerDomination
 import ArkLib.Research.ProximityGap.Frontier.StepanovStructuredVacuous
 import ArkLib.Research.ProximityGap.Frontier.StepanovWeilQVacuous
+import ArkLib.Research.ProximityGap.Frontier.StratifiedSecondOrderProduction
 import ArkLib.Research.ProximityGap.Frontier.StructuredUncertaintySharpFloor
 import ArkLib.Research.ProximityGap.Frontier.SubexpMomentToConvergenceHub
 import ArkLib.Research.ProximityGap.Frontier.SubfieldQuarterListThreshold
