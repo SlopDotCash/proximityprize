@@ -473,6 +473,7 @@ import ArkLib.Research.ProximityGap.Frontier.FourSecantListBoundary
 import ArkLib.Research.ProximityGap.Frontier.FourSupportSpectrum
 import ArkLib.Research.ProximityGap.Frontier.FullFiberMcaLift
 import ArkLib.Research.ProximityGap.Frontier.GaussPeriodR2CeilingGap
+import ArkLib.Research.ProximityGap.Frontier.GaussPolarSectionHeights
 import ArkLib.Research.ProximityGap.Frontier.GaussianEnergyBoundMuNDepthThree
 import ArkLib.Research.ProximityGap.Frontier.GaussianEnergyBoundMuNDepthTwo
 import ArkLib.Research.ProximityGap.Frontier.GeneralManyLineSafety
