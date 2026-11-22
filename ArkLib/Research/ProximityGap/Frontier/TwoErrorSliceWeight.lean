@@ -155,10 +155,10 @@ theorem local_population (D : I ↪ F) (P : J → F[X]) (hin : Function.Injectiv
   omega
 
 /-- The column bound on actual Reed–Solomon list members at an arbitrary word. -/
-theorem column (D : I ↪ F) (P : J → F[X]) (hin : Function.Injective P) (W : I → F)
+theorem column_general (D : I ↪ F) (P : J → F[X]) (hin : Function.Injective P) (W : I → F)
     (T : Finset J) (E : J → Finset I) (hE : ∀ j ∈ T, ∀ x, x ∈ E j ↔ (P j).eval (D x) ≠ W x)
-    (hdeg : ∀ j ∈ T, (P j).natDegree < 64) (R : Finset I)
-    (hU : (univ \ R).card=67) :
+    {k : ℕ} (hdeg : ∀ j ∈ T, (P j).natDegree < k) (R : Finset I)
+    (hU : (univ \ R).card=k+3) :
     (∑ j ∈ T, credit D (E j) (fun x => (P j).eval (D x)-W x) R) ≤ 6 := by
   classical
   let A j := E j \ R
@@ -184,6 +184,14 @@ theorem column (D : I ↪ F) (P : J → F[X]) (hin : Function.Injective P) (W : 
   have count := local_population D P hin W T' E (fun i hi => hE i (mem_filter.mp hi).1)
     (fun i hi => hdeg i (mem_filter.mp hi).1) R hU (fun {i} hi => size hi) j hj
   simpa [r,hj,A] using count
+
+/-- Specialization to the half-rate 128-site slice. -/
+theorem column (D : I ↪ F) (P : J → F[X]) (hin : Function.Injective P) (W : I → F)
+    (T : Finset J) (E : J → Finset I) (hE : ∀ j ∈ T, ∀ x, x ∈ E j ↔ (P j).eval (D x) ≠ W x)
+    (hdeg : ∀ j ∈ T, (P j).natDegree < 64) (R : Finset I)
+    (hU : (univ \ R).card=67) :
+    (∑ j ∈ T, credit D (E j) (fun x => (P j).eval (D x)-W x) R) ≤ 6 :=
+  column_general D P hin W T E hE hdeg R hU
 
 end ProximityGap.TwoErrorSlice
 

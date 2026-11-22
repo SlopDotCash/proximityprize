@@ -17,7 +17,8 @@ variable {K L : Type*} [Field K] [Field L]
 private theorem reduce {n : ℕ} {r : K} (h : IsPrimitiveRoot r n) (k : ℕ) :
     r^(k%n)=r^k := by rw [h.eq_orderOf]; exact pow_mod_orderOf _ _
 
-private theorem powers {n : ℕ} (hn : 0<n) {z : K} {w : L}
+/-- Equal powers at a primitive root give equal powers at every primitive root of the same order. -/
+theorem powers {n : ℕ} (hn : 0<n) {z : K} {w : L}
     (hz : IsPrimitiveRoot z n) (hw : IsPrimitiveRoot w n) (i j : ℕ)
     (eq : z^i=z^j) : w^i=w^j := by
   have er : i%n=j%n := hz.pow_inj (Nat.mod_lt _ hn) (Nat.mod_lt _ hn)

@@ -31,11 +31,12 @@ structure BudgetWindow (q : ℕ) : Prop where
 def domain : H ↪ K :=
   ⟨fun i ↦ ((i : Kˣ) : K), fun _ _ h ↦ Subtype.ext (Units.ext h)⟩
 
-/-- Any multiplicative subgroup of order 128 defines a smooth domain. -/
-@[instance_reducible] noncomputable def smooth (card_H : Fintype.card H = 128) : ReedSolomon.Smooth (domain H) where
+/-- The inclusion of every dyadic-order multiplicative subgroup is a smooth domain. -/
+@[instance_reducible] noncomputable def smooth_of_two_pow {e : ℕ} (card_H : Fintype.card H = 2^e) :
+    ReedSolomon.Smooth (domain H) where
   H := H
   a := 1
-  h_card_pow2 := ⟨7, card_H⟩
+  h_card_pow2 := ⟨e, card_H⟩
   h_coset := by
     classical
     ext x
@@ -45,6 +46,10 @@ def domain : H ↪ K :=
       exact ⟨i.val, i.property, one_mul _⟩
     · rintro ⟨i, hi, rfl⟩
       exact Finset.mem_image.mpr ⟨⟨i, hi⟩, Finset.mem_univ _, (one_mul _).symm⟩
+
+/-- Any multiplicative subgroup of order 128 defines a smooth domain. -/
+@[instance_reducible] noncomputable def smooth (card_H : Fintype.card H = 128) : ReedSolomon.Smooth (domain H) :=
+  smooth_of_two_pow H (e := 7) card_H
 
 /-- First over-budget error count, ordered by decreasing prize rate. -/
 def firstBad : Fin 4 → ℕ := ![63, 97, 113, 121]

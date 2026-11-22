@@ -9,7 +9,7 @@ import ArkLib.Data.CodingTheory.ReedSolomon.Interleaved.AgreementBounds
 /-! # A list threshold from non-dihedral pair bounds at arbitrary block length and width -/
 namespace ProximityGap.ReflectionListSampling
 
-open Finset Code TwoErrorSlice
+open Finset Polynomial Code TwoErrorSlice
 
 variable {I F : Type*} [Fintype I] [DecidableEq I] [Field F]
 
@@ -19,10 +19,19 @@ def RowBudget (k r L : ℕ) : Prop := ∀ e, 3≤e → e≤r+1 →
 
 /-- The arbitrary-center scalar estimate. The puncture keeps k+3 sites, and the
 radius allows at most r+1 errors, where n=k+3+r. -/
-theorem scalar (D : I ↪ F) {k r T L : ℕ} [NeZero k] (hn : Fintype.card I=k+3+r)
-    (rigid : PairCap D T) (hL : 0<L) (pay : RowBudget k r L) (δ : ℝ)
-    (hδ : δ*(Fintype.card I : ℝ)<r+2) : Lambda (ReedSolomon.code D k : Set (I → F)) δ ≤
-      (max 1 ((k+3+r).choose r*T/L) : ℕ) := by
+theorem scalar_of_sample_weights (D : I ↪ F) {k r T C L : ℕ} [NeZero k]
+    (hn : Fintype.card I=k+3+r) (hL : 0<L) (reward' : I → I → F → ℕ)
+    (pay : ∀ e, 3≤e → e≤r+1 →
+      (k+2)*L ≤ (e.choose 2-e/2)*((k+3+r-e).choose (r+2-e)*C))
+    (last : ∀ (E A Q : Finset I) (err : I → F), (∀ x∈E,err x≠0) → A.card=2 → A⊆E →
+      (∀ u∈A,∀ v∈A,u≠v → D u≠-D v) → Q⊆univ \ E → ((univ \ E) \ Q).card=k+2 →
+      C ≤ ∑ x∈(univ \ E) \ Q,sampleWeight D reward' E err ((E \ A) ∪ insert x Q))
+    (col : ∀ (W : I → F) (V : Finset (I → F)) (P : V → F[X]), Function.Injective P →
+      ∀ E : V → Finset I, (∀ j x,x∈E j ↔ (P j).eval (D x)≠W x) →
+      (∀ j,(P j).natDegree<k) → ∀ R : Finset I,(univ \ R).card=k+3 →
+      (∑ j : V,sampleWeight D reward' (E j) (fun x => (P j).eval (D x)-W x) R)≤T)
+    (δ : ℝ) (hδ : δ*(Fintype.card I : ℝ)<r+2) :
+    Lambda (ReedSolomon.code D k : Set (I → F)) δ ≤ (max 1 ((k+3+r).choose r*T/L) : ℕ) := by
   classical
   apply Lambda_le_of_forall_finset_card_le
   intro W S hS
@@ -63,19 +72,17 @@ theorem scalar (D : I ↪ F) {k r T L : ℕ} [NeZero k] (hn : Fintype.card I=k+3
     apply le_trans _ (le_max_left ..)
     exact card_le_one.mpr fun i hi j hj => congrArg Subtype.val ((unique ⟨i,hi⟩).trans (unique ⟨j,hj⟩).symm)
   let samples := (univ : Finset I).powersetCard r
-  let w (j : S) := sampleWeight D (reward D) (E j) (fun x => (P j).eval (D x)-W x)
+  let w (j : S) := sampleWeight D reward' (E j) (fun x => (P j).eval (D x)-W x)
   have perRow (j : S) : L ≤ ∑ R∈samples,w j R := by
     have lo : 3≤(E j).card := by by_contra! h; exact one ⟨j,by omega⟩
-    have row := row_from_extensions D (E j) (w j) (C:=k+1) hn (r:=r) (by omega) lo (hsize j)
+    have row := row_from_extensions D (E j) (w j) (C:=C) hn (r:=r) (by omega) lo (hsize j)
       (fun A hA sub clean Q hQ sites => by
-        have ct := final_site D (E j) A Q _ (fun x hx => sub_ne_zero.mpr ((he j x).mp hx))
-          hA sub clean hQ
-        rw [sites] at ct
-        simpa only [show k+3+r-r-1-1=k+1 by omega] using ct)
+        apply last _ _ _ _ (fun x hx => sub_ne_zero.mpr ((he j x).mp hx)) hA sub clean hQ
+        omega)
     rw [show k+3+r-r-1=k+2 by omega] at row
     exact Nat.le_of_mul_le_mul_left ((pay _ lo (hsize j)).trans row) (by omega)
   have perCol (R) (hR : R∈samples) : ∑ j : S,w j R ≤ T := by
-    apply column D rigid P hin W univ E (fun i _ => he i) (fun i _ => hdeg i)
+    apply col W S P hin E he hdeg
     rw [card_sdiff_of_subset (subset_univ _),card_univ,hn,(mem_powersetCard.mp hR).2]
     omega
   have lo := sum_le_sum (s := (univ : Finset S)) (fun j _ => perRow j)
@@ -83,6 +90,19 @@ theorem scalar (D : I ↪ F) {k r T L : ℕ} [NeZero k] (hn : Fintype.card I=k+3
   have hi := lo.trans (sum_le_sum perCol)
   simp only [sum_const,nsmul_eq_mul,card_univ,Fintype.card_coe,Nat.cast_id,samples,card_powersetCard,hn] at hi
   exact (Nat.le_div_iff_mul_le hL).mpr hi |>.trans (le_max_right ..)
+
+/-- Unit credit for nonreflection products gives the unweighted transposition bound. -/
+theorem scalar (D : I ↪ F) {k r T L : ℕ} [NeZero k] (hn : Fintype.card I=k+3+r)
+    (rigid : PairCap D T) (hL : 0<L) (pay : RowBudget k r L) (δ : ℝ)
+    (hδ : δ*(Fintype.card I : ℝ)<r+2) : Lambda (ReedSolomon.code D k : Set (I → F)) δ ≤
+      (max 1 ((k+3+r).choose r*T/L) : ℕ) := by
+  apply scalar_of_sample_weights D hn hL (reward D) pay _ _ δ hδ
+  · intro E A Q err nonzero size sub clean hQ room
+    have ct := final_site D E A Q err nonzero size sub clean hQ
+    rw [room] at ct
+    simpa only [show k+2-1=k+1 by omega] using ct
+  · intro W V P hin E agree deg R room
+    exact column D rigid P hin W univ E (fun i _ => agree i) (fun i _ => deg i) R room
 
 /-- Every realized pair product in a field extension is the image of a base
 field product. Thus extending the scalars preserves the nonreflection cap. -/
