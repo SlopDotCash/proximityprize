@@ -83,6 +83,34 @@ theorem center_square {K : Type*} [Field K] {q c : K} (hq : q ≠ 0) (m : ℕ)
     simpa [hq] using hzero
   simpa [hrep, hzM] using hA
 
+/-- Dividing an even polynomial by the quadratic Frobenius factor is a single evaluation
+of its polynomial in the squared variable. This works also in residue characteristic two. -/
+theorem quadratic_factor_iff {K : Type*} [Field K] (q : K) (W : K[X]) :
+    X^2 - C q ∣ W.comp (X^2) ↔ W.eval q = 0 := by
+  obtain ⟨S, hS⟩ := X_sub_C_dvd_sub_C_eval (p := W) (a := q)
+  have h : X^2 - C q ∣ W.comp (X^2) - C (W.eval q) := by
+    refine ⟨S.comp (X^2), ?_⟩
+    simpa [sub_comp, mul_comp] using congrArg (fun T : K[X] => T.comp (X^2)) hS
+  constructor
+  · intro hdiv
+    by_contra hn
+    have hc : X^2-C q ∣ C (W.eval q) := by
+      simpa using dvd_sub hdiv h
+    have hd := natDegree_le_of_dvd hc (C_ne_zero.mpr hn)
+    simp [natDegree_X_pow_sub_C] at hd
+  · intro hz
+    simpa [hz] using h
+
+/-- At a root the derivative gives the value of the complementary Frobenius polynomial. -/
+theorem level_derivative {K : Type*} [Field K] (q : K) (W : K[X]) :
+    X^2 - C q ∣ W.comp (X^2) ↔ (derivative ((X - C q)*W)).eval q = 0 := by
+  simpa [derivative_mul] using quadratic_factor_iff q W
+
+/-- Negative Frobenius square on elliptic torsion for the three odd divisors of D. -/
+theorem quotient_torsion_powers :
+    (6 : ZMod 7)^2 = 1 ∧ (37 : ZMod 73)^9 = 1 ∧ (14879 : ZMod 262657)^131328 = 1 := by
+  decide +kernel
+
 /-- The genus-four trace test needs only the two even point counts N₂ and N₄. -/
 theorem genus_four_remainder {K : Type*} [CommRing K] (u p a b : K) :
     u^4+a*u^3+b*u^2+p^2*a*u+p^4 =
@@ -92,5 +120,7 @@ theorem genus_four_remainder {K : Type*} [CommRing K] (u p a b : K) :
 #print axioms fixed_fiber_capacity
 #print axioms center_square
 #print axioms genus_four_remainder
+#print axioms level_derivative
+#print axioms quotient_torsion_powers
 
 end ArkLib.ProximityGap.Frontier.QuarterSplitTrigonal

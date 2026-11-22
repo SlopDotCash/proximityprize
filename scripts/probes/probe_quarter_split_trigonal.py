@@ -103,7 +103,7 @@ def pencil_count(roots):
 def main():
     character, subfield = cubic_characters()
     remaining = set(combinations(range(1, P), 6))
-    excluded = admitted = split = orbit_count = 0
+    excluded = admitted = split = orbit_count = antipodal = 0
     while remaining:
         representative = min(remaining)
         members = orbit(representative)
@@ -123,12 +123,22 @@ def main():
             excluded += len(members)
         else:
             admitted += len(members)
+        for member in members:
+            if all(-x % P in member for x in member):
+                antipodal += 1
+                assert obstruction == 0
         if choices:
             split += len(members)
         orbit_count += 1
         print(representative, len(members), n2, n4, obstruction, choices)
     assert excluded+admitted == comb(16, 6)
     assert (orbit_count, excluded, admitted, split) == (10, 2112, 5896, 5896)
+    assert antipodal == comb(8, 3)
+    first_prime = 2**158 + 192*2**30 + 1
+    for modulus, order, primes in [(7, 2, [2]), (73, 9, [3]), (262657, 131328, [2, 3, 19])]:
+        assert pow(-first_prime, order, modulus) == 1
+        assert all(pow(-first_prime, order//ell, modulus) != 1 for ell in primes)
+    print(f"{antipodal} antipodal unions pass; three production torsion orders verified.")
     print(f"{orbit_count} orbits, {excluded} excluded, {admitted} admitted, {split} split")
 
 
