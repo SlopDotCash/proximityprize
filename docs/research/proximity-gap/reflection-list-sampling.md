@@ -50,3 +50,42 @@ $$
 Here $AC\le M$, $A\le N$, $D\le p$ and $A-1+N(C-1)<p$ ensure the Vandermonde and factorial tests in characteristic $p$. The estimate for one target holds for every non-dihedral projective map, including those with a zero matrix coefficient, by inverting input or output as needed. [Kernel and multiplicity proof](../../../ArkLib/Research/ProximityGap/Frontier/MobiusStepanov.lean) · [Multi-coset and graph estimates](../../../ArkLib/Research/ProximityGap/Frontier/MobiusSubgroupBound.lean)
 
 When $N=M=n$ and $J^2u^3\le n$, setting $A=D=Ju^2$, $C=Ju$, $B=2Ju$ gives $|S|\le 1+3n/u$ under the stated characteristic assumption. At $J=1$ the resulting transposition bound applies to any smooth coset. At $n=2^{30}$, the choices $A=1{,}049{,}601$, $B=2{,}043$, $C=1{,}023$, $D=1{,}046{,}527$ give 2,193,654,544,389 variables and 2,193,653,500,929 constraints. The degree ceiling is 3,289,945,998,336. Dividing by $D$ and rounding down gives 3,143,679 matched sites, a reduction of 816,438 sites from the common-width count. Lean verifies the numerical bound and the list threshold. An exhaustive integer check proves that no positive $A,B,C,D$ meeting the same graded rectangular inequalities give a smaller degree-to-multiplicity floor at this $n$. That check allows every characteristic-compatible choice and even drops the characteristic condition. [Optimum verification script](../../../scripts/probes/probe_graded_stepanov_optimum.py)
+
+## Weighted two-error list bound at arbitrary length
+
+For a nonantipodal pair of sites $u,v$ let $f(x)=(u-x)/(v-x)$. Write $A(t)$ for the number of unordered pairs of distinct sites outside $u,v$ with $f(a)f(b)=t$. Assign a penalty $P(j)$ of zero for $j\le1$, one for $j=2$, and three for $j\ge3$. Suppose every such pair and every nonzero scale $\mu$ satisfy
+$$
+\sum_{x\ne u,v} P(A(\mu/f(x)))\le S.
+$$
+With $n=k+3+r$, $r\ge2$, $S<3(k+2)$ and $M(e)=\binom e2-\lfloor e/2\rfloor$, define
+$$
+U_S=\max\left(1,\left\lfloor\frac{6\binom nr}{M(r+1)(3(k+2)-S)}\right\rfloor\right).
+$$
+At most $U_S$ interleaved codewords lie in any ball through $r+1$ errors whenever the endpoint minimizes the row weight. The sufficient test is $r\le k$ or $M(r+1)(k+2)\le2\binom{2k+2}{k+1}$. The result holds over any field. On a smooth domain over a finite field, every positive interleaving width has first over-budget error count $n-k-1$ throughout the integer budget interval
+$$
+U_S\ \le B\ \le\left\lfloor\frac{\binom n{k+1}-1}{n}\right\rfloor.
+$$
+This is the interval where these upper and lower estimates meet. The first failure outside the interval requires a separate bound. [Weighted scalar, interleaved and threshold theorems](../../../ArkLib/Research/ProximityGap/Frontier/WeightedTwoErrorList.lean) · [Endpoint weight test](../../../ArkLib/Research/ProximityGap/Frontier/ReflectionListArithmetic.lean)
+
+Each two-error incidence receives $3-P(A(t))$ units of credit. When the puncture contains $j$ list members, each of the other $j-1$ pairs gives an alternative for that member. Thus the column total is at most six in every multiplicity case. For a fixed nonantipodal error pair and the last of the punctured correct sites, the scale $\mu$ is fixed and $k+2$ choices remain. The total credit is at least $3(k+2)-S$. The row averaging argument now gives the displayed denominator. On extending the coefficient field, every realized nonzero scale is a product of three base-field ratios. All other nonzero scales have zero charge. Consequently the same cap works over the rational-function field used for arbitrary interleaving width. [Column bound](../../../ArkLib/Research/ProximityGap/Frontier/TwoErrorSliceWeight.lean) · [Last-site bound](../../../ArkLib/Research/ProximityGap/Frontier/TwoErrorSliceRows.lean) · [Scalar double count](../../../ArkLib/Research/ProximityGap/Frontier/ReflectionListBound.lean)
+
+Compared with the transposition cap $T=3$, the ratio of the two sufficient budgets before integer rounding is $(3(k+2)-S)/(2(k+1))$. In particular $S=29$ improves the bound at every $k\ge26$. The geometric input $S=29$ has a written all-dyadic derivation. Under the coarse transfer condition $p>2^{7n/4}$, a dyadic length $n\ge256$ already has $n\lfloor p/2^{128}\rfloor\ge2^n\ge\binom n{k+1}$. In that range the list upper estimate improves at applicable dimensions and the prescribed-product lower bound does not determine the first sponsor-budget failure. [All-dyadic shape argument](dyadic-three-pair-shapes.md)
+
+## A four-rate 64-site prime-field band
+
+For every smooth 64-site multiplicative coset over $\mathbf F_p$ with $p>2^{112}$, the penalty is at most twelve. Normalize the coset coordinates with a primitive 64th root, and embed their exponents as even exponents in the 128-site orbit of the certified 237-bit field. The order-64 three-product norm bound transfers source collisions to this suborbit because $2^{7\varphi(64)}=2^{224}<p^2$. The target 128-site certificate controls all of its suborbits by the injective transfer theorem. This argument requires only the existence of the source 64th root. [Prime transfer and complete endpoint](../../../ArkLib/Research/ProximityGap/Frontier/WeightedList64.lean) · [Profile transfer](../../../ArkLib/Research/ProximityGap/Frontier/TwoErrorSliceNormalize.lean)
+
+In dimension 32 the resulting sufficient budget is $220{,}447{,}348{,}371{,}475$. The bounds from $S=29$ and $T=3$ are $271{,}784{,}402{,}101{,}819$ and $300{,}610{,}020{,}506{,}557$. For
+$$
+220{,}447{,}348{,}371{,}475\le B=\lfloor p/2^{128}\rfloor\le27{,}767{,}032{,}438{,}524{,}098
+$$
+the four exact first failures at every positive width are as follows.
+
+| Dimension | First failing error count |
+|---:|---:|
+| 32 | 31 |
+| 16 | 48 when $B<488{,}526{,}937{,}079{,}580$, otherwise 49 |
+| 8 | 57 |
+| 4 | 61 |
+
+The 176-bit prime $p=441\cdot 2^{167}+1$ has $B=242{,}442{,}313{,}924{,}608$ and realizes the lower quarter-rate branch. Lean proves primality with Lucas witness 11, certifies a primitive 64th root, and verifies the list comparisons for all smooth orderings. The proof covers the sponsor's list-decoding predicate on these domains. The general proximity-gap and correlated-agreement assertions remain open. [Concrete prime and thresholds](../../../ArkLib/Research/ProximityGap/Frontier/WeightedList64.lean)

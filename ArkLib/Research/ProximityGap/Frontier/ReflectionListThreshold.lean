@@ -18,6 +18,28 @@ variable {I F : Type} [Fintype I] [DecidableEq I] [Field F]
 /-- Natural list upper bound for k+2 agreements when sampling r=n-k-3 sites. -/
 def bound (k r T : ℕ) := max 1 ((k+3+r).choose r*T/(((r+1).choose 2-(r+1)/2)*(k+1)))
 
+omit [DecidableEq I] in
+/-- The smooth common-product construction exceeds the budget at the successor
+error count, independently of the sampling upper bound at its predecessor. -/
+theorem strict_radius_of_product [Fintype F] [DecidableEq F] (D : I ↪ F) [ReedSolomon.Smooth D]
+    {k r B : ℕ} [NeZero k] (hn : Fintype.card I=k+3+r)
+    (lower : (k+3+r)*B < (k+3+r).choose (k+1)) (m : ℕ) (hm : 0 < m) (δ : ℝ)
+    (good : Lambda (interleavedCodeSet (κ := Fin m) (ReedSolomon.code D k : Set (I → F))) δ ≤
+      (B : ℕ∞)) : δ<((r+2 : ℕ):ℝ)/(Fintype.card I : ℝ) := by
+  have hk' : 0<k := Nat.pos_of_ne_zero (NeZero.ne k)
+  by_contra! bad
+  have scalar := SmoothDeepMcaThreshold.smooth_list_lower D (k:=k) (a:=0) (L:=B) hk'
+    (by simpa only [hn,pow_zero,Nat.mul_one,Nat.add_zero] using lower)
+  have eq : Fintype.card I-(k+1+0)=r+2 := by omega
+  rw [eq] at scalar
+  let diag : F → Fin m → F := fun x _ => x
+  have inj : Function.Injective diag := fun _ _ he => congrFun he ⟨0,hm⟩
+  have lift' := Lambda_le_of_injective_comp (e:=diag) inj
+    (C:=(ReedSolomon.code D k : Set (I → F)))
+    (D:=interleavedCodeSet (κ:=Fin m) (ReedSolomon.code D k : Set (I → F)))
+    (fun _ h _ => h) δ
+  exact (not_lt_of_ge good) (scalar.trans_le ((Lambda_mono bad).trans lift'))
+
 /-- The complete threshold at every positive width in the budget interval where
 nonreflection sampling at k+2 agreements and the product lower bound at k+1
 agreements straddle the budget. -/
@@ -28,22 +50,9 @@ theorem threshold_of_payment [Fintype F] [DecidableEq F] (D : I ↪ F) [ReedSolo
     (lower : (k+3+r)*B < (k+3+r).choose (k+1)) (m : ℕ) (hm : 0 < m) (δ : ℝ) :
     Lambda (interleavedCodeSet (κ := Fin m) (ReedSolomon.code D k : Set (I → F))) δ ≤
       (B : ℕ∞) ↔ δ<((r+2 : ℕ):ℝ)/(Fintype.card I : ℝ) := by
-  have hk' : 0<k := Nat.pos_of_ne_zero (NeZero.ne k)
   have npos : (0:ℝ)<Fintype.card I := by exact_mod_cast (hn ▸ (by omega : 0<k+3+r))
   constructor
-  · intro good
-    by_contra! bad
-    have scalar := SmoothDeepMcaThreshold.smooth_list_lower D (k:=k) (a:=0) (L:=B) hk'
-      (by simpa only [hn,pow_zero,Nat.mul_one,Nat.add_zero] using lower)
-    have eq : Fintype.card I-(k+1+0)=r+2 := by omega
-    rw [eq] at scalar
-    let diag : F → Fin m → F := fun x _ => x
-    have inj : Function.Injective diag := fun _ _ he => congrFun he ⟨0,hm⟩
-    have lift' := Lambda_le_of_injective_comp (e:=diag) inj
-      (C:=(ReedSolomon.code D k : Set (I → F)))
-      (D:=interleavedCodeSet (κ:=Fin m) (ReedSolomon.code D k : Set (I → F)))
-      (fun _ h _ => h) δ
-    exact (not_lt_of_ge good) (scalar.trans_le ((Lambda_mono bad).trans lift'))
+  · exact strict_radius_of_product D hn lower m hm δ
   · intro safe
     have c : (r+1).choose 2 ≥ r := by
       rw [Nat.choose_succ_succ' r 1,Nat.choose_one_right];omega

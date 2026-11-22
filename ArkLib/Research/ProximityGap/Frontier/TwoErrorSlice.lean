@@ -28,9 +28,12 @@ noncomputable def alternatives (D : I ↪ F) (u v : I) (target : F) : Finset (Fi
 def penalty (r : ℕ) : ℕ := if r ≤ 1 then 0 else if r = 2 then 1 else 3
 
 /-- A finite computation on the evaluation domain, uniform in both error magnitudes. -/
-def PenaltyBound (D : I ↪ F) : Prop :=
+def PenaltyCap (D : I ↪ F) (S : ℕ) : Prop :=
   ∀ u v : I, u ≠ v → D u ≠ -D v → ∀ μ : F, μ ≠ 0 →
-    (∑ x ∈ (univ.erase u).erase v, penalty (alternatives D u v (μ / ratio D u v x)).card) ≤ 12
+    (∑ x ∈ (univ.erase u).erase v, penalty (alternatives D u v (μ / ratio D u v x)).card) ≤ S
+
+/-- The twelve-unit cap on the reference 128-site rows. -/
+def PenaltyBound (D : I ↪ F) : Prop := PenaltyCap D 12
 
 omit [Fintype I] [DecidableEq I] in
 theorem ratio_ne_zero (D : I ↪ F) {u v x : I} (hu : u ≠ x) (hv : v ≠ x) :
