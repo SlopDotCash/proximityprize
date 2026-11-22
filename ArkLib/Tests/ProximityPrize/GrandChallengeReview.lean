@@ -136,6 +136,29 @@ run_cmd do
   unless (RankExecutable.smoothListBoundary (fun _ => [0, 1]) orderTwo 2 1 3 1 3).isNone do
     throwError "The smooth list fallback must pass every radius at the full-field budget"
 
+local instance : Fact (Nat.Prime 17) := ⟨by decide⟩
+
+/-- The length-eight smooth domain of powers of two in the field of order seventeen. -/
+private def powersOfTwo : Fin 8 ↪ ZMod 17 where
+  toFun := ![1, 2, 4, 8, 16, 15, 13, 9]
+  inj' := by decide
+
+/- Both full-boundary certificates miss these cases. The per-count decisions still
+avoid the rank search; a point request would panic. -/
+run_cmd do
+  let full := (Equiv.refl (ZMod 5)).toEmbedding
+  let points₅ (_ : Unit) : List (ZMod 5) := panic! "Unexpected five-point rank search"
+  let points₈ (_ : Unit) : List (Fin 8) := panic! "Unexpected eight-point rank search"
+  unless (RankExecutable.listBoundaryWith points₅ full 5 2 5 1 2).map Fin.val == some 3 do
+    throwError "At five sites the first over-budget list occurs at three errors"
+  unless (RankExecutable.smoothListBoundary points₈ powersOfTwo 8 5 17 2 4).map Fin.val ==
+      some 3 do
+    throwError "The length-eight smooth interleaved list must first fail at three errors"
+  unless (RankExecutable.listBoundary [0, 1] orderTwo 2 1 3 0 1).isNone do
+    throwError "Width zero has a single possible word"
+  unless (RankExecutable.listBoundary [0, 1] orderTwo 2 0 3 1 1).isNone do
+    throwError "Dimension zero has a single possible codeword"
+
 /-- All three sites over the field of order three. -/
 private def threeSites : Fin 3 ↪ ZMod 3 where
   toFun := ![0, 1, 2]
