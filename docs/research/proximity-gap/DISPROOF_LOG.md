@@ -1,5 +1,9 @@
 # Disproof Log — ABF26 Proximity Prize Grand Challenge 1 (Issue #232)
 
+## [164-quarter-split-pencil-ramification] 2026-11-21
+
+Every first-prime quarter-rate successor pencil needs a lowest-degree member of degree at least **167,908,203**. More generally its combined ramification index at zero and infinity is at most **100,527,252**, or **97,129,336** for a map factoring through squaring. These exclusions use two successive negacyclic determinant bounds and the odd cardinality of the once-quotiented fibers. [Proof](quarter-successor-split-pencil.md#ramification-at-zero-and-infinity)
+
 ## [164-higher-degree-locator-union] 2026-11-21
 
 At rate $1/16$ on either named length-$2^{30}$ domain, pooling the higher-degree locators on both dyadic quotients still leaves at least 10,941,342 places below the smaller list budget at 83,886,079 agreements. This includes one fixed numerator and multiplier per degree and quotient, all order-128 degrees from 10, all order-256 degrees from 19, and the order-256 degree-18 branch through eight unpaired roots. Separately, the 15-anchor product-one dictionary certifies at most 2,053,061,200 words with five extra agreements, below the second budget. [Combined population bound](dyadic-locator-degree-caps.md) · [Five-agreement certificate](sixteenth-locator-union.md)
