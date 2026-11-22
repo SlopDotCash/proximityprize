@@ -1,5 +1,9 @@
 # Disproof Log — ABF26 Proximity Prize Grand Challenge 1 (Issue #232)
 
+## [164-full-field-lists-on-the-named-subgroups] 2026-11-21
+
+The published shifted-cube degree bound and the Corvaja–Zannier torsion-intersection bound exclude this full-field list construction at the first open error count on all eight named prime and rate pairs. [Derivation and scope](oriented-fiber-list-bounds.md#can-the-full-field-shifted-cube-lists-reach-the-first-open-step)
+
 ## [164-coding-ranks-and-paley-discrepancy] 2026-11-21
 
 On the budget-two length-16 prize instance, multipliers 122764 and 6 give cosets with respective signed quadratic discrepancies 256 and zero against the original subgroup. Each coset has the identical indexed Reed–Solomon code. Coefficient reversal on the full nonzero domain also preserves all rank tests on subsets marked together, while inversion can change a complete Paley rectangle to exact half density. A written character-sum proof constructs these examples with one logarithmic side. The polynomial-size regime remains open. [Proof and examples](paley-support-ranks.md)
