@@ -67,3 +67,28 @@ After deleting at most two heads to exclude cross-collinear triples, the pointwi
 The local margin is the same function of `e` minus `3J` and is still increasing above the cutoff. At `e0` it exceeds `711794`. There are fewer than `7500` surviving near-minimal completions per high-union pair, since `24t / margin < 7500`. Allowing for the two deletions and at most one collinear triple costs at most `7503` completions per such pair.
 
 The global estimate with `q = 851979450` gives a fraction greater than `0.1574` of triples with error union at least `D+J+1`, after the pair-to-triple count and all exceptional completions. Using only a fraction of `0.157` in the upper ledger subtracts `floor(0.157 * choose(b,3)) * (J+1)` common agreements. The falling-cubic lower bound still exceeds this upper ledger at `t = 221762374`. Consequently the mathematical incidence argument gives the lattice floor `221762375 / 2^30` on the same code. The rational-function transfer, aggregate counts, and their sponsor-facing integration still require end-to-end formalization.
+
+## Weighting the excess by the common pair
+
+The same rational locator argument gives a larger increase if the allowed width depends on the union size of the fixed pair. Take `t = 223512374`, `a = 397000000`, `q = 850229450`, `l = D-2t`, and `B = b(b-1)(b-2)`. For `e > t` put
+
+```
+F(e) = (e-t+l)^3/(4(e-t)^2) - (D-e).
+W(e) = F(a) + F'(a)(e-a).
+```
+
+The function `F` is convex for `e > t`: writing `s=e-t`, its second derivative is `3l^2/(2s^3) + 3l^3/(2s^4)`. Thus `F(e) >= W(e)`. The slope `F'(a)` is positive and `W(t) < 100000`. For any pair with `W(e) >= 100000`, take `J(e) = floor((W(e)-100000)/3)`. This ensures `e > t`, `F(e)-3J(e) >= 100000` and `J(e) <= 20233794` since `e <= 2t`. The case in which no near-minimal completion exists requires no local construction. Otherwise `k=D-e` is nonnegative and the local construction above applies.
+
+The rational locator line cap is now 15 because `16(l-J(e)/2) > n`. Even allowing `17m^2` repeated or collinear ordered triples, the surviving count is below `17 * 2t / 100000 < 80000`. Count the nonnegative surplus `max(0, errorUnionSize-D)` of each triple. For a pair as above, at least `b-2-80003` completions have surplus at least `J(e)+1`, after the two deletions and at most one collinear completion. For a pair with `W(e) < 100000`, the total surplus is nonnegative. Thus in both cases the total surplus over completions of the pair is at least
+
+```
+(b-2-80003) * ((W(e)-100000)/3 - 1).
+```
+
+Summing over all pairs counts each unordered triple three times. Since `W` is affine and increasing, the earlier bound `mu` on the mean pair union gives the following lower bound on the mean surplus:
+
+```
+(b-2-80003)/(b-2) * ((W(mu)-100000)/3 - 1) > 4000000.
+```
+
+Here the same formula for `mu` gives `mu > 397323129`. On the other hand the gap between the no-surplus common-agreement upper bound and the falling-cubic lower bound at this radius is less than `3800000` coordinates per triple. This last comparison uses the upper bound `2Db` on the ordered collinear contribution even if `b/3` is not integral. Subtracting the mean surplus gives a contradiction. Hence this weighted version gives a candidate lattice floor of `223512375 / 2^30`, which is 2,000,001 steps above the existing formal floor. The same end-to-end formalization obligations apply.

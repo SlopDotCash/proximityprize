@@ -237,6 +237,32 @@ theorem first_sponsor_near_minimal_locator_margins :
       g * (g - n) * (g - 2 * n) := by
   norm_num
 
+/-- Exact arithmetic for the pair-weighted locator surplus at the improved radius. -/
+theorem first_sponsor_weighted_locator_margins :
+    let n : ℤ := 1073741824
+    let D : ℤ := 536870913
+    let t : ℤ := 223512374
+    let a : ℤ := 397000000
+    let q : ℤ := 850229450
+    let b := n + 1
+    let l := D - 2 * t
+    let s := a - t
+    let g := b * (n - t)
+    let ordered := b * (b - 1) * (b - 2)
+    let U := (n - D) * ordered + 2 * D * b + 3 * n * b^2
+    let denom := 3 * q * b * (b - 1)
+    let meanNum := n * denom - 2 * U - n * q^3 + 3 * q * g
+    let Y := 4 * s^3
+    let slope := 5 * s^3 - 3 * l^2 * s - 2 * l^3
+    let W := fun e : ℤ => s * (s + l)^3 - (D - a) * Y + slope * (e - a)
+    0 < slope ∧ W t < 100000 * Y ∧
+    W (2 * t) - 100000 * Y < 3 * 20233795 * Y ∧ n < 16 * l - 8 * 20233794 ∧
+    17 * 2 * t < 80000 * 100000 ∧ 397323129 * denom < meanNum ∧
+    4000000 * (b - 2) * 3 * Y < (b - 2 - 80003) * (W 397323129 - 100003 * Y) ∧
+    n^2 * ((n - D) * ordered + 2 * D * b) - g * (g - n) * (g - 2 * n) <
+      3800000 * n^2 * ordered := by
+  norm_num
+
 end ProximityGap.MinimumSupportHeadPlane
 
 #print axioms ProximityGap.MinimumSupportHeadPlane.residual_on_minimum_support
@@ -249,3 +275,4 @@ end ProximityGap.MinimumSupportHeadPlane
 #print axioms ProximityGap.MinimumSupportHeadPlane.support_symmetric_difference_bound
 #print axioms ProximityGap.MinimumSupportHeadPlane.near_minimal_support_separation
 #print axioms ProximityGap.MinimumSupportHeadPlane.first_sponsor_near_minimal_locator_margins
+#print axioms ProximityGap.MinimumSupportHeadPlane.first_sponsor_weighted_locator_margins
