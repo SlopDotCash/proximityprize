@@ -92,7 +92,7 @@ def bucket (stride i : ℕ) : Fin 4 :=
   else 3
 
 /-- A residue class in an index of size s times q has s lifts. -/
-theorem count_blocks {s q : ℕ} [NeZero q] (f : Fin q → Fin 4) (j : Fin 4) :
+theorem count_blocks {J : Type} [DecidableEq J] {s q : ℕ} [NeZero q] (f : Fin q → J) (j : J) :
     (univ.filter (fun x : Fin (s*q) => f x.modNat = j)).card =
       s*(univ.filter (fun r : Fin q => f r = j)).card := by
   classical

@@ -75,5 +75,48 @@ theorem rotation_power {D : ℕ} (hD : 0 < D) (a b c e : F[X])
     linear_combination atZero
   exact (sub_eq_zero.mp ((mul_eq_zero.mp e0).resolve_right nz)).symm
 
+/-- A non-invariant rational pencil of degree at most `m` can agree with its
+rotation on at most `2*m-2` nonzero coordinates. Its cross-product difference
+loses the leading term and has a further root at zero. -/
+theorem preserved_pencil_sites {m : ℕ} (hm : 0 < m) (A B : F[X]) (r : F)
+    (ha : A.natDegree ≤ m) (hb : B.natDegree ≤ m) (S : Finset F) (h0 : 0 ∉ S)
+    (hmoved : ∃ u : F, A.eval (r * u) * B.eval u ≠ B.eval (r * u) * A.eval u)
+    (hmatch : ∀ x ∈ S, A.eval (r * x) * B.eval x = B.eval (r * x) * A.eval x) :
+    S.card + 2 ≤ 2 * m := by
+  let Q := drop A r m * B - drop B r m * A
+  have hqa := drop_degree A r hm ha
+  have hqb := drop_degree B r hm hb
+  have hdeg : Q.natDegree < 2 * m := (natDegree_sub_le ..).trans_lt
+    (max_lt (natDegree_mul_le.trans_lt (by omega)) (natDegree_mul_le.trans_lt (by omega)))
+  have evalQ (x : F) :
+      Q.eval x = A.eval (r * x) * B.eval x - B.eval (r * x) * A.eval x := by
+    simp [Q, drop, eval_comp]
+    ring
+  classical
+  by_contra! hsmall
+  have hQ : Q = 0 := eq_zero_of_natDegree_lt_card_of_eval_eq_zero' Q (insert 0 S) (by
+    intro x hx
+    rcases mem_insert.mp hx with rfl | h
+    · simp [evalQ, mul_comm]
+    · exact (evalQ x).trans (sub_eq_zero.mpr (hmatch x h))) (by
+    rw [card_insert_of_notMem h0]
+    omega)
+  obtain ⟨u, hu⟩ := hmoved
+  apply hu
+  have he := evalQ u
+  rw [hQ, eval_zero] at he
+  exact sub_eq_zero.mp he.symm
+
+/-- Three disjoint full fibers of a non-invariant rational pencil must change
+at least `m+2` labels under a rotation. Each unchanged site lies in `S`. -/
+theorem split_pencil_displacement {m lost : ℕ} (hm : 0 < m) (A B : F[X]) (r : F)
+    (ha : A.natDegree ≤ m) (hb : B.natDegree ≤ m) (S : Finset F) (h0 : 0 ∉ S)
+    (hmoved : ∃ u : F, A.eval (r * u) * B.eval u ≠ B.eval (r * u) * A.eval u)
+    (hmatch : ∀ x ∈ S, A.eval (r * x) * B.eval x = B.eval (r * x) * A.eval x)
+    (hcount : 3 * m ≤ S.card + lost) : m + 2 ≤ lost := by
+  have := preserved_pencil_sites hm A B r ha hb S h0 hmoved hmatch
+  omega
+
+#print axioms split_pencil_displacement
 #print axioms rotation_power
 end ArkLib.ProximityGap.Frontier.SaturatedTripleRotation
