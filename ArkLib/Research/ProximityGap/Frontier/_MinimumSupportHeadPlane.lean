@@ -14,6 +14,8 @@ multiple of one residual codeword. Agreement at any coordinate of the support
 then cuts a single affine line in the resulting two-parameter family.
 -/
 
+open scoped BigOperators
+
 set_option autoImplicit false
 
 namespace ProximityGap.MinimumSupportHeadPlane
@@ -85,8 +87,48 @@ theorem agreement_on_residual_line {F : Type*} [Field F]
   · intro h
     linear_combination h
 
+/-- Tight triples sharing an edge separate by the distance margin if each
+cross triple also satisfies the distance lower bound. -/
+theorem tight_support_separation {X : Type*} [Fintype X] [DecidableEq X]
+    (A B C E : Finset X) (D t : ℕ)
+    (hA : A.card ≤ t) (hB : B.card ≤ t) (hC : C.card ≤ t) (hE : E.card ≤ t)
+    (hACE : D ≤ ((A ∪ C) ∪ E).card) (hBCE : D ≤ ((B ∪ C) ∪ E).card)
+    (hABC : ((A ∪ B) ∪ C).card = D) (hABE : ((A ∪ B) ∪ E).card = D) :
+    D ≤ 2 * t + (((A ∪ B) ∪ C) \ ((A ∪ B) ∪ E)).card := by
+  classical
+  let S := (A ∪ B) ∪ C
+  let T := (A ∪ B) ∪ E
+  have charge (x : X) :
+      (if x ∈ (A ∪ C) ∪ E then 1 else 0) + (if x ∈ (B ∪ C) ∪ E then 1 else 0) ≤
+        (if x ∈ A then 1 else 0) + (if x ∈ B then 1 else 0) +
+        (if x ∈ C then 1 else 0) + (if x ∈ E then 1 else 0) +
+        (if x ∈ S \ T then 1 else 0) + (if x ∈ T \ S then 1 else 0) := by
+    by_cases ha : x ∈ A
+    all_goals by_cases hb : x ∈ B
+    all_goals by_cases hc : x ∈ C
+    all_goals by_cases he : x ∈ E
+    all_goals simp [S, T, Finset.mem_union, Finset.mem_sdiff, ha, hb, hc, he]
+  have summed := Finset.sum_le_sum (s := (Finset.univ : Finset X)) (fun x _ ↦ charge x)
+  have count (P : Finset X) : (∑ x : X, if x ∈ P then 1 else 0) = P.card := by simp
+  simp only [Finset.sum_add_distrib, count] at summed
+  have split (P Q : Finset X) : (P \ Q).card + (P ∩ Q).card = P.card := by
+    have h : P \ (P ∩ Q) = P \ Q := by
+      ext x
+      simp only [Finset.mem_sdiff, Finset.mem_inter]
+      tauto
+    rw [← h]
+    exact Finset.card_sdiff_add_card_eq_card Finset.inter_subset_left
+  have splitS := split S T
+  have splitT := split T S
+  rw [Finset.inter_comm T S] at splitT
+  change S.card = D at hABC
+  change T.card = D at hABE
+  change D ≤ 2 * t + (S \ T).card
+  omega
+
 end ProximityGap.MinimumSupportHeadPlane
 
 #print axioms ProximityGap.MinimumSupportHeadPlane.residual_on_minimum_support
 #print axioms ProximityGap.MinimumSupportHeadPlane.agreement_on_residual_line
 #print axioms ProximityGap.MinimumSupportHeadPlane.affine_heads_on_minimum_support
+#print axioms ProximityGap.MinimumSupportHeadPlane.tight_support_separation
