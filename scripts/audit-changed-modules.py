@@ -38,9 +38,11 @@ import sys
 import tempfile
 import time
 
+import lean_lexer
+
 SCRIPTS = Path(__file__).resolve().parent
 DEFAULT_TREES = ("ArkLib/Research/", "ArkLib/Tests/ProximityPrize/")
-IMPORT = re.compile(r"^(?:public\s+)?(?:meta\s+)?import\s+(?:all\s+)?(\S+)", re.M)
+IMPORT = re.compile(r"^[ \t]*(?:(?:public|meta)[ \t]+)*import[ \t]+(?:all[ \t]+)?([^\n]+)", re.M)
 
 
 def research_exclusions() -> set[str]:
@@ -63,7 +65,9 @@ def module_path(name: str) -> str:
 
 def parse_imports(text: str) -> list[str]:
     """Source paths of the `ArkLib` modules a file imports."""
-    return [module_path(name) for name in IMPORT.findall(text) if name.startswith("ArkLib")]
+    live, _ = lean_lexer.live_text(text)
+    return [module_path(name) for group in IMPORT.findall(live) for name in group.split()
+            if name == "ArkLib" or name.startswith("ArkLib.")]
 
 
 def select(imports: dict[str, list[str]], changed: set[str], compiled: set[str]) -> set[str]:
@@ -96,17 +100,22 @@ def git(root: Path, *args: str) -> str:
     return subprocess.check_output(["git", *args], cwd=root, text=True)
 
 
-def mirror_cache(library: Path, mirror: Path) -> None:
+def mirror_cache(library: Path, mirror: Path, rebuilding: set[str]) -> None:
     """Symlink the cached `ArkLib` tree, the only package this tool overrides."""
     for directory, _, files in os.walk(library / "ArkLib"):
         relative = Path(directory).relative_to(library)
         (mirror / relative).mkdir(parents=True, exist_ok=True)
         for name in files:
+            source = (relative / (name.split(".", 1)[0] + ".lean")).as_posix()
+            if source in rebuilding:
+                continue
             link = mirror / relative / name
             if not link.is_symlink() and not link.exists():
                 link.symlink_to(Path(directory) / name)
     for entry in library.iterdir():
         link = mirror / entry.name
+        if entry.name.split(".", 1)[0] + ".lean" in rebuilding:
+            continue
         if entry.is_file() and not link.is_symlink() and not link.exists():
             link.symlink_to(entry)
 
@@ -115,10 +124,6 @@ def compile_module(root: Path, source: str, mirror: Path, logs: Path, env: dict[
                    timeout: int) -> tuple[str, int, float, list[str]]:
     target = mirror / source[:-5]
     target.parent.mkdir(parents=True, exist_ok=True)
-    for suffix in (".olean", ".ilean", ".trace", ".olean.hash", ".ilean.hash"):
-        stale = Path(str(target) + suffix)
-        if stale.is_symlink() or stale.exists():
-            stale.unlink()   # never write through a link into the shared cache
     start = time.time()
     try:
         done = subprocess.run(
@@ -126,7 +131,9 @@ def compile_module(root: Path, source: str, mirror: Path, logs: Path, env: dict[
             cwd=root, env=env, capture_output=True, text=True, timeout=timeout)
         code, output = done.returncode, done.stdout + done.stderr
     except subprocess.TimeoutExpired as expired:
-        code, output = 124, (expired.stdout or "") + "\naudit: timed out"
+        # TimeoutExpired keeps partial output as bytes even with text=True.
+        partial = b"".join(value for value in (expired.stdout, expired.stderr) if value)
+        code, output = 124, partial.decode(errors="replace") + "\naudit: timed out"
     (logs / (source[:-5].replace("/", ".") + ".log")).write_text(output, encoding="utf-8")
     errors = [line for line in output.splitlines() if ": error" in line or "timed out" in line]
     return source, code, time.time() - start, errors[:3]
@@ -136,11 +143,17 @@ def run(root: Path, base: str, lake: Path, work: Path, jobs: int, trees: tuple[s
         timeout: int) -> int:
     excluded = research_exclusions()
     tracked = [path for path in git(root, "ls-files", "--", *trees).splitlines()
-               if path.endswith(".lean") and path not in excluded]
+               if path.endswith(".lean") and path not in excluded and (root / path).is_file()]
     imports = {path: parse_imports((root / path).read_text(encoding="utf-8"))
                for path in tracked}
-    diff = [path for path in git(root, "diff", "--name-only", base, "HEAD", "--",
+    diff = [path for path in git(root, "diff", "--name-only", base, "--",
                                  "*.lean").splitlines() if path]
+    deleted = {path for path in diff if not (root / path).exists() and path not in excluded}
+    for source, dependencies in imports.items():
+        missing = sorted(deleted.intersection(dependencies))
+        if missing:
+            print(f"FAILED {source}: imports deleted source {missing[0]}", flush=True)
+            return 1
     changed = {path for path in diff if path in imports}
     outside = [path for path in diff if path not in imports and path not in excluded
                and (root / path).exists()]
@@ -149,12 +162,16 @@ def run(root: Path, base: str, lake: Path, work: Path, jobs: int, trees: tuple[s
               f"sources, for example {outside[0]}")
 
     library = lake / "build" / "lib" / "lean"
+    # Every run owns its output, including when two audits share --work.
+    work.mkdir(parents=True, exist_ok=True)
+    work = Path(tempfile.mkdtemp(prefix="run-", dir=work))
     mirror, logs = work / "mirror", work / "logs"
     mirror.mkdir(parents=True, exist_ok=True)
     logs.mkdir(parents=True, exist_ok=True)
-    mirror_cache(library, mirror)
-    compiled = {path for path in tracked if (mirror / (path[:-5] + ".olean")).exists()}
+    compiled = {path for path in tracked if (library / (path[:-5] + ".olean")).exists()}
     todo = select(imports, changed, compiled)
+    if todo:
+        mirror_cache(library, mirror, todo)
     print(f"{len(changed)} changed sources, {len(todo)} modules to compile, "
           f"logs in {logs}", flush=True)
 

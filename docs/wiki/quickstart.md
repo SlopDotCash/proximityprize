@@ -146,9 +146,9 @@ without a Lake build and without the build lock:
 
 `<base-commit>` is a commit whose build is trusted, such as the last one with a completed CI
 run. The tool recompiles, in dependency order, every tracked research or prize-test module
-changed since then, every such module that imports one of them, and any of their research
+changed since then (including staged and working-copy edits), every such module that imports one of them, and any of their research
 dependencies that has no compiled module in the cache. The research umbrella is included, so
-it compiles last. Compiled modules go to a private mirror; the shared `.lake` is read and
+it compiles last. Each run gets a new subdirectory under `--work` containing its summary, logs and private mirror. The shared `.lake` is read and
 never written. Changed Lean sources outside those trees are reported and not rebuilt. Exit
 status 1 means a module failed, timed out, or was blocked by a failed import, and each module
 has its own log. This is a direct `lean` run: the build-time plugins and Lake's linter options

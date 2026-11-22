@@ -1,9 +1,14 @@
 """Selection logic of the changed-module audit."""
 import importlib.util
 from pathlib import Path
+import subprocess
+import sys
+import tempfile
 import unittest
+from unittest.mock import patch
 
 SCRIPTS = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(SCRIPTS))
 spec = importlib.util.spec_from_file_location("audit", SCRIPTS / "audit-changed-modules.py")
 audit = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(audit)
@@ -24,11 +29,38 @@ class ParseImports(unittest.TestCase):
             "public import ArkLib.Data.Lib\n"
             "import ArkLib.Research.ProximityGap.Frontier._Under\n"
             "import ArkLib.Research.ProximityGap.«3Fold»\n"
+            "/- outer /- nested -/\nimport ArkLib.Commented.Out\n-/\n"
+            "  public meta import all ArkLib.Research.ProximityGap.C ArkLib.Research.ProximityGap.D\n"
             "-- import ArkLib.Commented.Out\n"
             "theorem t : True := trivial\n")
         self.assertEqual(audit.parse_imports(text), [
             A, LIB, "ArkLib/Research/ProximityGap/Frontier/_Under.lean",
-            "ArkLib/Research/ProximityGap/3Fold.lean"])
+            "ArkLib/Research/ProximityGap/3Fold.lean", C, D])
+
+
+class CacheIsolation(unittest.TestCase):
+    def test_target_sidecars_stay_private(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            library, mirror = root / "lib", root / "mirror"
+            for suffix in (".olean", ".olean.private", ".olean.server", ".ir"):
+                path = library / (A[:-5] + suffix)
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(b"shared")
+            (library / (B[:-5] + ".olean")).write_bytes(b"dependency")
+            audit.mirror_cache(library, mirror, {A})
+            self.assertEqual(list((mirror / A).parent.glob("A.*")), [])
+            self.assertTrue((mirror / (B[:-5] + ".olean")).is_symlink())
+
+    def test_timeout_records_partial_output(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            expired = subprocess.TimeoutExpired("lean", 1, output=b"stdout", stderr=b"stderr")
+            with patch.object(audit.subprocess, "run", side_effect=expired):
+                _, code, _, errors = audit.compile_module(root, A, root/"mirror", root, {}, 1)
+            self.assertEqual(code, 124)
+            self.assertEqual(errors, ["audit: timed out"])
+            self.assertIn("stdoutstderr", next(root.glob("*.log")).read_text())
 
 
 class Select(unittest.TestCase):
