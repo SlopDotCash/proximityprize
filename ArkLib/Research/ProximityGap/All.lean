@@ -361,12 +361,14 @@ import ArkLib.Research.ProximityGap.Frontier.DyadicOrbitIndependence
 import ArkLib.Research.ProximityGap.Frontier.DyadicPairMinorTransfer
 import ArkLib.Research.ProximityGap.Frontier.DyadicParityGalois
 import ArkLib.Research.ProximityGap.Frontier.DyadicParityLemma
+import ArkLib.Research.ProximityGap.Frontier.DyadicParityPolynomial
 import ArkLib.Research.ProximityGap.Frontier.DyadicPenalty1024
 import ArkLib.Research.ProximityGap.Frontier.DyadicPeriodCeiling
 import ArkLib.Research.ProximityGap.Frontier.DyadicProjectiveCosets
 import ArkLib.Research.ProximityGap.Frontier.DyadicProjectiveDescent
 import ArkLib.Research.ProximityGap.Frontier.DyadicQuadraticInvolution
 import ArkLib.Research.ProximityGap.Frontier.DyadicQuadraticRows
+import ArkLib.Research.ProximityGap.Frontier.DyadicRationalDegree
 import ArkLib.Research.ProximityGap.Frontier.DyadicRationalParity
 import ArkLib.Research.ProximityGap.Frontier.DyadicRationalSites
 import ArkLib.Research.ProximityGap.Frontier.DyadicSevenCombinatorics
@@ -1212,6 +1214,8 @@ import ArkLib.Research.ProximityGap.Frontier.ThreeHeadThresholdCurve
 import ArkLib.Research.ProximityGap.Frontier.ThreeInvolutionPairs
 import ArkLib.Research.ProximityGap.Frontier.ThreeRegimePrimeThreshold
 import ArkLib.Research.ProximityGap.Frontier.ThreeWordAgreement
+import ArkLib.Research.ProximityGap.Frontier.ToricGraphMinorTransfer
+import ArkLib.Research.ProximityGap.Frontier.ToricInterpolationKernel
 import ArkLib.Research.ProximityGap.Frontier.TranslatedSiteSeparation
 import ArkLib.Research.ProximityGap.Frontier.TransverseSectionBudget
 import ArkLib.Research.ProximityGap.Frontier.TruncatedJetMultipliers
@@ -1286,9 +1290,11 @@ import ArkLib.Research.ProximityGap.Frontier.WF407_T389_03_PhaseInert
 import ArkLib.Research.ProximityGap.Frontier.WF407_T400_05_defect
 import ArkLib.Research.ProximityGap.Frontier.WeightedHessianResultant
 import ArkLib.Research.ProximityGap.Frontier.WeightedHodgeWindows
+import ArkLib.Research.ProximityGap.Frontier.WeightedList64
 import ArkLib.Research.ProximityGap.Frontier.WeightedResultantInitial
 import ArkLib.Research.ProximityGap.Frontier.WeightedRichLinePacking
 import ArkLib.Research.ProximityGap.Frontier.WeightedSylvesterDegree
+import ArkLib.Research.ProximityGap.Frontier.WeightedTwoErrorList
 import ArkLib.Research.ProximityGap.Frontier.WickMGFFromTermwise
 import ArkLib.Research.ProximityGap.Frontier.WickMomentCapability
 import ArkLib.Research.ProximityGap.Frontier.WickMonoDCSupNormPresupposition

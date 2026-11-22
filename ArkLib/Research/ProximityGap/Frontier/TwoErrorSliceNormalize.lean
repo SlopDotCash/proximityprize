@@ -114,6 +114,49 @@ theorem normalize_pair {K F : Type*} [Field K] [Field F] (D : Fin 128 ↪ K) (E 
   have out := e.injective eq
   linear_combination out
 
+/-- Transfer a tested row given coordinates for the ratios in two cyclic
+orbits. The auxiliary domain may contain additional evaluation sites. -/
+theorem preserves_at_from_coordinates {I J F : Type*} [Fintype I] [Fintype J]
+    [DecidableEq I] [DecidableEq J] [Field F] {p n : ℕ} [Fact p.Prime]
+    [NeZero n] [NeZero (n : ZMod p)] [NeZero (n : F)]
+    (D : I ↪ ZMod p) (E : J ↪ F) (e : I ↪ J) (u v : I)
+    {z : ZMod p} {s : F} (hz : IsPrimitiveRoot z n) (hs : IsPrimitiveRoot s n) (hn : 2<n)
+    (ix : I → ℕ) (d : ℕ)
+    (rD : ∀ i, ratio D u v i=(z^(ix i)-1)/(z^(ix i)-z^d))
+    (rE : ∀ i, ratio E (e u) (e v) (e i)=(s^(ix i)-1)/(s^(ix i)-s^d))
+    (denD : ∀ i,i≠v → z^(ix i)≠z^d) (denE : ∀ i,i≠v → s^(ix i)≠s^d)
+    (large : 2^(7*n.totient)<p^2) : PreservesRatioTripleAt D E e u v := by
+  classical
+  let U := ((univ : Finset I).erase u).erase v
+  intro x hx y hy A hA B hB hsame
+  obtain ⟨hAs,hAc⟩ := mem_powersetCard.mp hA
+  obtain ⟨hBs,hBc⟩ := mem_powersetCard.mp hB
+  obtain ⟨a,c,hac,rfl⟩ := card_eq_two.mp hAc
+  obtain ⟨f,g,hfg,rfl⟩ := card_eq_two.mp hBc
+  let xs : Fin 3 → I := ![x,a,c]
+  let ys : Fin 3 → I := ![y,f,g]
+  have hxs (i : Fin 3) : xs i ∈ U := by
+    fin_cases i
+    · exact hx
+    · exact hAs (mem_insert_self ..)
+    · exact hAs (mem_insert_of_mem (mem_singleton_self _))
+  have hys (i : Fin 3) : ys i ∈ U := by
+    fin_cases i
+    · exact hy
+    · exact hBs (mem_insert_self ..)
+    · exact hBs (mem_insert_of_mem (mem_singleton_self _))
+  have transfer := RatioProductNorm.transfer (hn := hn) hz hs d
+    (fun i => ix (xs i)) (fun i => ix (ys i))
+    (fun i => denD (xs i) (mem_erase.mp (hxs i)).1) (fun i => denD (ys i) (mem_erase.mp (hys i)).1)
+    (fun i => denE (xs i) (mem_erase.mp (hxs i)).1) (fun i => denE (ys i) (mem_erase.mp (hys i)).1) (by
+      simp only [prod_insert (show a ∉ ({c}:Finset I) by simpa using hac),
+        prod_insert (show f ∉ ({g}:Finset I) by simpa using hfg),prod_singleton,rD] at hsame
+      simpa [RatioProductNorm.profile,Fin.prod_univ_succ,xs,ys,div_mul_div_comm] using hsame) large
+  simp only [prod_insert (show a ∉ ({c}:Finset I) by simpa using hac),
+    prod_insert (show f ∉ ({g}:Finset I) by simpa using hfg),prod_singleton,rE]
+  simpa [RatioProductNorm.profile,Fin.prod_univ_succ,xs,ys,div_mul_div_comm] using transfer
+
+
 /-- A separated source pair can be translated to zero and conjugated to one
 of the six auxiliary rows. Triple-product equalities lift by the cyclotomic
 norm bound and then reduce in the auxiliary field. -/
@@ -130,35 +173,9 @@ theorem penaltyBound_of_six {p : ℕ} [Fact p.Prime] [NeZero (128 : ZMod p)]
   let ix (i : Fin 128) : ℕ := (i-u).val
   obtain ⟨e,s,hs,eu,hr,rD,rE,_⟩ := normalize_pair D E z w hz hw hD hE u v hne hanti
   apply rowPenaltyBound_transfer D E e u v _ (by rw [eu]; exact rows _ hr)
-  let U := ((univ : Finset (Fin 128)).erase u).erase v
-  intro x hx y hy A hA B hB hsame
-  obtain ⟨hAs,hAc⟩ := mem_powersetCard.mp hA
-  obtain ⟨hBs,hBc⟩ := mem_powersetCard.mp hB
-  obtain ⟨a,c,hac,rfl⟩ := card_eq_two.mp hAc
-  obtain ⟨f,g,hfg,rfl⟩ := card_eq_two.mp hBc
-  let xs : Fin 3 → Fin 128 := ![x,a,c]
-  let ys : Fin 3 → Fin 128 := ![y,f,g]
-  have hxs (i : Fin 3) : xs i ∈ U := by
-    fin_cases i
-    · exact hx
-    · exact hAs (mem_insert_self ..)
-    · exact hAs (mem_insert_of_mem (mem_singleton_self _))
-  have hys (i : Fin 3) : ys i ∈ U := by
-    fin_cases i
-    · exact hy
-    · exact hBs (mem_insert_self ..)
-    · exact hBs (mem_insert_of_mem (mem_singleton_self _))
-  have transfer := RatioProductNorm.transfer (hn := (by decide : 2 < 128)) hz hs d.val
-    (fun i => ix (xs i)) (fun i => ix (ys i))
-    (fun i => shift_den hz u v (xs i) (mem_erase.mp (hxs i)).1) (fun i => shift_den hz u v (ys i) (mem_erase.mp (hys i)).1)
-    (fun i => shift_den hs u v (xs i) (mem_erase.mp (hxs i)).1) (fun i => shift_den hs u v (ys i) (mem_erase.mp (hys i)).1) (by
-      simp only [prod_insert (show a ∉ ({c}:Finset (Fin 128)) by simpa using hac),
-        prod_insert (show f ∉ ({g}:Finset (Fin 128)) by simpa using hfg),prod_singleton,rD] at hsame
-      simpa [RatioProductNorm.profile,Fin.prod_univ_succ,xs,ys,div_mul_div_comm] using hsame) (by
-      simpa only [show Nat.totient 128=64 by decide] using large)
-  simp only [prod_insert (show a ∉ ({c}:Finset (Fin 128)) by simpa using hac),
-    prod_insert (show f ∉ ({g}:Finset (Fin 128)) by simpa using hfg),prod_singleton,rE]
-  simpa [RatioProductNorm.profile,Fin.prod_univ_succ,xs,ys,div_mul_div_comm] using transfer
+  apply preserves_at_from_coordinates D E e u v hz hs (by decide) ix d.val rD rE
+    (shift_den hz u v) (shift_den hs u v)
+  simpa only [show Nat.totient 128=64 by decide] using large
 
 end ProximityGap.TwoErrorSlice
 

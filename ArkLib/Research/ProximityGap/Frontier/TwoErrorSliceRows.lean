@@ -37,11 +37,11 @@ theorem sampleWeight_on_pair (D : I ↪ F) (reward : I → I → F → ℕ) (E A
 
 /-- Fix all but the final added site and both true errors. The domain-wide
 penalty bound applies to one multiplicative scale throughout the resulting row. -/
-theorem last_site (D : I ↪ F) (cert : PenaltyBound D) (E A Q : Finset I) (err : I → F)
+theorem last_site_general (D : I ↪ F) {S N : ℕ} (cert : PenaltyCap D S) (E A Q : Finset I) (err : I → F)
     (herr : ∀ x ∈ E, err x ≠ 0) (hA : A.card=2) (hsub : A ⊆ E)
     (hc : ∀ u∈A, ∀ v∈A, u ≠ v → D u ≠ -D v)
-    (hQ : Q ⊆ univ \ E) (h66 : ((univ \ E) \ Q).card=66) :
-    186 ≤ ∑ x ∈ (univ \ E) \ Q, credit D E err ((E \ A) ∪ insert x Q) := by
+    (hQ : Q ⊆ univ \ E) (size : ((univ \ E) \ Q).card=N) :
+    3*N-S ≤ ∑ x ∈ (univ \ E) \ Q, credit D E err ((E \ A) ∪ insert x Q) := by
   classical
   let p := ends A hA
   obtain ⟨hnep,hpair⟩ := ends_spec hA
@@ -63,7 +63,7 @@ theorem last_site (D : I ↪ F) (cert : PenaltyBound D) (E A Q : Finset I) (err 
   have hμ : μ ≠ 0 := mul_ne_zero (div_ne_zero (herr _ (hsub h2)) (herr _ (hsub h1)))
     (Finset.prod_ne_zero_iff.mpr fun _ hy => nf hy)
   let costs x := penalty (alternatives D p.1 p.2 (μ / f x)).card
-  have bound : (∑ x ∈ X, costs x) ≤ 12 :=
+  have bound : (∑ x ∈ X, costs x) ≤ S :=
     (sum_le_sum_of_subset_of_nonneg Xsub (fun _ _ _ => Nat.zero_le _)).trans
       (cert p.1 p.2 hnep (hc _ h1 _ h2 hnep) μ hμ)
   have weight {x} (hx : x ∈ X) : credit D E err ((E \ A) ∪ insert x Q)+costs x=3 := by
@@ -80,11 +80,19 @@ theorem last_site (D : I ↪ F) (cert : PenaltyBound D) (E A Q : Finset I) (err 
     rw [same]
     unfold penalty
     split_ifs <;> decide
-  have total : (∑ x ∈ X, credit D E err ((E \ A) ∪ insert x Q)) + (∑ x ∈ X, costs x) = 198 := by
+  have total : (∑ x ∈ X, credit D E err ((E \ A) ∪ insert x Q)) + (∑ x ∈ X, costs x) = 3*N := by
     rw [← sum_add_distrib, sum_congr rfl (fun x hx => weight hx)]
-    simp [X,h66]
-  change 186 ≤ ∑ x ∈ X, credit D E err ((E \ A) ∪ insert x Q)
+    simp [X,size,Nat.mul_comm]
+  change 3*N-S ≤ ∑ x ∈ X, credit D E err ((E \ A) ∪ insert x Q)
   omega
+
+/-- Specialization to 66 available final sites and the twelve-unit penalty. -/
+theorem last_site (D : I ↪ F) (cert : PenaltyBound D) (E A Q : Finset I) (err : I → F)
+    (herr : ∀ x ∈ E, err x ≠ 0) (hA : A.card=2) (hsub : A ⊆ E)
+    (hc : ∀ u∈A, ∀ v∈A, u ≠ v → D u ≠ -D v)
+    (hQ : Q ⊆ univ \ E) (h66 : ((univ \ E) \ Q).card=66) :
+    186 ≤ ∑ x ∈ (univ \ E) \ Q, credit D E err ((E \ A) ∪ insert x Q) :=
+  last_site_general D cert E A Q err herr hA hsub hc hQ h66
 
 end ProximityGap.TwoErrorSlice
 
