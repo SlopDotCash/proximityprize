@@ -698,6 +698,7 @@ import ArkLib.Research.ProximityGap.Frontier.PunctureTwoHeadWindow
 import ArkLib.Research.ProximityGap.Frontier.PuncturedFiberAgreement
 import ArkLib.Research.ProximityGap.Frontier.PuncturedFourWordLabels
 import ArkLib.Research.ProximityGap.Frontier.PuncturedFourWordProfile
+import ArkLib.Research.ProximityGap.Frontier.PuncturedSmoothMca
 import ArkLib.Research.ProximityGap.Frontier.Q1ArisingFamilyDescent
 import ArkLib.Research.ProximityGap.Frontier.QuadraticCubicWindowExample
 import ArkLib.Research.ProximityGap.Frontier.QuadraticListIncidences
@@ -4031,6 +4032,7 @@ import ArkLib.Research.ProximityGap.SmoothListRankBracket
 import ArkLib.Research.ProximityGap.SmoothPrizeCapacityTable
 import ArkLib.Research.ProximityGap.SmoothProductionMcaExecutable
 import ArkLib.Research.ProximityGap.SmoothReservedListBoundary
+import ArkLib.Research.ProximityGap.SmoothReservedMcaBoundary
 import ArkLib.Research.ProximityGap.SolutionDisproof
 import ArkLib.Research.ProximityGap.SubsetSumErdosHeilbronn
 import ArkLib.Research.ProximityGap.SubsetSumRadiusOne
