@@ -27,6 +27,17 @@ At quarter rate the two named primes lead to the same polynomial existence quest
 
 For the first named prime at quarter rate, the first unresolved list test is at **536,870,914 errors**. Lean constructs a family one larger than the budget whose support sizes and pairwise overlaps satisfy the Reed–Solomon constraints. This rules out deciding safety from those two conditions alone. For the natural exponent indexing of the subgroup, five masks in that family force all five agreeing polynomial words to coincide, at every positive width. The unrestricted closed-ball test still permits other support families and indexings. [Polynomial compatibility proof](../../../ArkLib/Research/ProximityGap/Frontier/FiveHeadFiberRigidity.lean) [Formal construction](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSupportPackingBarrier.lean) · [Proof on the named number of sites](oriented-fiber-list-bounds.md#pairwise-support-packing-at-the-first-open-quarter-rate-step)
 
+At arbitrary tolerance, the exact thresholds for **one code to have both cutoffs at Johnson** under $q<2^{256}$ are given in the table. Dimension one is necessary. At each allowed length the displayed prime attains the minimum tolerance, and the same code works for all larger tolerances and positive widths. Without the field ceiling, arbitrarily large prime fields allow this outcome at every strictly positive tolerance. [Numerical equivalence](../../../ArkLib/Research/ProximityGap/JointJohnsonFieldCeiling.lean) · [Unbounded fields](../../../ArkLib/Research/ProximityGap/JointJohnsonTolerance.lean)
+
+| Rate | Constant-code length | Largest admissible field order $p$ | Minimum tolerance |
+|---|---:|---:|---:|
+| $1/2$ | 2 | $2^{256}-189$ | $2/p$ |
+| $1/4$ | 4 | $2^{256}-435$ | $6/p$ |
+| $1/8$ | 8 | $2^{256}-2063$ | $28/p$ |
+| $1/16$ | 16 | $2^{256}-2063$ | $120/p$ |
+
+For dimension-one lists alone, distinct constant symbols use disjoint agreements. At $t>0$ required agreements the largest list has $\min(q^m,\lfloor n/t\rfloor)$ words. At zero required agreements every constant is present. Disjoint blocks of $t$ sites attain the bound. The executable returns the first failure $n-\lfloor n/(B+1)\rfloor$ for $B<q^m$ and an all-safe answer for $B\ge q^m$. It also uses numerical incidence and interpolation checks at individual search counts for higher dimensions before invoking Gaussian elimination. [Exact list function](../../../ArkLib/Research/ProximityGap/DimensionOneList.lean) · [Per-count tests](../../../ArkLib/Research/ProximityGap/ListCountCertificates.lean)
+
 ## Statement and endpoints
 
 `ProximityPrize.RankReview.correctForEveryDomain` proves `FullPrizeReview.correctForDomain` for any finite field of size $q$, any supplied smooth domain of length $n>0$, any nonnegative tolerance $ε$, every dimension $k$ realizing rate $1/2$, $1/4$, $1/8$ or $1/16$, and every positive list width $m$. For every real radius in $[0,1]$, it classifies affine-line MCA security and the worst interleaved closed-ball list size. The sponsor uses $2^{-128}$ as an example tolerance. The companion paper highlights $k\le 2^{40}$ and $q<2^{256}$. Its list challenge asks for the radius and explicitly permits inefficient decoding. [Lean specification](../../../ArkLib/Research/ProximityGap/FullPrizeContract.lean) · [Sponsor statement](https://proximityprize.org/) · [Arnon, Boneh and Fenzi, §1](https://eprint.iacr.org/2026/680)

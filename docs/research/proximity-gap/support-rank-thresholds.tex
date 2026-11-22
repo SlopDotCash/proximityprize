@@ -289,6 +289,48 @@ and first exceeds its list budget at one. Lean verifies the
 and the \href{https://github.com/SlopDotCash/proximityprize/blob/520ef4d923f79a2115c32b0d3f6a56ab425226cf/ArkLib/Research/ProximityGap/JointJohnsonEquality.lean}{joint classification}.
 
 \newpage
+\section*{4.5.\quad The exact tolerance for simultaneous equality}
+For an arbitrary supplied $\varepsilon\ge0$, a single smooth code over a field
+$q<2^{256}$ can realize both operational cutoffs at $J$ at every positive width exactly
+when $k=1$ and $\varepsilon$ reaches the threshold in the corresponding row below.
+The denominator $p$ in each row is attained by the prime field itself.
+\begin{center}
+\begin{tabular}{@{}lrrr@{}}\toprule
+Rate & Length & Largest admissible $p$ & Minimum $\varepsilon$\\\midrule
+$1/2$ &2&$2^{256}-189$ &$2/p$\\
+$1/4$ &4&$2^{256}-435$ &$6/p$\\
+$1/8$ &8&$2^{256}-2063$ &$28/p$\\
+$1/16$&16&$2^{256}-2063$ &$120/p$\\\bottomrule
+\end{tabular}
+\end{center}
+The \href{https://github.com/SlopDotCash/proximityprize/blob/e702fdaad1f22675ce16e04e72a7dc117869930a/ArkLib/Research/ProximityGap/JointJohnsonFieldCeiling.lean}{numerical equivalence}
+includes fields of nonprime order. The
+\href{https://github.com/SlopDotCash/proximityprize/blob/e702fdaad1f22675ce16e04e72a7dc117869930a/ArkLib/Research/ProximityGap/Frontier/PrizeFieldCeiling.lean}{field-order proof}
+certifies the three primes, excludes proper prime powers in the top 2063 integers below
+$2^{256}$, and excludes all larger candidates in each requisite congruence class.
+
+\textbf{Constant words.} A dimension-one word at width $m$ repeats one of $q^m$
+symbols across the domain. A list at $t>0$ agreements contains at most
+$\min(q^m,\lfloor n/t\rfloor)$ symbols since their agreement sites are disjoint.
+Assigning blocks of $t$ sites to distinct symbols realizes the maximum. At $t=0$ all
+$q^m$ symbols fit. Thus if $B<q^m$ the
+\href{https://github.com/SlopDotCash/proximityprize/blob/fd835ba9cb574091c75835f1738f6a0dac16c21e/ArkLib/Research/ProximityGap/DimensionOneList.lean}{first list failure}
+is $n-\lfloor n/(B+1)\rfloor$; if $B\ge q^m$ all counts pass.
+
+At dimension one $J=1$. The relative list cutoff is one exactly when $B\ge n$,
+and MCA reaches one only when every count is safe. Put $N=\binom n2$.
+Covering all $N$ two-site circuits suffices for the MCA requirement.
+Conversely, if $B<N$ and MCA remains safe, the field must satisfy
+$q<\binom{B+1}{2}\le\binom N2$ by the circuit-separation theorem.
+If the list also reaches one, then $1\le\varepsilon q$. Since
+$N\binom N2\le p$, this forces $N\le\varepsilon p$ even in this small-field case.
+In every case $\max(n,N)\le\varepsilon p$ is necessary and sufficient.
+For higher dimensions the four-site MCA plateau, the sixteen-site separation, and the
+grid obstruction continue to exclude simultaneous equality at every tolerance. Without
+an upper field bound, arbitrarily large primes congruent to one modulo $n$ give both
+dimension-one cutoffs at Johnson for each $\varepsilon>0$.
+
+\newpage
 \section*{5.\quad A half-rate ceiling at length \texorpdfstring{$2^{30}$}{2 to the 30}}
 For $p_1=365375409332725729550921208179070755120141565953$ take the order-$n$ subgroup, $n=2^{30}$, $k=n/2$ and $\varepsilon=2^{-128}$. Now $B=n$. A single received pair yields $n+1$ bad scalars at 313,174,699 errors. The first failure lies in $[268{,}435{,}457,313{,}174{,}699]$. Safety at $313{,}174{,}698$ remains open.
 
