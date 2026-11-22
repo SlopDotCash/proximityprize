@@ -14,7 +14,6 @@ C = T - 255
 PRIMARY = (19, 38, 37_338)
 COMPANION = (37, 74, 1_051)
 RESIDUAL = (38, 70, 909)
-LIMIT = 2*N
 
 
 def require(condition, message):
@@ -74,7 +73,7 @@ def main():
                     ordinary = branch_price(b,m,w,T,D,degree,slope,True,gap)
                     low = branch_price(b,min(m,split),w,T,D,1,1,True,gap) if b<=split else 0
                     price = max(cutoff, low, ordinary if split < m else 0)
-                require(rest*price <= b*(LIMIT-s-pop), 'factor price')
+                require(rest*price <= b*(2_146_244_663-s-pop), 'factor price')
                 worst = max(worst, (s+pop+rest*price//b, (j,ell,b)))
                 checked += 1
     require(worst == (2_146_244_663, (3,38,35)), ('maximum', worst))

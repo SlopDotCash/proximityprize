@@ -64,16 +64,16 @@ theorem parameters :
 set_option maxHeartbeats 12000000 in
 set_option maxRecDepth 120000 in
 private theorem prices : ∀ l : Fin 39, ∀ j : Fin (l.val+1), ∀ b : Fin (l.val-j.val+1),
-    37338+headBound j.val ≤ 2147483648 ∧ (0 < b.val →
-      (l.val-j.val)*price l.val j.val b.val ≤ b.val*(2147483648-(37338+headBound j.val))) := by
+    37338+headBound j.val ≤ 2146244663 ∧ (0 < b.val →
+      (l.val-j.val)*price l.val j.val b.val ≤ b.val*(2146244663-(37338+headBound j.val))) := by
   decide +kernel
 
-/-- The component bounds imply the named budget for any family of positive
+/-- The component bounds leave 1,238,985 labels below budget for any family of positive
 factor degrees, with a separate allowance for the scalar-only factors. -/
 theorem allocations {α : Type*} (S : Finset α) (deg pop : α → ℕ) (l : Fin 39) (j : Fin (l.val+1))
     (hpos : ∀ x ∈ S, 0 < deg x) (hdeg : ∑ x ∈ S, deg x = l.val-j.val)
     (hcost : ∀ x ∈ S, pop x ≤ price l.val j.val (deg x)) :
-    37338+headBound j.val+∑ x ∈ S, pop x ≤ 2147483648 := by
+    37338+headBound j.val+∑ x ∈ S, pop x ≤ 2146244663 := by
   have base := (prices l j ⟨0,by omega⟩).1
   by_cases hz : l.val-j.val=0
   · have he : S=∅ := by
