@@ -337,6 +337,7 @@ import ArkLib.Research.ProximityGap.Frontier.EighthMobiusSites
 import ArkLib.Research.ProximityGap.Frontier.EighthRatePrime159
 import ArkLib.Research.ProximityGap.Frontier.EighthTransverseCollisions
 import ArkLib.Research.ProximityGap.Frontier.EighthTransverseCore
+import ArkLib.Research.ProximityGap.Frontier.EighthTransverseIncidences
 import ArkLib.Research.ProximityGap.Frontier.EighthTransverseMobius
 import ArkLib.Research.ProximityGap.Frontier.EighthTransverseRows
 import ArkLib.Research.ProximityGap.Frontier.EnergyLogConvexRatioMonotone
