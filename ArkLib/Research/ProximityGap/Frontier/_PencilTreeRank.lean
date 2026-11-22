@@ -123,6 +123,7 @@ theorem span_coefficient_differences_eq_span_jumps {F M : Type*} [Field F]
     · exact (mem i).2
   · apply Submodule.span_le.mpr
     rintro _ ⟨i, rfl⟩
+    change V i.succ - V (parent i) ∈ _
     rw [← diff i]
     exact Submodule.sub_mem _
       (Submodule.subset_span (Or.inr ⟨i.succ, rfl⟩))
@@ -147,7 +148,7 @@ theorem coefficient_difference_rank_add_distance_le {F X : Type*} [Field F]
       (Submodule.span F (Set.range (fun i ↦ U i - U 0) ∪ Set.range (fun i ↦ V i - V 0))) + D
       ≤ S.card + 1 := by
   rw [span_coefficient_differences_eq_span_jumps U V parent a hparent hmeet]
-  apply ProximityGap.IncidenceDependencyArithmetic.shortened_subspace_bound C _ D hD _ S
+  refine ProximityGap.IncidenceDependencyArithmetic.shortened_subspace_bound C _ D hD ?_ S ?_ ?_ hdistance
   · apply Submodule.span_le.mpr
     rintro _ ⟨i, rfl⟩
     exact C.sub_mem (hV i.succ) (hV (parent i))
