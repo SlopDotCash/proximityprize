@@ -35,8 +35,8 @@ private def polysA (L Q : K[X]) (a b : K) : Fin 4 → K[X] :=
 
 private def polysB (L Q : K[X]) (c d : K) : Fin 4 → K[X] := ![0, L, Q, L * lin d c]
 
-@[simp] private def valsA (y p q a b : K) : Fin 4 → K := ![0, y*p, y*q, p*(a*y-b)]
-@[simp] private def valsB (y p q c d : K) : Fin 4 → K := ![0, p, q, p*(c+d*y)]
+@[simp] private def valsA (y p q a b : K) : Fin 4 → K := ![0, y * p, y * q, p * (a * y - b)]
+@[simp] private def valsB (y p q c d : K) : Fin 4 → K := ![0, p, q, p * (c + d * y)]
 
 private theorem lin_degree (a b : K) : (lin a b).natDegree ≤ 1 := by
   unfold lin
@@ -62,7 +62,7 @@ private theorem degree_vector (L Q : K[X]) (a b c d : K) (i : Fin 4)
   · exact ⟨small _ (pair a (-b)), small _ (pair d c)⟩
 
 private theorem evaluated (L Q : K[X]) (y w p q a b c d : K) (i : Fin 4)
-    (hL : L.eval y = w*p) (hQ : Q.eval y = w*q) :
+    (hL : L.eval y = w * p) (hQ : Q.eval y = w * q) :
     (polysA L Q a b i).eval y = w * valsA y p q a b i ∧
     (polysB L Q c d i).eval y = w * valsB y p q c d i := by
   fin_cases i <;> constructor <;> simp [polysA, polysB, valsA, valsB, lin, hL, hQ] <;> ring
@@ -73,19 +73,19 @@ private def head (J : F[X]) (i : Fin 3) := J * seed s i
 
 /-- First row polynomials, with the leading terms in the fourth row canceled. -/
 def rowA (J : F[X]) : Fin 4 → F[X] :=
-  polysA (head J 1) (head J 2) (intercept + d₁ * (u+v)) (d₁*u*v)
+  polysA (head J 1) (head J 2) (intercept + d₁ * (u + v)) (d₁ * u * v)
 
 /-- The second coordinate for each of the four polynomial pairs. -/
 def rowB (J : F[X]) : Fin 4 → F[X] := polysB (head J 1) (head J 2) intercept d₁
 
 /-- First-coordinate values after removing the common locator. -/
-def aVal (x p q : F) : Fin 4 → F := valsA x p q (intercept+d₁*(u+v)) (d₁*u*v)
+def aVal (x p q : F) : Fin 4 → F := valsA x p q (intercept + d₁ * (u + v)) (d₁ * u * v)
 
 /-- Second-coordinate values after removing the common locator. -/
 def bVal (x p q : F) : Fin 4 → F := valsB x p q intercept d₁
 
 /-- All eight polynomials lie in the permitted degree range at rate one eighth. -/
-theorem degrees (J : F[X]) (hj : J.natDegree = s-2) (i : Fin 4) :
+theorem degrees (J : F[X]) (hj : J.natDegree = s - 2) (i : Fin 4) :
     (rowA J i).degree < (k : WithBot ℕ) ∧ (rowB J i).degree < (k : WithBot ℕ) := by
   have hd (j : Fin 3) : (head J j).natDegree ≤ 134217726 :=
     natDegree_mul_le.trans ((add_le_add hj.le (SecondPrimeSmoothSeed.degree s j)).trans (by decide))
@@ -102,7 +102,7 @@ theorem evals (J : F[X]) (i : Fin 4) (x : Fin N) (j : Fin 32) (hj : j.val = x.va
 
 /-- At a marked extra intersection the fourth row meets the third whenever
 its prescribed quotient value is reached. -/
-theorem marked_agreement {x p q : F} (hx : x = u ∨ x = v) (hq : (intercept+d₁*x)*p=q) :
+theorem marked_agreement {x p q : F} (hx : x = u ∨ x = v) (hq : (intercept + d₁ * x) * p = q) :
     aVal x p q 3 = aVal x p q 2 ∧ bVal x p q 3 = bVal x p q 2 := by
   rcases hx with rfl | rfl <;> subst q <;> constructor <;> simp [aVal, bVal, valsA, valsB] <;> ring
 
@@ -116,9 +116,9 @@ have different second rows and coincide after folding at the stated Möbius labe
 theorem cross {x p h : F} (hp : p ≠ 0) (hx : x ≠ h) :
     let a := aVal x p 0 3
     let b := bVal x p 0 3
-    let f := p * (intercept+d₁*h)
-    let scalar := ((h-u-v)*x+u*v)/(x-h)
-    b ≠ f ∧ a + scalar*b = x*f + scalar*f := by
+    let f := p * (intercept + d₁ * h)
+    let scalar := ((h - u - v) * x + u * v) / (x - h)
+    b ≠ f ∧ a + scalar * b = x * f + scalar * f := by
   dsimp [aVal, bVal, valsA, valsB]
   constructor
   · intro eq
