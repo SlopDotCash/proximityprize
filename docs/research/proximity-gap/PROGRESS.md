@@ -2613,7 +2613,7 @@ Independent replay of the scalar-count and all-width probability bounds accepted
 
 ### A resultant bound for all tangent denominators
 
-Two derivations preserving the reduced branch divisor give a written algebraic bound on the sum of the denominator degrees of the selected section tangents. One resultant charges collisions of the reduced discriminant and its coordinate derivative, and a second charges the base points of the ordinate. At the new three-head window the largest resulting nonlinear population cap is **98,657** on a sextic. This gives an independent route to the cutoff through dimension 71,582,789 using tame lifting of derivations in place of surface intersection theory. [Full proof and numerical bounds](logarithmic-section-heights.md)
+Two derivations preserving the reduced branch divisor give a written algebraic bound on the sum of the denominator degrees of the selected section tangents. One resultant charges collisions of the reduced discriminant and its coordinate derivative, and a second charges the base points of the ordinate. At the new three-head window the largest resulting nonlinear population cap is **98,657** on a sextic. This gives an independent route to the cutoff through dimension 71,582,789 using tame lifting of derivations in place of surface intersection theory. Independent kernel checks accepted 19,217 declarations for the two-resultant and residue calculations and 16,367 for the counting inequality. [Full proof and numerical bounds](logarithmic-section-heights.md)
 
 ### Exact three-head window above rate one sixteenth
 
