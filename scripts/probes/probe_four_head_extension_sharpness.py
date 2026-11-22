@@ -2,7 +2,7 @@
 """Reconstruct all four personal capacities over the second named prime at k=4."""
 
 from itertools import combinations, count
-from math import prod
+from math import comb, factorial, isqrt, prod
 
 from probe_quarter_slope_reconstruction import MAPS, P, double_sites, interpolate
 
@@ -69,6 +69,25 @@ def verify(singletons):
     print(f'n={n}, k=4, e={n-t}, {len(used)} distinct literal MCA-bad scalar labels')
 
 
+def large_field_bounds():
+    n = 2**30
+    primes = (365375409332725729550921208179070755120141565953, P)
+    for d in range(3, 8):
+        degrees = [d//3 + (i < d%3) for i in range(3)]
+        delta = prod(factorial(i+j)**2 for i,j in combinations(degrees, 2))
+        h = n//4 - d
+        labels = 8*d + 12*h
+        r = 2*d + 4*h
+        boundary = 12 + comb(n, 2) + 6*n*(d+1) + (2*d+2)*comb(labels, 2)
+        assert delta < 2**37 and boundary < 2**68
+        for q in primes:
+            assert q >= d+8 and q > 2*(r+1)*delta**2 and q > 2*delta**2
+            error = (delta-1)*(delta-2)*(isqrt(q)+1) + 4*delta**4 + delta*boundary
+            assert q > error
+        print(f'both named primes: n={n}, k={d+1}, e={2*d+3*h-1}, labels={labels}, degree bound={delta}')
+
+
 if __name__ == '__main__':
     verify(1)
     verify(5)
+    large_field_bounds()
