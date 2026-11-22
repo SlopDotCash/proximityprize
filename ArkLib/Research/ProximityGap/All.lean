@@ -716,6 +716,9 @@ import ArkLib.Research.ProximityGap.Frontier.PaleyPairDeterminants
 import ArkLib.Research.ProximityGap.Frontier.PaleyPrescribedRectangle
 import ArkLib.Research.ProximityGap.Frontier.PaleyProductStratumNorm
 import ArkLib.Research.ProximityGap.Frontier.PaleyProjectiveMoment
+import ArkLib.Research.ProximityGap.Frontier.PaleyQuarticCertificate
+import ArkLib.Research.ProximityGap.Frontier.PaleyQuarticSlice
+import ArkLib.Research.ProximityGap.Frontier.PaleyQuarticSliceContractions
 import ArkLib.Research.ProximityGap.Frontier.PaleyQuarticTraceMoment
 import ArkLib.Research.ProximityGap.Frontier.PaleyQuarticTwist
 import ArkLib.Research.ProximityGap.Frontier.PaleyRowSampling
