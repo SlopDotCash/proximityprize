@@ -32,6 +32,23 @@ The verifier reduces the Gram matrix in the metric $S^{-1}$ by a checked unimodu
 
 The [full logarithms](../../../scripts/probes/mu128_unit_logs.json) were obtained by index calculus and checked by modular exponentiation. Each logarithm can be verified independently of the program that found it. The [exact verifier](../../../scripts/probes/probe_mu128_unit_ellipsoid.py) requires Python 3 and `python-flint`. Run `python3 scripts/probes/probe_mu128_unit_ellipsoid.py`, optionally with `--reverse-basis`. The Lean energy inequality, together with the order-256 arithmetic comparison below, passed the locked build and independent verified kernel replay with 5,843 transitive declarations. The lattice enumeration is executable integer arithmetic.
 
+## Single-anchor locator values and roots of unity
+
+Fix a site $z^a$ and any two subsets $P,Q$ of $\mu_{128}$ avoiding it. For each named prime and integer $c$,
+\[
+ L_P(z^a)=z^c L_Q(z^a)\quad\Longleftrightarrow\quad
+ L_P(\zeta^a)=\zeta^c L_Q(\zeta^a)
+\]
+with the same exponent labels at the complex primitive root $\zeta$. Here the two evaluations of $L_P$ and $L_Q$ use the corresponding roots in their respective fields. Neither the cardinalities nor the root products of $P,Q$ need coincide.
+
+Translate the exponents by $-a$ and form $w_j=1_{P/z^a}(z^j)-1_{Q/z^a}(z^j)$ for $1\le j<128$. This time $A_{rj}=\Phi_r(j)$, with no second-site term. The ratio is $z^v\prod_r(1-z^r)^{(Aw)_r}$, including the translation factor $z^{a(|P|-|Q|)}$ in $z^v$. The same factorization holds over the complex numbers. The projection inequality gives $(Aw)^\mathsf{T}(AA^\mathsf{T})^{-1}(Aw)\le\sum_jw_j^2\le127$. For two nine-element supports the source bound improves to 18. The 32 columns at positive odd exponents below 64 already form the identity matrix, so the column image is all of $\mathbb Z^{32}$.
+
+A field ratio in $\mu_{128}$ imposes $l\cdot Aw\equiv0\pmod{(p-1)/128}$. At squared radius **127**, the closed ellipsoid contains exactly the zero vector of this congruence lattice at each prime, with both basis orders. Thus a ratio in $\mu_{128}$ requires $Aw=0$. Conversely $Aw=0$ makes the ratio exactly $z^v$, and the two primitive roots have the same order, so a specified exponent $c$ works in both fields. Complex equalities also specialize directly after clearing denominators.
+
+For the rate-$1/16$ witness the relative supports avoid the entire order-16 subgroup. The column $\Phi_r(j)$ counts the visits to $\{j,-j\}$ along the successive doublings of leaf $r$. Consequently $A1_T$ is precisely the leaf vector, in the order of the primitive odd representatives. For two equal-size supports with equal leaf vectors, the complex arguments of their locators at one differ by $\pi(\sum_{j\in T}j-\sum_{j\in T'}j)/128$, using representatives $1\le j<128$. Their absolute values agree by the leaf norm formula. Hence equality at the anchor is equivalent to equality of the leaf vectors **and** of the exponent sums modulo 256. At fixed root product the latter datum is a single sign bit. The criterion holds for all such supports, including vectors omitted by a ranking cutoff. [Signed modes and actual field labels](sixteenth-locator-union.md#actual-field-symbols-at-the-fifteen-anchors)
+
+Run the same exact verifier with `--single-anchor` and then with `--single-anchor --reverse-basis`. Both runs also check the primitive-vector entries against the reciprocal-pair tree for every ordinary exponent. Independently evaluating 3,276 nine-element sets at each prime gives 3,270 distinct signed labels and the same number of distinct values, including both a repeated label and sign splits. Raising the values to the 128th power checks the equivalence up to a root of unity on this control. [Exact verifier](../../../scripts/probes/probe_mu128_unit_ellipsoid.py)
+
 ## The two coding consequences
 
 At quarter rate a saturated rank-two group of four affine heads at 64 errors would give six constant locator-ratio rows, each on its own double stratum. All the required pairwise comparisons now lift. The complex three-center parity lemma and the six label signatures then leave at most ten changed double labels under negation. The finite-field label-recovery and odd-degree rotation obstruction requires at least $d=31$ changed labels. Such a group cannot occur. [Parity, label recovery and rotation](quarter-dyadic-parity.md)
