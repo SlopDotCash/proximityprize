@@ -1,6 +1,6 @@
 # Lower interpolation orders on three rich cores at quarter rate
 
-On every injective domain of length $n=2^{30}$ in the second named prime field, the closed ball at **525,150,000 errors** meets the 128-bit line-MCA budget at rate $1/4$ and every positive width. The written upper bound is **2,081,389,015** bad scalars, against a budget of $2n=2,147,483,648$. On the named subgroup the first failing count is in **[525,150,001, 553,648,129]**. The lower bound advances by 450,000 error counts. [Earlier window and geometric assumptions](tangent-head-windows.md) · [Lean upper-endpoint witness](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimePlanarQuartet.lean)
+On every injective domain of length $n=2^{30}$ in the second named prime field, the closed ball at **525,150,000 errors** meets the 128-bit line-MCA budget at rate $1/4$ and every positive width. The written upper bound is **2,081,389,015** bad scalars, against a budget of $2n=2,147,483,648$. The named subgroup has a failure witness at **553,648,129 errors**. Using variable orders extends the earlier tangent-height estimate by 450,000 error counts. Separately, the tangent determinant proof proves safety through 529,350,000 errors. [Stronger numerical bound](tangent-polar-windows.md) [Earlier window and geometric assumptions](tangent-head-windows.md) · [Lean upper-endpoint witness](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimePlanarQuartet.lean)
 
 ## The residual surface
 
