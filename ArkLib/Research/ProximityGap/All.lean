@@ -2941,6 +2941,7 @@ import ArkLib.Research.ProximityGap.Frontier._PPC10OrbitCensusCertificate
 import ArkLib.Research.ProximityGap.Frontier._PackingBudgetFirstJump
 import ArkLib.Research.ProximityGap.Frontier._PackingPrizeP30Ceilings
 import ArkLib.Research.ProximityGap.Frontier._PadicBakerDefectCeiling
+import ArkLib.Research.ProximityGap.Frontier._PairUnionMomentMean
 import ArkLib.Research.ProximityGap.Frontier._PaleyCayleyEigenvalue
 import ArkLib.Research.ProximityGap.Frontier._PaleyDoubleSumSingletonGate
 import ArkLib.Research.ProximityGap.Frontier._PencilAutocorrLambdaRootBound

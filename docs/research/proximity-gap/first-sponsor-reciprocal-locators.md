@@ -92,3 +92,57 @@ Summing over all pairs counts each unordered triple three times. Since `W` is af
 ```
 
 Here the same formula for `mu` gives `mu > 397323129`. On the other hand the gap between the no-surplus common-agreement upper bound and the falling-cubic lower bound at this radius is less than `3800000` coordinates per triple. This last comparison uses the upper bound `2Db` on the ordered collinear contribution even if `b/3` is not integral. Subtracting the mean surplus gives a contradiction. Hence this weighted version gives a candidate lattice floor of `223512375 / 2^30`, which is 2,000,001 steps above the existing formal floor. The same end-to-end formalization obligations apply.
+## The mean pair-union ledger is machine-checked
+
+The weighted section above divides a sum over pairs by `b(b-1)` and calls the
+result the mean pair-union size. Both halves of that step are now Lean theorems
+in [`_PairUnionMomentMean.lean`](../../../ArkLib/Research/ProximityGap/Frontier/_PairUnionMomentMean.lean):
+
+- `sum_card_inter_eq_sum_degree_sq` identifies the ordered pair-intersection
+  mass with the sum of squared agreement degrees,
+  `sum_card_inter_erase_eq_sum_degree_mul_pred` removes the diagonal and leaves
+  the falling square `M (M - 1)`, and `ordered_pair_union_deficit` turns that
+  into the ordered pair-union total `b (b-1) n - sum_{i != j} |E_i union E_j|`;
+- `three_mul_sq_le` proves `3 q M^2 <= 2 M^3 + q^3` from
+  `(M - q)^2 (2 M + q) >= 0`, and `sum_three_mul_sq_le` sums it against the
+  cube budget;
+- `mean_pair_union_moment` combines the two: an upper third moment `U` and a
+  lower agreement mass `g` give
+  `3 q (b (b-1) n - pairUnionTotal + g) <= 2 U + n q^3`.
+
+That last inequality is exactly the `meanNum`/`denom` comparison the weighted
+certificate consumes, so the mean bound `mu` is no longer an assumed step. The
+local completion count, the sum of the local counts over pairs, and the
+transfer to a sponsor-facing floor are still written arguments.
+
+## Successor radius at the exact ledger gap
+
+The published certificate compares a round mean surplus `4,000,000` against a
+round ledger gap `3,800,000`. The gap grows with the radius, so the successor
+certificate carries the exact gap. At `t = 223580000`, `a = 397300000` and
+`q = 852000000` every condition still holds with a single round bound
+`3,900,000`:
+
+| Quantity | Value |
+|---|---|
+| Mean pair-union bound `mu` | `397326811.596` |
+| Mean surplus per unordered triple | `3931501.0` |
+| Ledger gap per ordered triple | `3898095.9` |
+| Band cap `W(2t) - 100000` | inside `3 * 20233795` |
+| Locator line cap | `16 (l - 20233794/2) > n` |
+
+`first_sponsor_weighted_locator_margins_successor` checks all eight conditions
+in exact integer arithmetic. Reproduce with
+
+```
+python3 scripts/probes/probe_weighted_locator_certificate.py --frontier
+```
+
+which also reports the ceiling of this argument: with the tangent point placed
+at the largest admissible value the exact-gap comparison closes up to
+`t = 223591047` and fails at the next integer. The ceiling is set by the ledger
+gap, not by the band cap. The candidate floor therefore rises from
+`223512375 / 2^30` to `223580001 / 2^30` with the arithmetic checked, and to
+`223591048 / 2^30` as the exact-arithmetic limit of the same written argument.
+Both numbers inherit the local-counting obligations stated above; neither is a
+sponsor-facing result.
