@@ -33,6 +33,26 @@ private theorem tangent (x a : ℕ) : (2*a+1)*x ≤ x^2+a*(a+1) := by
   · obtain ⟨r,rfl⟩ := Nat.exists_eq_add_of_le (show a+1 ≤ x by omega)
     nlinarith
 
+/-- Integer tangent bound with the actual off-diagonal intersections. -/
+theorem pair_incidence (S : Fin M → Finset I) {t : ℕ}
+    (hsize : ∀ i, t ≤ (S i).card) (a : ℕ) :
+    2*a*(M*t) ≤ (∑ i, ∑ j ∈ univ.erase i, (S i ∩ S j).card) + a*(a+1)*Fintype.card I := by
+  classical
+  have hS : M*t ≤ ∑ i, (S i).card := by
+    simpa using Finset.sum_le_sum (s := (univ : Finset (Fin M))) (fun i _ => hsize i)
+  have htan : (2*a+1)*(∑ i, (S i).card) ≤
+      (∑ i, ∑ j, (S i ∩ S j).card) + a*(a+1)*Fintype.card I := by
+    rw [ArkLib.Coverage.sum_card_eq_sum_degree, sum_inter_card_eq_sum_degree_sq, Finset.mul_sum]
+    apply le_trans (Finset.sum_le_sum (fun x _ => tangent ((univ.filter (fun i => x ∈ S i)).card) a))
+    simp only [Finset.sum_add_distrib, Finset.sum_const, card_univ, nsmul_eq_mul, Nat.mul_comm]
+    exact le_rfl
+  have row (i) : ∑ j, (S i ∩ S j).card =
+      (S i).card + ∑ j ∈ univ.erase i, (S i ∩ S j).card := by
+    rw [← add_sum_erase univ (fun j => (S i ∩ S j).card) (mem_univ i), inter_self]
+  simp only [row, sum_add_distrib, Nat.add_mul, one_mul] at htan
+  have hlo := Nat.mul_le_mul_left (2*a) hS
+  omega
+
 open Classical in
 /-- Count pairs having more than the baseline number of common agreements. -/
 theorem forced_edges_above (S : Fin M → Finset I) {t b c : ℕ}
@@ -42,17 +62,7 @@ theorem forced_edges_above (S : Fin M → Finset I) {t b c : ℕ}
       a*(a+1)*Fintype.card I := by
   classical
   let G := fullGraph S (b+1)
-  have hS : M*t ≤ ∑ i, (S i).card := by
-    simpa using Finset.sum_le_sum (s := (univ : Finset (Fin M))) (fun i _ => hsize i)
-  have htan : (2*a+1)*(∑ i, (S i).card) ≤
-      (∑ i, ∑ j, (S i ∩ S j).card) + a*(a+1)*Fintype.card I := by
-    rw [ArkLib.Coverage.sum_card_eq_sum_degree, sum_inter_card_eq_sum_degree_sq, Finset.mul_sum]
-    apply le_trans (Finset.sum_le_sum (fun x _ => tangent ((univ.filter (fun i => x ∈ S i)).card) a))
-    simp only [Finset.sum_add_distrib, Finset.sum_const, card_univ, nsmul_eq_mul, Nat.mul_comm]
-    exact le_rfl
-  have row (i) : ∑ j, (S i ∩ S j).card ≤ (S i).card + ((M-1)*b + c*G.degree i) := by
-    rw [← add_sum_erase univ (fun j => (S i ∩ S j).card) (mem_univ i), inter_self]
-    apply Nat.add_le_add_left
+  have row (i) : ∑ j ∈ univ.erase i, (S i ∩ S j).card ≤ (M-1)*b + c*G.degree i := by
     have he : ((univ.erase i).filter (G.Adj i)) = G.neighborFinset i := by
       ext j
       simp only [mem_filter, mem_erase, mem_univ, and_true, mem_neighborFinset]
@@ -73,10 +83,7 @@ theorem forced_edges_above (S : Fin M → Finset I) {t b c : ℕ}
   have hu := Finset.sum_le_sum (s := (univ : Finset (Fin M))) (fun i _ => row i)
   simp only [sum_add_distrib, sum_const, card_univ, Fintype.card_fin, nsmul_eq_mul,
     ← Finset.mul_sum, G.sum_degrees_eq_twice_card_edges, Nat.cast_id] at hu
-  have hlo := Nat.mul_le_mul_left (2*a) hS
-  rw [Nat.add_mul, one_mul] at htan
-  change _ ≤ _ + c*(2*G.edgeFinset.card) + _
-  omega
+  exact (pair_incidence S hsize a).trans (Nat.add_le_add_right hu _)
 
 open Classical in
 /-- Integer multiplicities force edges of the saturated-overlap graph. -/

@@ -1,5 +1,13 @@
 # Disproof Log — ABF26 Proximity Prize Grand Challenge 1 (Issue #232)
 
+## [164-higher-degree-locator-union] 2026-11-21
+
+At rate $1/16$ on either named length-$2^{30}$ domain, pooling the higher-degree locators on both dyadic quotients still leaves at least 10,941,342 places below the smaller list budget at 83,886,079 agreements. This includes one fixed numerator and multiplier per degree and quotient, all order-128 degrees from 10, all order-256 degrees from 19, and the order-256 degree-18 branch through eight unpaired roots. Separately, the 15-anchor product-one dictionary certifies at most 2,053,061,200 words with five extra agreements, below the second budget. [Combined population bound](dyadic-locator-degree-caps.md) · [Five-agreement certificate](sixteenth-locator-union.md)
+
+## [164-full-field-lists-on-the-named-subgroups] 2026-11-21
+
+The published shifted-cube degree bound and the Corvaja–Zannier torsion-intersection bound exclude this full-field list construction at the first open error count on all eight named prime and rate pairs. [Derivation and scope](oriented-fiber-list-bounds.md#can-the-full-field-shifted-cube-lists-reach-the-first-open-step)
+
 ## [164-coding-ranks-and-paley-discrepancy] 2026-11-21
 
 On the budget-two length-16 prize instance, multipliers 122764 and 6 give cosets with respective signed quadratic discrepancies 256 and zero against the original subgroup. Each coset has the identical indexed Reed–Solomon code. Coefficient reversal on the full nonzero domain also preserves all rank tests on subsets marked together, while inversion can change a complete Paley rectangle to exact half density. A written character-sum proof constructs these examples with one logarithmic side. The polynomial-size regime remains open. [Proof and examples](paley-support-ranks.md)

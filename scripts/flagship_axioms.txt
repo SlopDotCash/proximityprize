@@ -79,6 +79,10 @@ ArkLib.Research.ProximityGap.Frontier.EighthCollinearOutlier ArkLib.ProximityGap
 # The weighted multiplicity and integer optimization for four collinear heads and an outlier
 ArkLib.Research.ProximityGap.Frontier.CollinearFreshMultiplicity ArkLib.ProximityGap.Frontier.CollinearFreshMultiplicity.weighted
 ArkLib.Research.ProximityGap.Frontier.EighthOutlierArithmetic ArkLib.ProximityGap.Frontier.EighthOutlierArithmetic.count
+ArkLib.Research.ProximityGap.Frontier.EighthFourPlusOne ArkLib.ProximityGap.Frontier.EighthFourPlusOne.covered
+
+# End-to-end selected-scalar cap in the five-rich-head tangent allocation
+ArkLib.Research.ProximityGap.Frontier.EighthFiveRichSafety ArkLib.ProximityGap.Frontier.EighthFiveRichSafety.covered
 
 # Fixed-dimension puncture retention and the neighboring second-prime lengths
 ArkLib.Research.ProximityGap.Frontier.OnePunctureRetention ArkLib.ProximityGap.Frontier.OnePunctureRetention.at_most_one_repair
@@ -416,3 +420,21 @@ ArkLib.Research.ProximityGap.Frontier.LocatorPadding ProximityGap.LocatorPadding
 ArkLib.Research.ProximityGap.SmoothReservedMcaBoundary ProximityPrize.SmoothReservedMcaBoundary.failure
 ArkLib.Research.ProximityGap.SmoothReservedMcaBoundary ProximityPrize.SmoothReservedMcaBoundary.saturated
 ArkLib.Research.ProximityGap.SmoothReservedMcaBoundary ProximityPrize.SmoothReservedMcaBoundary.production_counts
+
+ArkLib.Research.ProximityGap.SmoothBaseSubfieldObstruction ProximityPrize.SmoothBaseSubfieldObstruction.field_cutoff_iff
+ArkLib.Research.ProximityGap.SmoothBaseSubfieldObstruction ProximityPrize.SmoothBaseSubfieldObstruction.necessary_product_bound
+ArkLib.Research.ProximityGap.SmoothBaseSubfieldObstruction ProximityPrize.SmoothBaseSubfieldObstruction.base_predecessor_fails
+ArkLib.Research.ProximityGap.SmoothBaseSubfieldObstruction ProximityPrize.SmoothBaseSubfieldObstruction.subfield_predecessor_fails
+ArkLib.Research.ProximityGap.SmoothBaseSubfieldObstruction ProximityPrize.SmoothBaseSubfieldObstruction.attainment_requires
+ArkLib.Research.ProximityGap.SmoothBaseSubfieldObstruction ProximityPrize.SmoothBaseSubfieldObstruction.extension_degree_le
+
+# Hamming grid search and its worst-case probe count
+ArkLib.Research.ProximityGap.RankBinarySearch ProximityPrize.RankBinarySearch.search_eq_find?
+ArkLib.Research.ProximityGap.RankBinarySearch ProximityPrize.RankBinarySearch.checks_le
+
+# Johnson grid alignment and the two remaining named MCA comparisons
+ArkLib.Research.ProximityGap.JohnsonGridEquality ProximityPrize.JohnsonGridEquality.grid_alignment_iff
+ArkLib.Research.ProximityGap.JohnsonGridEquality ProximityPrize.JohnsonGridEquality.answers_strict
+ArkLib.Research.ProximityGap.SecondPrimeJohnsonPivot ProximityPrize.SecondPrimeJohnsonPivot.correctBoundary_pivot
+ArkLib.Research.ProximityGap.SecondPrimeJohnsonPivot ProximityPrize.SecondPrimeJohnsonPivot.half
+ArkLib.Research.ProximityGap.SecondPrimeJohnsonPivot ProximityPrize.SecondPrimeJohnsonPivot.quarter

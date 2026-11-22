@@ -17,6 +17,14 @@ namespace ProximityPrize.Review
 open ProximityGap ProximityGap.GrandChallenges Code
 open scoped NNReal ENNReal
 
+run_cmd do
+  let n := 2 ^ 30
+  for cutoff in [0, 1, 715827882, n, n + 1] do
+    let (answer, checks) := RankBinarySearch.searchGrid (n + 1) (fun e => decide (e.val < cutoff))
+    let expected := if cutoff ≤ n then some cutoff else none
+    unless answer.map Fin.val == expected && checks ≤ 32 do
+      throwError "Binary search missed a cutoff or exceeded 32 probes at length 2^30"
+
 /- The 129-bit field has 128-bit budget one. The arithmetic branch also covers
 the last budget admitted by the staircase bound in each dimension. -/
 section
