@@ -181,6 +181,7 @@ private def base (p : Fin 7) := headCap p + (shape p false).s
 
 set_option maxRecDepth 100000 in
 set_option maxHeartbeats 18000000 in
+-- Reduce all value-degree allocations for the seven residual shape pairs.
 private theorem finite_prices : ∀ p : Fin 7, ∀ f : Fin ((shape p false).v + 1),
     ∀ b : Fin (f.val + 1), base p ≤ bound ∧ (0 < b.val →
       f.val * price p f.val b.val < b.val * (bound - base p + 1)) := by decide +kernel
