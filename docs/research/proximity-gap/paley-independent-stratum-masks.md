@@ -168,6 +168,70 @@ its generator leaves the constant target term with the same sign.
 [Lean proof](../../../ArkLib/Research/ProximityGap/Frontier/PaleyMaskedStrata.lean) ·
 [Exact controls](../../../scripts/probes/probe_paley_masked_strata.py)
 
+## Which masks cancel every possible mixed lag row?
+
+Let $n=2^r$, $r\ge1$, and let $A,B$ be nonempty exponent subsets of
+$\mathbb Z/n$. For $1\le j\le r$ say that $A$ is **balanced at level $j$**
+when its counts in residues $u$ and $u+2^{j-1}$ modulo $2^j$ agree for
+every $0\le u<2^{j-1}$. Level one just compares the even and odd totals.
+The following three conditions are equivalent.
+
+1. For every lag function $h$, the sum
+   $\sum_{i\in A,j\in B}(-1)^i h(j-i)$ is zero.
+2. Both sets are balanced at level one. At each higher level, at least one
+   of the two sets is balanced at that level.
+3. Both sets are balanced at level one, and the ordinary difference count
+   $N_d=|\{(i,j)\in A\times B:j-i=d\}|$ is constant for all $d$.
+
+To see this, put $P(X)=\sum_{i\in A}X^{-i\bmod n}$ and
+$Q(X)=\sum_{j\in B}X^j$. The coefficient of $X^d$ in $P(-X)Q(X)$ modulo
+$X^n-1$ is the signed number of representations at lag $d$. Testing the
+indicator of each single lag proves the first equivalence with divisibility
+by $X^n-1$. Its linear factors $X-1,X+1$ force both parity balances because
+$P(1),Q(1)>0$. The higher factors $X^{2^{j-1}}+1$ are irreducible over the
+rationals and are unchanged by $X\mapsto-X$. Each must divide $P$ or $Q$.
+Reducing a mask polynomial modulo that factor gives exactly the differences
+of its counts in the corresponding opposite residues. Reversing exponents
+permutes those pairs and preserves whether the two counts agree. Finally
+$N_d$ is constant precisely when $(X-1)P(X)Q(X)$ vanishes modulo $X^n-1$,
+since multiplication by $X-1$ takes adjacent differences. Under the two
+parity balances this last test has exactly the same remaining factors.
+[Formal finite-mask equivalences](../../../ArkLib/Research/ProximityGap/Frontier/PaleyDyadicMasks.lean)
+
+For ordinary masks, constant $N_d$ equals $|A||B|/n$. Exactly half of its
+representations have even source exponent and half have odd source exponent.
+In particular **$2n$ divides $|A||B|$**. This divisibility is sharp even
+with independent choices on both sides. Give the two sides a common free
+least-significant bit, and partition the remaining bit positions between
+them. To construct each mask, proceed from low to high bits. At every free
+bit extend each current prefix in both ways. At all other bits choose one
+extension independently for each current prefix. Each free bit balances its
+corresponding level, since every surviving prefix subsequently acquires the
+same number of descendants. The two cardinalities multiply to $2n$.
+Each lag therefore has exactly one representation of each sign. Different
+coset representatives may use independent trees with the same allocation of
+free bits. More generally level two and above may be allocated arbitrarily
+provided one entire side balances the assigned level across its cosets.
+For classical mask-polynomial tools in translational tilings see
+[Coven and Meyerowitz](https://arxiv.org/abs/math/9802122) and
+[Kiss, Łaba, Marshall and Somlai](https://arxiv.org/abs/2507.11672).
+
+At the second prime take the 15 even bit positions $0,2,\ldots,28$ free on
+the source, and the 16 positions $0,1,3,\ldots,29$ free on the target.
+The resulting arbitrary tree choices select $32768$ ordinary source sites
+and $65536$ ordinary target sites per opposite-parity coset pair. For example
+one can use seeds $2$ and $1+q$. Their actual field-character discrepancy
+is exactly zero, by the sign identity $\chi(q^ix-q^jy)=(-1)^i h(j-i)$.
+The criterion classifies cancellation uniform over *all* choices of $h$.
+The arithmetic character row may permit additional cancellations. At the first
+prime the generator has positive character. The constant test $h=1$ then
+gives $|A||B|$ for every nonempty pair, so a row-uniform argument there
+requires additional arithmetic information on the actual lag function.
+The control exhausts every nonempty pair of masks at lengths 2, 4 and 8.
+It also constructs the full-size independent masks and checks 52 individual
+lags directly. The equivalence supplies all lags, including those outside
+that finite control. [Reproduction](../../../scripts/probes/probe_paley_masked_strata.py)
+
 ## Why the single-stratum fourth-moment factorization stops
 
 For distinct nonzero products $s,t$, the phase numerator in ratio and
