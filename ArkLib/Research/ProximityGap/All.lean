@@ -344,6 +344,7 @@ import ArkLib.Research.ProximityGap.Frontier.EighthCollinearOutlier
 import ArkLib.Research.ProximityGap.Frontier.EighthMobiusSites
 import ArkLib.Research.ProximityGap.Frontier.EighthQuotientCoreCap
 import ArkLib.Research.ProximityGap.Frontier.EighthRatePrime159
+import ArkLib.Research.ProximityGap.Frontier.EighthRichHeadSafety
 import ArkLib.Research.ProximityGap.Frontier.EighthTransverseCollisions
 import ArkLib.Research.ProximityGap.Frontier.EighthTransverseCore
 import ArkLib.Research.ProximityGap.Frontier.EighthTransverseIncidences

@@ -22,7 +22,7 @@ namespace ArkLib.ProximityGap.Frontier.TangentHeadWindows
 /-- Local proportional residual budgets give a cap for a whole partition. This is
 the pricing step of `WeightedHodgeWindows`, repeated here so that this module
 depends only on the interpolation substrate. -/
-private theorem sum_prices {ι : Type*} (S : Finset ι) (value cost : ι → ℕ) {R B A : ℕ}
+theorem sum_prices {ι : Type*} (S : Finset ι) (value cost : ι → ℕ) {R B A : ℕ}
     (hR : 0 < R) (hA : A ≤ B) (he : ∑ i ∈ S, value i = R)
     (h : ∀ i ∈ S, R * cost i ≤ value i * (B-A)) : A + ∑ i ∈ S, cost i ≤ B := by
   have hh := sum_le_sum h
@@ -62,21 +62,22 @@ private def mass (w : Window) (j : ℕ) : ℕ :=
     let covered := (j*c*c+z-1)/z
     min (j*(w.errors+1)) (j*n-(j-1)*covered)
 
+/-- A component on both interpolants obeys the tangent-head price. The cutoff
+also covers small populations and components absent from the companion. -/
+def factorPrice (n d t cutoff W m b : ℕ) : ℕ :=
+  if b ≤ 1 ∨ W < b * d ∨ m < b then cutoff
+  else
+    let bx := (2 * b - 2) * m + 1 - b * (b - 1)
+    let bz := (2 * b - 2) * W + 1 - b * (b - 1) * d
+    let budget := 2 * bx * bz + b * (W * (m - b) + m * (W - b * d))
+    max cutoff (bx + (m * n * (2 * t + n) + 2 * budget * (t + n)) / (t ^ 2 - n * d))
+
 /-- The cap of Theorem D′ for a factor of value degree `b` next to `j` rich heads
 among factors of total value degree `l`. -/
 private def price (w : Window) (l j b : ℕ) : ℕ :=
-  if b ≤ 1 then cutoff w
-  else
-    let d := n/w.rate-1
-    let t := n-w.errors
-    let maxW := w.order*t-1-(l-b)*d
-    let m := w.second-j
-    if maxW < b*d ∨ m < b then cutoff w
-    else
-      let bx := (2*b-2)*m+1-b*(b-1)
-      let bz := (2*b-2)*maxW+1-b*(b-1)*d
-      let budget := 2*bx*bz+b*(maxW*(m-b)+m*(maxW-b*d))
-      max (cutoff w) (bx + (m*n*(2*t+n)+2*budget*(t+n))/(t^2-n*d))
+  let d := n / w.rate - 1
+  let t := n - w.errors
+  factorPrice n d t (cutoff w) (w.order * t - 1 - (l - b) * d) (w.second - j) b
 
 /-- Each window is below the Johnson radius, so the cap applies, and the rich
 heads satisfy the determinant test that forces collinearity from `group` on. -/
