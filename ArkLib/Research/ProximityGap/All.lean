@@ -4069,6 +4069,7 @@ import ArkLib.Research.ProximityGap.RSListThresholdSubcapacityRate12
 import ArkLib.Research.ProximityGap.RSListThresholdTrappedRate12
 import ArkLib.Research.ProximityGap.RadiusOne
 import ArkLib.Research.ProximityGap.RadiusOneExact
+import ArkLib.Research.ProximityGap.RankBinarySearch
 import ArkLib.Research.ProximityGap.RankBoundary
 import ArkLib.Research.ProximityGap.RankExecutable
 import ArkLib.Research.ProximityGap.RankJohnsonComparison
@@ -4081,6 +4082,7 @@ import ArkLib.Research.ProximityGap.Resolution
 import ArkLib.Research.ProximityGap.ResolutionWitness
 import ArkLib.Research.ProximityGap.SecondBudgetSmoothReview
 import ArkLib.Research.ProximityGap.SecondPrimeRankReview
+import ArkLib.Research.ProximityGap.SmoothBaseSubfieldObstruction
 import ArkLib.Research.ProximityGap.SmoothCapacityGap
 import ArkLib.Research.ProximityGap.SmoothEighthListBoundary
 import ArkLib.Research.ProximityGap.SmoothListExecutable
