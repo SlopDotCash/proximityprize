@@ -59,4 +59,20 @@ theorem three_two_two_impossible (q V : ℚ) (hq : 16 ≤ q) (hrot : 9 * V ≤ 1
     (hcomparison : 8 * q ^ 2 ≤ 99 * V) : False := by
   nlinarith [sq_nonneg (q - 16)]
 
+/-- Two triples of full residue classes give incompatible norm bounds on the ten residual blocks. -/
+theorem two_triples_impossible (q norm : ℚ) (hq : 8 ≤ q)
+    (hrot : q ^ 2 * norm ≤ 2 * q ^ 2 + 6 * q / 5 + 7 / 10)
+    (hcomp : 11 / 5 ≤ norm) : False := by
+  have h := mul_le_mul_of_nonneg_left hcomp (sq_nonneg q)
+  nlinarith [sq_nonneg (q - 8)]
+
+/-- Five complete blocks force a quantitative number of missing sites in every
+pair of residual blocks of the third fiber at production length. -/
+theorem production_dense_pair_missing (e : ℕ) (W : ℚ)
+    (hupper : W ≤ (10 * 67108864 + 6) / 9 + 2 * 67108864 * (e : ℚ))
+    (hlower : (68585 / 462186 : ℚ) * 67108864 ^ 2 ≤ W) : 4979231 ≤ e := by
+  by_contra! hsmall
+  have he : (e : ℚ) ≤ 4979230 := by exact_mod_cast (show e ≤ 4979230 by omega)
+  linarith
+
 end ArkLib.ProximityGap.Frontier.SplitPencilBlockVariance

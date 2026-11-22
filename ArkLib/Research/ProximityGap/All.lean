@@ -334,6 +334,7 @@ import ArkLib.Research.ProximityGap.Frontier.DyadicFourCycleCount
 import ArkLib.Research.ProximityGap.Frontier.DyadicFourCycleExclusion
 import ArkLib.Research.ProximityGap.Frontier.DyadicFrobeniusNorm
 import ArkLib.Research.ProximityGap.Frontier.DyadicGeomeanPrizeVsSqrtN
+import ArkLib.Research.ProximityGap.Frontier.DyadicListPlurality
 import ArkLib.Research.ProximityGap.Frontier.DyadicLocatorSumBarrier
 import ArkLib.Research.ProximityGap.Frontier.DyadicLogWitness237
 import ArkLib.Research.ProximityGap.Frontier.DyadicOddPencilCount
@@ -364,6 +365,7 @@ import ArkLib.Research.ProximityGap.Frontier.EighthRatePrime159
 import ArkLib.Research.ProximityGap.Frontier.EighthRichDeficits
 import ArkLib.Research.ProximityGap.Frontier.EighthRichHeadSafety
 import ArkLib.Research.ProximityGap.Frontier.EighthSaturatedOppositeDirections
+import ArkLib.Research.ProximityGap.Frontier.EighthThreePlusOne
 import ArkLib.Research.ProximityGap.Frontier.EighthTransverseAttack
 import ArkLib.Research.ProximityGap.Frontier.EighthTransverseCollisions
 import ArkLib.Research.ProximityGap.Frontier.EighthTransverseCore
@@ -763,6 +765,7 @@ import ArkLib.Research.ProximityGap.Frontier.QuadraticTwoHeadThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetFourRates
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetTwoThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarterCollinearInterval
+import ArkLib.Research.ProximityGap.Frontier.QuarterCoreWeightedJets
 import ArkLib.Research.ProximityGap.Frontier.QuarterDyadicParity
 import ArkLib.Research.ProximityGap.Frontier.QuarterOppositeEdgeCharacters
 import ArkLib.Research.ProximityGap.Frontier.QuarterPairTripleSignatures
@@ -1086,10 +1089,14 @@ import ArkLib.Research.ProximityGap.Frontier.TameBranchDerivative
 import ArkLib.Research.ProximityGap.Frontier.TameBranchPolarOrders
 import ArkLib.Research.ProximityGap.Frontier.TameConjugateSeparation
 import ArkLib.Research.ProximityGap.Frontier.TameCubicPowerSeries
+import ArkLib.Research.ProximityGap.Frontier.TameLogarithmicDVR
 import ArkLib.Research.ProximityGap.Frontier.TamePowerSeriesOrbit
 import ArkLib.Research.ProximityGap.Frontier.TameResultantOrders
 import ArkLib.Research.ProximityGap.Frontier.TangentHeadCount
+import ArkLib.Research.ProximityGap.Frontier.TangentHeadLadder
 import ArkLib.Research.ProximityGap.Frontier.TangentHeadWindows
+import ArkLib.Research.ProximityGap.Frontier.TangentPolarWindows
+import ArkLib.Research.ProximityGap.Frontier.TangentVeronesePacking
 import ArkLib.Research.ProximityGap.Frontier.TerminalCollinearHeadCount
 import ArkLib.Research.ProximityGap.Frontier.TerminalCubicBudget
 import ArkLib.Research.ProximityGap.Frontier.TerminalCubicBudgetWindow
