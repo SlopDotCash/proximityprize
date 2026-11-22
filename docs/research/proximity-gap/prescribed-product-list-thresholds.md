@@ -81,6 +81,12 @@ To see why the bound improves with length, reserve one of the $h$ values of the 
 
 The exact uniform one-eighth threshold $223/256$ is therefore attained **only at length 256**. The BLS12-381 example above attains it there. At the other three rates, attainability of the earlier bounds $127/256$, $191/256$, and $479/512$ would likewise require the base length. The unresolved safe steps at those lengths ask about lists with, respectively, 130, 66, and 34 agreements.
 
+At the base length a second locator coefficient also gives one earlier failure whenever the alphabet size is at most $2^{185}$, $2^{163}$, $2^{130}$, or $2^{147}$, respectively. More generally, write $K$ for any embedded field of size $q_0$ with $h\mid(q_0-1)$. If the base-length predecessor passes, then
+\[
+  \binom{h}{j+2}\le h q_0\lfloor q/2^{128}\rfloor.
+\]
+The normalized evaluation points are $h$th roots of unity, so they lie in $K$ even if the original coset representative does not. The fixed-product list from the smaller field remains a list over the ambient field. In particular, any sixteenth-rate instance attaining $479/512$ must use more than $309383378205371379825515213835666128450703903$ field elements, and cannot contain a subfield of order at most $826637396689$ whose multiplicative group has order divisible by 512. The corresponding excluded subfield orders extend up to $64191285335851377283423097335403748$ at half rate and $1868751729097317649889$ at quarter rate. [Necessary product inequality and cutoff theorems](../../../ArkLib/Research/ProximityGap/SmoothBaseSubfieldObstruction.lean)
+
 Pairwise packing alone cannot certify those three steps. Apply the existing locator-coloring theorem to 130- and 66-subsets of 256 points with auxiliary field size 257, and to 34-subsets of 512 points with auxiliary field size 521. In each case the binomial count exceeds $2^{128}$ times the square of the auxiliary field size. A largest color thus has more than $2^{128}$ supports, with every pair meeting in fewer than $k$ sites. Whether a single received word can realize such an over-budget family on a given smooth domain is an additional algebraic question. [Support-family theorem](../../../ArkLib/Research/ProximityGap/Frontier/AgreementSupportBarrier.lean)
 
 ## A prime-field family of unbounded dyadic length
