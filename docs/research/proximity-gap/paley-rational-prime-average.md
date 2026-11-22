@@ -2,7 +2,7 @@
 
 Let $A,B\subset\mathbf P^1(\mathbb Q)$ be given before the prime is chosen. Represent each point by primitive integers of maximum absolute value at most $P^C$, for fixed $C>0$. The sets, their denominators and their sizes may change with $P$. At an odd prime $p$ each representative reduces to a projective point. Write $\bar A,\bar B$ for the two sets of distinct reductions and $\chi_p$ for the Legendre symbol. The projective Paley matrix uses $\chi_p(\det(v,w))$ on homogeneous representatives. Changing representatives changes only row and column signs.
 
-Suppose $a=|A|,b=|B|\ge P^\epsilon$, where $0<\epsilon\le1$. Put $k=\max(2,\lceil8C\rceil)$. For any fixed $0<\delta<\epsilon/(16k)$, outside
+Write $a=|A|$ and $b=|B|$ and assume $\min(a,b)\ge P^\epsilon$, where $0<\epsilon\le1$. Put $k=\max(2,\lceil8C\rceil)$. For any fixed $0<\delta<\epsilon/(16k)$, outside
 \[
               O_{C,\epsilon,\delta}(P^{1-\epsilon/(2k)+8\delta+o(1)})
 \]
@@ -55,6 +55,6 @@ Set $\gamma=a^{-1}+b^{-1/2}$. For $q=1$ the normalized contribution is $O(L\gamm
    \ll P^{o(1)}
        \left(L\gamma+\sqrt{PL}\,\gamma^{1/(2k)}+1\right).
 \]
-Take $\mathcal E$ to consist of primes exceeding the claimed labelled norm threshold. Then $LP^{-4\delta}$ is a lower bound on the left; the $L\gamma$ term is absorbed for large $P$. Since $\gamma\le2P^{-\epsilon/2}$, squaring the remaining inequality gives the announced exceptional count. A constant factor in the threshold only changes the implied constant.
+Take $\mathcal E$ to consist of primes exceeding the claimed labelled norm threshold. Then $LP^{-4\delta}$ is a lower bound on the left. The $L\gamma$ term is absorbed for large $P$. Since $\gamma\le2P^{-\epsilon/2}$, squaring the remaining inequality gives the announced exceptional count. A constant factor in the threshold only changes the implied constant.
 
 Finally, reductions of distinct rational points $s,t$ coincide only at primes dividing the nonzero integer $[s,t]$, whose absolute value is at most $2P^{2C}$. Put $\eta=\epsilon/(2k)\le1/4$. Truncate either template to $\min(|X|,\lfloor P^{1-\eta}\rfloor)$ labels. Summing colliding pairs as in the integer case shows that each truncated set retains at least half as many distinct points outside $O_C(P^{1-\eta})$ primes. When neither template was truncated, restrict the labelled inequality to distinct representatives at half the target threshold. When at least one was truncated, the product of the two image sizes is $\gg P^{1-\eta+\min(1-\eta,\epsilon)}$. The full projective conference matrix has norm $\sqrt p$, giving a stronger saving than $P^{-\delta}$ there. These arguments prove the bound with the stated distinct-image normalization. [Conference matrix identity](paley-production-spectrum.md#every-projective-image-including-its-pole)
