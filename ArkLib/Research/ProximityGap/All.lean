@@ -3975,11 +3975,13 @@ import ArkLib.Research.ProximityGap.InteriorThresholdBracket
 import ArkLib.Research.ProximityGap.J1Cap
 import ArkLib.Research.ProximityGap.JohnsonBoundRealLower
 import ArkLib.Research.ProximityGap.JohnsonCommonCenterRefutation
+import ArkLib.Research.ProximityGap.JohnsonEqualityClassification
 import ArkLib.Research.ProximityGap.JohnsonEqualityExamples
 import ArkLib.Research.ProximityGap.JohnsonGridEquality
 import ArkLib.Research.ProximityGap.JohnsonInvariant
 import ArkLib.Research.ProximityGap.JohnsonListBoundary
 import ArkLib.Research.ProximityGap.JohnsonPrimePowerDomain
+import ArkLib.Research.ProximityGap.JohnsonPrimePowerList
 import ArkLib.Research.ProximityGap.JointAdjacentFieldReview
 import ArkLib.Research.ProximityGap.JointDyadicCeilings
 import ArkLib.Research.ProximityGap.JointLargeFieldCriterion
