@@ -13,9 +13,9 @@ variable {F : Type*} [Field F]
 
 /-- Rectangular choices of powers for one source subgroup and a union of target cosets.
 The degree limit depends on the characteristic, independently of the field cardinality. -/
-theorem rectangular_many {p N M A B C D J : ℕ} [CharP F p] (hp : p.Prime) (hA : 0<A) (hC : 0<C)
+theorem rectangular_many_graded {p N M A B C D J : ℕ} [CharP F p] (hp : p.Prime) (hA : 0<A) (hC : 0<C)
     (hAN : A≤N) (hsize : A*C≤M) (hchar : A-1+N*(C-1)<p) (hD : D≤p)
-    (hgap : J * (D*(A+2*(D-1)))<B*(A*C)) {a b : F} (K : Fin J → F) (ha : a≠0) (hab : a≠b)
+    (hgap : J * (D*(A+(D-1)))<B*(A*C)) {a b : F} (K : Fin J → F) (ha : a≠0) (hab : a≠b)
     (S : Finset F) (hreg : ∀ x ∈ S, x≠0 ∧ x≠a ∧ x≠b)
     (hpow : ∀ x ∈ S, x^N=1) (hratio : ∀ x ∈ S, ∃ i, (x-a)^M=K i*(x-b)^M) :
     D*S.card ≤ A-1+N*(C-1)+M*(B-1) := by
@@ -23,7 +23,7 @@ theorem rectangular_many {p N M A B C D J : ℕ} [CharP F p] (hp : p.Prime) (hA 
   let e (j : Fin (A*C)) := d j + N*(j.val/A)
   have hd (j : Fin (A*C)) : d j < A := Nat.mod_lt _ hA
   have he (j : Fin (A*C)) : e j ≤ A-1+N*(C-1) := by
-    have hq : j.val/A<C := (Nat.div_lt_iff_lt_mul hA).mpr (by simpa [Nat.mul_comm] using j.isLt)
+    have hq : j.val/A<C := (Nat.div_lt_iff_lt_mul hA).mpr (by simp [Nat.mul_comm])
     apply Nat.add_le_add (by have := hd j; omega) (Nat.mul_le_mul_left _ (by omega))
   have hinj : Function.Injective e := by
     intro i j h
@@ -45,20 +45,40 @@ theorem rectangular_many {p N M A B C D J : ℕ} [CharP F p] (hp : p.Prime) (hA 
     have := (Nat.Prime.dvd_factorial hp).mp hh
     have := hp.pos
     omega
-  exact MobiusStepanov.mobius_count_many K ha hab hv hsize he hA hd hgap hf S hreg
+  exact MobiusStepanov.mobius_count_many_graded K ha hab hv hsize he hA hd hgap hf S hreg
     (fun x hx j => by simp [e,pow_add,pow_mul,hpow x hx]) hratio
+
+/-- The common-width derivative condition also implies this bound. -/
+theorem rectangular_many {p N M A B C D J : ℕ} [CharP F p] (hp : p.Prime) (hA : 0<A) (hC : 0<C)
+    (hAN : A≤N) (hsize : A*C≤M) (hchar : A-1+N*(C-1)<p) (hD : D≤p)
+    (hgap : J * (D*(A+2*(D-1)))<B*(A*C)) {a b : F} (K : Fin J → F) (ha : a≠0) (hab : a≠b)
+    (S : Finset F) (hreg : ∀ x ∈ S, x≠0 ∧ x≠a ∧ x≠b)
+    (hpow : ∀ x ∈ S, x^N=1) (hratio : ∀ x ∈ S, ∃ i, (x-a)^M=K i*(x-b)^M) :
+    D*S.card ≤ A-1+N*(C-1)+M*(B-1) := by
+  apply rectangular_many_graded hp hA hC hAN hsize hchar hD _ K ha hab S hreg hpow hratio
+  exact lt_of_le_of_lt (Nat.mul_le_mul_left J (Nat.mul_le_mul_left D (by omega))) hgap
 
 /-- Rectangular choices of source and target powers for the two subgroup conditions.
 The degree limit depends on the characteristic, independently of the field cardinality. -/
+theorem rectangular_graded {p N M A B C D : ℕ} [CharP F p] (hp : p.Prime) (hA : 0<A) (hC : 0<C)
+    (hAN : A≤N) (hsize : A*C≤M) (hchar : A-1+N*(C-1)<p) (hD : D≤p)
+    (hgap : D*(A+(D-1))<B*(A*C)) {a b K : F} (ha : a≠0) (hab : a≠b)
+    (S : Finset F) (hreg : ∀ x ∈ S, x≠0 ∧ x≠a ∧ x≠b)
+    (hpow : ∀ x ∈ S, x^N=1) (hratio : ∀ x ∈ S, (x-a)^M=K*(x-b)^M) :
+    D*S.card ≤ A-1+N*(C-1)+M*(B-1) := by
+  apply rectangular_many_graded (J := 1) hp hA hC hAN hsize hchar hD (by simpa using hgap)
+    (fun _ => K) ha hab S hreg hpow
+  exact fun x hx => ⟨0, hratio x hx⟩
+
+/-- The common-width derivative condition also implies this bound. -/
 theorem rectangular {p N M A B C D : ℕ} [CharP F p] (hp : p.Prime) (hA : 0<A) (hC : 0<C)
     (hAN : A≤N) (hsize : A*C≤M) (hchar : A-1+N*(C-1)<p) (hD : D≤p)
     (hgap : D*(A+2*(D-1))<B*(A*C)) {a b K : F} (ha : a≠0) (hab : a≠b)
     (S : Finset F) (hreg : ∀ x ∈ S, x≠0 ∧ x≠a ∧ x≠b)
     (hpow : ∀ x ∈ S, x^N=1) (hratio : ∀ x ∈ S, (x-a)^M=K*(x-b)^M) :
     D*S.card ≤ A-1+N*(C-1)+M*(B-1) := by
-  apply rectangular_many (J := 1) hp hA hC hAN hsize hchar hD (by simpa using hgap)
-    (fun _ => K) ha hab S hreg hpow
-  exact fun x hx => ⟨0, hratio x hx⟩
+  apply rectangular_graded hp hA hC hAN hsize hchar hD _ ha hab S hreg hpow hratio
+  exact lt_of_le_of_lt (Nat.mul_le_mul_left D (by omega)) hgap
 
 /-- For a union of `J` target cosets, the choice `J²u³ ≤ N` yields total
 occupancy at most `1+5N/u`. This is on the scale `N^(2/3) J^(2/3)`. -/
@@ -82,6 +102,30 @@ theorem simultaneous_cubic {p N J u : ℕ} [CharP F p] (hp : p.Prime)
 
 #print axioms simultaneous_cubic
 
+/-- Taking the exact number of derivative coefficients gives the uniform
+constant three for a union of target cosets: the right side is at most
+`J*u^2 + 3*N*J*u`, with `J^2*u^3 ≤ N`. -/
+theorem simultaneous_cubic_graded {p N J u : ℕ} [CharP F p] (hp : p.Prime)
+    (hJ : 0 < J) (hu : 0 < u) (hn : J^2*u^3 ≤ N)
+    (hchar : J*u^2-1 + N*(J*u-1) < p) {a b : F} (K : Fin J → F)
+    (ha : a ≠ 0) (hab : a ≠ b) (S : Finset F)
+    (hreg : ∀ x ∈ S, x ≠ 0 ∧ x ≠ a ∧ x ≠ b) (hpow : ∀ x ∈ S, x^N = 1)
+    (hratio : ∀ x ∈ S, ∃ i, (x-a)^N = K i*(x-b)^N) :
+    (J*u^2)*S.card ≤ J*u^2-1 + N*(J*u-1) + N*(2*(J*u)-1) := by
+  let A := J*u^2
+  let C := J*u
+  have hA : 0 < A := by dsimp [A]; positivity
+  have hC : 0 < C := by dsimp [C]; positivity
+  have hsize : A*C ≤ N := by simpa only [show A*C=J^2*u^3 by dsimp [A,C]; ring] using hn
+  have hAN : A ≤ N := (Nat.le_mul_of_pos_right _ hC).trans hsize
+  apply rectangular_many_graded hp hA hC hAN hsize hchar (by omega) _ K ha hab S hreg hpow hratio
+  calc
+    J*(A*(A+(A-1))) < J*(A*(A+A)) := by
+      apply Nat.mul_lt_mul_of_pos_left _ hJ
+      apply Nat.mul_lt_mul_of_pos_left _ hA
+      omega
+    _ = 2*C*(A*C) := by dsimp [C,A]; ring
+
 /-- The integral choice of powers giving the two-thirds bound for any subgroup order.
 Taking the largest u with 2u³ ≤ N gives an explicit bound asymptotic to
 3·2^(1/3)·N^(2/3) whenever the indicated characteristic condition holds. -/
@@ -99,24 +143,32 @@ theorem cubic_scale {p N u : ℕ} [CharP F p] (hp : p.Prime) (hu : 0<u)
     nlinarith only [congrArg (fun t : ℕ => 2*u^2*t) hsub]
   omega
 
+/-- The graded constraint count at the production length. -/
+theorem production_graded {p : ℕ} [CharP F p] (hp : p.Prime) (hbig : 2^40<p) {a b K : F}
+    (ha : a≠0) (hab : a≠b) (S : Finset F) (hreg : ∀ x ∈ S, x≠0 ∧ x≠a ∧ x≠b)
+    (hpow : ∀ x ∈ S, x^(2^30 : ℕ)=1)
+    (hratio : ∀ x ∈ S, (x-a)^(2^30 : ℕ)=K*(x-b)^(2^30 : ℕ)) :
+    S.card ≤ 3143679 := by
+  have h := rectangular_graded (A:=1049601) (B:=2043) (C:=1023) (D:=1046527) hp (by decide) (by decide)
+    (by decide : 1049601≤2^30) (by decide : 1049601*1023≤2^30) (by omega) (by omega)
+    (by decide) ha hab S hreg hpow hratio
+  omega
+
 /-- Optimized integer cutoffs at the length specified in the prize. -/
 theorem production {p : ℕ} [CharP F p] (hp : p.Prime) (hbig : 2^40<p) {a b K : F}
     (ha : a≠0) (hab : a≠b) (S : Finset F) (hreg : ∀ x ∈ S, x≠0 ∧ x≠a ∧ x≠b)
     (hpow : ∀ x ∈ S, x^(2^30 : ℕ)=1)
     (hratio : ∀ x ∈ S, (x-a)^(2^30 : ℕ)=K*(x-b)^(2^30 : ℕ)) :
     S.card ≤ 3960117 := by
-  have h := rectangular (A:=1322342) (B:=1621) (C:=812) (D:=659139) hp (by decide) (by decide)
-    (by decide : 1322342≤2^30) (by decide : 1322342*812≤2^30) (by omega) (by omega)
-    (by decide) ha hab S hreg hpow hratio
-  omega
+  exact (production_graded hp hbig ha hab S hreg hpow hratio).trans (by decide)
 
 /-- A fractional-linear graph between two normalized subgroups with distinct orders.
 The numerator's leading and constant coefficients and the denominator's leading
 coefficient are nonzero. Scaling either coset representative preserves these hypotheses. -/
-theorem rectangular_graph {p N M A B C D : ℕ} [CharP F p] (hp : p.Prime)
+theorem rectangular_graph_graded {p N M A B C D : ℕ} [CharP F p] (hp : p.Prime)
     (hN : 0<N) (hM : 0<M) (hA : 0<A) (hC : 0<C)
     (hAN : A≤N) (hsize : A*C≤M) (hchar : A-1+N*(C-1)<p) (hD : D≤p)
-    (hgap : D*(A+2*(D-1))<B*(A*C))
+    (hgap : D*(A+(D-1))<B*(A*C))
     {I : Type*} [Fintype I] (x y : I → F) (hi : Function.Injective x)
     (hx : ∀ i, (x i)^N=1) (hy : ∀ i, (y i)^M=1)
     {a b c d : F} (ha : a≠0) (hb : b≠0) (hc : c≠0) (hdet : a*d-b*c≠0)
@@ -146,7 +198,7 @@ theorem rectangular_graph {p N M A B C D : ℕ} [CharP F p] (hp : p.Prime)
     rw [he]
     exact mul_ne_zero (mul_ne_zero (div_ne_zero hc ha) (by intro hh; simpa [hh, Nat.ne_of_gt hM] using hy i))
       (sub_ne_zero.mpr (hB i))
-  have hh := rectangular hp hA hC hAN hsize hchar hD hgap hzero hAB (univ.image x) (by
+  have hh := rectangular_graded hp hA hC hAN hsize hchar hD hgap hzero hAB (univ.image x) (by
     intro z hz
     obtain ⟨i,_,rfl⟩ := mem_image.mp hz
     exact ⟨by intro hh; simpa [hh, Nat.ne_of_gt hN] using hx i, hA' i,hB i⟩) (by simpa using hx)
@@ -156,14 +208,91 @@ theorem rectangular_graph {p N M A B C D : ℕ} [CharP F p] (hp : p.Prime)
       rw [he i, mul_pow,mul_pow,hy i,mul_one])
   simpa only [card_image_of_injective _ hi, card_univ] using hh
 
-private theorem graph_direct {p : ℕ} [CharP F p] (hp : p.Prime) (hbig : 2^40<p)
+/-- The common-width derivative condition also implies this bound. -/
+theorem rectangular_graph {p N M A B C D : ℕ} [CharP F p] (hp : p.Prime)
+    (hN : 0<N) (hM : 0<M) (hA : 0<A) (hC : 0<C)
+    (hAN : A≤N) (hsize : A*C≤M) (hchar : A-1+N*(C-1)<p) (hD : D≤p)
+    (hgap : D*(A+2*(D-1))<B*(A*C))
+    {I : Type*} [Fintype I] (x y : I → F) (hi : Function.Injective x)
+    (hx : ∀ i, (x i)^N=1) (hy : ∀ i, (y i)^M=1)
+    {a b c d : F} (ha : a≠0) (hb : b≠0) (hc : c≠0) (hdet : a*d-b*c≠0)
+    (hxy : ∀ i, a*x i+b=y i*(c*x i+d)) :
+    D*Fintype.card I ≤ A-1+N*(C-1)+M*(B-1) := by
+  apply rectangular_graph_graded hp hN hM hA hC hAN hsize hchar hD _ x y hi hx hy ha hb hc hdet hxy
+  exact lt_of_le_of_lt (Nat.mul_le_mul_left D (by omega)) hgap
+
+/-- The rectangular estimate for every non-dihedral map, including maps with a zero
+matrix entry. Inverting input or output preserves the two root subgroups. -/
+theorem rectangular_graph_all_graded {p N M A B C D : ℕ} [CharP F p] (hp : p.Prime)
+    (hN : 0<N) (hM : 0<M) (hA : 0<A) (hC : 0<C)
+    (hAN : A≤N) (hsize : A*C≤M) (hchar : A-1+N*(C-1)<p) (hD : D≤p)
+    (hgap : D*(A+(D-1))<B*(A*C))
+    {I : Type*} [Fintype I] (x y : I → F) (hi : Function.Injective x)
+    (hx : ∀ i, (x i)^N=1) (hy : ∀ i, (y i)^M=1)
+    {a b c d : F} (hdet : a*d-b*c≠0) (hdiag : b≠0 ∨ c≠0) (hanti : a≠0 ∨ d≠0)
+    (hxy : ∀ i, a*x i+b=y i*(c*x i+d)) :
+    D*Fintype.card I ≤ A-1+N*(C-1)+M*(B-1) := by
+  have hx0 (i : I) : x i≠0 := by intro h; simpa [h, Nat.ne_of_gt hN] using hx i
+  have hy0 (i : I) : y i≠0 := by intro h; simpa [h, Nat.ne_of_gt hM] using hy i
+  have hxi (i : I) : (x i)⁻¹ ^ N=1 := by rw [inv_pow,hx,inv_one]
+  have hyi (i : I) : (y i)⁻¹ ^ M=1 := by rw [inv_pow,hy,inv_one]
+  have hinv : Function.Injective (fun i => (x i)⁻¹) := fun i j hh => hi (inv_inj.mp hh)
+  by_cases ha : a=0
+  · subst a
+    have hd := hanti.resolve_left (by simp)
+    have hbc : b≠0 ∧ c≠0 := by simpa [mul_ne_zero_iff] using hdet
+    apply rectangular_graph_graded hp hN hM hA hC hAN hsize hchar hD hgap _ _ hinv hxi hyi hd hbc.2 hbc.1 (show d*0-c*b≠0 by simpa [mul_comm] using hdet)
+    intro i
+    field_simp [hx0 i, hy0 i]
+    linear_combination -(hxy i)
+  by_cases hb : b=0
+  · subst b
+    have hc := hdiag.resolve_left (by simp)
+    have hd : d≠0 := by intro h; simp [h] at hdet
+    apply rectangular_graph_graded hp hN hM hA hC hAN hsize hchar hD hgap _ _ hi hx hyi hc hd ha
+      (show c*0-d*a≠0 by simpa [mul_comm] using hdet)
+    intro i
+    field_simp [hy0 i]
+    linear_combination -(hxy i)
+  by_cases hc : c=0
+  · subst c
+    have hd : d≠0 := by intro h; simp [h] at hdet
+    apply rectangular_graph_graded hp hN hM hA hC hAN hsize hchar hD hgap _ _ hinv hxi hy hb ha hd
+      (show b*0-a*d≠0 by simpa using hdet)
+    intro i
+    field_simp [hx0 i]
+    linear_combination hxy i
+  exact rectangular_graph_graded hp hN hM hA hC hAN hsize hchar hD hgap x y hi hx hy ha hb hc hdet hxy
+
+/-- A two-thirds graph estimate valid for every source size `N ≥ u³`.
+For the largest such `u` the leading constant is three. -/
+theorem cubic_graph_graded {p N u : ℕ} [CharP F p] (hp : p.Prime)
+    (hu : 0<u) (hn : u^3≤N) (hchar : u^2-1+N*(u-1)<p)
+    {I : Type*} [Fintype I] (x y : I → F) (hi : Function.Injective x)
+    (hx : ∀ i,(x i)^N=1) (hy : ∀ i,(y i)^N=1)
+    {a b c d : F} (hdet : a*d-b*c≠0) (hdiag : b≠0 ∨ c≠0) (hanti : a≠0 ∨ d≠0)
+    (hxy : ∀ i,a*x i+b=y i*(c*x i+d)) :
+    u^2*Fintype.card I ≤ u^2-1+N*(u-1)+N*(2*u-1) := by
+  have hA : 0<u^2 := by positivity
+  have hsize : u^2*u≤N := by simpa only [← pow_succ] using hn
+  have hAN : u^2≤N := (Nat.le_mul_of_pos_right _ hu).trans hsize
+  have hN := hA.trans_le hAN
+  apply rectangular_graph_all_graded hp hN hN hA hu hAN hsize hchar (by omega) _ x y hi hx hy hdet hdiag hanti hxy
+  calc
+    u^2*(u^2+(u^2-1)) < u^2*(u^2+u^2) := by apply Nat.mul_lt_mul_of_pos_left _ hA; omega
+    _ = 2*u*(u^2*u) := by ring
+
+/-- Every nonsingular fractional linear map other than a scaling or a scaled
+reciprocal sends at most 3,143,679 members of the production subgroup back to it.
+The graph formulation includes affine maps and maps whose zero is at infinity. -/
+theorem production_graph_graded {p : ℕ} [CharP F p] (hp : p.Prime) (hbig : 2^40<p)
     {I : Type*} [Fintype I] (x y : I → F) (hi : Function.Injective x)
     (hx : ∀ i, (x i)^(2^30 : ℕ)=1) (hy : ∀ i, (y i)^(2^30 : ℕ)=1)
-    {a b c d : F} (ha : a≠0) (hb : b≠0) (hc : c≠0) (hdet : a*d-b*c≠0)
-    (hxy : ∀ i, a*x i+b=y i*(c*x i+d)) : Fintype.card I ≤ 3960117 := by
-  have h := rectangular_graph (A:=1322342) (B:=1621) (C:=812) (D:=659139) hp
+    {a b c d : F} (hdet : a*d-b*c≠0) (hdiag : b≠0 ∨ c≠0) (hanti : a≠0 ∨ d≠0)
+    (hxy : ∀ i, a*x i+b=y i*(c*x i+d)) : Fintype.card I ≤ 3143679 := by
+  have h := rectangular_graph_all_graded (A:=1049601) (B:=2043) (C:=1023) (D:=1046527) hp
     (by decide) (by decide) (by decide) (by decide) (by decide) (by decide) (by omega)
-    (by omega) (by decide) x y hi hx hy ha hb hc hdet hxy
+    (by omega) (by decide) x y hi hx hy hdet hdiag hanti hxy
   omega
 
 /-- Every nonsingular fractional linear map other than a scaling or a scaled
@@ -174,37 +303,7 @@ theorem production_graph {p : ℕ} [CharP F p] (hp : p.Prime) (hbig : 2^40<p)
     (hx : ∀ i, (x i)^(2^30 : ℕ)=1) (hy : ∀ i, (y i)^(2^30 : ℕ)=1)
     {a b c d : F} (hdet : a*d-b*c≠0) (hdiag : b≠0 ∨ c≠0) (hanti : a≠0 ∨ d≠0)
     (hxy : ∀ i, a*x i+b=y i*(c*x i+d)) : Fintype.card I ≤ 3960117 := by
-  have hx0 (i : I) : x i≠0 := by intro h; simpa [h] using hx i
-  have hy0 (i : I) : y i≠0 := by intro h; simpa [h] using hy i
-  have hxi (i : I) : (x i)⁻¹ ^ (2^30 : ℕ)=1 := by rw [inv_pow,hx,inv_one]
-  have hyi (i : I) : (y i)⁻¹ ^ (2^30 : ℕ)=1 := by rw [inv_pow,hy,inv_one]
-  have hinv : Function.Injective (fun i => (x i)⁻¹) := fun i j hh => hi (inv_inj.mp hh)
-  by_cases ha : a=0
-  · subst a
-    have hd := hanti.resolve_left (by simp)
-    have hbc : b≠0 ∧ c≠0 := by simpa [mul_ne_zero_iff] using hdet
-    apply graph_direct hp hbig _ _ hinv hxi hyi hd hbc.2 hbc.1 (show d*0-c*b≠0 by simpa [mul_comm] using hdet)
-    intro i
-    field_simp [hx0 i, hy0 i]
-    linear_combination -(hxy i)
-  by_cases hb : b=0
-  · subst b
-    have hc := hdiag.resolve_left (by simp)
-    have hd : d≠0 := by intro h; simp [h] at hdet
-    apply graph_direct hp hbig _ _ hi hx hyi hc hd ha
-      (show c*0-d*a≠0 by simpa [mul_comm] using hdet)
-    intro i
-    field_simp [hy0 i]
-    linear_combination -(hxy i)
-  by_cases hc : c=0
-  · subst c
-    have hd : d≠0 := by intro h; simp [h] at hdet
-    apply graph_direct hp hbig _ _ hinv hxi hy hb ha hd
-      (show b*0-a*d≠0 by simpa using hdet)
-    intro i
-    field_simp [hx0 i]
-    linear_combination hxy i
-  exact graph_direct hp hbig x y hi hx hy ha hb hc hdet hxy
+  exact (production_graph_graded hp hbig x y hi hx hy hdet hdiag hanti hxy).trans (by decide)
 
 open MobiusSeamCoordinateSupply in
 /-- The literal count on the finite subgroup, including maps with a zero matrix entry. -/
@@ -241,6 +340,8 @@ theorem separated_sites {p : ℕ} [CharP F p] [Fintype F] [DecidableEq F] (hp : 
     exact mul_ne_zero (hdet _) (hdet _))
   rwa [hH] at h
 
+#print axioms simultaneous_cubic_graded
+#print axioms production_graph_graded
 #print axioms cubic_scale
 #print axioms production_graph
 #print axioms separated_sites

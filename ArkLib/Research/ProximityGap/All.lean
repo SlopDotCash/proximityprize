@@ -330,7 +330,11 @@ import ArkLib.Research.ProximityGap.Frontier.DoubleQuadraticThreshold
 import ArkLib.Research.ProximityGap.Frontier.DyadicAntiperiodicReflection
 import ArkLib.Research.ProximityGap.Frontier.DyadicCharacterCirculant
 import ArkLib.Research.ProximityGap.Frontier.DyadicChordNorm
+import ArkLib.Research.ProximityGap.Frontier.DyadicConicPairs
+import ArkLib.Research.ProximityGap.Frontier.DyadicCrossRatioParity
 import ArkLib.Research.ProximityGap.Frontier.DyadicDifferenceRoots
+import ArkLib.Research.ProximityGap.Frontier.DyadicExceptionalConic
+import ArkLib.Research.ProximityGap.Frontier.DyadicFiveConicMatches
 import ArkLib.Research.ProximityGap.Frontier.DyadicFoldedNorm
 import ArkLib.Research.ProximityGap.Frontier.DyadicFourCycleCount
 import ArkLib.Research.ProximityGap.Frontier.DyadicFourCycleExclusion
@@ -342,9 +346,17 @@ import ArkLib.Research.ProximityGap.Frontier.DyadicLogWitness237
 import ArkLib.Research.ProximityGap.Frontier.DyadicOddPencilCount
 import ArkLib.Research.ProximityGap.Frontier.DyadicOddPencilExclusion
 import ArkLib.Research.ProximityGap.Frontier.DyadicOrbitIndependence
+import ArkLib.Research.ProximityGap.Frontier.DyadicParityGalois
 import ArkLib.Research.ProximityGap.Frontier.DyadicParityLemma
 import ArkLib.Research.ProximityGap.Frontier.DyadicPenalty1024
 import ArkLib.Research.ProximityGap.Frontier.DyadicPeriodCeiling
+import ArkLib.Research.ProximityGap.Frontier.DyadicProjectiveCosets
+import ArkLib.Research.ProximityGap.Frontier.DyadicProjectiveDescent
+import ArkLib.Research.ProximityGap.Frontier.DyadicSevenCombinatorics
+import ArkLib.Research.ProximityGap.Frontier.DyadicSevenDescent
+import ArkLib.Research.ProximityGap.Frontier.DyadicSevenField
+import ArkLib.Research.ProximityGap.Frontier.DyadicSevenPrime
+import ArkLib.Research.ProximityGap.Frontier.DyadicSevenProjectivities
 import ArkLib.Research.ProximityGap.Frontier.DyadicSidonTriple
 import ArkLib.Research.ProximityGap.Frontier.DyadicSquareOrbit
 import ArkLib.Research.ProximityGap.Frontier.DyadicTwoCenterReflection
@@ -983,6 +995,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeUnrestrictedJetBudget
 import ArkLib.Research.ProximityGap.Frontier.SectionNumeratorCharts
 import ArkLib.Research.ProximityGap.Frontier.SelfConsistencyCeiling
 import ArkLib.Research.ProximityGap.Frontier.SeparableScalarDifferential
+import ArkLib.Research.ProximityGap.Frontier.SevenSiteTransfer
 import ArkLib.Research.ProximityGap.Frontier.ShallowDiagonalRouteNonReach
 import ArkLib.Research.ProximityGap.Frontier.SharedLocatorListIncidences
 import ArkLib.Research.ProximityGap.Frontier.SharedSiteListBound
@@ -1076,6 +1089,7 @@ import ArkLib.Research.ProximityGap.Frontier.SquarefreeRetentionFloor
 import ArkLib.Research.ProximityGap.Frontier.StackMaximizerDomination
 import ArkLib.Research.ProximityGap.Frontier.StepanovStructuredVacuous
 import ArkLib.Research.ProximityGap.Frontier.StepanovWeilQVacuous
+import ArkLib.Research.ProximityGap.Frontier.StratifiedSecondOrderProduction
 import ArkLib.Research.ProximityGap.Frontier.StructuredUncertaintySharpFloor
 import ArkLib.Research.ProximityGap.Frontier.SubexpMomentToConvergenceHub
 import ArkLib.Research.ProximityGap.Frontier.SubfieldQuarterListThreshold
