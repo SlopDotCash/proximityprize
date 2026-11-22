@@ -959,6 +959,7 @@ import ArkLib.Research.ProximityGap.Frontier.SmoothLinearFieldEnvelope
 import ArkLib.Research.ProximityGap.Frontier.SmoothListPackingRadius
 import ArkLib.Research.ProximityGap.Frontier.SmoothManyHeadMass
 import ArkLib.Research.ProximityGap.Frontier.SmoothManyLinePhase
+import ArkLib.Research.ProximityGap.Frontier.SmoothOrderedMca
 import ArkLib.Research.ProximityGap.Frontier.SmoothParityPrime157
 import ArkLib.Research.ProximityGap.Frontier.SmoothParityThreshold
 import ArkLib.Research.ProximityGap.Frontier.SmoothPlanarQuartetCoset
@@ -970,6 +971,7 @@ import ArkLib.Research.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow
 import ArkLib.Research.ProximityGap.Frontier.SmoothQuinticSeventeen
 import ArkLib.Research.ProximityGap.Frontier.SmoothRationalFiberObstruction
 import ArkLib.Research.ProximityGap.Frontier.SmoothReservedProductList
+import ArkLib.Research.ProximityGap.Frontier.SmoothSecantTriangle
 import ArkLib.Research.ProximityGap.Frontier.SmoothSeventeenExtension
 import ArkLib.Research.ProximityGap.Frontier.SmoothSeventeenFiveErrors
 import ArkLib.Research.ProximityGap.Frontier.SmoothSignedListProfile
