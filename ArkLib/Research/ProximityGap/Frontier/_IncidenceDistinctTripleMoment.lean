@@ -30,7 +30,7 @@ private theorem choose_three_int (m : ℕ) :
         _ = (m.choose 2 * 2) * (m - 2) := by ring
         _ = _ := by rw [h2]
     have hz := congrArg (fun k : ℕ ↦ (k : ℤ)) h
-    simpa only [Nat.cast_mul, Nat.cast_ofNat, Nat.cast_sub (by omega : 1 ≤ m),
+    simpa only [Nat.cast_mul, Nat.cast_ofNat, Nat.cast_one, Nat.cast_sub (by omega : 1 ≤ m),
       Nat.cast_sub hm] using hz
   · have h : m = 0 ∨ m = 1 := by omega
     rcases h with rfl | rfl
@@ -48,7 +48,9 @@ theorem falling_cubic_lower {X : Type*} [Fintype X] (m : X → ℕ) (g : ℤ)
   let f : ℤ → ℤ := fun z ↦ z * (z - n) * (z - 2 * n)
   change 2 * n ≤ g at hg
   let slope : ℤ := 3 * (g - n)^2 - n^2
-  have hn' : 0 < n := by exact_mod_cast hn
+  have hn' : 0 < n := by
+    change (0 : ℤ) < (Fintype.card X : ℤ)
+    exact_mod_cast hn
   have hs : 0 ≤ slope := by
     dsimp [slope]
     have h : 0 ≤ (g - 2 * n) * g := mul_nonneg (by omega) (by omega)
@@ -76,7 +78,9 @@ theorem falling_cubic_lower {X : Type*} [Fintype X] (m : X → ℕ) (g : ℤ)
       _ ≤ n * f g + slope * (n * (∑ x, (m x : ℤ)) - n * g) := by omega
       _ ≤ _ := summed.trans_eq (by ring)
   push_cast
-  exact (mul_le_mul_left hn').mp bound
+  change f g ≤ n^2 * (6 * ∑ x, ((m x).choose 3 : ℤ))
+  by_contra! bad
+  exact (not_lt_of_ge bound) (mul_lt_mul_of_pos_left bad hn')
 
 /-- Even after deleting the entire collinear penalty, the distinct-triple
 ledger does not give a contradiction at radius numerator 221512374. -/
