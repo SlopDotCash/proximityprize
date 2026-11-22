@@ -951,6 +951,7 @@ import ArkLib.Research.ProximityGap.Frontier.SalemZygmundMomentAssemblyA3
 import ArkLib.Research.ProximityGap.Frontier.SameDomainListMca
 import ArkLib.Research.ProximityGap.Frontier.SaturatedFaceLabelDistance
 import ArkLib.Research.ProximityGap.Frontier.SaturatedListCliques
+import ArkLib.Research.ProximityGap.Frontier.SaturatedQuartetFullEdge
 import ArkLib.Research.ProximityGap.Frontier.SaturatedSplitTriangle
 import ArkLib.Research.ProximityGap.Frontier.SaturatedTripleRotation
 import ArkLib.Research.ProximityGap.Frontier.SaturatedTripleRows
