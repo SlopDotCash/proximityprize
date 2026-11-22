@@ -79,7 +79,7 @@ def kernel_basis(logs, modulus):
     return result
 
 
-def check_shift(rows, h, logs, order, bound):
+def check_shift(rows, h, logs, order, bound, reverse=False):
     matrix = fmpz_mat([[r[j]-r[(j-h) % ORDER] for j in range(ORDER) if j not in (0,h)]
                        for r in rows])
     if h == ORDER//2:
@@ -99,6 +99,8 @@ def check_shift(rows, h, logs, order, bound):
     require(denominator == 1, "image lattice misses an exponent column")
     transformed_logs = [sum(int(v)*a for v,a in zip(row, logs)) for row in image.tolist()]
     basis = kernel_basis(transformed_logs, order)*image
+    if reverse:
+        basis = fmpz_mat(list(reversed(basis.tolist())))
     initial = basis*metric*basis.transpose()
     reduced, transform = initial.lll(transform=True, rep='gram', gram='exact')
     require(abs(int(transform.det())) == 1 and transform*initial*transform.transpose() == reduced,
@@ -131,21 +133,22 @@ def order256_limit():
             "Minkowski estimate is insufficient")
 
 
-def run_field(cert, shifts, bound):
+def run_field(cert, shifts, bound, reverse=False):
     p, g, z, logs = cert['prime'], cert['generator'], cert['root'], cert['logs']
     require(p in PRIMES, "wrong prime")
     certify_prime(p)
-    require(all(pow(g, (p-1)//q, p) != 1 for q in FACTOR_TABLE[p]),
+    require(0 < g < p and all(pow(g, (p-1)//q, p) != 1 for q in FACTOR_TABLE[p]),
             "generator has deficient order")
     require(pow(z, ORDER//2, p) == p-1 and len(logs) == ORDER//4, "bad root or log list")
     require(all(pow(g,a,p) == (1-pow(z,r,p)) % p for a,r in zip(logs,range(1,ORDER//2,2))),
             "full-field unit logarithm mismatch")
     rows = exponent_rows()
-    return [check_shift(rows, h, logs, (p-1)//ORDER, bound) for h in shifts]
+    return [check_shift(rows, h, logs, (p-1)//ORDER, bound, reverse) for h in shifts]
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--reverse-basis', action='store_true')
     parser.add_argument('--field', type=int, choices=(1,2))
     parser.add_argument('--data', type=Path, default=Path(__file__).with_name('mu128_unit_logs.json'))
     parser.add_argument('--shifts', type=int, nargs='+', choices=range(1,65))
@@ -157,5 +160,5 @@ if __name__ == '__main__':
     expected = PRIMES if args.field is None else (PRIMES[args.field-1],)
     for p in expected:
         cert = next(c for c in certs if c['prime'] == p)
-        counts = run_field(cert, shifts, args.bound)
+        counts = run_field(cert, shifts, args.bound, args.reverse_basis)
         print(f"p={p}  displacements={len(counts)}  total vectors={sum(counts)}", flush=True)
