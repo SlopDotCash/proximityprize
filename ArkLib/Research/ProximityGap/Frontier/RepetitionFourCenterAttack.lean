@@ -2,11 +2,9 @@
 Copyright (c) 2026 Proximity Prize Contributors. All rights reserved.
 Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and LICENSE.
 -/
-import ArkLib.Research.ProximityGap.Frontier._HalfPredecessorCoreFreshDecode
+import ArkLib.Research.ProximityGap.Frontier.RepeatedParabola
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSmoothSeed
 import ArkLib.Research.ProximityGap.Frontier.BoundarySecurityBudget
-import ArkLib.Data.CodingTheory.ProximityGap.MCAWitnessSpread
-import ArkLib.Data.CodingTheory.ProximityGap.InterleavingStabilityLedger
 
 /-! # Four repeated parabola points at the dimension-one threshold -/
 set_option autoImplicit false
@@ -90,57 +88,33 @@ theorem mass {u : ℕ} [NeZero u] (dom : Fin (8*u) ↪ F)
   classical
   have hu := Nat.pos_of_ne_zero (NeZero.ne u)
   let v (i : Fin (8*u)) : F := parameter ((index u).symm i)
-  let rows : WordStack F (Fin 2) (Fin (8*u)) := ![fun i => v i^2,v]
-  let label : Edge u ↪ F := ⟨fun e => -(sumParam e:F),fun e f h =>
-    sums_injective u (hcast _ _ (bounds u e).1 (bounds u f).1 (neg_injective h))⟩
-  have atSite (x : Site u) : v (index u x)=(parameter x:F) := by simp [v]
-  have degreeC (x : F) : (C x).degree < (1:ℕ) := by
-    exact degree_le_natDegree.trans_lt (by simp)
-  have event (e : Edge u) : mcaEvent (ReedSolomon.code dom 1 : Set (Fin (8*u) → F))
-      (((7*u-1:ℕ):ℝ≥0)/(8*u:ℕ)) (rows 0) (rows 1) (label e) := by
-    let i := source e
-    let a : F := center i
-    let b : F := parameter (tip e)
-    let x := index u (tip e)
-    let D := univ.map (copies u i)
-    have hD : D.card=u := by simp [D]
-    have hx : v x=b := atSite _
-    have hcore (y : Fin (8*u)) (hy : y∈D) : v y=a := by
-      obtain ⟨j,_,rfl⟩ := mem_map.mp hy
-      exact atSite (.inl (i,j))
-    have hl : label e=-(a+b) := by simp [label,sumParam,a,b,i]
-    have hneq : a≠b := by
-      intro he
-      have hb := (bounds u e).1
-      unfold sumParam at hb
-      exact (bounds u e).2 (hcast _ _ (by omega) (by omega) he)
-    apply mcaEvent_of_affine_core_fresh dom 1 _ rows (label e) D x (C (a^2)) (C a)
-    · intro h
-      exact hneq ((hcore x h).symm.trans hx)
-    · exact degreeC _
-    · exact degreeC _
-    · rw [← C_mul,← C_add]
-      exact degreeC _
-    · omega
-    · rw [hD,Fintype.card_fin,tsub_mul,one_mul,div_mul_cancel₀ _ (by positivity),← Nat.cast_tsub]
-      exact_mod_cast (show 8*u-(7*u-1)≤u+1 by omega)
-    · intro y hy
-      change (C (a^2)).eval _=v y^2 ∧ (C a).eval _=v y
-      simp [hcore y hy]
-    · change (C (a^2) + C (label e)*C a).eval _=v x^2+label e*v x
-      simp only [eval_add,eval_mul,eval_C,hx,hl]
-      ring
-    · intro he
-      have h : a=v x := by simpa [rows] using congrArg Prod.snd he
-      exact hneq (h.trans hx)
-  rw [epsMCA_interleaved_eq]
-  have hm := MCAWitnessSpread.epsMCA_ge_card_div_of_mcaEvent_set
-    (ReedSolomon.code dom 1 : Set (Fin (8*u) → F)) _ rows (univ.map label) (by
-      intro z hz
-      obtain ⟨e,_,rfl⟩ := mem_map.mp hz
-      exact event e)
-  have hc : Fintype.card (Edge u)=16*u+6 := by simp [Edge]; omega
-  simpa only [card_map,card_univ,hc] using hm
+  let a (e : Edge u) : F := center (source e)
+  let x (e : Edge u) := index u (tip e)
+  let core (e : Edge u) := univ.map (copies u (source e))
+  have card (e) : (core e).card = u := by simp [core]
+  have atSite (z : Site u) : v (index u z) = (parameter z : F) := by simp [v]
+  have add (e) : a e + v (x e) = (sumParam e : F) := by
+    simp only [x, atSite, sumParam, Nat.cast_add, a]
+  have apart (e) : a e ≠ v (x e) := by
+    rw [show v (x e) = (parameter (tip e) : F) from atSite _]
+    intro eq
+    have hb := (bounds u e).1
+    unfold sumParam at hb
+    exact (bounds u e).2 (hcast _ _ (by omega) (by omega) eq)
+  have distinct : Function.Injective (fun e => a e + v (x e)) := by
+    intro e f eq
+    change a e + v (x e) = a f + v (x f) at eq
+    rw [add, add] at eq
+    exact sums_injective u (hcast _ _ (bounds u e).1 (bounds u f).1 eq)
+  have hm := RepeatedParabola.mass_of_cores dom (((7*u-1 : ℕ) : ℝ≥0)/(8*u : ℕ)) v a core x
+    (fun e => (card e).symm ▸ hu) (fun e => by
+      rw [card, Fintype.card_fin, tsub_mul, one_mul, div_mul_cancel₀ _ (by positivity), ← Nat.cast_tsub]
+      exact_mod_cast (show 8*u-(7*u-1) ≤ u+1 by omega)) (by
+      intro e y hy
+      obtain ⟨j, _, rfl⟩ := mem_map.mp hy
+      exact atSite (.inl (source e,j))) apart distinct width
+  have hc : Fintype.card (Edge u) = 16*u+6 := by simp [Edge]; omega
+  simpa only [hc] using hm
 
 /-- Over a prime field the construction needs only enough room for the largest
 integer pair sum. -/

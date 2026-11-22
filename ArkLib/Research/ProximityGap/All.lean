@@ -610,6 +610,7 @@ import ArkLib.Research.ProximityGap.Frontier.ListSupportGaussian
 import ArkLib.Research.ProximityGap.Frontier.ListSupportRank
 import ArkLib.Research.ProximityGap.Frontier.LiuZhouSplitRecursion
 import ArkLib.Research.ProximityGap.Frontier.LocatorAgreementIncidence
+import ArkLib.Research.ProximityGap.Frontier.LocatorBinaryCubic
 import ArkLib.Research.ProximityGap.Frontier.LocatorConjugateCentres
 import ArkLib.Research.ProximityGap.Frontier.LocatorPadding
 import ArkLib.Research.ProximityGap.Frontier.LocatorProductRamification
@@ -817,6 +818,7 @@ import ArkLib.Research.ProximityGap.Frontier.QuadraticTwoHeadThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetFourRates
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetTwoThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarterCollinearInterval
+import ArkLib.Research.ProximityGap.Frontier.QuarterCommonFactorDegrees
 import ArkLib.Research.ProximityGap.Frontier.QuarterCoreWeightedJets
 import ArkLib.Research.ProximityGap.Frontier.QuarterDyadicParity
 import ArkLib.Research.ProximityGap.Frontier.QuarterOppositeEdgeCharacters
@@ -928,6 +930,8 @@ import ArkLib.Research.ProximityGap.Frontier.ReflectionListTranspositions
 import ArkLib.Research.ProximityGap.Frontier.ReflectionRowTransfer
 import ArkLib.Research.ProximityGap.Frontier.RegimePin
 import ArkLib.Research.ProximityGap.Frontier.RegularTaylorPole
+import ArkLib.Research.ProximityGap.Frontier.RepeatedParabola
+import ArkLib.Research.ProximityGap.Frontier.RepetitionFirstPrimeThreshold
 import ArkLib.Research.ProximityGap.Frontier.RepetitionFourCenterAttack
 import ArkLib.Research.ProximityGap.Frontier.RepetitionSecondPrimeThreshold
 import ArkLib.Research.ProximityGap.Frontier.ReservedFiberList
@@ -1189,6 +1193,7 @@ import ArkLib.Research.ProximityGap.Frontier.TerminalLinearComponent
 import ArkLib.Research.ProximityGap.Frontier.TerminalQuarticHessianTransport
 import ArkLib.Research.ProximityGap.Frontier.TerminalQuarticLocalization
 import ArkLib.Research.ProximityGap.Frontier.TernaryLocatorCollision
+import ArkLib.Research.ProximityGap.Frontier.TernaryProjectionCount
 import ArkLib.Research.ProximityGap.Frontier.ThirdHeadComplement
 import ArkLib.Research.ProximityGap.Frontier.ThornerZamanInstance
 import ArkLib.Research.ProximityGap.Frontier.ThornerZamanS128
