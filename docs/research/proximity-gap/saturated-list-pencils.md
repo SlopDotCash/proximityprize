@@ -109,3 +109,38 @@ On a smooth coset where every site satisfies $(-x)^n=c$, a nonzero polynomial of
 For a family whose message coefficients satisfy $A=uL+b$ with $u^n\ne c^d$, distinct messages have at most $d-1$ common domain evaluations. The strict Johnson rank bound therefore limits every interleaved list in this subcode to $n$ whenever $t^2>n(d-1)$, for arbitrary received words. The first open agreement count at each named budget and rate meets this inequality. Deciding the full code still requires control of messages across different affine slices. [Coefficient test and interleaved bound](../../../ArkLib/Research/ProximityGap/Frontier/SplitCoefficientSecants.lean)
 
 For an explicit family, the exact number of physical roots of every difference can also be computed without enumerating the domain. For a nonzero difference $P$ on $X^{2^h}=b$, compute $X^{2^h}$ by $h$ squarings modulo the monic normalization of $P$, subtract $b$, and take the monic gcd with $P$. Its degree counts the distinct coincident sites. Substituting these counts for the pair intersections bounds the total agreements possible at any center. On both named groups, $X^2-1$ and $X^2+X-1$ have identical end coefficients but respectively two and zero physical roots, as checked by kernel reduction with $h=30$. Applying this test to supplied messages leaves the search for arbitrary over-budget families open. [Exact root counter and list test](../../../ArkLib/Research/ProximityGap/Frontier/DyadicDifferenceRoots.lean)
+
+## Affine rank from shortened pair counts
+
+At 314,491,700 errors in the half-rate code, for example, any list exceeding the first named budget has affine dimension at least **58**. Counting only cuts of a flat by a single coordinate gave 25. The certificates below apply to every injective domain and every positive interleaving width. Dimension is over the alphabet field, in the vector space of interleaved words. The bounds restrict candidate lists at the stated radii.
+
+| Rate | Budget | Errors | Required affine dimension | Maximum certified at the preceding dimension |
+| --- | ---: | ---: | ---: | ---: |
+| $1/2$ | $n$ | 314,491,700 | 58 | 886,009,082 |
+| $1/2$ | $2n$ | 314,491,700 | 60 | 1,772,018,175 |
+| $1/4$ | $n$ | 536,870,914 | 29 | 536,870,916 |
+| $1/4$ | $2n$ | 536,870,914 | 30 | 1,073,741,840 |
+| $1/8$ | $n$ | 694,116,763 | 20 | 440,738,901 |
+| $1/8$ | $2n$ | 694,116,764 | 21 | 1,246,598,273 |
+| $1/16$ | $n$ | 805,306,371 | 15 | 357,913,949 |
+| $1/16$ | $2n$ | 805,306,371 | 16 | 1,431,655,816 |
+
+Write $t=n-e$ and $D=k-1$. More generally consider distinct vector words whose pairwise agreement is at most $D$, each agreeing with one center on at least $t>D$ sites. Suppose the list lies in a flat of dimension at most $r$, and every such list in dimension at most $r-1$ has size at most $L$. Select an arbitrary sublist of exactly $M>L$ words. Let $c$ be the number of coordinates constant across the sublist. At every other site the center agreement equation cuts its affine hull in a proper affine subspace, or has no solutions. Thus at most $L$ selected words match there, even for vector columns. Counting all matches gives $Mt\le cM+(n-c)L$. Hence at least
+\[
+ b=\max\left(0,\left\lceil\frac{Mt-Ln}{M-L}\right\rceil\right)
+\]
+sites are constant. If $b>D$, any two of the selected words contradict the pair agreement limit. Otherwise delete $b$ constant sites. Each selected word has at least $t-b$ residual matches and each pair at most $D-b$ residual agreements, irrespective of the center on the deleted sites.
+
+Select exactly $t-b$ residual matches per word. Their site multiplicities $v_x$ obey $\sum v_x=M(t-b)$ and $\sum v_x^2\le M(t-b)+M(M-1)(D-b)$. By Cauchy–Schwarz, existence therefore requires
+\[
+ M(t-b)^2\le (n-b)\big(t-b+(M-1)(D-b)\big).
+\]
+A strict failure certifies $L_r=M-1$. Starting from $L_0=1$ proves the table. The verifier checks the forced number of constant sites and the exclusion at each rank with exact integers. Binary search locates candidate bounds, and correctness uses only the final excluded size because every larger list admits a sublist of that cardinality. For interleaved Reed–Solomon words two distinct words differ in at least one component polynomial, which supplies the pair agreement bound $k-1$. [Lean dimension recurrence and Reed–Solomon specialization](../../../ArkLib/Research/ProximityGap/Frontier/AffineRankMoment.lean) · [Eight certified bounds](../../../ArkLib/Research/ProximityGap/Frontier/AffineRankMomentEndpoints.lean) · [Certificate replay](../../../scripts/probes/probe_affine_rank_moments.py)
+
+## Maximum total agreements for a prescribed family
+
+For each multiplicity $r$, count the sites where at least $r$ messages share some value. Summing these counts gives the exact maximum total agreements over all centers. A center attains the sum by choosing a most frequent value independently at each site. The algorithm works on a list of polynomial messages, so repeating a message assigns it an integer weight. If a single center agrees with every member at least $t$ times, every weighted subfamily of length $m$ has computed maximum at least $mt$. This gives an unrestricted list-overflow obstruction without searching for a center. [Executable checker and exactness theorem](../../../ArkLib/Research/ProximityGap/Frontier/DyadicListPlurality.lean)
+
+For each anchor $P_i$, maintain a vector of polynomial masks for the thresholds among the comparisons processed so far. A nonzero mask divides the domain polynomial and vanishes at the corresponding sites. The zero mask denotes the whole domain. To incorporate $P_j$, the new level $r$ is the union of the old level $r$ and the intersection of the old level $r-1$ with the physical roots of $P_i-P_j$. Gcd computes intersections and polynomial lcm computes unions. Taking the union over anchors gives the global threshold. The implementation uses $O(m^3)$ mask operations. On a coset of size $2^h$, each of the $O(m^2)$ input differences requires at most $h$ modular squarings to get its physical-root factor. The remaining search is over the message families themselves.
+
+On the first named subgroup, take $i$ with $i^2=-1$. The triples $(0,X-1,1-X)$ and $(0,X-1,i(X+1))$ have one coincident site for every pair. In the first triple all three pairs coincide at site 1. In the second triple they meet at the three distinct sites $1,-1,i$. The kernel-checked maxima are respectively $2^{30}+2$ and $2^{30}+3$. Pair counts alone give the same data for both.

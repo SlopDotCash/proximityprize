@@ -19,6 +19,64 @@ open CollinearFreshMultiplicity _root_.ProximityGap
 variable {F I : Type} [Field F] [DecidableEq F] [Fintype F] [Fintype I] [DecidableEq I]
 variable [Nonempty I] {dom : I ↪ F} {δ : ℝ≥0} {u : WordStack F (Fin 2) I}
 
+/-- The available fresh sites bound the population at any smaller positive deficit. -/
+theorem population_bound {w v : ℕ} (bound : w * v ≤ 671088640 + w) (j : ℕ)
+      (jpos : 0 < j) (h : j ≤ w) : v ≤ 671088640 / j + 1 := by
+  have lim : (v-1)*w ≤ 671088640 := by rw [Nat.sub_mul, one_mul, mul_comm]; omega
+  have ok := (Nat.le_div_iff_mul_le jpos).mpr ((Nat.mul_le_mul_left (v-1) h).trans lim)
+  omega
+
+/-- A constant primitive direction accounts for at most one covered label across
+the cluster, even when some of the listed heads have few assigned labels. -/
+theorem constant_direction {k s : ℕ} {L : Fin s → LineParameter F} {G : Fin s → Finset F}
+    {a b : LineParameter F} (fam : BadScalarRichPointFamily dom k δ u) (ab : a ≠ b)
+    (hl : ∀ i, L i ∈ lineParameters fam) (coll : ∀ i, lineDeterminant a b (L i) = 0)
+    (assign : ∀ i, G i ⊆ pointsOn fam (L i)) (dis : ∀ i j, i ≠ j → Disjoint (G i) (G j))
+    (zero : max (primitiveIntercept a b).natDegree (primitiveSlope a b).natDegree = 0)
+    (U : Finset I) (owned : U ⊆ univ.biUnion fun i => core dom u (L i)) :
+    (∑ i, (G i).card) ≤ 1 + (Fintype.card I - U.card) * s := by
+  classical
+  let H := univ.image L
+  have hH : H ⊆ lineParameters fam := by
+    intro c hc
+    obtain ⟨i, _, rfl⟩ := mem_image.mp hc
+    exact hl i
+  have Hcoll (c : LineParameter F) (hc : c ∈ H) : lineDeterminant a b c = 0 := by
+    obtain ⟨i, _, rfl⟩ := mem_image.mp hc
+    exact coll i
+  have imageBound := TerminalCollinearHeadCount.collinear_card_image fam H hH a b ab Hcoll
+  let V := H.biUnion (core dom u)
+  change (H.biUnion (pointsOn fam)).card ≤ (V.image _).card + (Fintype.card I - V.card)*H.card
+    at imageBound
+  have Usub : U ⊆ V := by
+    intro i hi
+    obtain ⟨j, _, hj⟩ := mem_biUnion.mp (owned hi)
+    exact mem_biUnion.mpr ⟨L j, mem_image_of_mem L (mem_univ _), hj⟩
+  have vs := card_le_card Usub
+  have Hsize : H.card ≤ s := card_image_le.trans (by simp)
+  have cv (p : F[X]) (zero : p.natDegree = 0) (t : F) : p.eval t = p.coeff 0 := by
+    conv_lhs => rw [eq_C_of_natDegree_eq_zero zero]
+    simp
+  have z1 : (primitiveIntercept a b).natDegree = 0 := by omega
+  have z2 : (primitiveSlope a b).natDegree = 0 := by omega
+  have singleton : (V.image fun i => primitiveScalarAt a b (dom i)).card ≤ 1 := by
+    apply card_le_one.mpr
+    intro c hc f hf
+    obtain ⟨i, _, rfl⟩ := mem_image.mp hc
+    obtain ⟨j, _, rfl⟩ := mem_image.mp hf
+    simp only [primitiveScalarAt, cv _ z1, cv _ z2]
+  have mass : (∑ i, (G i).card) ≤ (H.biUnion (pointsOn fam)).card := by
+    have sub : univ.biUnion G ⊆ H.biUnion (pointsOn fam) := by
+      intro t ht
+      obtain ⟨i, _, hi⟩ := mem_biUnion.mp ht
+      exact mem_biUnion.mpr ⟨L i, mem_image_of_mem L (mem_univ _), assign i hi⟩
+    have lin := card_le_card sub
+    rw [card_biUnion (fun i _ j _ hij => dis i j hij)] at lin
+    exact lin
+  have rem := Nat.mul_le_mul_left (Fintype.card I - V.card) Hsize
+  have ud := Nat.mul_le_mul_right s (Nat.sub_le_sub_left vs (Fintype.card I))
+  exact mass.trans (imageBound.trans ((Nat.add_le_add singleton (rem.trans ud))))
+
 private theorem count_sorted (fam : BadScalarRichPointFamily dom 134217728 δ u)
     (n : Fintype.card I = 1073741824) (ht : 402653184 ≤ ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊)
     (a b z : LineParameter F) (ab : a ≠ b) (outside : threeLineDeterminant a b z ≠ 0)
@@ -112,18 +170,13 @@ private theorem count_sorted (fam : BadScalarRichPointFamily dom 134217728 δ u)
     have l := local_mass hz
     change y * B + O.card ≤ _ at l
     rw [mul_comm]; omega
-  have personal {w v : ℕ} (pos : 1 ≤ w) (bound : w * v ≤ 671088640 + w) (j : ℕ)
-      (jpos : 0 < j) (h : j ≤ w) : v ≤ 671088640 / j + 1 := by
-    have lim : (v-1)*w ≤ 671088640 := by rw [Nat.sub_mul, one_mul, mul_comm]; omega
-    have ok := (Nat.le_div_iff_mul_le jpos).mpr ((Nat.mul_le_mul_left (v-1) h).trans lim)
-    omega
-  have each (i : Fin 4) := personal (positive i) (cap i) 1 (by decide) (positive i)
-  have yb := personal bp outer 1 (by decide) bp
+  have each (i : Fin 4) := population_bound (cap i) 1 (by decide) (positive i)
+  have yb := population_bound outer 1 (by decide) bp
   have sform : (∑ i, x i) = x 0 + x 1 + x 2 + x 3 := Fin.sum_univ_four _
   change (∑ i, x i) + y ≤ _
   by_cases weak : 1025 ≤ A 2
-  · have a₂ := personal (positive 2) (cap 2) 1025 (by decide) weak
-    have a₃ := personal (positive 3) (cap 3) 1025 (by decide) (by omega)
+  · have a₂ := population_bound (cap 2) 1025 (by decide) weak
+    have a₃ := population_bound (cap 3) 1025 (by decide) (by omega)
     have a₀ := each 0; have a₁ := each 1
     omega
   have us : 805303296 ≤ U.card := by omega
@@ -165,48 +218,12 @@ private theorem count_sorted (fam : BadScalarRichPointFamily dom 134217728 δ u)
     have h3 := Nat.le_mul_of_pos_left (x 3) (positive 3)
     omega
   by_cases big : 4 ≤ B
-  · have h := personal bp outer 4 (by decide) big
+  · have h := population_bound outer 4 (by decide) big
     omega
   by_cases zero : h = 0
-  · let H := univ.image L
-    have hH : H ⊆ lineParameters fam := by
-      intro c hc
-      obtain ⟨i, _, rfl⟩ := mem_image.mp hc
-      exact hl i
-    have Hcoll (c : LineParameter F) (hc : c ∈ H) : lineDeterminant a b c = 0 := by
-      obtain ⟨i, _, rfl⟩ := mem_image.mp hc
-      exact coll i
-    have imageBound := TerminalCollinearHeadCount.collinear_card_image fam H hH a b ab Hcoll
-    let V := H.biUnion (core dom u)
-    change (H.biUnion (pointsOn fam)).card ≤ (V.image _).card + (Fintype.card I - V.card)*H.card
-      at imageBound
-    have Usub : U ⊆ V := by
-      intro i hi
-      obtain ⟨j, _, hj⟩ := mem_biUnion.mp (UW hi)
-      exact mem_biUnion.mpr ⟨L j, mem_image_of_mem L (mem_univ _), hj⟩
-    have vs := card_le_card Usub
-    have Hsize : H.card ≤ 4 := card_image_le.trans (by simp)
-    have cv (p : F[X]) (zero : p.natDegree = 0) (t : F) : p.eval t = p.coeff 0 := by
-      conv_lhs => rw [eq_C_of_natDegree_eq_zero zero]
-      simp
-    have z1 : (primitiveIntercept a b).natDegree = 0 := by dsimp [h] at zero; omega
-    have z2 : (primitiveSlope a b).natDegree = 0 := by dsimp [h] at zero; omega
-    have singleton : (V.image fun i => primitiveScalarAt a b (dom i)).card ≤ 1 := by
-      apply card_le_one.mpr
-      intro c hc f hf
-      obtain ⟨i, _, rfl⟩ := mem_image.mp hc
-      obtain ⟨j, _, rfl⟩ := mem_image.mp hf
-      simp only [primitiveScalarAt, cv _ z1, cv _ z2]
-    have mass : (∑ i, x i) ≤ (H.biUnion (pointsOn fam)).card := by
-      have sub : univ.biUnion G ⊆ H.biUnion (pointsOn fam) := by
-        intro t ht
-        obtain ⟨i, _, hi⟩ := mem_biUnion.mp ht
-        exact mem_biUnion.mpr ⟨L i, mem_image_of_mem L (mem_univ _), assign i hi⟩
-      have lin := card_le_card sub
-      rw [card_biUnion (fun i _ j _ hij => dis i j hij)] at lin
-      exact lin
-    have rem := Nat.mul_le_mul_left (Fintype.card I - V.card) Hsize
-    rw [n] at rem imageBound
+  · have cn := constant_direction fam ab hl coll assign dis zero U UW
+    change (∑ i, x i) ≤ _ at cn
+    rw [n] at cn
     omega
   let c (i : Fin 4) := min 12 (A i)
   have c_le (i : Fin 4) : c i ≤ A i := min_le_right _ _

@@ -164,6 +164,65 @@ private theorem opposite_identity (A B : Fin 4 → R) (i : Fin 3) :
   rw [reduce,reduce,reduce]
   fin_cases i <;> dsimp [nearSide,farSide,red,minor,quad,Fin.succ] <;> ring
 
+/-- A deficit of at most `s` from the four-head core bound leaves three
+polynomial coefficients of degree at most `s` for all three opposite-side
+pairings. Their common discriminant is nonzero and has degree at most `2*s`. -/
+theorem near_saturated_direction_form {I : Type*} [Fintype I] (D : I ↪ F)
+    (u v : I → F) (A B : Fin 4 → F[X]) (d s : ℕ)
+    (hA : ∀ i, (A i).natDegree ≤ d) (hB : ∀ i, (B i).natDegree ≤ d)
+    (htr : triangle A B 0 1 2 * triangle A B 0 1 3 *
+      triangle A B 0 2 3 * triangle A B 1 2 3 ≠ 0)
+    (S : I → Finset (Fin 4))
+    (hS : ∀ x, ∀ i ∈ S x, (A i).eval (D x) = u x ∧ (B i).eval (D x) = v x)
+    (hinc : Fintype.card I + 4*d ≤ (∑ x, (S x).card) + s) :
+    ∃ a b c : F[X], a.natDegree ≤ s ∧ b.natDegree ≤ s ∧ c.natDegree ≤ s ∧
+      b^2-a*c ≠ 0 ∧ (b^2-a*c).natDegree ≤ 2*s ∧ ∀ i : Fin 3,
+      a * (nearSide B i * farSide B i) -
+      b * (nearSide A i * farSide B i + nearSide B i * farSide A i) +
+      c * (nearSide A i * farSide A i) = 0 := by
+  classical
+  let L : F[X] := ∏ x, (X-C (D x)) ^ charge (S x).card
+  have nonzero (x : I) : (X-C (D x)) ^ charge (S x).card ≠ 0 :=
+    pow_ne_zero _ (X_sub_C_ne_zero _)
+  have hL : L ≠ 0 := Finset.prod_ne_zero_iff.mpr fun x _ => nonzero x
+  have degL : L.natDegree = ∑ x, charge (S x).card := by
+    dsimp [L]
+    rw [natDegree_prod _ _ (fun x _ => nonzero x)]
+    simp
+  have incidence := sum_le_sum (s := (univ : Finset I)) (f := fun x => (S x).card)
+    (g := fun x => 1 + charge (S x).card) (fun x _ => by unfold charge; omega)
+  simp only [sum_add_distrib, sum_const, card_univ, smul_eq_mul, mul_one] at incidence
+  have bound : 4*d ≤ L.natDegree + s := by omega
+  have coeff (j : Fin 3) : ∃ a : F[X], (mat j A B).det = L*a ∧ a.natDegree ≤ s := by
+    have divides : L ∣ (mat j A B).det := by
+      apply Fintype.prod_dvd_of_coprime
+      · intro x y hxy
+        exact (pairwise_coprime_X_sub_C D.injective hxy).pow
+      · exact fun x => local_dvd j A B (D x) (u x) (v x) (S x) (hS x)
+    obtain ⟨a,ha⟩ := divides
+    refine ⟨a,ha,?_⟩
+    by_cases hz : a = 0
+    · simp [hz]
+    · have hd := degree_le j A B d hA hB
+      rw [ha,natDegree_mul hL hz] at hd
+      omega
+  obtain ⟨a,ha,da⟩ := coeff 0
+  obtain ⟨b,hb,db⟩ := coeff 1
+  obtain ⟨c,hc,dc⟩ := coeff 2
+  refine ⟨a,b,c,da,db,dc,?_,?_,?_⟩
+  · intro hz
+    apply htr
+    rw [← quadratic_discriminant,ha,hb,hc]
+    linear_combination L^2 * hz
+  · refine (natDegree_sub_le _ _).trans (max_le ?_ ?_)
+    · rw [natDegree_pow]
+      omega
+    · exact natDegree_mul_le.trans (by omega)
+  · intro i
+    have h := opposite_identity A B i
+    rw [ha,hb,hc] at h
+    exact (mul_eq_zero.mp (show L * _ = 0 by linear_combination h)).resolve_left hL
+
 /-- At full degree saturation, all three pairs of opposite projective side directions
 are orthogonal for a single nonsingular constant symmetric form. -/
 theorem saturated_direction_form (A B : Fin 4 → F[X]) (d : ℕ)
@@ -361,6 +420,7 @@ theorem folded_witness_on_head {I : Type*} [Fintype I] [DecidableEq I] (D : I �
   change _ ≤ U.card+4*d at hu
   omega
 
+#print axioms near_saturated_direction_form
 #print axioms quadratic_discriminant
 #print axioms saturated_direction_form
 #print axioms conjugateDirection_twice
