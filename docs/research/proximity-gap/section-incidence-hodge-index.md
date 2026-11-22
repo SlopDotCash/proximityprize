@@ -657,6 +657,63 @@ which is the elementary form of the tangency statement in Lemma 4. Lemma 3
 says that a section through $m$ simple received lines forces at least
 $(1-\tfrac1b)^2m/(h-1)$ such poles.
 
+## An elementary identity for the value derivative
+
+The following uses no geometry. Let $\sigma=(\gamma,P)$ be a simple section
+with $f_b(X,\gamma)\ne0$, and divide by the monic factor:
+$F(X,\gamma,Y)=(Y-P(X))\,H_\sigma(X,Y)$. Then
+$G_\sigma:=F_Y(X,\gamma,P)=H_\sigma(X,P)$, and the product formula for
+discriminants gives
+$$
+\operatorname{Disc}_YF\,(X,\gamma)=\operatorname{Disc}_Y(H_\sigma)\cdot G_\sigma(X)^2. \tag{3}
+$$
+So every root of $G_\sigma$ of multiplicity $\mu$ is a root of the specialized
+discriminant of multiplicity at least $2\mu$.
+
+Write $\operatorname{Disc}_YF=E^2\Delta_1$ in $k[X,\Gamma]$ with $\Delta_1$
+squarefree as a polynomial in $X$. For a scalar at which neither factor
+vanishes identically, let $S_\gamma^2$ be the largest square dividing
+$\Delta_1(X,\gamma)$. By (3) and unique factorization,
+$$
+G_\sigma\ \mid\ E(X,\gamma)\,S_\gamma(X),\qquad
+\sum_\gamma\deg S_\gamma\ \le\ \deg_\Gamma\operatorname{Disc}_X(\Delta_1),
+$$
+the sum being over scalars at which the leading coefficient of $\Delta_1$ in
+$X$ does not vanish. The second inequality holds because a root of
+multiplicity $m$ of a specialization lowers the number of distinct roots by
+$m-1\ge\lfloor m/2\rfloor$, and the order of the discriminant at $\gamma$ is at
+least that loss.
+
+Two consequences follow.
+
+* If $\operatorname{Disc}_YF$ is squarefree in $X$, then $E=1$ and
+  $\sum_\sigma\deg G_\sigma\le\deg_\Gamma\operatorname{Disc}_X(\operatorname{Disc}_YF)$
+  over simple sections with distinct scalars. No hypothesis on agreements is
+  needed. For value degree two this is the square-fibre count already used for
+  quadratic factors.
+* In general $\deg G_\sigma-\deg\gcd(G_\sigma,E(X,\gamma))\le\deg S_\gamma$. At a
+  received line along which $F$ has $\mu_x$ transversal sheets, a section
+  through one of them has $G_\sigma$ vanishing to order $\mu_x-1$ there. A
+  factor with many sections must therefore be singular along enough received
+  lines, or other curves, to absorb almost all zeros of $G_\sigma$: the
+  remaining zeros are the poles counted by the height of the tangent head.
+
+This is a structural remark. It does not give a cap for an arbitrary factor,
+because the degree of $E$ is not bounded by the interpolation data.
+
+**Explicit surfaces.** The
+[surface probe](../../../scripts/probes/probe_tangent_head_surface.py) builds
+polynomials $F$ over $\mathbb F_{10007}$ of value degree two and three by
+linear algebra. Each contains four to six planted sections, contains several
+received lines simply and is singular along two to four others. On all five
+surfaces, at every agreement on a core line where the reduced denominator of
+$V_\sigma$ is nonzero, $V_\sigma$ equals the second received row and
+$R_\sigma$ the first. This includes 74 agreements on double lines, where
+$F_Y$ vanishes on the section. The heights sum to at most 110 against budgets
+$C'$ of 690 to 2028, and for value degree two identity (3) holds exactly. On
+these surfaces every height equals $W-d$ minus the number of double lines
+through the section, as the second consequence predicts.
+
 ## The terminal cubic at the second named prime
 
 Let $n=2^{30}$, $d=2^{26}-1=67108863$ and $t=357913943$. The Lean theorem

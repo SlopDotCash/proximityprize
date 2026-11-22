@@ -81,6 +81,11 @@ private theorem eval_power (s q : ℕ) (u : F) (x : Fin N) (hs : PrizeShapePrime
     u^x.val = u^(x.val%q + q*(x.val/q)) := congrArg (u^·) (Nat.mod_add_div _ _).symm
     _ = _ := by rw [pow_add, pow_mul, hu, one_pow, mul_one]
 
+/-- At a production site the three eighth-rate seeds depend only on the index modulo 32. -/
+theorem eval_eighth_seed (i : Fin 3) (x : Fin N) :
+    (seed 33554432 i).eval (dom x) = values (z ^ (x.val % 32)) i := by
+  rw [eval_seed, eval_power 33554432 32 z x (by rw [← binaryPow_eq_pow]; decide) (by decide)]
+
 /-- Fiber data of the eighth-rate attack. -/
 theorem eighth :
     (∀ j, (univ.filter (fun x : Fin N => bucket 2 (x.val%32) = j)).card =
