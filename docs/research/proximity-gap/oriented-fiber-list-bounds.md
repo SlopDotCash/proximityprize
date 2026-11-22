@@ -189,34 +189,6 @@ blocks and the two affine blocks are distinct. A bijection transports them to
 the actual evaluation sites. Realizing these choices simultaneously as agreement
 sets of odd-characteristic polynomials with one received word remains open.
 
-The following Python check constructs every block and checks every pair at lengths
-16 through 256. The hyperplane argument above supplies the production count.
-
-```python
-from itertools import combinations
-
-for m in range(4, 9):
-    n = 2**m
-    def hyperplane(a, bit):
-        return {x for x in range(n) if (a & x).bit_count() % 2 == bit}
-
-    affine = [hyperplane(a, 1) for a in (1, 2)]
-    blocks = []
-    for a in range(1, n):
-        block = hyperplane(a, 0) - {0}
-        choices = block.copy()
-        for other in affine:
-            if block & other:
-                choices &= other
-        block.remove(min(choices))
-        blocks.append(block)
-    common = min(affine[0] & affine[1])
-    for block in affine:
-        block.remove(common)
-        block.remove(min(block))
-        blocks.append(block)
-
-    assert len(blocks) == n + 1
-    assert all(len(block) == n//2 - 2 for block in blocks)
-    assert all(len(a & b) <= n//4 - 1 for a, b in combinations(blocks, 2))
-```
+The Lean theorem constructs the family at every admissible binary dimension.
+Its production specialization transports all $1{,}073{,}741{,}825$ supports to
+any index type of cardinality $2^{30}$. [General construction and production theorem](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSupportPackingBarrier.lean)
