@@ -2098,7 +2098,7 @@ computes a much smaller search region from its explicit basis.
 
 ## Production list bounds at the Johnson threshold and one step beyond
 
-At the next candidate production list steps, the combination of affine coordinate cuts and shortened pair counts gives lower bounds for the affine dimension of any over-budget list. At half rate and 314,491,700 errors the first and second named budgets require dimensions **58** and **60**. At one-eighth rate the corresponding dimensions are **20** at 694,116,763 errors and **21** at 694,116,764 errors. At one quarter the dimensions are **29** and **30**, and at one sixteenth they are **15** and **16**. These conditions hold for every injective domain and every positive width. The written proof and exact integer certificates concern the dimension of a prospective violating list. [Proof and eight numeric certificates](saturated-list-pencils.md#affine-rank-from-shortened-pair-counts)
+At the next candidate production list steps, the combination of affine coordinate cuts and shortened pair counts gives lower bounds for the affine dimension of any over-budget list. At half rate and 314,491,700 errors the first and second named budgets require dimensions **58** and **60**. At one-eighth rate the corresponding dimensions are **20** at 694,116,763 errors and **21** at 694,116,764 errors. At one quarter the dimensions are **29** and **30**, and at one sixteenth they are **15** and **16**. These conditions hold for every injective domain and every positive width. Lean verifies the affine-dimension recurrence, its specialization to actual interleaved Reed–Solomon lists and all eight numerical certificates. [Proof and eight numeric certificates](saturated-list-pencils.md#affine-rank-from-shortened-pair-counts)
 
 For $n=2^{30}$ the following closed balls have list size at most $n$ on
 **every** injective evaluation domain, for every finite interleaving width.
@@ -2704,6 +2704,18 @@ Independent replay of the scalar-count and all-width probability bounds accepted
 ### A resultant bound for all tangent denominators
 
 Two derivations preserving the reduced branch divisor give a written algebraic bound on the sum of the denominator degrees of the selected section tangents. One resultant charges collisions of the reduced discriminant and its coordinate derivative, and a second charges the base points of the ordinate. At the new three-head window the largest resulting nonlinear population cap is **98,657** on a sextic. This gives an independent route to the cutoff through dimension 71,582,789 using tame lifting of derivations in place of surface intersection theory. Independent kernel checks accepted 19,217 declarations for the two-resultant and residue calculations and 16,367 for the counting inequality. [Full proof and numerical bounds](logarithmic-section-heights.md)
+
+**Tame DVR lifting inside the logarithmic section-height proof.**
+Lean proves that a fraction-field derivation regular on the base with
+$D\pi\in\pi R$ preserves the normalized DVR $B$ and sends its uniformizer
+$u$ into $uB$. A single denominator is derived for a localization of a
+finite base algebra. Lifting separable residue minimal polynomials and
+differentiating $\pi=u^e v$ with $e$ invertible reduces its exponent
+one step at a time. Independent verified kernel replay accepted all 10,568
+declarations needed by the full local theorem. The geometric identification of the height-one local
+rings and the subsequent section specializations are still written steps.
+[Local Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/TameLogarithmicDVR.lean) ·
+[Use in the height argument](logarithmic-section-heights.md)
 
 ### Exact three-head window above rate one sixteenth
 
