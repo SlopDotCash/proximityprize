@@ -1,7 +1,7 @@
 name: Multi-line relation rank and shortening
 on:
   push:
-    branches: [research/multiline-relation-shortening, feat/minimum-support-head-plane]
+    branches: [research/multiline-relation-shortening]
   pull_request:
     paths:
       - ArkLib/Research/ProximityGap/Frontier/_IncidenceDependencyArithmetic.lean
@@ -165,8 +165,8 @@ jobs:
           from pathlib import Path
           text = Path('minimum-support-axioms.log').read_text()
           results = re.findall(r"'ProximityGap\.MinimumSupportHeadPlane\.([^']+)' depends on axioms:\s*\[([^\]]*)\]", text)
-          assert {name for name, _ in results} == {'residual_on_minimum_support', 'agreement_on_residual_line'}
-          assert len(results) == 2
+          assert {name for name, _ in results} == {'residual_on_minimum_support', 'agreement_on_residual_line', 'affine_heads_on_minimum_support'}
+          assert len(results) == 3
           for name, axioms in results:
               assert {axiom.strip() for axiom in axioms.split(',')} <= {'propext', 'Classical.choice', 'Quot.sound'}, name
           PY

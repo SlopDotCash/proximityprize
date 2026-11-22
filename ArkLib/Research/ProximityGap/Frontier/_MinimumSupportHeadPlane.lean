@@ -50,6 +50,28 @@ theorem residual_on_minimum_support {F X : Type*} [Field F] [DecidableEq X]
   · change w p - a * v p = 0
     rw [show a * v p = w p from div_mul_cancel₀ _ (hvnz p hp), sub_self]
 
+/-- All decoded heads supported relative to one code pencil have the same residual direction. -/
+theorem affine_heads_on_minimum_support {F X I : Type*} [Field F] [DecidableEq X]
+    (C : Submodule F (X → F)) (S : Finset X) (D : ℕ) (hS : S.card = D)
+    (hdist : ∀ v ∈ C, ∀ B : Finset X, B.card < D → (∀ x ∉ B, v x = 0) → v = 0)
+    (U V v : X → F) (hU : U ∈ C) (hV : V ∈ C) (hv : v ∈ C) (hv0 : v ≠ 0)
+    (hvS : ∀ x ∉ S, v x = 0) (γ : I → F) (w : I → X → F) (hw : ∀ i, w i ∈ C)
+    (hoff : ∀ i x, x ∉ S → w i x = U x + γ i * V x) :
+    (∀ x ∈ S, v x ≠ 0) ∧ ∃ a : I → F, ∀ i, w i = U + γ i • V + a i • v := by
+  classical
+  have hfull := (residual_on_minimum_support C S D hS hdist v v hv hv hv0 hvS hvS).1
+  refine ⟨hfull, ?_⟩
+  have hfit (i : I) : ∃ a : F, w i = U + γ i • V + a • v := by
+    let r := w i - (U + γ i • V)
+    have hr : r ∈ C := C.sub_mem (hw i) (C.add_mem hU (C.smul_mem (γ i) hV))
+    have hrS (x : X) (hx : x ∉ S) : r x = 0 := by
+      change w i x - (U x + γ i * V x) = 0
+      rw [hoff i x hx, sub_self]
+    obtain ⟨a, ha⟩ := (residual_on_minimum_support C S D hS hdist v r hv hr hv0 hvS hrS).2
+    exact ⟨a, by simpa [add_comm] using (sub_eq_iff_eq_add.mp ha)⟩
+  choose a ha using hfit
+  exact ⟨a, ha⟩
+
 /-- The agreement condition on one coordinate is affine in the head parameter. -/
 theorem agreement_on_residual_line {F : Type*} [Field F]
     (u₀ u₁ U V v γ a : F) (hv : v ≠ 0) :
@@ -66,3 +88,4 @@ end ProximityGap.MinimumSupportHeadPlane
 
 #print axioms ProximityGap.MinimumSupportHeadPlane.residual_on_minimum_support
 #print axioms ProximityGap.MinimumSupportHeadPlane.agreement_on_residual_line
+#print axioms ProximityGap.MinimumSupportHeadPlane.affine_heads_on_minimum_support
