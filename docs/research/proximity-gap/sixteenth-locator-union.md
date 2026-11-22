@@ -1,6 +1,8 @@
 # Overlapping locator lists at rate one sixteenth
 
-At length $n=2^{30}$ and dimension $2^{26}$, the first and second designated prime fields have the following upper bounds on the first error count at which a single received word has more than $B=\lfloor p/2^{128}\rfloor$ codewords in its closed Hamming ball. The scalar lists lift to every positive interleaving width by repeating the same row in the center and each candidate. The construction applies on any multiplicative coset of order $n$ over a field with the indicated budget.
+At length $n=2^{30}$ and dimension $2^{26}$, a single received word on the first designated prime has at least **1,075,401,692** codewords within **989,855,734 errors**. On the second prime there are at least **2,183,380,672** within **989,855,741 errors**. Each number exceeds its field's budget $B=\lfloor p/2^{128}\rfloor$. The scalar lists lift to every positive interleaving width by repeating the same row in the center and each candidate. Scaling transports the construction to any multiplicative coset of order $n$ over a field with the indicated budget.
+
+Using squared locator values gives the two witnesses below. Keeping the sign gives the sharper first-prime witness.
 
 | Field | Budget $B$ | Max. signatures per anchor | Anchor incidences | Distinct candidates | Gain $g$ | First failure at or before |
 |---|---:|---:|---:|---:|---:|---:|
@@ -39,11 +41,30 @@ For the sharper table, let $P_a(v)$ count these product-one subsets rooted at an
 
 For every such incidence the verifier recomputes the vectors at all fifteen anchors. If $T$ occurs at $j$ anchors in the pool, add $D/j$, where $D=\operatorname{lcm}(1,\ldots,15)=360360$. Each admitted $T$ contributes exactly $D$ over all its incidences. This weight is invariant under odd multipliers. Dividing the orbit-weighted sum by $D$ gives the table’s number of distinct candidates. The full count fits unsigned 64-bit arithmetic since $D\binom{112}{9}=1,980,020,864,777,155,200<2^{64}$. Lists obtained by changing the fixed root product would have a different common constant $c$ in the baseline center. Their cardinalities cannot simply be added to this construction.
 
+## Keeping the locator sign at the first prime
+
+At a fixed anchor $u^a$, let $R$ denote the relative root exponents, each represented by its integer in $[0,M)$. For a fixed leaf vector $v$, the extra bit of $e(R)=\sum_{j\in R}j\bmod 2M$ above the known residue $-9a\bmod M$ determines the actual locator value. At a complex primitive $M$th root the absolute value is fixed by the leaf norms and the phase by $e(R)$, since $1-e^{2\pi ij/M}=-2i\,e^{\pi ij/M}\sin(\pi j/M)$ and all the sines are positive. Equality at the complex root implies divisibility of the difference of the two integer locator evaluations by $\Phi_M$, so the equality holds at the primitive $M$th root in either named field. Each selected signed mode therefore needs a single allocation. With $b=762600$ modes per anchor, $11b=8388600\le h$. [Signed locator identity](oriented-fiber-list-bounds.md#the-locator-value-at-the-spare-fiber)
+
+To transport this bit, put $f_w(j)=\lfloor wj/M\rfloor$ for an odd multiplier $w$. For a relative set of size $m$ the transformed exponent sum satisfies
+\[
+ e(wR)\equiv w e(R)-M\left[\sum_{i\text{ leaf}}v_i f_w(i)
+          +\tfrac{w-1}{2}\left(\sum_i v_i-m\right)\right]\pmod{2M}.
+\]
+Indeed $f_w(M-j)=w-1-f_w(j)$ has the same parity as $f_w(j)$. At an even node $j$, $f_w(j/2)+f_w((M-j)/2)\equiv f_w(j)+(w-1)/2\pmod2$. Expanding the node down to its $s$ leaves uses $s-1$ such steps. The leaf vector records each node once per descendant leaf, giving the correction displayed above. To move from one anchor to another, subtract the offset from each ordinary exponent and add $M$ once for each representative that crosses zero. The verifier implements both operations with integer bit masks.
+
+Rank the signed modes initially by their prescribed-product populations $P_a$. Make one simultaneous reselection by $P_a+2U_a$, then two further reselections by $U_a$ alone, first at anchor exponent 64, then simultaneously at 32 and 96. In each reselection $U_a$ uses the selections immediately preceding that round. The same orbit capacity rule applies, breaking ties first by the packed leaf vector and then by the high bit. These symmetric selections give 1,240,417,392 incidences and a union of 1,073,709,616 candidates.
+
+Finally hold the fourteen anchors other than 32 fixed. At 32 the signed modes partition the root sets, so choosing the $b$ individual modes with largest $U_{32}$ maximizes the number of additional candidates at that anchor within the generated pool. The remaining anchors miss **61,386,048** candidates from the old selection at 32. They miss **63,078,124** from the new selection. For a particular selection, break equal exclusive populations by the packed leaf vector and then the high bit. The verifier counts the multiplicities of those equal populations on stabilizer orbits. A partial final group of tied modes has the same exclusive count for every choice of its specified size. The resulting list contains exactly
+\[
+  1073709616-61386048+63078124=1075401692
+\]
+distinct certified words. This exceeds $2^{30}$ by **1,659,868**. With eleven additional agreements, the first failing count is at most **989,855,734**.
+
 ## Allocating partial agreements across these two pools
 
-Suppose the same two refined selections receive $x$ and $y$ sites, respectively, for each possible locator value. Using the certified two-value allowance for each signature gives $419430x+1048576y\le4194304$. In particular $x+2y\le10$ and $y\le4$. A root set having $r,s$ selected anchors in the two pools receives $xr+ys$ certified extra agreements, counting both allocations when the two pools select the same anchor.
+Suppose the two unsigned selections in the table receive $x$ and $y$ sites, respectively, for each possible locator value. Using the certified two-value allowance for each signature gives $419430x+1048576y\le4194304$. In particular $x+2y\le10$ and $y\le4$. A root set having $r,s$ selected anchors in the two pools receives $xr+ys$ certified extra agreements, counting both allocations when the two pools select the same anchor.
 
-Writing $I$ for incidence count and $U$ for union size, at most $(I-U)/(j-1)$ candidates of a given pool have at least $j\ge2$ hits, since each such candidate contributes at least $j-1$ to $I-U$. Gain 11 forces either $r\ge2$ or $s\ge3$. The table thus bounds this population by $152188880+476279216/2=390328488$, below the first budget. Gain 5 forces $r\ge1$ or $s\ge2$, for at most $1124276896+476279216=1600556112$ candidates, below the second budget. This counts only the memberships and the uniform per-mode allocations specified here. Different selections or certified coincidences between locator values could change the conclusion.
+Writing $I$ for incidence count and $U$ for union size, at most $(I-U)/(j-1)$ candidates of a given pool have at least $j\ge2$ hits, since each such candidate contributes at least $j-1$ to $I-U$. Gain 11 forces either $r\ge2$ or $s\ge3$. The unsigned table thus bounds this population by $152188880+476279216/2=390328488$, below the first budget. Gain 5 forces $r\ge1$ or $s\ge2$, for at most $1124276896+476279216=1600556112$ candidates, below the second budget. This counts only the memberships and the uniform per-mode allocations specified here. Different selections or certified coincidences between locator values could change the conclusion.
 
 ## Reproduction
 
@@ -53,7 +74,7 @@ Run the following from the repository root with Python 3 and a C++17 compiler su
 python3 scripts/probes/check_sixteenth_locator_union.py --workers 3
 ```
 
-The controls enumerate all 220 root sets at $(M,|S|,m)=(16,4,3)$ and all 42,504 at $(32,8,5)$. They compare every retained labelled vector and its score with the size recurrence. They independently choose the tied orbits by multiplying actual root exponents, count union sizes by direct membership, and compare these results with the C++ census. On the smaller board all four selected polynomials are also evaluated over the entire length-1,024 domain in $\mathbb F_{65537}$. The smallest actual agreement count is 285. Both controls also construct the initial product-conditioned pools and recompute every unshared population by direct membership. For the refined pools at order 32 the direct unions have 728 and 984 root sets. The production output is
+The controls enumerate all 220 root sets at $(M,|S|,m)=(16,4,3)$ and all 42,504 at $(32,8,5)$. They compare every retained labelled vector and its score with the size recurrence. They independently choose the tied orbits by multiplying actual root exponents, count union sizes by direct membership, and compare these results with the C++ census. On the smaller board all four selected polynomials are also evaluated over the entire length-1,024 domain in $\mathbb F_{65537}$. The smallest actual agreement count is 285. Both controls also construct the initial product-conditioned pools and recompute every unshared population by direct membership. For the refined pools at order 32 the direct unions have 728 and 984 root sets. On the order-32 signed control, direct enumeration gives 968 candidates before the last substitution and 992 afterwards. The production output is
 
 ```text
 Uniform pools
@@ -66,6 +87,11 @@ bins=419430 incidences=1276465776 unique=1124276896
 bins=1048576 incidences=2659659888 unique=2183380672
 budget=1073741824 list=1124276896 gain=10 first_bad<=989855735
 budget=2147483648 list=2183380672 gain=4 first_bad<=989855741
+Signed modes at the first budget
+response_anchor=32 pool=0 previous=61386048 offered=63078124 increase=1692076
+orbits=1040088 denominator=360360
+bins=762600 incidences=1240417392 unique=1073709616
+budget=1073741824 list=1075401692 gain=11 first_bad<=989855734
 ```
 
 Lean proves the locator and fiber-allocation identities. The production union sizes use the executable integer census. [Allocation lemmas](../../../ArkLib/Research/ProximityGap/Frontier/ReciprocalFiberLists.lean) · [Pool generator and independent controls](../../../scripts/probes/check_sixteenth_locator_union.py) · [Exact union census](../../../scripts/probes/probe_sixteenth_locator_union.cpp)
