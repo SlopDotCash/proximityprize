@@ -33,14 +33,11 @@ private theorem quotient (x : Grid) : dom (index x) ^ D = z ^ x.1.val := by
 /-- Each section joins two vertices (a,a²,a³). The second coordinate includes
 a linear multiple of the first to avoid vertical foreign directions. -/
 private def ends : Fin 6 → Fin 4 × Fin 4 := ![(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)]
-private def first (i : Fin 6) : Fin 2 → F :=
-  let a := z ^ (ends i).1.val
-  let b := z ^ (ends i).2.val
-  ![-a*b, a+b]
-private def second (i : Fin 6) : Fin 2 → F :=
-  let a := z ^ (ends i).1.val
-  let b := z ^ (ends i).2.val
-  ![-a*b*(a+b)+7*first i 0, a^2+a*b+b^2+7*first i 1]
+private def secantFirst (a b : F) : Fin 2 → F := ![-a*b, a+b]
+private def secantSecond (a b : F) : Fin 2 → F :=
+  ![-a*b*(a+b)+7*secantFirst a b 0, a^2+a*b+b^2+7*secantFirst a b 1]
+private def first (i : Fin 6) := secantFirst (z ^ (ends i).1.val) (z ^ (ends i).2.val)
+private def second (i : Fin 6) := secantSecond (z ^ (ends i).1.val) (z ^ (ends i).2.val)
 
 private def affine (A : Fin 2 → F) : F[X] := C (A 1)*Polynomial.X^1 + C (A 0)
 private def lift (A : Fin 2 → F) : F[X] := (affine A).comp (Polynomial.X^D)
@@ -182,6 +179,64 @@ theorem half (width : ℕ) [NeZero width] :
     exact (by decide : ¬ 2147483649 ≤ P/2^128) hh
   have bad := hb.trans_le (label_mass le_rfl (by decide) width)
   exact ⟨bad,mcaDeltaStar_le_of_bad _ _ bad⟩
+
+namespace FiveVertices
+
+private def edges : Fin 10 → Fin 5 × Fin 5 :=
+  ![(0,1),(0,2),(0,3),(0,4),(1,2),(1,3),(1,4),(2,3),(2,4),(3,4)]
+private def A (i : Fin 10) := secantFirst (z ^ (edges i).1.val) (z ^ (edges i).2.val)
+private def B (i : Fin 10) := secantSecond (z ^ (edges i).1.val) (z ^ (edges i).2.val)
+private def incident (j : Fin 16) : Finset (Fin 10) :=
+  univ.filter fun i => (edges i).1.val = j.val % 8 ∨ (edges i).2.val = j.val % 8
+private def foreign (j : Fin 16) : Finset (Fin 10) := univ \ incident j
+private def pivot : Fin 8 → Fin 10 := ![0,0,1,2,3,0,0,0]
+private def center (f : Fin 10 → Fin 2 → F) (outside : F) (j : Fin 16) :=
+  if j.val % 8 < 5 then val (f (pivot ⟨j.val % 8, by omega⟩)) j else outside
+private abbrev firstCenter := center A 17
+private abbrev secondCenter := center B 29
+
+private theorem hits : ∀ j i, i ∈ incident j →
+    val (A i) j = firstCenter j ∧ val (B i) j = secondCenter j := by decide
+private theorem nonzero : ∀ j i, i ∈ foreign j → val (B i) j ≠ secondCenter j := by decide
+private theorem different : ∀ r i j, i ∈ foreign r → j ∈ foreign r → i ≠ j →
+    (firstCenter r-val (A i) r)*(val (B j) r-secondCenter r) ≠
+      (firstCenter r-val (A j) r)*(val (B i) r-secondCenter r) := by decide
+
+/-- The five vertex fibers are intact. The other three fibers consist of
+common roots except for two off-head sites in the first remaining block. -/
+private def common (j : Fin 16) : ℕ :=
+  if j.val % 8 < 5 then 0 else if j.val = 5 then S-2 else S
+private theorem common_le : ∀ j, common j ≤ S := by decide
+
+private theorem common_count : (SixteenFiberMass.roots S common).card = 402653182 := by
+  rw [SixteenFiberMass.card_roots S common common_le]; decide
+private theorem joint_count (i : Fin 10) : (SixteenFiberMass.core S common incident i).card = 671088638 := by
+  rw [SixteenFiberMass.card_core S common incident common_le]; fin_cases i <;> decide
+private theorem foreign_count (i : Fin 10) : (SixteenFiberMass.fresh S common foreign i).card = 402653186 := by
+  rw [SixteenFiberMass.fresh, SixteenFiberMass.card_selected S common common_le]; fin_cases i <;> decide
+
+/-- All ten secants on five vertices attain every available one-fresh label
+at 402653185 errors. The bound holds for all indicated dimensions and widths. -/
+theorem label_mass {k : ℕ} (hk : 536870912 ≤ k) (hc : k ≤ 671088638) (width : ℕ) [NeZero width] :
+    (4026531860:ℝ≥0∞)/(P:ℝ≥0∞) ≤
+      epsMCA (F:=F) ((ReedSolomon.code dom k : Set (Fin N → F)) ^⋈ (Fin width)) (402653185/1073741824) := by
+  have counts : (∑ i, (SixteenFiberMass.fresh S common foreign i).card) = 4026531860 := by
+    simp [foreign_count]
+  rw [epsMCA_interleaved_eq]
+  have h := SixteenFiberMass.selected_mass S common incident dom k D (402653185/1073741824)
+    (fun i => lift (A i)) (fun i => lift (B i)) (fun i => val (A i)) (fun i => val (B i))
+    firstCenter secondCenter foreign (fun i x => lifted (A i) x) (fun i x => lifted (B i) x)
+    hits nonzero different (by rw [common_count]; dsimp [D]; omega)
+    (fun i => deg _) (fun i => deg _) (fun i => (joint_count i).symm ▸ hc) (by
+      intro i
+      rw [Fintype.card_fin, joint_count]
+      norm_num [N,tsub_mul,tsub_le_iff_right])
+    (by rw [counts,Nat.card_eq_fintype_card,ZMod.card,Nat.choose_two_right]; decide)
+  rw [counts, ZMod.card] at h
+  simpa only [Nat.cast_ofNat] using h
+
+#print axioms label_mass
+end FiveVertices
 
 #print axioms allocation_limit
 #print axioms owned_limits

@@ -7,6 +7,42 @@ from probe_many_head_locator_attack import require
 from probe_smooth_four_head_attack import GENERATOR, PRIME
 
 
+def edge_values(t, vertices, edges):
+    points = []
+    for first, second in edges:
+        a, b = vertices[first], vertices[second]
+        x = ((a + b)*t - a*b) % PRIME
+        y = ((a*a + a*b + b*b)*t - a*b*(a+b) + 7*x) % PRIME
+        points.append((x, y))
+    return points
+
+
+def five_vertex_mass(root, s):
+    vertices = [pow(root, j, PRIME) for j in range(5)]
+    edges = list(combinations(range(5), 2))
+    common = 3*s - 2
+    cores = [common] * len(edges)
+    labels = 0
+    for j in range(6):
+        points = edge_values(pow(root, j, PRIME), vertices, edges)
+        count = s if j < 5 else 2
+        owner = next((i for i, edge in enumerate(edges) if j in edge), None)
+        u, v = points[owner] if owner is not None else (17, 29)
+        directions = set()
+        for i, (x, y) in enumerate(points):
+            if j in edges[i]:
+                require((x, y) == (u, v), "incident edge agrees")
+                cores[i] += count
+            else:
+                require(y != v, "foreign edge misses the second coordinate")
+                directions.add((u-x)*pow((y-v) % PRIME, -1, PRIME) % PRIME)
+        require(len(directions) == (6 if j < 5 else 10), "all foreign directions are distinct")
+        labels += count * len(directions)
+    require(set(cores) == {671088638} and labels == 4026531860, "ten-head population")
+    require(comb(labels, 2) <= PRIME, "simultaneous separation")
+    print(f"Five vertices: {8*s-min(cores)-1} errors, {labels} distinct labels, all cores {min(cores)}")
+
+
 def main():
     n = 2**30
     s = n // 8
@@ -24,12 +60,7 @@ def main():
     labels = common = 0
     for j in range(16):
         t = pow(root, j, PRIME)
-        points = []
-        for first, second in edges:
-            a, b = vertices[first], vertices[second]
-            x = ((a + b)*t - a*b) % PRIME
-            y = ((a*a + a*b + b*b)*t - a*b*(a+b) + 7*x) % PRIME
-            points.append((x, y))
+        points = edge_values(t, vertices, edges)
         vertex = j % 8
         if vertex < 4:
             owner = next(i for i, edge in enumerate(edges) if vertex in edge)
@@ -53,6 +84,7 @@ def main():
     require(common + s + 1 < n//2 <= min(cores), "degree and core uniqueness")
     require(labels > PRIME//2**128 and comb(labels, 2) <= PRIME, "over budget with simultaneous labels")
     require((common, errors, labels) == (402653182, 387740104, 2147483649), "production count")
+    five_vertex_mass(root, s)
     print(f"{errors} errors, {labels} distinct bad scalars, {common} roots, cores={cores}")
 
 
