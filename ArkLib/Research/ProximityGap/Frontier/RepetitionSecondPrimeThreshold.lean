@@ -92,6 +92,27 @@ theorem arrangement {dom : I ↪ F} {δ : ℝ≥0} {u : WordStack F (Fin 2) I}
       mem_image_of_mem val (mem_univ i)
     rw [h,card_univ]
 
+/-- A uniform rich-line packing bound gives the same upper bound on the number of bad
+scalars for a dimension-one code on any supplied domain and at every positive width. -/
+theorem probability_of_packing {N t e B : ℕ} [NeZero N] (dom : Fin N ↪ F)
+    (ht : 0 < t) (he : e+t = N)
+    (bound : ∀ A : Arrangement (F × F) F t, mass A.w A.points = N → A.lines.card ≤ B)
+    (width : ℕ) [NeZero width] :
+    epsMCA (F := F) ((ReedSolomon.code dom 1 : Set (Fin N → F)) ^⋈ (Fin width))
+      ((e : ℝ≥0)/N) ≤ (B : ℝ≥0∞)/(Fintype.card F : ℝ≥0∞) := by
+  classical
+  rw [epsMCA_interleaved_eq]
+  apply epsMCA_le_of_badCount_le
+  intro u
+  obtain ⟨fam, eq⟩ := exists_richPointFamily_with_badScalar_count dom ((e : ℝ≥0)/N) u
+    (by decide : 1 ≤ 1)
+  rw [eq]
+  obtain ⟨A, lines, hm⟩ := arrangement fam t (by
+    rw [Fintype.card_fin, tsub_mul, one_mul, div_mul_cancel₀ _ (by exact_mod_cast (NeZero.ne N)), ← Nat.cast_tsub]
+    simpa only [show N-e=t by omega, Nat.ceil_natCast] using (le_refl t)) ht
+  rw [← lines]
+  exact bound A (by simpa using hm)
+
 private abbrev n : ℕ := 1073741824
 private abbrev p := PrizeShapePrimeP30Second.P
 local instance : Fact p.Prime := ⟨PrizeShapePrimeP30Second.prime_P⟩
@@ -102,27 +123,13 @@ theorem predecessor_of_packing (dom : Fin n ↪ ZMod p)
       mass A.w A.points=n → A.lines.card≤2147483648) (width : ℕ) [NeZero width] :
     epsMCA (F:=ZMod p) ((ReedSolomon.code dom 1 : Set (Fin n → ZMod p)) ^⋈ (Fin width))
       (939524094/1073741824) ≤ 1/(2:ℝ≥0∞)^128 := by
-  classical
-  rw [epsMCA_interleaved_eq]
-  apply (epsMCA_le_of_badCount_le _ _ 2147483648 ?_).trans
-  · rw [ZMod.card]
-    have h : ((2147483648:ℕ):ℝ≥0∞)/p ≤ 1/((2^128:ℕ):ℝ≥0∞) :=
-      (BoundarySecurityBudget.count_ratio_le_iff PrizeShapePrimeP30Second.prime_P.pos
-        (by decide : 0<2^128)).mpr (by decide)
-    simpa only [Nat.cast_pow,Nat.cast_ofNat] using h
-  · intro u
-    obtain ⟨fam,he⟩ := exists_richPointFamily_with_badScalar_count dom (939524094/1073741824) u (by decide : 1≤1)
-    rw [he]
-    obtain ⟨A,hl,hm⟩ := arrangement fam 134217730 (by
-      rw [Fintype.card_fin]
-      change 134217730≤⌈(1-(939524094/1073741824:ℝ≥0))*1073741824⌉₊
-      rw [tsub_mul,one_mul,div_mul_cancel₀ _ (by norm_num)]
-      have sub : (1073741824:ℝ≥0)-939524094=134217730 := by
-        exact (tsub_eq_iff_eq_add_of_le (by norm_num)).mpr (by norm_num)
-      rw [sub]
-      exact (Nat.ceil_natCast 134217730).symm.le) (by decide)
-    rw [← hl]
-    exact bound A (by simpa using hm)
+  have good := probability_of_packing dom (by decide : 0 < 134217730)
+    (by decide : 939524094+134217730=n) bound width
+  rw [ZMod.card] at good
+  apply good.trans
+  have h := (BoundarySecurityBudget.count_ratio_le_iff PrizeShapePrimeP30Second.prime_P.pos
+    (by decide : 0 < 2^128)).mpr (by decide : 2147483648 ≤ p/2^128)
+  simpa only [Nat.cast_pow, Nat.cast_ofNat] using h
 
 /-- The dimensional-one operational threshold, using the rich-line arrangement
 bound and the explicit four-center attack at its immediate successor. -/
