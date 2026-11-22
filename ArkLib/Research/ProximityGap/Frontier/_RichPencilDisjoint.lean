@@ -84,18 +84,18 @@ theorem distance_le_twice_radius_of_meeting_rich_pencils {F X : Type*}
     · by_cases hs : x ∈ S
       · have hxB := (Finset.mem_union.mp (sB hs)).resolve_left hz
         have hxK := (Finset.mem_union.mp (sK hs)).resolve_left hz
-        simp only [Finset.mem_union, hs, true_or, if_true, hxB, hxK]
+        simp only [Finset.mem_union, hs, true_or, ite_true, hxB, hxK]
         omega
       · by_cases ht : x ∈ T
         · have hxL := (Finset.mem_union.mp (tL ht)).resolve_left hz
           have hxM := (Finset.mem_union.mp (tM ht)).resolve_left hz
-          simp only [Finset.mem_union, ht, or_true, if_true, hxL, hxM]
+          simp only [Finset.mem_union, ht, or_true, ite_true, hxL, hxM]
           omega
         · simp [Finset.mem_union, hs, ht]
   have sumCharge := Finset.sum_le_sum (s := (Finset.univ : Finset X)) (fun x _ ↦ charge x)
   have count (A : Finset X) (k : ℕ) :
       (∑ x : X, if x ∈ A then k else 0) = A.card * k := by
-    simp [Finset.sum_ite]
+    simp
   simp only [Finset.sum_add_distrib, count, mul_one] at sumCharge
   have sep : D ≤ (S ∪ T).card :=
     le_union_card_of_distinct_code_pencils C u₀ u₁ U V U' V' S T D hU hV hU' hV'
@@ -110,6 +110,7 @@ theorem distance_le_twice_radius_of_meeting_rich_pencils {F X : Type*}
 
 
 open ProximityGap.IncidenceAffineLines
+attribute [local instance] Classical.propDecidable
 
 /-- For decoded heads with injective labels, two collinear triples sharing
 their first head must use the same two other heads when the radius is less
