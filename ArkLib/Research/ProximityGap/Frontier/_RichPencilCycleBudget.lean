@@ -200,9 +200,11 @@ theorem affine_path_distance_budget {F I X : Type*} [Field F] [Fintype I]
     (hlabels : ∀ i, p i ≠ a i ∧ p i ≠ b i ∧ a i ≠ b i)
     (hmeet : ∀ i, i ≠ last → ∀ x,
       U i x + a i * V i x = U (σ i) x + b (σ i) * V (σ i) x)
-    (hpair : ∀ i, i ≠ last → D ≤
-      (affineErrorSupport u₀ u₁ (U i) (V i) ∪
-        affineErrorSupport u₀ u₁ (U (σ i)) (V (σ i))).card)
+    (C : Submodule F (X → F))
+    (hU : ∀ i, U i ∈ C) (hV : ∀ i, V i ∈ C)
+    (hdistinct : ∀ i, i ≠ last → (U i, V i) ≠ (U (σ i), V (σ i)))
+    (hdistance : ∀ v ∈ C, ∀ E : Finset X, E.card < D →
+      (∀ x ∉ E, v x = 0) → v = 0)
     (hscalar : ∀ i, i ≠ last → a i = b (σ i))
     (hp : ∀ i, (affineHeadErrors u₀ u₁ (U i) (V i) (p i)).card ≤ t)
     (ha : ∀ i, (affineHeadErrors u₀ u₁ (U i) (V i) (a i)).card ≤ t)
@@ -231,6 +233,13 @@ theorem affine_path_distance_budget {F I X : Type*} [Field F] [Fintype I]
         rw [hscalar i hi] at h
         simp [A, B, affineHeadErrors, hscalar i hi, h]
       simp [H, hi, he]
+  have agree (i : I) : ∀ x ∉ S i, U i x = u₀ x ∧ V i x = u₁ x := by
+    intro x hx
+    simpa [S, affineErrorSupport, not_or, eq_comm] using hx
+  have hpair (i : I) (hi : i ≠ last) : D ≤ (S i ∪ S (σ i)).card :=
+    le_union_card_of_distinct_code_pencils C u₀ u₁ (U i) (V i) (U (σ i)) (V (σ i))
+      (S i) (S (σ i)) D (hU i) (hV i) (hU (σ i)) (hV (σ i))
+      (agree i) (agree (σ i)) (hdistinct i hi) hdistance
   refine path_distance_budget σ S P H last D t ?_ hpair hp ?_ ?_
   · intro i x hx
     obtain ⟨hpa, hpb, hab⟩ := hlabels i
