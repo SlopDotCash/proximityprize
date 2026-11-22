@@ -4,6 +4,7 @@ Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and L
 Authors: Proximity Prize Contributors
 -/
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+import Mathlib.Algebra.Ring.Int.Parity
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Ring
@@ -70,6 +71,23 @@ theorem signed_packing [Nonempty ι] (w : ι → α → ℤ) (s u : ℤ)
   apply le_of_mul_le_mul_left (a := L) _ hL
   nlinarith only [hsum.trans hi]
 
+/-- For two layers whose coordinate sums agree modulo two, squared distance is even.
+An odd lower bound for that distance can therefore be increased by one. -/
+theorem even_distance_lower_bound (z w : α → ℤ) (l : ℤ)
+    (hpar : (2 : ℤ) ∣ (∑ i, z i) - ∑ i, w i)
+    (h : 2 * l + 1 ≤ ∑ i, (z i - w i) ^ 2) :
+    2 * l + 2 ≤ ∑ i, (z i - w i) ^ 2 := by
+  have hd : (2 : ℤ) ∣ ∑ i, ((z i - w i) ^ 2 - (z i - w i)) := by
+    apply dvd_sum
+    intro i _
+    simpa only [sq, mul_sub, mul_one] using (Int.even_mul_pred_self (z i - w i)).two_dvd
+  simp only [sum_sub_distrib] at hd
+  have he := dvd_add hd hpar
+  rw [sub_add_cancel] at he
+  obtain ⟨j, hj⟩ := he
+  omega
+
+#print axioms even_distance_lower_bound
 #print axioms signed_packing
 
 end ProximityGap.LocatorSignedPacking
