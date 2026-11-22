@@ -114,7 +114,7 @@ open ProximityGap.IncidenceAffineLines
 /-- For decoded heads with injective labels, two collinear triples sharing
 their first head must use the same two other heads when the radius is less
 than half distance and every line contains at most three selected heads. -/
-theorem other_heads_eq_of_collinear_triples {F I X : Type*}
+theorem other_heads_eq_of_collinear_triples {F I X : Type}
     [Field F] [Fintype X] [DecidableEq X] [DecidableEq I]
     (C : Submodule F (X → F)) (u₀ u₁ : X → F) (γ : I → F)
     (w : I → X → F) (G : Finset I) (Q : I → Finset X)
