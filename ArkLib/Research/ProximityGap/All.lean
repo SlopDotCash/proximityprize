@@ -1056,6 +1056,8 @@ import ArkLib.Research.ProximityGap.Frontier.TamePowerSeriesOrbit
 import ArkLib.Research.ProximityGap.Frontier.TameResultantOrders
 import ArkLib.Research.ProximityGap.Frontier.TangentHeadCount
 import ArkLib.Research.ProximityGap.Frontier.TangentHeadWindows
+import ArkLib.Research.ProximityGap.Frontier.TangentPolarWindows
+import ArkLib.Research.ProximityGap.Frontier.TangentVeronesePacking
 import ArkLib.Research.ProximityGap.Frontier.TerminalCollinearHeadCount
 import ArkLib.Research.ProximityGap.Frontier.TerminalCubicBudget
 import ArkLib.Research.ProximityGap.Frontier.TerminalCubicBudgetWindow
