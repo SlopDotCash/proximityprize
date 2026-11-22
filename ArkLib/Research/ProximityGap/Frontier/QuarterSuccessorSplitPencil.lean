@@ -2,7 +2,7 @@
 Copyright (c) 2026 Proximity Prize Contributors. All rights reserved.
 SPDX-License-Identifier: MIT OR Apache-2.0
 -/
-import ArkLib.Research.ProximityGap.Frontier.SmoothFourHeadFibers
+import ArkLib.Research.ProximityGap.Frontier.SplitPencilFiberData
 import ArkLib.Research.ProximityGap.Frontier.ThreeHeadRootScore
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeQuarticInterpolation
 
@@ -126,41 +126,10 @@ theorem mass_interval_of_split_polynomials {I F : Type} [Fintype I] [Nonempty I]
     (cop : ∀ x, P.eval (dom x)=0 → Q.eval (dom x)≠0) :
     ((1073741826+6*j : ℕ) : ℝ≥0∞)/Fintype.card F ≤ epsMCA (F:=F)
       (ReedSolomon.code dom 268435456 : Set (I → F)) (((447392428+j : ℕ) : ℝ≥0)/1073741824) := by
-  classical
-  let raw (x : I) : Fin 4 := if P.eval (dom x)=0 then 2 else if Q.eval (dom x)=0 then 1
-    else if P.eval (dom x)=Q.eval (dom x) then 0 else 3
-  have tab (x : I) : (raw x=2 ↔ P.eval (dom x)=0) ∧ (raw x=1 ↔ Q.eval (dom x)=0) ∧
-      (raw x=0 ↔ P.eval (dom x)=Q.eval (dom x)) := by
-    by_cases p : P.eval (dom x)=0
-    · simp [raw,p,cop x p,Ne.symm (cop x p)]
-    by_cases q : Q.eval (dom x)=0
-    · simp [raw,p,q]
-    by_cases r : P.eval (dom x)=Q.eval (dom x) <;> simp [raw,p,q,r]
-  have c₂ : (univ.filter fun x => raw x=2).card=268435454 := by simpa only [fun x => (tab x).1] using hp
-  have c₁ : (univ.filter fun x => raw x=1).card=268435454 := by simpa only [fun x => (tab x).2.1] using hq
-  have c₀ : (univ.filter fun x => raw x=0).card=268435454 := by simpa only [fun x => (tab x).2.2] using hr
-  have total := sum_card_fiberwise_eq_card_filter (univ : Finset I) (univ : Finset (Fin 4)) raw
-  simp [Fin.sum_univ_succ,hn] at total
-  apply pencil_mass_interval dom hn j hj fieldRoom raw (![0,P,Q] : Fin 3 → F[X]) ?_ ?_ ?_
-  · intro i; fin_cases i <;> simp [dp,dq]
-  · intro i; fin_cases i
-    · exact c₀
-    · exact c₁
-    · exact c₂
-    · change (univ.filter fun x => raw x=3).card=268435462
-      change (univ.filter fun x => raw x=0).card + ((univ.filter fun x => raw x=1).card +
-        ((univ.filter fun x => raw x=2).card + ((univ.filter fun x => raw x=3).card+0)))=1073741824 at total
-      rw [c₀,c₁,c₂] at total
-      omega
-  · intro x i j
-    by_cases p : P.eval (dom x)=0
-    · have q := cop x p
-      fin_cases i <;> fin_cases j <;> simp [coincide,raw,p,q,Ne.symm q]
-    by_cases q : Q.eval (dom x)=0
-    · fin_cases i <;> fin_cases j <;> simp [coincide,raw,p,q,Ne.symm p]
-    by_cases r : P.eval (dom x)=Q.eval (dom x)
-    · fin_cases i <;> fin_cases j <;> simp [coincide,raw,q,Ne.symm q,r]
-    · fin_cases i <;> fin_cases j <;> simp [coincide,raw,p,q,Ne.symm p,Ne.symm q,r,Ne.symm r]
+  obtain ⟨raw, counts, pairs⟩ := split_fiber_data dom hn P Q hp hq hr cop
+  apply pencil_mass_interval dom hn j hj fieldRoom raw (![0,P,Q] : Fin 3 → F[X]) ?_ counts pairs
+  intro i
+  fin_cases i <;> simp [dp,dq]
 
 /-- A literal pair of split polynomials of degree d−1 and their difference
 give the sufficient construction directly on the supplied evaluation domain. -/

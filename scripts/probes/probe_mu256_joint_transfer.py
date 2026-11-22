@@ -92,7 +92,7 @@ def short_basis(gram, block):
     return reduced
 
 
-def outer_bound(gram, scale):
+def outer_bound(gram, scale, radius_squared=RADIUS_SQUARED):
     """Return rigorous integer lower bounds on all Gram–Schmidt summands."""
     n = gram.nrows()
     entries = gram.tolist()
@@ -111,8 +111,8 @@ def outer_bound(gram, scale):
     require(all(abs(x*unit-m) < 1 for row, integers in zip(mu, coefficients)
                 for x, m in zip(row, integers)), 'invalid off-diagonal enclosure')
     inverse = gram.inv()
-    caps = [isqrt(int(RADIUS_SQUARED*scale*inverse[i, i])) for i in range(n)]
-    return [n, RADIUS_SQUARED*denom*unit**2, unit, *weights, *caps,
+    caps = [isqrt(int(radius_squared*scale*inverse[i, i])) for i in range(n)]
+    return [n, radius_squared*denom*unit**2, unit, *weights, *caps,
             *(m for row in coefficients for m in row)]
 
 
