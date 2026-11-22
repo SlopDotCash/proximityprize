@@ -142,6 +142,7 @@ jobs:
       - name: Check rich pencil disjointness and audit axioms
         run: |
           set -o pipefail
+          ./scripts/lake-locked.sh build ArkLib.Research.ProximityGap.Frontier._IncidenceAffineLines
           lake env lean ArkLib/Research/ProximityGap/Frontier/_RichPencilDisjoint.lean | tee rich-pencil-disjoint-axioms.log
           python3 - <<'PY'
           import re
