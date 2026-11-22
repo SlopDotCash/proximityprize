@@ -1,0 +1,52 @@
+# A one-step first-sponsor incidence improvement via reciprocal locators
+
+Author: Mikhail Izhutkin (mashingaan). AI assistance via OpenAI Codex.
+
+This is a mathematical proof draft. The end-to-end Lean theorem remains open.
+
+## Statement and witness reduction
+
+For the exact first-sponsor evaluation code of length `n = 1073741824` and degree bound `n - D = 536870911`, take `D = 536870913` and `t = 221512374`. No family of `b = n+1` canonical bad heads can have error weight at most `t` per head. This is the incidence assertion at radius `t/n`. The same conversion used by `firstPrime_constant_floor` would give the floor `(t+1)/n` for the canonical `mcaDeltaStar`.
+
+Use the exact error sets `E_i` against the received affine pencil. If a canonical witness initially gives only a subset of the agreement coordinates, enlarge it to the exact agreement set. The no-joint-explanation condition persists under enlargement. Take distinct scalar parameters and `b` heads. The existing `bad_witness_line_cap_three` applies since `7t < 3D` and `t+1 < b`. The rich-line disjointness theorem in #840 then gives at most `floor(b/3)` unordered collinear triples, since `2t < D`. All other triples have error union of size at least `D` by the code distance. Call a noncollinear triple tight if its error union has size exactly `D`, and call a triple long if its error union has size at least `D+1`.
+
+## Restricting tight completions of a pair
+
+Fix two heads `a,b` with distinct parameters `alpha,beta`, and put `E = E_a union E_b`, `e = |E|`, `k = D-e`, and `l = D-2t`. For each tight completion `c`, with parameter `gamma`, the error union is `S_c = E union E_c`. Remove at most two completions so that neither cross triple on `a,c,d` or `b,c,d` is collinear for any surviving pair `c,d`. Each of `a,b` belongs to at most one collinear triple, so there are at most two forbidden pairs of completions and deleting one endpoint per pair suffices. The four-set separation bound in #842 gives `|S_c minus S_d| >= l` for surviving pairs. In particular, all surviving supports differ.
+
+Interpolate the code pencil `p(z) + gamma*r(z)` through `a,b`. Off `E` it matches the received pencil, as two affine functions in the scalar parameter agree at two distinct values. For a surviving `c`, its residual polynomial `v_c` from that code pencil is nonzero by noncollinearity. It vanishes off `S_c` and has degree at most `n-D`. Thus it has degree exactly `n-D`, has precisely those `n-D` evaluation roots, and is nonzero throughout `S_c`. Write `P(z)` for the product of `z-x` over evaluation points outside `E`, and `L_c(z)` for the monic product over the `k` points in `S_c minus E`. There is a nonzero scalar `lambda_c` with `v_c L_c = lambda_c P`.
+
+On `E_a minus E_b` the received pencil minus the interpolated code pencil is `(gamma-beta) d_b(x)` for a nonzero slope `d_b(x)`. On `E_b minus E_a` it is `(gamma-alpha) d_a(x)`, again with nonzero slope. These facts follow from agreement at the correct head and disagreement at the other. Define
+
+```
+q_c = (gamma-beta) L_c / lambda_c
+eta_c = (gamma-beta)/(gamma-alpha)
+```
+
+Both denominators are nonzero. The map from `gamma` to `eta_c` is injective because `alpha != beta`. When `c` agrees with the received pencil at a point in the symmetric difference of the two error sets, the equation for `v_c L_c` gives `q_c(x) = P(x)/d_b(x)` on the first part and `q_c(x) = eta_c P(x)/d_a(x)` on the second. Thus the degree-at-most-`k` locator heads agree with a new affine received pencil there. Each has at most `u = t-k` errors on this symmetric difference, since exactly `k` of its original errors are already spent outside `E`. The symmetric difference has at least `L = 2(e-t)` points. Restrict to any `L` of them.
+
+A noncollinear triple of locator heads has at most `k` common agreements in this restriction. Indeed the residual from the interpolant through two of them is a nonzero polynomial of degree at most `k` and vanishes at every common agreement. Any locator line through two or more surviving heads contains at most 11. Its polynomials are distinct since their monic locators have distinct root sets. The roots common to two of the polynomials are roots of every polynomial on that line, and all remaining root sets are disjoint across heads. If the common root count is `r`, separation gives `k-r >= l`, so the number of heads on the line is at most `n/l < 12`.
+
+Let `m` be the surviving completion count and let `f_x` count locator agreement at a restricted coordinate. Repeated-index ordered triples number at most `3m^2`. Ordered collinear distinct triples number at most `9m(m-1)`, because each ordered pair has at most nine additional heads on its line. Therefore
+
+```
+L (m(1-u/L))^3 <= sum_x f_x^3 <= k m^3 + 12 L m^2.
+```
+
+Take `e0 = 377420252`. For `e >= e0`, put `s=e-t`, so that `s >= l`. The margin `L(1-u/L)^3-k` is `(s+l)^3/(4s^2) - (D-t-s)`. Its derivative is `(5-3(l/s)^2-2(l/s)^3)/4 >= 0`. At `e0` the margin exceeds `778467`, and `L <= 2t` for any pair. Hence `m < 6830` and every pair with `e >= e0` has fewer than `7000` tight completions including the deleted ones.
+
+## Global supply of pairs and contradiction
+
+Let `M_x` count agreement heads at original coordinate `x`, and `B = b(b-1)(b-2)`. The sum of ordered distinct triple common agreements is at most `(n-D)B + 2Db`, because the at most `floor(b/3)` unordered collinear triples add at most `D` each. Therefore `sum_x M_x^3 <= U`, where `U = (n-D)B + 2Db + 3nb^2`, by allowing at most `3b^2` repeats. Furthermore `sum_x M_x >= b(n-t)`. For `q = 852229450`, the pointwise square bound `3q M_x^2 <= 2M_x^3 + q^3` follows from `(M_x-q)^2(2M_x+q) >= 0`. So the mean pair error-union size is at least
+
+```
+mu = n - ((2U+nq^3)/(3q) - b(n-t))/(b(b-1)).
+```
+
+Since all pair unions have size at most `2t`, a fraction at least `(mu-e0)/(2t-e0)` of unordered pairs have union size at least `e0`. Here `mu > 397326860`, and that fraction exceeds `0.30343`. Each high-union pair belongs to `b-2` triples, of which fewer than `7000` are tight and at most one is collinear. Count the remaining long triples through these pairs. Each is counted at most three times, so at least a fraction
+
+```
+((mu-e0)/(2t-e0)) * (b-2-7001)/(b-2) > 0.30
+```
+
+of all unordered triples are long. The distinct-triple excess inequality in #841 then contradicts the falling-cubic lower bound at `t`. This proves the stated mathematical incidence bound under the witness, line-cap and rich-disjointness lemmas above.

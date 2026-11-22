@@ -126,9 +126,30 @@ theorem tight_support_separation {X : Type*} [Fintype X] [DecidableEq X]
   change D ≤ 2 * t + (S \ T).card
   omega
 
+/-- Exact integer margins for the reciprocal-locator incidence argument.
+The first inequality caps the surviving tight completions below 6830. The
+second guarantees more than 30 percent long triples after counting high-union
+pairs and removing up to 7001 exceptional completions at each pair. -/
+theorem first_sponsor_reciprocal_locator_margins :
+    let n : ℤ := 1073741824
+    let D : ℤ := 536870913
+    let t : ℤ := 221512374
+    let e : ℤ := 377420252
+    let q : ℤ := 852229450
+    let b := n + 1
+    let s := e - t
+    let l := D - 2 * t
+    let U := (n - D) * b * (b - 1) * (b - 2) + 2 * D * b + 3 * n * b^2
+    let denom := 3 * q * b * (b - 1)
+    let meanNum := n * denom - (2 * U + n * q^3) + 3 * q * b * (n - t)
+    24 * t * (4 * s^2) < 6830 * ((s + l)^3 - 4 * s^2 * (D - e)) ∧
+    3 * (2 * t - e) * denom * (b - 2) < 10 * (meanNum - e * denom) * (b - 2 - 7001) := by
+  norm_num
+
 end ProximityGap.MinimumSupportHeadPlane
 
 #print axioms ProximityGap.MinimumSupportHeadPlane.residual_on_minimum_support
 #print axioms ProximityGap.MinimumSupportHeadPlane.agreement_on_residual_line
 #print axioms ProximityGap.MinimumSupportHeadPlane.affine_heads_on_minimum_support
 #print axioms ProximityGap.MinimumSupportHeadPlane.tight_support_separation
+#print axioms ProximityGap.MinimumSupportHeadPlane.first_sponsor_reciprocal_locator_margins
