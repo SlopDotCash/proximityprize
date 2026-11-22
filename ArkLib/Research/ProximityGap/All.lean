@@ -362,6 +362,7 @@ import ArkLib.Research.ProximityGap.Frontier.DyadicParityGalois
 import ArkLib.Research.ProximityGap.Frontier.DyadicParityLemma
 import ArkLib.Research.ProximityGap.Frontier.DyadicPenalty1024
 import ArkLib.Research.ProximityGap.Frontier.DyadicPeriodCeiling
+import ArkLib.Research.ProximityGap.Frontier.DyadicPrimitiveChords
 import ArkLib.Research.ProximityGap.Frontier.DyadicProjectiveCosets
 import ArkLib.Research.ProximityGap.Frontier.DyadicProjectiveDescent
 import ArkLib.Research.ProximityGap.Frontier.DyadicQuadraticInvolution
