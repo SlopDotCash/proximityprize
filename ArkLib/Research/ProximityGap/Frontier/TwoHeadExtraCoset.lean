@@ -180,36 +180,48 @@ theorem power_mass (dom : Fin n ↪ F) (c g : F) (hc : c ≠ 0) (hg : orderOf g 
     rw [tsub_mul, one_mul, div_mul_cancel₀ _ (by norm_num [n]), ← Nat.cast_tsub]
     exact_mod_cast (show n - e ≤ 16777214 + 2 * (3 * 16777216) + P + 1 by dsimp [n]; omega)
 
-/-- Every smooth coset with arbitrary indexing admits two full heads plus scalar zero. -/
-theorem smooth_mass (dom : I ↪ F) [ReedSolomon.Smooth dom] (hn : Fintype.card I = n)
-    {e : ℕ} (hl : 654311425 ≤ e) (hu : e ≤ 671088639)
-    (hq : (2 * (e + 1) + 1).choose 2 < Fintype.card F) (width : ℕ) [NeZero width] :
-    ((2 * (e + 1) + 1 : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤
-      epsMCA (F := F) ((ReedSolomon.code dom k : Set (I → F)) ^⋈ (Fin width)) ((e : ℝ≥0) / n) := by
+/-- A lower bound on each indexed power coset transfers to every smooth domain
+of that cardinality, in every positive interleaving width. -/
+theorem smooth_mass_of_power {m : ℕ} [NeZero m] (dom : I ↪ F) [ReedSolomon.Smooth dom]
+    (hn : Fintype.card I = m) (dim : ℕ) (δ : ℝ≥0) (bound : ℝ≥0∞)
+    (on_power : ∀ (base : Fin m ↪ F) (c g : F), c ≠ 0 → orderOf g = m →
+      (∀ i, base i = c * g ^ i.val) →
+      bound ≤ epsMCA (F := F) (ReedSolomon.code base dim : Set (Fin m → F)) δ)
+    (width : ℕ) [NeZero width] :
+    bound ≤ epsMCA (F := F) ((ReedSolomon.code dom dim : Set (I → F)) ^⋈ (Fin width)) δ := by
   classical
   rw [epsMCA_interleaved_eq]
   obtain ⟨sites, hsite⟩ := SmoothDomainMcaEquivalence.coset_equiv dom
   let H := ReedSolomon.Smooth.H dom
   let : Fintype H := Fintype.ofEquiv I sites
-  have hcard : Nat.card H = n := by rw [Nat.card_eq_fintype_card, ← Fintype.card_congr sites, hn]
+  have hcard : Nat.card H = m := by rw [Nat.card_eq_fintype_card, ← Fintype.card_congr sites, hn]
   obtain ⟨g, hg⟩ := IsCyclic.exists_ofOrder_eq_natCard (α := H)
   have ho := hg.trans hcard
-  let powers : Fin n ≃ H := Equiv.ofBijective (fun i => g ^ i.val)
+  let powers : Fin m ≃ H := Equiv.ofBijective (fun i => g ^ i.val)
     ((Fintype.bijective_iff_injective_and_card _).mpr ⟨fun i j h =>
       Fin.ext ((IsPrimitiveRoot.iff_orderOf.mpr ho).pow_inj i.isLt j.isLt h),
       by rw [← Nat.card_eq_fintype_card (α := H), hcard, Fintype.card_fin]⟩)
   let index := powers.trans sites.symm
   let base := index.toEmbedding.trans dom
-  have generator : orderOf ((g.val : Fˣ):F) = n := orderOf_units.trans
+  have generator : orderOf ((g.val : Fˣ):F) = m := orderOf_units.trans
     ((orderOf_injective H.subtype Subtype.val_injective g).trans ho)
-  have heval (i : Fin n) : base i = (ReedSolomon.Smooth.a dom : F) * (g.val : Fˣ).val ^ i.val := by
+  have heval (i : Fin m) : base i = (ReedSolomon.Smooth.a dom : F) * (g.val : Fˣ).val ^ i.val := by
     rw [show base i = dom (index i) from rfl, hsite]
     apply congrArg (_ * ·)
     change (↑((sites (sites.symm (powers i))).val):F) = _
     rw [sites.apply_symm_apply]
     rfl
   rw [MCAReindexThresholdEquiv.epsMCA_reindex_reedSolomon_eq index base dom (fun _ => rfl)]
-  exact power_mass base _ _ (ReedSolomon.Smooth.a dom).ne_zero generator heval hl hu hq
+  exact on_power base _ _ (ReedSolomon.Smooth.a dom).ne_zero generator heval
+
+/-- Every smooth coset with arbitrary indexing admits two full heads plus scalar zero. -/
+theorem smooth_mass (dom : I ↪ F) [ReedSolomon.Smooth dom] (hn : Fintype.card I = n)
+    {e : ℕ} (hl : 654311425 ≤ e) (hu : e ≤ 671088639)
+    (hq : (2 * (e + 1) + 1).choose 2 < Fintype.card F) (width : ℕ) [NeZero width] :
+    ((2 * (e + 1) + 1 : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤
+      epsMCA (F := F) ((ReedSolomon.code dom k : Set (I → F)) ^⋈ (Fin width)) ((e : ℝ≥0) / n) := by
+  exact smooth_mass_of_power dom hn _ _ _ (fun base c g hc hg hi =>
+    power_mass base c g hc hg hi hl hu hq) width
 
 /-- Each even budget in this interval fails at least one Hamming step before the
 two-full-head attack alone first exceeds that budget. -/
