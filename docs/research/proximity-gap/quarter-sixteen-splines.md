@@ -75,3 +75,18 @@ python3 scripts/probes/verify_quarter_32_affine_survivors.py /tmp/quarter-affine
 ```
 
 [Exact conjugate and rank verification](../../../scripts/probes/verify_quarter_32_affine_survivors.py)
+
+### Direct affine stabilizer bound at both named primes
+
+The bound of two on the full affine exponent stabilizer also holds on the order-32 subgroup of each named prime field. The probe has a GMP mode that uses the repository's named field and its specified generator, then raises that generator to $2^{30}/32$ to obtain the 32-site domain. It constructs all 87 subgroups of order four in the affine exponent group. It normalizes subgroups and hole layouts using only rotations and inversions on the domain. These permutations preserve the scalar spline ranks over each individual prime field. Multiplying exponents by a general Galois unit is allowed as a symmetry to test, but is not used to identify layouts in this finite-field proof.
+
+The restricted subgroup normalization still gives the same five cyclic and six Klein classes. For each prime, all 29 faithful cases have incidence rank at least 23. The 22 nonfaithful cases yield 188 representative records for each prime. The program examines every remaining incidence kernel over that prime. If the rank is 22 it evaluates the two scalar differences at zero on each triangular face, as above. A noncollinear saturated quartet would require augmented rank 24 on all four faces. Every remaining layout fails that test. This finite computation uses the actual named field throughout and has no number-field norm threshold.
+
+```sh
+c++ -O3 -std=c++17 -DAFFINE_NAMED_FIELDS scripts/probes/probe_quarter_32_affine_symmetries.cpp \
+  $(pkg-config --cflags --libs gmpxx) -o /tmp/quarter-affine-named
+for field in first second; do
+  /tmp/quarter-affine-named "$field"
+  /tmp/quarter-affine-named "$field" --nonfaithful
+done
+```

@@ -70,6 +70,18 @@ ArkLib.Research.ProximityGap.Frontier.SmoothPlanarQuartetCoset ArkLib.ProximityG
 ArkLib.Research.ProximityGap.Frontier.FourHeadCommonRootObstruction ArkLib.ProximityGap.Frontier.FourHeadCommonRootObstruction.predecessor_cap
 ArkLib.Research.ProximityGap.Frontier.SmoothCosetFourHeadMass ArkLib.ProximityGap.Frontier.SmoothCosetFourHeadMass.operational_ceiling
 
+# Fixed-dimension puncture retention and the neighboring second-prime lengths
+ArkLib.Research.ProximityGap.Frontier.OnePunctureRetention ArkLib.ProximityGap.Frontier.OnePunctureRetention.at_most_one_repair
+ArkLib.Research.ProximityGap.Frontier.OnePunctureRetention ArkLib.ProximityGap.Frontier.OnePunctureRetention.count
+ArkLib.Research.ProximityGap.Frontier.OnePunctureCubicThreshold ArkLib.ProximityGap.Frontier.OnePunctureCubicThreshold.count
+ArkLib.Research.ProximityGap.Frontier.OnePunctureCubicThreshold ArkLib.ProximityGap.Frontier.OnePunctureCubicThreshold.classification
+ArkLib.Research.ProximityGap.Frontier.OnePunctureCubicThreshold ArkLib.ProximityGap.Frontier.OnePunctureCubicThreshold.second_prime
+
+# Lossless puncture extension of the two-head probability curve
+ArkLib.Research.ProximityGap.Frontier.PunctureTwoHeadWindow ArkLib.ProximityGap.Frontier.PunctureTwoHeadWindow.stable_eps
+ArkLib.Research.ProximityGap.Frontier.PunctureTwoHeadWindow ArkLib.ProximityGap.Frontier.PunctureTwoHeadWindow.exact_eps
+ArkLib.Research.ProximityGap.Frontier.PunctureTwoHeadWindow ArkLib.ProximityGap.Frontier.PunctureTwoHeadWindow.classification
+
 # Smooth-field and executable equality for the second-budget MCA boundary
 ArkLib.Research.ProximityGap.Frontier.SecondBudgetCharacteristic ArkLib.ProximityGap.Frontier.SecondBudgetCharacteristic.smooth
 ArkLib.Research.ProximityGap.SecondBudgetSmoothReview ProximityPrize.SecondBudgetSmoothReview.classification
@@ -314,6 +326,11 @@ ArkLib.Research.ProximityGap.Frontier.PrimitiveReceivedInterpolation ArkLib.Prox
 ArkLib.Research.ProximityGap.Frontier.DegreeTenDeficitWindow ArkLib.ProximityGap.Frontier.DegreeTenDeficitWindow.primitive_two_head_bracket
 
 # Third secant from agreement outside two nearly full cores
+ArkLib.Research.ProximityGap.Frontier.SharedLocatorListIncidences ProximityGap.SharedLocatorListIncidences.production
+ArkLib.Research.ProximityGap.Frontier.QuadraticListIncidences ProximityGap.QuadraticListIncidences.eight_lengths
+ArkLib.Research.ProximityGap.Frontier.QuadraticListIncidences ProximityGap.QuadraticListIncidences.sixty_four_lengths
+ArkLib.Research.ProximityGap.Frontier.AffineListIncidences ProximityGap.AffineListIncidences.first
+ArkLib.Research.ProximityGap.Frontier.AffineListIncidences ProximityGap.AffineListIncidences.second
 ArkLib.Research.ProximityGap.Frontier.TwoHeadExtraCoset ArkLib.ProximityGap.Frontier.TwoHeadExtraCoset.smooth_mass
 ArkLib.Research.ProximityGap.Frontier.TwoHeadExtraCoset ArkLib.ProximityGap.Frontier.TwoHeadExtraCoset.even_ceiling
 ArkLib.Research.ProximityGap.Frontier.TwoHeadExtraWitness ArkLib.ProximityGap.Frontier.TwoHeadExtraWitness.witnesses
@@ -362,3 +379,11 @@ ArkLib.Research.ProximityGap.Frontier.SmoothPowerListDescent ProximityGap.Smooth
 # First-prime quarter-rate successor and its split polynomial pencil
 ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorOneHole ArkLib.ProximityGap.Frontier.QuarterSuccessorOneHole.mass_bounds
 ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorSplitCriterion ArkLib.ProximityGap.Frontier.QuarterSuccessorSplitCriterion.failure_iff
+
+# The named rate-quarter endpoint, rank scan and polynomial-fiber criterion
+ArkLib.Research.ProximityGap.FirstPrimeQuarterPencilReview ProximityPrize.FirstPrimeQuarterPencilReview.threshold_iff
+ArkLib.Research.ProximityGap.FirstPrimeQuarterPencilReview ProximityPrize.FirstPrimeQuarterPencilReview.executable_iff
+ArkLib.Research.ProximityGap.Frontier.QuarterSplitPencilProduct ArkLib.ProximityGap.Frontier.QuarterSplitPencilProduct.first_prime
+
+# Latest possible first list failure for long smooth rate-one-eighth codes
+ArkLib.Research.ProximityGap.SmoothEighthListBoundary ProximityPrize.SmoothEighthListBoundary.all_fail_iff

@@ -36,7 +36,7 @@ int low_bit(Mask x) {
 struct Label {
     Mask signature;
     unsigned score;
-    unsigned flags = 0;
+    std::array<unsigned char, 16> selected{};
 };
 struct Option {
     Mask sites;
@@ -120,9 +120,9 @@ struct Census {
         std::vector<Mask> tied;
         for (auto &label : labels) {
             if (label.score > cut_a)
-                label.flags |= 1;
+                label.selected[0] |= 1;
             if (label.score > cut_b) {
-                label.flags |= 2;
+                label.selected[0] |= 2;
                 used++;
             }
             if (label.score == cut_b)
@@ -146,10 +146,12 @@ struct Census {
             }
             if (used + orbit.size() <= cap) {
                 for (auto x : orbit)
-                    labels[x].flags |= 2;
+                    labels[x].selected[0] |= 2;
                 used += orbit.size();
             }
         }
+        for (auto &label : labels)
+            label.selected.fill(label.selected[0]);
     }
     // List root subsets in each binary tree, indexed by their four-bit leaf sums.
     void build_locals() {
@@ -180,36 +182,67 @@ struct Census {
         }
     }
     // First take orbits of anchors, then of signatures under the anchor stabilizer.
-    std::vector<Work> jobs() const {
+    std::vector<Work> jobs(bool include_unselected) const {
         std::vector<Work> work;
         for (unsigned a = step; a < order; a *= 2) {
             std::vector<unsigned char> seen(labels.size());
             const unsigned orbit_size = order / (2 * a);
             for (unsigned i = 0; i < labels.size(); i++) {
-                if (seen[i] || !labels[i].flags)
+                if (seen[i] || (!include_unselected && !labels[i].selected[a / step]))
                     continue;
-                unsigned len = 0;
+                unsigned len = 0, representative = i;
                 for (unsigned u = 1; u < order; u += 2)
                     if (u * a % order == a) {
                         const auto id = index.at(conjugate(labels[i].signature, u));
-                        require(labels[id].flags == labels[i].flags,
+                        require(labels[id].selected[a / step] == labels[i].selected[a / step],
                                 "label selection breaks anchor symmetry");
                         if (!seen[id]) {
                             seen[id] = 1;
                             len++;
+                            if (labels[id].signature < labels[representative].signature)
+                                representative = id;
                         }
                     }
-                work.push_back({i, a, len * orbit_size});
+                work.push_back({representative, a, len * orbit_size});
             }
         }
         return work;
     }
-    unsigned flags(Mask sig) const {
-        auto it = index.find(sig);
-        return it == index.end() ? 0 : labels[it->second].flags;
+    // Every chosen orbit occupies the same number of distinct bins at each related anchor.
+    void choose_by_product(const std::vector<Work> &work,
+                           const std::vector<std::array<Word, 2>> &scores,
+                           const std::array<unsigned, 2> &caps) {
+        for (auto &label : labels)
+            label.selected.fill(0);
+        for (unsigned a = step; a < order; a *= 2) {
+            unsigned orbit = order / (2 * a);
+            for (unsigned h = 0; h < 2; h++) {
+                std::vector<unsigned> ranked;
+                for (unsigned i = 0; i < work.size(); i++)
+                    if (work[i].anchor == a && scores[i][h])
+                        ranked.push_back(i);
+                std::sort(ranked.begin(), ranked.end(), [&](unsigned i, unsigned j) {
+                    if (scores[i][h] != scores[j][h])
+                        return scores[i][h] > scores[j][h];
+                    return labels[work[i].id].signature < labels[work[j].id].signature;
+                });
+                unsigned used = 0;
+                for (unsigned i : ranked) {
+                    const Work &w = work[i];
+                    unsigned size = w.multiplicity / orbit;
+                    if (size > caps[h] - used)
+                        continue;
+                    used += size;
+                    Mask sig = labels[w.id].signature;
+                    for (unsigned u = 1; u < order; u += 2) {
+                        auto id = index.at(conjugate(sig, u));
+                        labels[id].selected[(u * a % order) / step] |= 1U << h;
+                    }
+                }
+            }
+        }
     }
-    // A root set appearing at q anchors receives weight 1/q at each incidence.
-    void record(Mask sites, const Work &w, Totals &totals) const {
+    std::array<unsigned, 2> hits(Mask sites, const Work &w) const {
         std::array<Mask, 16> signatures{};
         // Offset d here is measured relative to the current chart's anchor.
         for (Mask m = sites; m; m &= m - 1) {
@@ -221,18 +254,17 @@ struct Census {
         std::array<unsigned, 2> hits{};
         for (unsigned d = 0; d < spare; d++)
             if ((w.anchor / step + d) % spare != 0) {
-                unsigned bits = flags(signatures[d]);
+                auto it = index.find(signatures[d]);
+                if (it == index.end())
+                    continue;
+                unsigned bits = labels[it->second].selected[(w.anchor / step + d) % spare];
                 hits[0] += bits & 1;
                 hits[1] += (bits >> 1) & 1;
             }
-        for (unsigned h = 0; h < 2; h++)
-            if (labels[w.id].flags & (1U << h)) {
-                require(hits[h] && denominator % hits[h] == 0, "invalid chart multiplicity");
-                totals.weight[h] += (denominator / hits[h]) * w.multiplicity;
-                totals.incidences[h] += w.multiplicity;
-            }
+        return hits;
     }
-    void enumerate(const Work &w, Totals &totals) const {
+    // The product-score pass counts the terminal lists without expanding their site masks.
+    template <class Visit> void enumerate(const Work &w, Visit visit) const {
         const Mask v = labels[w.id].signature;
         std::array<const Local *, 8> choices{};
         unsigned mask = (1U << (4 * per_tree)) - 1;
@@ -250,8 +282,7 @@ struct Census {
                 const auto &table = choices[t]->by_degree_sum;
                 auto it = table.find(remaining * order + residue);
                 if (it != table.end())
-                    for (Mask last : it->second)
-                        record(set | last, w, totals);
+                    visit(set, it->second);
             } else
                 for (const Option &o : choices[t]->all)
                     if (o.degree + mins[t + 1] <= remaining)
@@ -262,8 +293,28 @@ struct Census {
     }
 };
 
+// Each job owns one output slot, so worker scheduling cannot affect either selection or the census.
+template <class Visit> void parallel_jobs(unsigned workers, unsigned size, Visit visit) {
+    std::atomic<unsigned> next{0};
+    std::vector<std::future<void>> tasks;
+    for (unsigned i = 0; i < workers; i++)
+        tasks.push_back(std::async(std::launch::async, [&] {
+            for (unsigned start; (start = next.fetch_add(32)) < size;)
+                for (unsigned j = start; j < std::min(start + 32, size); j++)
+                    visit(j);
+        }));
+    for (auto &task : tasks)
+        task.get();
+}
 int main(int argc, char **argv) try {
-    require(argc == 9, "usage: census POOL ORDER DEGREE SPARE CUTOFF1 CUTOFF2 CAP2 WORKERS");
+    bool product_scores = argc == 10 && std::string(argv[1]) == "--product-scores";
+    if (product_scores) {
+        argc--;
+        argv++;
+    }
+    require(argc == 9,
+            "usage: census POOL ORDER DEGREE SPARE CUTOFF1 CUTOFF2 CAP2 WORKERS "
+            "or census --product-scores POOL ORDER DEGREE SPARE CAP1 CAP2 ROUNDS WORKERS");
     auto param = [](const char *arg) {
         std::size_t n = 0;
         const auto value = std::stoul(arg, &n);
@@ -275,34 +326,74 @@ int main(int argc, char **argv) try {
     require(spare >= 4 && spare <= 16, "spare subgroup must have order 4, 8 or 16");
     Census c(order, degree, spare);
     c.read(argv[1]);
-    c.choose(param(argv[5]), param(argv[6]), param(argv[7]));
-    c.build_locals();
-    auto work = c.jobs();
-    unsigned workers = param(argv[8]);
+    const unsigned workers = param(argv[8]);
     require(workers >= 1 && workers <= 3, "use 1 to 3 workers");
-    std::atomic<unsigned> next{0};
-    std::vector<std::future<Totals>> tasks;
-    for (unsigned i = 0; i < workers; i++)
-        tasks.push_back(std::async(std::launch::async, [&] {
-            Totals totals;
-            for (unsigned start; (start = next.fetch_add(32)) < work.size();)
-                for (unsigned j = start; j < std::min<unsigned>(start + 32, work.size()); j++)
-                    c.enumerate(work[j], totals);
-            return totals;
-        }));
+    if (!product_scores)
+        c.choose(param(argv[5]), param(argv[6]), param(argv[7]));
+    c.build_locals();
+    auto work = c.jobs(product_scores);
+    if (product_scores) {
+        const std::array<unsigned, 2> caps{param(argv[5]), param(argv[6])};
+        const unsigned rounds = param(argv[7]);
+        require(rounds <= 1, "use zero or one overlap refinement");
+        std::vector<std::array<Word, 2>> scores(work.size());
+        for (unsigned round = 0; round <= rounds; round++) {
+            parallel_jobs(workers, work.size(), [&](unsigned j) {
+                const Work &w = work[j];
+                Word population = 0;
+                std::array<Word, 2> fresh{};
+                c.enumerate(w, [&](Mask prefix, const std::vector<Mask> &tails) {
+                    population += tails.size();
+                    if (round == 0)
+                        return;
+                    unsigned own = c.labels[w.id].selected[w.anchor / c.step];
+                    for (Mask tail : tails) {
+                        auto hits = c.hits(prefix | tail, w);
+                        for (unsigned h = 0; h < 2; h++)
+                            if (hits[h] == ((own >> h) & 1))
+                                fresh[h]++;
+                    }
+                });
+                for (unsigned h = 0; h < 2; h++)
+                    scores[j][h] = population + 3 * fresh[h];
+            });
+            c.choose_by_product(work, scores, caps);
+        }
+    }
+    std::vector<Totals> totals(work.size());
+    parallel_jobs(workers, work.size(), [&](unsigned j) {
+        const Work &w = work[j];
+        unsigned own = c.labels[w.id].selected[w.anchor / c.step];
+        if (!own)
+            return;
+        c.enumerate(w, [&](Mask prefix, const std::vector<Mask> &tails) {
+            for (Mask tail : tails) {
+                auto hits = c.hits(prefix | tail, w);
+                for (unsigned h = 0; h < 2; h++)
+                    if (own & (1U << h)) {
+                        require(hits[h] && c.denominator % hits[h] == 0,
+                                "invalid chart multiplicity");
+                        totals[j].weight[h] += (c.denominator / hits[h]) * w.multiplicity;
+                        totals[j].incidences[h] += w.multiplicity;
+                    }
+            }
+        });
+    });
     Totals all;
-    for (auto &task : tasks) {
-        auto t = task.get();
+    for (const auto &t : totals)
         for (unsigned h = 0; h < 2; h++) {
             all.weight[h] += t.weight[h];
             all.incidences[h] += t.incidences[h];
         }
-    }
     std::cout << "orbits=" << work.size() << " denominator=" << c.denominator << "\n";
     for (unsigned h = 0; h < 2; h++) {
         unsigned bins = 0;
-        for (auto &v : c.labels)
-            bins += (v.flags >> h) & 1;
+        for (unsigned a = 1; a < c.spare; a++) {
+            unsigned used = 0;
+            for (const auto &v : c.labels)
+                used += (v.selected[a] >> h) & 1;
+            bins = std::max(bins, used);
+        }
         require(all.weight[h] % c.denominator == 0, "nonintegral union");
         std::cout << "bins=" << bins << " incidences=" << all.incidences[h]
                   << " unique=" << all.weight[h] / c.denominator << "\n";

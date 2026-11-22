@@ -7,6 +7,8 @@ import ArkLib.Research.ProximityGap.Frontier.BudgetOneProduction
 import ArkLib.Research.ProximityGap.Frontier.FourRateSmoothMca128
 import ArkLib.Research.ProximityGap.Frontier.SharpApolarMCA
 import ArkLib.Research.ProximityGap.RankExecutable
+import ArkLib.Research.ProximityGap.SmoothProductionMcaExecutable
+import ArkLib.Research.ProximityGap.Frontier._PrizeShapePrimeP30Second
 
 /-! Compile-time review of numerical thresholds for affine-line MCA and worst-center lists. -/
 set_option autoImplicit false
@@ -27,6 +29,31 @@ run_cmd do
     let last := (2^30 - k) / 3 + 1
     unless [first k 0, first k 1, first k last] == [some 0, some 1, some last] do
       throwError "Incorrect exact MCA count in the spike window"
+end
+
+/- The production solver computes the three established numerical answers on the
+two designated subgroups without requesting a field enumeration. -/
+section
+open ArkLib.ProximityGap ProximityGap.KKH26RegimeSplit
+local instance : Fact PrizeShapePrimeP30.P.Prime := ⟨PrizeShapePrimeP30.prime_P⟩
+local instance : Fact PrizeShapePrimeP30Second.P.Prime := ⟨PrizeShapePrimeP30Second.prime_P⟩
+
+run_cmd do
+  let firstDomain := powDomain PrizeShapePrimeP30.g PrizeShapePrimeP30.orderOf_g
+    (ne_zero_of_orderOf_eq PrizeShapePrimeP30.orderOf_g)
+  let secondDomain := powDomain PrizeShapePrimeP30Second.g PrizeShapePrimeP30Second.orderOf_g
+    (ne_zero_of_orderOf_eq PrizeShapePrimeP30Second.orderOf_g)
+  let one (k : ℕ) := SmoothProductionMcaExecutable.answer (Equiv.refl _)
+    (fun _ => panic! "First-prime solution forced field labels") firstDomain k PrizeShapePrimeP30.P
+  let two (k : ℕ) := SmoothProductionMcaExecutable.answer (Equiv.refl _)
+    (fun _ => panic! "Second-prime solution forced field labels") secondDomain k
+    PrizeShapePrimeP30Second.P
+  unless [one (2^27), one (2^26), two (2^26)] ==
+      [some 536870912, some 536870912, some 715827882] do
+    throwError "Incorrect first failure on a named production domain"
+  let known := SmoothProductionMcaExecutable.knownCount
+  unless (known (2^29) (2^30)).isNone && (known (2^28) (2^31)).isNone do
+    throwError "An unresolved named endpoint received a numerical shortcut"
 end
 
 /-- The numerical list answers written independently of the library table. -/
@@ -98,6 +125,8 @@ run_cmd do
   unless list 1 == some 1 do throwError "The budget-one list must first fail at one error"
   unless list 0 == some 0 do throwError "The zero-budget list must fail at zero errors"
   unless (list 3).isNone do throwError "The full-field list budget must pass every radius"
+  unless (RankExecutable.smoothListBoundary (fun _ => [0, 1]) orderTwo 2 1 3 1 3).isNone do
+    throwError "The smooth list fallback must pass every radius at the full-field budget"
 
 /-- All three sites over the field of order three. -/
 private def threeSites : Fin 3 ↪ ZMod 3 where
@@ -148,5 +177,42 @@ run_cmd do
     throwError "The circuit bound must include equality"
   unless !RankExecutable.circuitsCovered (2 ^ 30) (2 ^ 29) (2 ^ 30) do
     throwError "The production circuit count exceeds this budget"
+
+/-- At 128-bit tolerance, a length-64 rate-sixteenth smooth code over the field of
+order `65537^9` has first failing radius `59/64` at every positive width. -/
+theorem list64 {I F : Type} [Fintype I] [Nonempty I] [Field F] [Fintype F] [DecidableEq F]
+    (D : I ↪ F) [ReedSolomon.Smooth D] (hn : Fintype.card I = 64)
+    (hq : Fintype.card F = 65537 ^ 9) (m : ℕ) (hm : 0 < m) (δ : ℝ) :
+    (Lambda (ListInterpolationBoundary.words D 4 m) δ : ENNReal) ≤
+      ((prizeThreshold : ℝ≥0) : ENNReal) * Fintype.card F ↔ δ < 59 / 64 := by
+  rw [FourRateList128.budget_cast]
+  have spec := SmoothListPackingRadius.good_iff D (k := 4) (a := 0)
+    (B := Fintype.card F / 2 ^ 128) (by decide) hm (by rw [hn]; decide)
+    (by rw [hn, hq]; simp only [Nat.choose_eq_descFactorial_div_factorial]; decide)
+    (by rw [hn, hq]; simp only [Nat.choose_eq_descFactorial_div_factorial]; decide) δ
+  norm_num [hn] at spec
+  exact spec
+
+/- The fourth published length-128 list cutoff uses the common-product certificate.
+At length eight both endpoints of its integer budget window are included. -/
+run_cmd do
+  let B := (65 * 2 ^ 239 + 1) / 2 ^ 128
+  unless (RankExecutable.productBoundary 128 64 1 B).map Fin.val == some 63 do
+    throwError "The half-rate length-128 cutoff should be 63"
+  let small (b : ℕ) := (RankExecutable.productBoundary 8 2 1 b).map Fin.val
+  unless [small 3, small 4, small 6, small 7] == [none, some 5, some 5, none] do
+    throwError "The closed common-product certificate has the wrong budget window"
+
+/- All four production answers must return through the distance formula before requesting
+coordinates. A failing callback catches a regression without allocating a billion sites. -/
+run_cmd do
+  let n := 2 ^ 30
+  let points (_ : Unit) : List (Fin (2 ^ 30)) := panic! "Unexpected production support search"
+  let q := BudgetOneProduction.p
+  let get (k : ℕ) := (RankExecutable.smoothListBoundary points BudgetOneProduction.domain
+    n k q 1 (q / 2 ^ 128)).map Fin.val
+  unless [get (n / 2), get (n / 4), get (n / 8), get (n / 16)] ==
+      [some 268435457, some 402653185, some 469762049, some 503316481] do
+    throwError "The distance certificate disagrees with a production list boundary"
 
 end ProximityPrize.Review
