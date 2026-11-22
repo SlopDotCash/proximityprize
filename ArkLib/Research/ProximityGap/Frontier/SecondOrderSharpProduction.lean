@@ -26,18 +26,18 @@ private theorem sharp_mono (r n k L A : ℕ) {v v' h h' : ℕ} (hv : v ≤ v') (
   gcongr
 
 open Classical in
-/-- Any degree-one certificate with height at most `H` gives a finite
-base-field exceptional set when each possible stage fits the supplied
-integer cap. The stage index and evaluation threshold may be chosen before
-the received words. -/
-theorem sharp_line_of_certificate {F : Type} [Field F] {n k A d v h H L S : ℕ}
+/-- An upper bound on the actual separant-chain sum descends to a base-field
+exceptional set, with the same integer cap. -/
+theorem sharp_line_of_stage_budget {F : Type} [Field F] {n k A d v h L cap : ℕ}
     (dom : Fin n ↪ F) (f w : Fin n → F)
     (cert : SymbolicReceivedCurve.Certificate A k 1 v d h dom
       (fun i => powerBatchedCoordinate (ℓ := 1) fun j => (![f,w] : Fin 2 → Fin n → F) j i))
-    (hd : d < k) (hkL : k ≤ L) (hLA : L ≤ A) (hh : h ≤ H)
+    (hd : d < k) (hkL : k ≤ L) (hLA : L ≤ A)
     (hchar : ringChar F=0 ∨ max (k-1) v < ringChar F)
-    (hcost : ∀ s : Fin (d+1), regularPowerBatchedAgreementSharpBound s.val n 1 k k L A v H ≤ S) :
-    ∃ E : Finset F, E.card ≤ H+v*S ∧ ∀ z ∉ E, ∀ P : F[X], P.degree < k →
+    (hbudget : ∀ stages terminal, SeparantChain cert.Q stages terminal →
+      (h:ℚ) + ∑ stage ∈ stages.toFinset, regularPowerBatchedAgreementSharpBound stage.2.val n 1 k k L A
+        (jetTotalDegree stage.1) h ≤ cap) :
+    ∃ E : Finset F, E.card ≤ cap ∧ ∀ z ∉ E, ∀ P : F[X], P.degree < k →
       A ≤ (polynomialAgreementSet dom (fun i => f i+z*w i) P).card →
       HasExactCorrelatedPair dom f w (RingHom.id F) k z P := by
   classical
@@ -53,10 +53,37 @@ theorem sharp_line_of_certificate {F : Type} [Field F] {n k A d v h H L S : ℕ}
           have hn := natCast_choose_ne_zero_of_ringChar (F := F) (D := k-1) (s := r) hK (i-r) (by omega)
           simpa only [Nat.sub_add_cancel hri.le] using hn)
   obtain ⟨E',hE',good⟩ := uniformExactPowerAgreement_of_extension dom values ι k A E hgood
+  have bound := hbudget stages terminal hc
+  refine ⟨E',hE'.trans (by exact_mod_cast hcard.trans bound),?_⟩
+  intro z hz P hP hA
+  have hw : powerBatchedWord (ℓ := 1) values z = fun i => f i + z*w i := by
+    funext i
+    simp [values,powerBatchedWord,Fin.sum_univ_two]
+  exact exactCorrelatedPair_of_powerAgreement_one dom ![f,w] (RingHom.id F) z P
+    (good z hz P hP (by rwa [hw]))
+
+open Classical in
+/-- Any degree-one certificate with height at most `H` gives a finite
+base-field exceptional set when each possible stage fits the supplied
+integer cap. The stage index and evaluation threshold may be chosen before
+the received words. -/
+theorem sharp_line_of_certificate {F : Type} [Field F] {n k A d v h H L S : ℕ}
+    (dom : Fin n ↪ F) (f w : Fin n → F)
+    (cert : SymbolicReceivedCurve.Certificate A k 1 v d h dom
+      (fun i => powerBatchedCoordinate (ℓ := 1) fun j => (![f,w] : Fin 2 → Fin n → F) j i))
+    (hd : d < k) (hkL : k ≤ L) (hLA : L ≤ A) (hh : h ≤ H)
+    (hchar : ringChar F=0 ∨ max (k-1) v < ringChar F)
+    (hcost : ∀ s : Fin (d+1), regularPowerBatchedAgreementSharpBound s.val n 1 k k L A v H ≤ S) :
+    ∃ E : Finset F, E.card ≤ H+v*S ∧ ∀ z ∉ E, ∀ P : F[X], P.degree < k →
+      A ≤ (polynomialAgreementSet dom (fun i => f i+z*w i) P).card →
+      HasExactCorrelatedPair dom f w (RingHom.id F) k z P := by
+  classical
+  apply sharp_line_of_stage_budget dom f w cert hd hkL hLA hchar
+  intro stages terminal hc
   have stages_le : stages.toFinset.card ≤ v :=
     (List.toFinset_card_le _).trans (hc.length_le.trans cert.jetTotalDegree_le)
-  have bound : (E.card:ℚ) ≤ H+(v:ℚ)*S := calc
-    _ ≤ _ := hcard
+  push_cast
+  calc
     _ ≤ (H:ℚ) + ∑ _ ∈ stages.toFinset, (S:ℚ) := by
       apply add_le_add (by exact_mod_cast hh)
       apply sum_le_sum
@@ -66,13 +93,6 @@ theorem sharp_line_of_certificate {F : Type} [Field F] {n k A d v h H L S : ℕ}
     _ ≤ _ := by
       simp only [sum_const,nsmul_eq_mul]
       exact add_le_add le_rfl (mul_le_mul_of_nonneg_right (Nat.cast_le.mpr stages_le) (show (0:ℚ) ≤ S by positivity))
-  refine ⟨E',hE'.trans (by exact_mod_cast bound),?_⟩
-  intro z hz P hP hA
-  have hw : powerBatchedWord (ℓ := 1) values z = fun i => f i + z*w i := by
-    funext i
-    simp [values,powerBatchedWord,Fin.sum_univ_two]
-  exact exactCorrelatedPair_of_powerAgreement_one dom ![f,w] (RingHom.id F) z P
-    (good z hz P hP (by rwa [hw]))
 
 private abbrev n := 1073741824
 private abbrev k := 67108864
