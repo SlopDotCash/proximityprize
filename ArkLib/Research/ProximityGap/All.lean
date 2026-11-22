@@ -533,6 +533,7 @@ import ArkLib.Research.ProximityGap.Frontier.JetSurfaceSafety
 import ArkLib.Research.ProximityGap.Frontier.JohnsonBudgetLadder
 import ArkLib.Research.ProximityGap.Frontier.JohnsonCountFromNonprincipalWick
 import ArkLib.Research.ProximityGap.Frontier.JohnsonJetDimension
+import ArkLib.Research.ProximityGap.Frontier.JointLocatorRounding
 import ArkLib.Research.ProximityGap.Frontier.K2Affine
 import ArkLib.Research.ProximityGap.Frontier.K2Multiplicity
 import ArkLib.Research.ProximityGap.Frontier.K2NearAffine
