@@ -901,6 +901,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondBudgetCharacteristic
 import ArkLib.Research.ProximityGap.Frontier.SecondOrderBlockCounts
 import ArkLib.Research.ProximityGap.Frontier.SecondOrderOriginBlocks
 import ArkLib.Research.ProximityGap.Frontier.SecondOrderPrimeFieldCuts
+import ArkLib.Research.ProximityGap.Frontier.SecondOrderSharpProduction
 import ArkLib.Research.ProximityGap.Frontier.SecondOrderSimplexFloor
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeActualCubicCap
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeActualPolarGcd
