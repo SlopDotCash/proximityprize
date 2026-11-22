@@ -2,6 +2,8 @@
 
 At rate $1/4$, length $n=2^{30}$ and tolerance $2^{-128}$, every injective domain over the second named prime is safe through **529,940,000 errors** at every positive width. On the named subgroup the first failing count is in **[529,940,001, 553,648,129]**. The safety proof allows at most 2,146,244,663 bad scalars. The upper endpoint is attained by a received pair whose count exceeds the budget. [Quarter-rate failure witness](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimePlanarQuartet.lean) · [Earlier determinant bounds](tangent-polar-windows.md)
 
+The subsequent common-factor argument raises the lower endpoint to 533,150,001. [Shared companion degrees](quarter-common-factor-degrees.md)
+
 ## Cost of a tangent outside the common line
 
 Suppose $j\ge3$ distinct polynomial heads of coordinate degrees at most $d$ lie on one line over the coordinate function field. Each has a joint core of at least $C$ sites against the same received pair. Write their line as $A+f(P,Q)$ with coprime polynomial direction $(P,Q)$ of degree $h$. Two of their cores overlap at most $d-h$ times. Their union $U$ obeys, for every integer $1\le a<j$,
