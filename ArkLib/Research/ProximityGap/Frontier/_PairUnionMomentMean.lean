@@ -46,7 +46,7 @@ def degree (T : I → Finset X) (x : X) : ℕ :=
 /-- The agreement degree is the sum of the coordinate indicators. -/
 theorem degree_eq_sum (T : I → Finset X) (x : X) :
     (degree T x : ℤ) = ∑ i, (if x ∈ T i then (1 : ℤ) else 0) := by
-  rw [degree, Finset.card_filter]
+  simp only [degree, Finset.card_filter]
   push_cast
   apply Finset.sum_congr rfl
   intro i _
@@ -165,8 +165,10 @@ theorem ordered_pair_union_deficit (T : I → Finset X) :
       ((Fintype.card I : ℤ) - 1) * (Fintype.card X : ℤ) -
         ∑ j in (Finset.univ : Finset I).erase i, ((T i ∩ T j).card : ℤ) := by
     intro i
+    have hpos : 1 ≤ Fintype.card I := Finset.card_pos.mpr ⟨i, Finset.mem_univ i⟩
     rw [Finset.sum_sub_distrib, Finset.sum_const,
-      Finset.card_erase_of_mem (Finset.mem_univ i), Finset.card_univ, nsmul_eq_mul]
+      Finset.card_erase_of_mem (Finset.mem_univ i), Finset.card_univ, nsmul_eq_mul,
+      Nat.cast_sub hpos]
     ring
   simp_rw [hcard, hinner]
   rw [Finset.sum_sub_distrib, Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
