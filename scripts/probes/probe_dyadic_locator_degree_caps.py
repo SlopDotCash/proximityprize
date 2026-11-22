@@ -44,17 +44,17 @@ def product_layer_cap(order, size):
     return comb(order, size) * gcd(order, size) // order
 
 
-def first_sum_product_cap(size):
+def first_sum_product_cap(size, distance=31):
     """At fixed sum and product, bound each orientation's possible full-pair labels."""
     full_pairs = max(product_layer_cap(64, k) for k in range(size // 2 + 1))
-    return min(comb(128, size), (31 // (31 - 2 * size)) * full_pairs)
+    return min(comb(128, size), (distance // (distance - 2 * size)) * full_pairs)
 
 
-def mixed_cap(size, completion_cap=first_sum_cap):
+def mixed_cap(size, completion_cap=first_sum_cap, distance=31):
     total = 0
     for weight in range(size % 2, size + 1, 2):
         pairs = (size - weight) // 2
-        total += signed_support_cap(128, weight, 31) * completion_cap(pairs)
+        total += signed_support_cap(128, weight, distance) * completion_cap(pairs)
     return total
 
 
