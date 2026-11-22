@@ -6,6 +6,7 @@ on:
     paths:
       - ArkLib/Research/ProximityGap/Frontier/_IncidenceDependencyArithmetic.lean
       - ArkLib/Research/ProximityGap/Frontier/_PencilCycleShortening.lean
+      - ArkLib/Research/ProximityGap/Frontier/_RichPencilDisjoint.lean
       - ArkLib/Research/ProximityGap/Frontier/_RichPencilCycleBudget.lean
       - ArkLib/Research/ProximityGap/Frontier/_ActiveErrorAffineCollapse.lean
       - docs/research/proximity-gap/multiline-relation-shortening.md
@@ -137,4 +138,16 @@ jobs:
           assert len(results) == 3
           for name, axioms in results:
               assert {axiom.strip() for axiom in axioms.split(',')} <= {'propext', 'Classical.choice', 'Quot.sound'}, name
+          PY
+      - name: Check rich pencil disjointness and audit axioms
+        run: |
+          set -o pipefail
+          lake env lean ArkLib/Research/ProximityGap/Frontier/_RichPencilDisjoint.lean | tee rich-pencil-disjoint-axioms.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          text = Path('rich-pencil-disjoint-axioms.log').read_text()
+          result = re.search(r"'ProximityGap\.RichPencilDisjoint\.distance_le_twice_radius_of_meeting_rich_pencils' depends on axioms:\s*\[([^\]]*)\]", text)
+          assert result is not None
+          assert {axiom.strip() for axiom in result[1].split(',')} <= {'propext', 'Classical.choice', 'Quot.sound'}
           PY
