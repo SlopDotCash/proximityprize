@@ -1916,6 +1916,18 @@ one-dimensional terms on a genuinely mixed block: its four shifted
 bilinear numerators are distinct absolutely irreducible polynomials.
 [Proof, computational scope, and finite controls](paley-independent-stratum-masks.md)
 
+**Sharp classification of cancellation for every mixed lag row.**
+On a dyadic orbit, independent nonempty masks cancel every lag function
+exactly when both balance parity and at least one balances every pair
+of opposite residues at each higher dyadic level. Equivalently the
+unsigned difference counts are constant and both parity counts balance.
+Their cardinality product must be divisible by twice the orbit length.
+At the second prime independently branching masks with 32768 and 65536
+ordinary sites in opposite-parity cosets attain equality. Every lag has
+exactly one representation of each sign. The Lean classification handles
+all dyadic periods. The control exhausts all 65025 nonempty mask pairs
+at period eight. [Proof and scope](paley-independent-stratum-masks.md#which-masks-cancel-every-possible-mixed-lag-row)
+
 **Zero discrepancy on full reciprocal product strata at the second prime.**
 For $A_s=T(s)\setminus\{0\}$ and any odd power $q$ of the generator, the
 rectangle $A_s\times(A_{q^2s}\cup A_{q^{-2}s})$ has discrepancy exactly
