@@ -15,7 +15,6 @@ namespace ArkLib.ProximityGap.Frontier.EighthMobiusSites
 open Finset EighthTransverseMobius
 set_option autoImplicit false
 set_option maxRecDepth 10000
-set_option maxHeartbeats 1000000
 
 abbrev s : ℕ := 33554432
 abbrev Site := Fin 1073741824
@@ -169,7 +168,8 @@ theorem variable_fiber {l : Fin 16} {i : Site} (hl : 3 ≤ l.val) (hi : i ∈ lo
   have h1 : l ≠ 1 := by intro h; subst l; norm_num at hl
   have h2 : l ≠ 2 := by intro h; subst l; norm_num at hl
   have h := mem_loci.mp hi
-  simp only [scheduled, ite_eq_right h0, ite_eq_right h1, ite_eq_right h2, Bool.and_eq_true, beq_iff_eq] at h
+  simp only [scheduled, ite_eq_right h0, ite_eq_right h1, ite_eq_right h2,
+    Bool.and_eq_true, beq_iff_eq] at h
   exact h.2
 
 private theorem marks (i : Site) (z : Tag) (j : Fin 32)
@@ -189,8 +189,10 @@ private theorem marks (i : Site) (z : Tag) (j : Fin 32)
     subst j
     exact ⟨rfl, by rw [hcut]; omega⟩
 
-theorem markU_iff {i : Site} : tag i = markU ↔ i.val = 1 := marks i markU 1 (by decide) (by decide)
-theorem markV_iff {i : Site} : tag i = markV ↔ i.val = 3 := marks i markV 3 (by decide) (by decide)
+theorem markU_iff {i : Site} : tag i = markU ↔ i.val = 1 :=
+  marks i markU 1 (by decide) (by decide)
+theorem markV_iff {i : Site} : tag i = markV ↔ i.val = 3 :=
+  marks i markV 3 (by decide) (by decide)
 
 /-- Pair tags occupy whole fibers; all their sites and only their sites receive the indicated tag. -/
 theorem pair_tags (i : Site) :
