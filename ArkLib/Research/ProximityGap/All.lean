@@ -4042,6 +4042,7 @@ import ArkLib.Research.ProximityGap.Resolution
 import ArkLib.Research.ProximityGap.ResolutionWitness
 import ArkLib.Research.ProximityGap.SecondBudgetSmoothReview
 import ArkLib.Research.ProximityGap.SecondPrimeRankReview
+import ArkLib.Research.ProximityGap.SmoothBaseSubfieldObstruction
 import ArkLib.Research.ProximityGap.SmoothCapacityGap
 import ArkLib.Research.ProximityGap.SmoothEighthListBoundary
 import ArkLib.Research.ProximityGap.SmoothListExecutable
