@@ -39,7 +39,7 @@ Fix a tolerance $\varepsilon\ge0$, a positive interleaving width $m$, an error c
 
 \textbf{Boundary theorem.} Each test gives the least failing grid count $e$, if any. A closed ball at real radius $\delta\in[0,1]$ uses $\lfloor n\delta\rfloor$ errors. Failure persists as the ball grows or the required agreement shrinks. Thus the safe radii are $[0,e/n)$, empty if $e=0$. For $e>0$, $e-1$ is the last safe grid count and the supremum $e/n$ fails. When all grid counts pass, the safe set is $[0,1]$.
 
-\textbf{Literal largest safe radius.} Fix $0<k<n$, $m\ge1$ and $\varepsilon=2^{-128}$. For MCA with $q<2^{256}$, a largest safe real radius exists exactly when $\binom{n}{k+1}\le B$, and its value is then one. Each $(k+1)$-site circuit witnesses at most one bad scalar. Conversely, for $N=\binom{n}{k+1}$ a second-moment bound gives a pair with $M$ bad scalars at radius one satisfying $Nq\le M(q+N-1)$. As $B^2<q$, $M\le B$ forces $N\le B$. The \href{https://github.com/SlopDotCash/proximityprize/blob/28d95ce2e7db421c464f85c9e984343f1c165863/ArkLib/Research/ProximityGap/JointAdjacentFieldReview.lean}{attainment theorem} applies to every injective domain. For lists over a field of any size there is \href{https://github.com/SlopDotCash/proximityprize/blob/28d95ce2e7db421c464f85c9e984343f1c165863/ArkLib/Research/ProximityGap/ListClosedForm.lean}{no largest safe real radius}. The full ball contains $q^{km}>B$ words, so the open-endpoint alternative above always applies.
+\textbf{Literal largest safe radius.} The sponsor assumes the requested maximum exists. By the boundary theorem this is equivalent to safety at radius one. Fix $0<k<n$, $m\ge1$ and $\varepsilon=2^{-128}$. For MCA with $q<2^{256}$, a largest safe real radius exists exactly when $\binom{n}{k+1}\le B$, and its value is then one. Each $(k+1)$-site circuit witnesses at most one bad scalar. Conversely, for $N=\binom{n}{k+1}$ a second-moment bound gives a pair with $M$ bad scalars at radius one satisfying $Nq\le M(q+N-1)$. As $B^2<q$, $M\le B$ forces $N\le B$. The \href{https://github.com/SlopDotCash/proximityprize/blob/28d95ce2e7db421c464f85c9e984343f1c165863/ArkLib/Research/ProximityGap/JointAdjacentFieldReview.lean}{attainment theorem} applies to every injective domain. For lists over a field of any size there is \href{https://github.com/SlopDotCash/proximityprize/blob/28d95ce2e7db421c464f85c9e984343f1c165863/ArkLib/Research/ProximityGap/ListClosedForm.lean}{no largest safe real radius}. The full ball contains $q^{km}>B$ words, so the open-endpoint alternative above always applies.
 
 \newpage
 \section*{2.\quad A simultaneous rank test for bad scalars}
@@ -364,7 +364,7 @@ At rate $1/8$, every length $n>256$ now gives a first-failure fraction strictly 
 \[
  L\binom{n-t}{r}\le (n-r)\binom{n}{r}.
 \]
-The choices $r=3,5,6,9$ give the four bounds. If the integer budget covers the corresponding value, $n-t+1$ is a lower bound on the first failing count. The \src{f1d9065b732541a578482182c266e8b12bc0ac8a}{SmoothListRankBracket} theorem applies this lower bound to the support-rank answer. Smaller budgets need their own estimates.
+The choices $r=3,5,6,9$ give the four bounds. If the integer budget covers the corresponding value, $n-t+1$ is a lower bound on the first failing count. The \src{9d93f6748b4cc02adde2d233761ea51680f49655}{SmoothListRankBracket} theorem brackets the support-rank answer between $n-t+1$ and $(h-j-2)m+1$. Smaller budgets need their own estimates.
 
 \newpage
 \section*{6.\quad Interpretation, evidence and attribution}
