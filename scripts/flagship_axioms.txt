@@ -434,6 +434,7 @@ ArkLib.Research.ProximityGap.RankBinarySearch ProximityPrize.RankBinarySearch.ch
 # Johnson grid alignment and the two remaining named MCA comparisons
 ArkLib.Research.ProximityGap.JohnsonGridEquality ProximityPrize.JohnsonGridEquality.grid_alignment_iff
 ArkLib.Research.ProximityGap.JohnsonGridEquality ProximityPrize.JohnsonGridEquality.answers_strict
+ArkLib.Research.ProximityGap.Frontier.JohnsonGridWitness ProximityGap.JohnsonGridWitness.eight_le_of_coordinates
 ArkLib.Research.ProximityGap.SecondPrimeJohnsonPivot ProximityPrize.SecondPrimeJohnsonPivot.correctBoundary_pivot
 ArkLib.Research.ProximityGap.SecondPrimeJohnsonPivot ProximityPrize.SecondPrimeJohnsonPivot.half
 ArkLib.Research.ProximityGap.SecondPrimeJohnsonPivot ProximityPrize.SecondPrimeJohnsonPivot.quarter
