@@ -51,6 +51,20 @@ jobs:
             incidence-dependencies-${{ runner.os }}-
       - name: Fetch dependency cache
         run: ./scripts/lake-locked.sh exe cache get
+      - name: Check minimum support and audit axioms
+        run: |
+          set -o pipefail
+          lake env lean ArkLib/Research/ProximityGap/Frontier/_MinimumSupportHeadPlane.lean | tee minimum-support-axioms.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          text = Path('minimum-support-axioms.log').read_text()
+          results = re.findall(r"'ProximityGap\.MinimumSupportHeadPlane\.([^']+)' depends on axioms:\s*\[([^\]]*)\]", text)
+          assert {name for name, _ in results} == {'residual_on_minimum_support', 'agreement_on_residual_line', 'affine_heads_on_minimum_support'}
+          assert len(results) == 3
+          for name, axioms in results:
+              assert {axiom.strip() for axiom in axioms.split(',')} <= {'propext', 'Classical.choice', 'Quot.sound'}, name
+          PY
       - name: Check relation arithmetic declarations and audit axioms
         run: |
           set -o pipefail
@@ -155,18 +169,4 @@ jobs:
           witness = re.search(r"'ProximityGap\.RichPencilDisjoint\.other_heads_eq_of_collinear_triples' depends on axioms:\s*\[([^\]]*)\]", text)
           assert witness is not None
           assert {axiom.strip() for axiom in witness[1].split(',')} <= {'propext', 'Classical.choice', 'Quot.sound'}
-          PY
-      - name: Check minimum support and audit axioms
-        run: |
-          set -o pipefail
-          lake env lean ArkLib/Research/ProximityGap/Frontier/_MinimumSupportHeadPlane.lean | tee minimum-support-axioms.log
-          python3 - <<'PY'
-          import re
-          from pathlib import Path
-          text = Path('minimum-support-axioms.log').read_text()
-          results = re.findall(r"'ProximityGap\.MinimumSupportHeadPlane\.([^']+)' depends on axioms:\s*\[([^\]]*)\]", text)
-          assert {name for name, _ in results} == {'residual_on_minimum_support', 'agreement_on_residual_line', 'affine_heads_on_minimum_support'}
-          assert len(results) == 3
-          for name, axioms in results:
-              assert {axiom.strip() for axiom in axioms.split(',')} <= {'propext', 'Classical.choice', 'Quot.sound'}, name
           PY

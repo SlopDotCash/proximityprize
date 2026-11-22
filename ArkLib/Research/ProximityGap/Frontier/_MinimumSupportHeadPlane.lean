@@ -78,7 +78,7 @@ theorem agreement_on_residual_line {F : Type*} [Field F]
     (u₀ u₁ U V v γ a : F) (hv : v ≠ 0) :
     U + γ * V + a * v = u₀ + γ * u₁ ↔
       a = (u₀ - U) / v + γ * ((u₁ - V) / v) := by
-  rw [mul_div_assoc, ← add_div, eq_div_iff hv]
+  rw [← mul_div_assoc, ← add_div, eq_div_iff hv]
   constructor
   · intro h
     linear_combination h
