@@ -470,6 +470,7 @@ import ArkLib.Research.ProximityGap.Frontier.GeometricIncompleteSumNoGo
 import ArkLib.Research.ProximityGap.Frontier.GeometricWordLocator
 import ArkLib.Research.ProximityGap.Frontier.GoldilocksMixedTrace
 import ArkLib.Research.ProximityGap.Frontier.GradedAntipodalVanishingLower
+import ArkLib.Research.ProximityGap.Frontier.HalfCoreWeightedJets
 import ArkLib.Research.ProximityGap.Frontier.HalfFourFiberParity
 import ArkLib.Research.ProximityGap.Frontier.HalfListSplitDifferences
 import ArkLib.Research.ProximityGap.Frontier.HalfRadiusListMcaSeparation
