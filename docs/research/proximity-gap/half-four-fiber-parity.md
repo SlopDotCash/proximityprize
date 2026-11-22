@@ -52,3 +52,18 @@ More generally, a sufficient uniform transfer condition for a splitting prime at
 If a received pair actually exceeds the sponsor budget at $h+1=268435457$ errors, then the punctured-list equivalence supplies the private sets and marks on the named subgroup. Fix a compatible primitive complex root and lift just the six *monic locator ratios* to its cyclotomic field. Their evaluations at the tested sites have no denominator divisible by the chosen splitting prime. For at least one protected ratio, **at least 44,739,242 different cyclotomic values must reduce to the same named-field element**. This is a necessary condition on a finite-field attack and uses no assumption that the site sets lift to a characteristic-zero list.
 
 Indeed set $L=89478483$ and repeat the heavy-set counting proof with this threshold. Each parity has at least two classes of size at least $L$, since $(h-1)+3(L-1)+8<2h$, and each private class has size at least $L$ on one parity, since $h-2>2(L-1)$. The same nine-cell table shows that at least one of the associated divisor signatures changes on an antipodal pair. The dyadic three-center theorem then prevents its complex ratio from taking any one value on three sites of that large private class in that parity. At least $\lceil L/2\rceil=44739242$ distinct complex values occur. All original finite-field values coincide because the ratio is protected on that private class. The Lean module checks the production threshold and the final fiber count.
+
+### Rotation distance over the production field
+
+The protected pencils also give a direct distance bound over any odd-characteristic field. Let $r$ be a nonidentity rotation of the dyadic domain. For a set of sites $S$, write $d_r(S)=|\{x\in S:rx\notin S\}|$. If a reduced rational pencil of degree $m$ has three complete simple fibers $Z,P,V$ of odd size $m$ on the nonzero domain, then
+\[
+d_r(Z)+d_r(P)+d_r(V)\ \ge\ m+2 .
+\]
+
+Indeed write the pencil as $A/B$. Every site retained in the same fiber under $x\mapsto rx$ is a root of
+\[
+Q(X)=A(rX)B(X)-B(rX)A(X).
+\]
+Both top-degree terms cancel, so $\deg Q\le2m-1$; zero is another root. The polynomial is nonzero because the odd-size zero fiber cannot be a union of full orbits of a nonidentity dyadic rotation. At some $x\in Z$ the rotated point leaves $Z$, so $A(rx)B(x)\ne0$. Hence at most $2m-2$ of the $3m$ nonzero fiber sites retain their labels. The Lean polynomial bound applies to any multiplier for which the pencil is non-invariant, regardless of characteristic. [Kernel-checked rotation distance](../../../ArkLib/Research/ProximityGap/Frontier/SaturatedTripleRotation.lean)
+
+Now put $m=h-1$ and apply the result separately to $F$ and $G$. Adding one marked site to a private fiber can increase its displacement by at most one. In both triples of private classes $012$ and $013$, the sum of their displacements is therefore at least $h-2$ in the six-double shape, $h-1$ in the five-double shape, and $h$ in the triple shape. The complete shape admits every relabelling of the four heads, giving the same bound $h-2$ on all four triples. Thus for every nonidentity rotation at the production length, at least **357,913,939** private sites must leave their private class in the complete shape. The respective bounds in the other two shapes are **268,435,455** and **268,435,456**. These restrictions hold in the original first named field without lifting locator ratios.
