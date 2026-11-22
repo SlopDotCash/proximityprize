@@ -12,6 +12,8 @@ In particular at least one map has at least $715827879$ distinct projective dire
 
 ## Two fractional linear transforms of powers
 
+Counting pairs within the cyclic power graph sharpens the degree-sum bound below to **46,340**. It also forces at least one arbitrary companion of any positive-degree power slope to have degree at least **27,117,488**. [Translation proof](saturated-power-translations.md)
+
 Suppose two maps have the form $z_i=M_i(X^a)$ and $z_j=M_j(X^b)$, with $M_i,M_j$ arbitrary independent Möbius transformations over the algebraic closure. Then
 \[
  a+b\le 4993531 .

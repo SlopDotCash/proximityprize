@@ -20,6 +20,8 @@ At rate one eighth on the second named prime, every injective length-$2^{30}$ do
 
 At **671,088,640 errors** on that field, an overrun requires four rich heads with no three collinear and sorted fresh-site deficits $(1,1,1,q)$ with $q\le5$. All three opposite-direction pairings obey a common polynomial relation of degree at most $q-1$, singular at no more than eight evaluation sites. Existence of an overrun at this count remains open. [Quartet reduction and interpolation obstruction](eighth-rich-head-safety.md#at-exactly-five-eighths) The primary surface of value degree 16 and total degree 335 is optimal in total degree among all positive-surplus mixed-Hasse shapes of value degree at most 16. The smallest attainable value degree is 14, requiring total degree 511,305,640. [All five feasible families](eighth-rich-head-safety.md#minimum-value-degree-of-a-mixed-hasse-interpolant)
 
+In the saturated eighth-rate profile $(1,1,1,1)$, three Möbius transforms of powers cannot realize the six required coincidence sets. With one power slope the larger arbitrary companion has degree at least **7,479,698**. At the quarter-rate seam two power slopes in an overrun have combined degree at most **46,340**. [Proof by counting multiplicative translates](saturated-power-translations.md)
+
 The rectangular hyperbola construction at half rate now has exact one-fresh first-failure counts of **357,913,942** and **402,653,185** errors on the two named primes. For every positive quotient degree and every rectangle obeying the construction’s locator and separator degree allocation, the preceding counts allow at most 715,827,884 and 2,013,265,925 one-fresh labels. A three-head first-prime example has 1,073,741,828 bad scalars at the next count, while the second-prime six-head example has 2,415,919,114. Independent verified replay accepted 29,854 declarations for the two restricted label caps and the two actual failure witnesses. The unrestricted first-prime bound is earlier and the second-prime unrestricted predecessor remains open. [Class definition, incidence proof and both witnesses](second-prime-hyperbola-grid.md#how-early-a-rectangular-hyperbola-grid-can-fail)
 
 At half rate on the second named subgroup, six tetrahedron edges lower the unrestricted first-failure upper bound to **387,740,104 errors**, an improvement of **14,913,081**. Four power fibers have three owners each. After reserving 402,653,182 common roots, 44,739,241 sites take a received value outside all heads and supply six labels each. The same pair has **2,147,483,649** distinct bad scalars at every dimension from 536,870,912 through 686,001,719 and every positive width. Independent verified replay accepted 29,716 declarations. The exact first failure remains open. [Proof and count](second-prime-tetrahedron.md) · [Lean witness](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeTetrahedron.lean)
@@ -42,7 +44,8 @@ At the second production prime and length $2^{30}$, the written lower bounds on 
 
 | Question | Result | Verification |
 |---|---|---|
-| Pairwise support constraints at the first open quarter-rate list count | At 536,870,914 errors on the first named prime, Lean constructs $2^{30}+1$ distinct candidate supports, each of size 536,870,910 with every pair overlapping in at most 268,435,455 sites. These supports meet the usual agreement constraints and exceed the list budget. Simultaneous realization by polynomial codewords and one center remains open. | [Formal packing](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSupportPackingBarrier.lean) · [Construction](oriented-fiber-list-bounds.md#pairwise-support-packing-at-the-first-open-quarter-rate-step) |
+| A sufficient polynomial witness for the second-prime quarter-rate MCA sign | If the named subgroup admits disjoint full degree-268,435,454 root sets for $P,Q,P-Q$, one received pair yields **2,147,483,650 distinct bad scalars** at 536,870,913 errors. This puts the unrestricted MCA supremum strictly below Johnson at every positive width. Existence of the pencil in this field remains open. | [Single pair, mass and strict comparison](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeTransversePencil.lean) |
+| Pairwise support constraints at the first open quarter-rate list count | At 536,870,914 errors on the first named prime, Lean constructs $2^{30}+1$ distinct candidate supports, each of size 536,870,910 with every pair overlapping in at most 268,435,455 sites. These supports meet the usual agreement constraints and exceed the list budget. Under the natural exponent indexing, five of these masks force their polynomial words to coincide. Other supports or indexings could still give an over-budget list. | [Natural-index obstruction](../../../ArkLib/Research/ProximityGap/Frontier/FiveHeadFiberRigidity.lean) · [Formal packing](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSupportPackingBarrier.lean) · [Construction](oriented-fiber-list-bounds.md#pairwise-support-packing-at-the-first-open-quarter-rate-step) |
 | Actual MCA and simultaneous equality with Johnson | At 128-bit tolerance a smooth code over a field below $2^{256}$ can have MCA cutoff equal to Johnson exactly when $k=1$, or when $n=16$ and $k=2$. A single supplied code can realize both list and MCA equality exactly in dimension one. At length 16 the two individual witnesses use different fields. | [MCA classification](../../../ArkLib/Research/ProximityGap/JohnsonMcaRealization.lean) · [Simultaneous classification](../../../ArkLib/Research/ProximityGap/JointJohnsonEquality.lean) |
 | Actual list equality with Johnson | At 128-bit tolerance there exists a field below $2^{256}$ and a smooth domain whose list cutoff equals Johnson at all positive widths exactly for $k=1$, or $k=2$ with $n=4$ or $16$. On the 16-point subgroup of $\mathrm{GF}(17^{32})$, the first list failure is at 12 errors and the first MCA failure is at six. | [Classification and witnesses](../../../ArkLib/Research/ProximityGap/JohnsonEqualityClassification.lean) · [Joint example](../../../ArkLib/Research/ProximityGap/JohnsonPrimePowerList.lean) |
 | Earlier four-rate bounds at every larger smooth length | Write $n=mh$, where $h$ is 256, 256, 256 or 512 in descending rate order, and $j=hk/n$. At $q<2^{256}$ both 128-bit budgets fail by $(h-j-2)m+1$ errors, uniformly over fields and positive widths. The rate-$1/8$ maximum $223/256$ can therefore be attained only at length 256. The same count with $h=1024,1024,1024,2048$ gives MCA probability one and some list larger than $q^2$. | [List proof and equality case](../../../ArkLib/Research/ProximityGap/SmoothReservedListBoundary.lean) · [MCA proof and numerical counts](../../../ArkLib/Research/ProximityGap/SmoothReservedMcaBoundary.lean) |
@@ -2636,6 +2639,10 @@ When $p>2^{40}$, every invertible fractional linear map other than a scaling or 
 
 The four signed face determinants of a saturated quartet give three rational functions with product one after at most a quadratic extension. Quadratic characters of the coarse opposite-pair locators determine all three orientations up to four possibilities in the nonsplit case. In the split case, quartic characters give affine binary constraints on those orientations. At length 16, exact enumeration at both named primes leaves **1,344** oriented layouts satisfying the signed face identity, out of 10,510,500 coarse partitions before orientation. A cyclotomic norm bound transfers these face ranks and the associated fresh-direction rank tests to characteristic zero and every prime splitting the sixteenth roots with $p>432000^8$. The production-length existence question remains open. [Proof and bounds](quarter-opposite-edge-characters.md) · [Lean identities](../../../ArkLib/Research/ProximityGap/Frontier/QuarterOppositeEdgeCharacters.lean) · [Enumeration](../../../scripts/probes/probe_quarter_opposite_pairs.py)
 
+### The first dyadic failure of joint locator transfer is at 512 roots
+
+At order 512 there are common disjoint equal-degree locators at the two named primes whose ratios agree at two sites in both fields and have different complex magnitudes. For a displacement of order four their degrees are at most **121**. For order eight they are at most **116**. This holds for arbitrary choices of the two primitive finite-field roots. An exact count of distinct complex signatures and two binary-code distance bounds prove existence. Pullback gives a common finite value on **4,194,304** production sites in each field, with degrees at most **253,755,392** and **243,269,632** in the two cases. Joint comparison transfers at every smaller dyadic order for the designated embeddings. The production three-split-pencil question remains open. [Proof and counts](mu512-joint-failure.md) · [Verifier](../../../scripts/probes/probe_mu512_joint_failure.py) · [Lean binary-code bound](../../../ArkLib/Research/ProximityGap/Frontier/LocatorBinaryCubic.lean)
+
 ### A common 256-site locator comparison at both named primes transfers exactly
 
 On the canonical 256th roots in the two designated fields, a comparison for the same pair of labelled locators agrees at both primes exactly when it agrees in characteristic zero. This rules out a shared saturated quarter-rate quartet layout, even though each prime individually admits nonlifting four-centre ratios. Exact congruence and ellipsoid checks covered all 128 displacements, visiting 4,227,091,567 search nodes. [Theorem, verification and scope](mu256-joint-transfer.md)
@@ -2745,8 +2752,7 @@ $u$ into $uB$. A single denominator is derived for a localization of a
 finite base algebra. Lifting separable residue minimal polynomials and
 differentiating $\pi=u^e v$ with $e$ invertible reduces its exponent
 one step at a time. Independent verified kernel replay accepted all 10,568
-declarations needed by the full local theorem. The geometric identification of the height-one local
-rings remains a written step. The next theorem formalizes simple-section specialization.
+declarations needed by the full local theorem. The next two theorems formalize specialization and identify the height-one local rings.
 [Local Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/TameLogarithmicDVR.lean) ·
 [Use in the height argument](logarithmic-section-heights.md)
 
@@ -2759,9 +2765,26 @@ integral for an arbitrary coefficient polynomial. For a base derivation
 $\delta$ whose field extension preserves the integral closure the formal
 conclusion is $F_Y(z,q_z)\mid F(z,a) F^\delta(z,q_z)$ in $k[X]$.
 Independent kernel replay accepted 21,521 transitive declarations.
-The height-one assembly proving that preservation and the repeated-root
-site argument remain separate. [Formal denominator theorem](../../../ArkLib/Research/ProximityGap/Frontier/NormalizedSectionSpecialization.lean) ·
+The next result reduces that preservation to the concrete local DVRs; the repeated-root site argument remains separate. [Formal denominator theorem](../../../ArkLib/Research/ProximityGap/Frontier/NormalizedSectionSpecialization.lean) ·
 [Application to tangent heights](logarithmic-section-heights.md)
+
+**Height-one assembly on the normalized plane curve.**
+For a finite separable extension of the fraction field of any Noetherian UFD,
+Lean tests integrality in the actual DVRs above its prime divisors. Above
+each base DVR its finite normalization is Dedekind. Intersecting its branches
+and then clearing the reduced denominators of the minimal-polynomial
+coefficients descends to the original base. The plane theorem derives generic
+separability from the simple section and proves tangent denominator divisibility
+for any compatible field derivation regular on every branch. Identifying the
+ramified divisors for the two specific derivations and establishing their
+branchwise regularity are the remaining local inputs. Lean also proves the
+local lifting criterion for a base derivation transverse to an unramified
+divisor by applying logarithmic lifting to its uniformizer multiple. Independent
+kernel replay accepted 33,313 declarations for the combined plane theorem and
+10,602 for unramified lifting.
+[Unramified lifting](../../../ArkLib/Research/ProximityGap/Frontier/UnramifiedDerivationDVR.lean) ·
+[Intersection and denominator theorem](../../../ArkLib/Research/ProximityGap/Frontier/HeightOneNormalization.lean) ·
+[Height proof](logarithmic-section-heights.md)
 
 ### Exact three-head window above rate one sixteenth
 
@@ -2892,6 +2915,8 @@ At order 64, every vanisher-ratio comparison on either named prime field now lif
 At **order 128**, every vanisher-ratio equality between two sites in **either named prime field** lifts to the complex points with the same exponents, for all disjoint supports. The full logarithm certificates and two exact, differently based enumerations of all 128 displacement ellipsoids found only their origins. This excludes saturated rank-two quarter-rate quartets at 64 errors and proves the exact maximum half-rate list size is **three at 33 errors**, at every positive interleaving width. At order 256 a Minkowski volume calculation proves that the single-comparison ellipsoid already contains a nonzero exponent relation at squared radius 74 for either prime. The energy and volume arithmetic passed independent verified kernel replay of 5,843 declarations. [Derivation and scope](mu128-unit-ellipsoid-transfer.md) · [Exact verifier](../../../scripts/probes/probe_mu128_unit_ellipsoid.py) · [Full-field unit logarithms](../../../scripts/probes/mu128_unit_logs.json)
 
 At **order 256**, both named fields have explicit disjoint degree-62 locators whose ratio is constant on four even test sites and separates over every primitive complex root. The first and second examples have 58 and 60 odd support sites, respectively, whose antipodes leave their support. Lean verifies the named roots, all four finite values, the disjoint supports, odd-site failures and complex separation using auxiliary prime 257. Pullback to each production length $2^{30}$ gives a modular-only ratio equality on **16,777,216 sites** between two locators of degree **260,046,848**, strictly below $2^{28}-1$. These are counterexamples to the individual ratio-transfer step. The shared six-row saturation problem remains open. [Proof, literal data and scope](mu256-actual-locator-counterexamples.md) · [Lean verification](../../../ArkLib/Research/ProximityGap/Frontier/Order256LocatorCounterexamples.lean) · [Independent integer calculations](../../../scripts/probes/probe_mu256_locator_counterexamples.py)
+
+On each named order-256 subgroup, relative to the designated primitive root, **nine consecutive exponent evaluations determine a monic locator up to scale** away from its support. A different sufficient pattern is five consecutive sites together with their antipodes. At order 128, five consecutive sites determine even a signed locator whose weights have absolute value at most two. Ten separate congruence-lattice checks across the two primes eliminate both reflection sectors and the antipodal remainder. The five ordinary consecutive site problem at order 256 and the full production saturation problem remain open. [Arguments and scope](mu256-nine-centres.md) · [Finite certificate](../../../scripts/probes/probe_mu256_locator_windows.py) · [Lean reflection and norm identities](../../../ArkLib/Research/ProximityGap/Frontier/DyadicLocatorReflection.lean)
 
 ## The odd-redundancy spike and its parity endpoint
 
