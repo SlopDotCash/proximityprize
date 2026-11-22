@@ -351,6 +351,7 @@ import ArkLib.Research.ProximityGap.Frontier.EighthMobiusSites
 import ArkLib.Research.ProximityGap.Frontier.EighthOutlierArithmetic
 import ArkLib.Research.ProximityGap.Frontier.EighthQuotientCoreCap
 import ArkLib.Research.ProximityGap.Frontier.EighthRatePrime159
+import ArkLib.Research.ProximityGap.Frontier.EighthRichDeficits
 import ArkLib.Research.ProximityGap.Frontier.EighthTransverseAttack
 import ArkLib.Research.ProximityGap.Frontier.EighthTransverseCollisions
 import ArkLib.Research.ProximityGap.Frontier.EighthTransverseCore
@@ -1006,6 +1007,7 @@ import ArkLib.Research.ProximityGap.Frontier.SpectrumGFCoeffPalindrome
 import ArkLib.Research.ProximityGap.Frontier.SpectrumGFFunctionalEquation
 import ArkLib.Research.ProximityGap.Frontier.SphereVolumeMCA
 import ArkLib.Research.ProximityGap.Frontier.SplitCoefficientSecants
+import ArkLib.Research.ProximityGap.Frontier.SplitPencilBlockVariance
 import ArkLib.Research.ProximityGap.Frontier.SplitPrimeJointMoments
 import ArkLib.Research.ProximityGap.Frontier.SplitPrimeSixthDensity
 import ArkLib.Research.ProximityGap.Frontier.SpurBadPrimeCeiling
@@ -1091,6 +1093,8 @@ import ArkLib.Research.ProximityGap.Frontier.TransverseSectionBudget
 import ArkLib.Research.ProximityGap.Frontier.TruncatedJetMultipliers
 import ArkLib.Research.ProximityGap.Frontier.TwistedLineCollisionParseval
 import ArkLib.Research.ProximityGap.Frontier.TwoAnchorListWitness
+import ArkLib.Research.ProximityGap.Frontier.TwoCubicExtraCoset
+import ArkLib.Research.ProximityGap.Frontier.TwoCubicExtraFibers
 import ArkLib.Research.ProximityGap.Frontier.TwoCubicExtraSeed
 import ArkLib.Research.ProximityGap.Frontier.TwoDAnnihilatorLineParseval
 import ArkLib.Research.ProximityGap.Frontier.TwoErrorDomain237
