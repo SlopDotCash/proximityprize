@@ -27,5 +27,29 @@ theorem comparison_bound {G : Type*} [AddCommGroup G] {k : ℕ} (a : Fin k → G
       omega
     _ = _ := by simp [mul_comm]
 
+/-- Switching all three nonzero sites to their inverses contributes a center-only factor. -/
+theorem inverse_chord {F : Type*} [Field F] (x y z : F)
+    (hx : x ≠ 0) (hy : y ≠ 0) (hz : z ≠ 0) (hyz : y ≠ z) :
+    (x⁻¹ - z⁻¹) / (y⁻¹ - z⁻¹) = (y / x) * ((x-z)/(y-z)) := by
+  have h₁ : y⁻¹ - z⁻¹ ≠ 0 := sub_ne_zero.mpr (inv_injective.ne hyz)
+  have h₂ : y-z ≠ 0 := sub_ne_zero.mpr hyz
+  field_simp
+  ring
+
+/-- Inversion multiplies the comparison of a multiset locator by the center
+factor raised to its total degree. -/
+theorem inverse_locator_comparison {F ι : Type*} [Field F] (x y : F)
+    (hx : x ≠ 0) (hy : y ≠ 0) (S : Finset ι) (z : ι → F) (m : ι → ℕ)
+    (hz : ∀ i ∈ S, z i ≠ 0) (hyz : ∀ i ∈ S, y ≠ z i) :
+    (∏ i ∈ S, ((x⁻¹ - (z i)⁻¹) / (y⁻¹ - (z i)⁻¹)) ^ m i) =
+    (y / x) ^ (∑ i ∈ S, m i) * ∏ i ∈ S, ((x-z i)/(y-z i)) ^ m i := by
+  calc
+    _ = ∏ i ∈ S, ((y / x) ^ m i * ((x-z i)/(y-z i)) ^ m i) := by
+      apply Finset.prod_congr rfl
+      intro i hi
+      rw [inverse_chord x y (z i) hx hy (hz i hi) (hyz i hi), mul_pow]
+    _ = _ := by rw [Finset.prod_mul_distrib, Finset.prod_pow_eq_pow_sum]
+
+#print axioms inverse_locator_comparison
 #print axioms comparison_bound
 end ArkLib.ProximityGap.Frontier.DyadicUnitExponentBound
