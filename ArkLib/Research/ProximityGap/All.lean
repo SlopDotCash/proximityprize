@@ -851,6 +851,7 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterSplitMonodromy
 import ArkLib.Research.ProximityGap.Frontier.QuarterSplitPencilProduct
 import ArkLib.Research.ProximityGap.Frontier.QuarterSplitRamification
 import ArkLib.Research.ProximityGap.Frontier.QuarterSplitSuborbits
+import ArkLib.Research.ProximityGap.Frontier.QuarterSplitTrigonal
 import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorCoreGeometry
 import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorFirstFailures
 import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorMovingObstruction
