@@ -14,6 +14,8 @@ At rate one eighth on the second named prime, Lean proves that a single construc
 
 The **679,477,248-error** eighth-rate attack is exact among four-head witnesses for which three heads have a common direction and their scalar differences, after a common locator, factor through the sixty-fourth-root quotient. The fourth head and the number of fresh sites per witness are unrestricted. A production-field census covering 35,337,933,180 anchor/support pairs rules out the only stronger degree-seven root count. A private-core counting argument excludes the preceding error count. [Complete census, proof and verification](eighth-quotient-septic.md)
 
+At the second prime, every dimension $2\le k\le76,695,848$ has its first MCA failure between **715,827,878 and 715,827,882** errors on every injective domain of length $2^{30}$ and at every positive width. This extends the dimension range by 5,113,059 above the exact window. At the predecessor, every outside witness belongs to a fourth head if there are at least two such witnesses. That head carries at most 14 labels. Lean verifies the actual residual count; the reduction through nonlinear factors is a written proof. At the first dimension beyond the exact window, failure at 715,827,881 additionally requires three disjoint split fibers of a coprime pencil of degree at least 23,860,930. [Proof and scope](three-head-residual-secant.md)
+
 ## Verified results and open cases
 
 | Question | Result | Verification |
