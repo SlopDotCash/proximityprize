@@ -165,7 +165,6 @@ theorem coefficient_difference_rank_add_distance_le {F X : Type*} [Field F]
       simp [hf]
   · obtain ⟨i, hi⟩ := hne
     exact ⟨_, Submodule.subset_span ⟨i, rfl⟩, sub_ne_zero.mpr hi⟩
-  · exact hdistance
 
 end ProximityGap.PencilTreeRank
 
