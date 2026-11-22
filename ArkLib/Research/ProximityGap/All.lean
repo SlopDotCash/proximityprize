@@ -369,7 +369,9 @@ import ArkLib.Research.ProximityGap.Frontier.DyadicProjectiveDescent
 import ArkLib.Research.ProximityGap.Frontier.DyadicQuadraticInvolution
 import ArkLib.Research.ProximityGap.Frontier.DyadicQuadraticRows
 import ArkLib.Research.ProximityGap.Frontier.DyadicRationalDegree
+import ArkLib.Research.ProximityGap.Frontier.DyadicRationalGraph
 import ArkLib.Research.ProximityGap.Frontier.DyadicRationalParity
+import ArkLib.Research.ProximityGap.Frontier.DyadicRationalPrime
 import ArkLib.Research.ProximityGap.Frontier.DyadicRationalSites
 import ArkLib.Research.ProximityGap.Frontier.DyadicSevenCombinatorics
 import ArkLib.Research.ProximityGap.Frontier.DyadicSevenDescent
