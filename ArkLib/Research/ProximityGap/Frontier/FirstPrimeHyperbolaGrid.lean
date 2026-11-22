@@ -3,6 +3,7 @@ Copyright (c) 2026 Proximity Prize Contributors. All rights reserved.
 Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and LICENSE.
 -/
 import ArkLib.Research.ProximityGap.Frontier.RateHalfMobiusProduction
+import ArkLib.Research.ProximityGap.Frontier.SmoothSecantTriangle
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSixteenFiber
 import ArkLib.Research.ProximityGap.Frontier.BoundarySecurityBudget
 import ArkLib.Data.CodingTheory.ProximityGap.InterleavingStabilityLedger
@@ -123,6 +124,17 @@ theorem half (width : ℕ) [NeZero width] :
   have bad := hb.trans_le (label_mass le_rfl (by decide) width)
   exact ⟨bad,mcaDeltaStar_le_of_bad _ _ bad⟩
 
+/-- On the same field, the three parabolic secants on quarter fibers attain
+n+2 labels one Hamming step earlier than the rectangular grid. -/
+theorem triangle_mass {k : ℕ} (hk : 536870912 ≤ k) (hc : k ≤ 715827882)
+    (width : ℕ) [NeZero width] :
+    (1073741826:ℝ≥0∞)/(P:ℝ≥0∞) ≤ epsMCA (F:=F)
+      ((ReedSolomon.code dom k : Set (Fin N → F)) ^⋈ (Fin width)) (357913941/1073741824) := by
+  have h := SmoothSecantTriangle.mass 22369621 0 dom (1:F) PrizeShapePrimeP30.g one_ne_zero
+    orderOf_g (fun i => (one_mul _).symm) hk hc (by rw [Nat.card_eq_fintype_card,ZMod.card,Nat.choose_two_right]; decide) width
+  simpa only [ZMod.card, Nat.reduceMul, Nat.reduceAdd, Nat.cast_ofNat] using h
+
+#print axioms triangle_mass
 #print axioms label_mass
 #print axioms half
 end ArkLib.ProximityGap.Frontier.FirstPrimeHyperbolaGrid
