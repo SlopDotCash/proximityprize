@@ -3,7 +3,7 @@ Copyright (c) 2026 Proximity Prize contributors. All rights reserved.
 SPDX-License-Identifier: MIT OR Apache-2.0
 -/
 import ArkLib.Research.ProximityGap.RankReview
-import ArkLib.Research.ProximityGap.SmoothPrizeCapacityTable
+import ArkLib.Research.ProximityGap.SmoothReservedListBoundary
 import ArkLib.Research.ProximityGap.Frontier.MultipleOmissionJohnson
 
 /-! # Two integer bounds on the list rank answer at the sponsor tolerance -/
@@ -70,6 +70,44 @@ theorem first_failure {I F : Type} [Fintype I] [Nonempty I] [Field F] [Fintype F
     · exact_mod_cast Nat.succ_le_of_lt (by exact_mod_cast low : a < e.val)
     · rwa [mul_comm]
 
+/-- The reserved fiber puts the upper endpoint at `c*m+1` on length `m*h`,
+compared to the base projection's `(c+1)*m`. The improvement is strict when `m>1`. -/
+theorem first_failure_reserved {I F : Type} [Fintype I] [Nonempty I] [Field F] [Fintype F]
+    [DecidableEq F] (D : I ↪ F) [ReedSolomon.Smooth D] (j : Fin 4) (width : ℕ) [NeZero width]
+    (hn : failureLength j ≤ Fintype.card I) (hq : Fintype.card F < 2 ^ 256)
+    (hbudget : multiple j * Fintype.card I ≤ Fintype.card F / 2 ^ 128) :
+    let n := Fintype.card I
+    let k := prizeDimension (ι := I) j
+    let h := failureLength j
+    let c := SmoothReservedListBoundary.errorCoefficient j
+    ∃ e : Fin (n + 1), RankReview.listAnswer D (prizeThreshold : ℝ≥0) k width = some e ∧
+      n - agreements n k + 1 ≤ e.val ∧ e.val ≤ c * (n / h) + 1 ∧
+      (h < n → c * (n / h) + 1 < ⌊(n : ℝ≥0) * failureRadius j⌋₊) := by
+  obtain ⟨e, he, hlo, -⟩ := first_failure D j width hn hq hbudget
+  obtain ⟨m, f, hm, len, hf, hhi⟩ := SmoothReservedListBoundary.first_failure_le D j width hn hq
+  have hfe : f = e := Option.some.inj (hf.symm.trans he)
+  subst f
+  have hp : 0 < failureLength j := by fin_cases j <;> decide
+  have hdiv : Fintype.card I / failureLength j = m := by rw [len, Nat.mul_div_cancel _ hp]
+  dsimp only
+  rw [hdiv]
+  refine ⟨e, he, hlo, hhi, ?_⟩
+  intro hl
+  have hm1 : 1 < m := by
+    by_contra! h
+    rw [show m = 1 by omega, one_mul] at len
+    omega
+  let c := SmoothReservedListBoundary.errorCoefficient j
+  have hrad : failureRadius j = ((c + 1 : ℕ) : ℝ≥0) / failureLength j := by
+    fin_cases j <;> norm_num [failureRadius, failureLength, c,
+      SmoothReservedListBoundary.errorCoefficient]
+  rw [hrad, len, Nat.cast_mul, mul_assoc, mul_comm (↑(failureLength j) : ℝ≥0) (_ / _),
+    div_mul_cancel₀ _ (by exact_mod_cast hp.ne'), ← Nat.cast_mul, Nat.floor_natCast]
+  change c * m + 1 < m * (c + 1)
+  rw [Nat.mul_add, Nat.mul_one, Nat.mul_comm m c]
+  omega
+
 end ProximityPrize.SmoothListRankBracket
 
 #print axioms ProximityPrize.SmoothListRankBracket.first_failure
+#print axioms ProximityPrize.SmoothListRankBracket.first_failure_reserved
