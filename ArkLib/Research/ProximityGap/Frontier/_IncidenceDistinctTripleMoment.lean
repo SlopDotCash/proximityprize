@@ -92,7 +92,22 @@ theorem first_sponsor_distinct_triple_ledger_has_slack :
       n^2 * ((n - 536870913) * b * (b - 1) * (b - 2)) := by
   norm_num
 
+/-- An excess of one error coordinate on 30% of all unordered triples suffices
+at the successor radius, even charging the maximum possible contribution to
+each of the at most `b / 3` collinear triples. -/
+theorem first_sponsor_distinct_triple_excess_target :
+    let n : ℤ := 1073741824
+    let b : ℤ := n + 1
+    let D : ℤ := 536870913
+    let g : ℤ := b * (n - 221512374)
+    let total : ℤ := b * (b - 1) * (b - 2) / 6
+    let excess : ℤ := 3 * total / 10
+    6 * n^2 * ((n - D) * total + D * (b / 3) - excess) <
+      g * (g - n) * (g - 2 * n) := by
+  norm_num
+
 end ProximityGap.IncidenceDistinctTripleMoment
 
 #print axioms ProximityGap.IncidenceDistinctTripleMoment.falling_cubic_lower
 #print axioms ProximityGap.IncidenceDistinctTripleMoment.first_sponsor_distinct_triple_ledger_has_slack
+#print axioms ProximityGap.IncidenceDistinctTripleMoment.first_sponsor_distinct_triple_excess_target
