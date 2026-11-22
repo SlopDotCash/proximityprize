@@ -1,6 +1,7 @@
 // Enumerate every seven-site root support outside one three-point anchor.
 // Input rows contain the site and its two normalized 2-adic character values.
 #include <algorithm>
+#include <string_view>
 #include <array>
 #include <cinttypes>
 #include <cstdint>
@@ -10,7 +11,7 @@
 
 using Word = std::uint64_t;
 constexpr unsigned available = 61;
-constexpr std::size_t support_count = 436270780; // binomial(61,7)
+
 constexpr Word mask30 = (Word{1} << 30) - 1;
 constexpr Word keep = mask30 | (mask30 << 32);
 struct Site {
@@ -33,7 +34,19 @@ void enumerate(const Sites& sites, unsigned first, Word character, Word support,
     }
 }
 
-int main() {
+template<class Visit>
+void enumerate_degree(unsigned degree, const Sites& sites, Visit& visit) {
+    if (degree == 6) enumerate<6>(sites, 0, 0, 0, visit);
+    else enumerate<7>(sites, 0, 0, 0, visit);
+}
+
+int main(int argc, char** argv) {
+    if (argc != 2 || (std::string_view(argv[1]) != "6" && std::string_view(argv[1]) != "7")) {
+        std::fprintf(stderr, "Expected root support degree 6 or 7.\n");
+        return 2;
+    }
+    const unsigned degree = unsigned(argv[1][0]-'0');
+    const std::size_t support_count = degree == 6 ? 55525372 : 436270780; // binomial(61,degree)
     Sites sites;
     Word used = 0;
     for (auto& entry : sites) {
@@ -50,7 +63,7 @@ int main() {
     std::vector<Word> keys;
     keys.reserve(support_count);
     auto save_key = [&](Word key, Word) { keys.push_back(key); };
-    enumerate<7>(sites, 0, 0, 0, save_key);
+    enumerate_degree(degree, sites, save_key);
     if (keys.size() != support_count) return 3;
     std::sort(keys.begin(), keys.end());
 
@@ -63,7 +76,7 @@ int main() {
         auto it = repeated.find(key);
         if (it != repeated.end()) it->second.push_back(mask);
     };
-    enumerate<7>(sites, 0, 0, 0, recover);
+    enumerate_degree(degree, sites, recover);
     for (const auto& group : repeated) {
         const auto& masks = group.second;
         for (std::size_t i = 0; i < masks.size(); ++i) {

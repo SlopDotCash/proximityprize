@@ -2,6 +2,7 @@
 Copyright (c) 2026 Proximity Prize Contributors. All rights reserved.
 SPDX-License-Identifier: MIT OR Apache-2.0
 -/
+import ArkLib.Research.ProximityGap.Frontier.SmoothDomainMcaEquivalence
 import ArkLib.Research.ProximityGap.Frontier.SmoothPowerListDescent
 
 /-! # Lifting a list while reserving one power fiber
@@ -108,38 +109,24 @@ theorem punctured_lift [DecidableEq J] (D : I ↪ F) (E : J ↪ F) (π : I → O
 
 /-- The original coset product key also bounds lists on a punctured smooth domain.
 Removing a site changes the number of subsets but preserves the size of the key space. -/
-theorem punctured_product_lower [Finite F] [DecidableEq F] (V : Finset F)
+theorem punctured_product_lower [DecidableEq F] (V : Finset F)
     [ReedSolomon.Smooth (Function.Embedding.subtype (· ∈ V))] {v₀ : F} (hv : v₀ ∈ V)
     {j B : ℕ} (hj : 0 < j) (hB : V.card * B < (V.card - 1).choose (j + 1)) :
     (B : ℕ∞) < Lambda (ReedSolomon.code (Function.Embedding.subtype (· ∈ V.erase v₀)) j :
       Set (V.erase v₀ → F)) (((V.card - 1 - (j + 1) : ℕ) : ℝ) / (V.card - 1 : ℕ)) := by
   classical
-  let := Fintype.ofFinite F
   let E := Function.Embedding.subtype (· ∈ V)
   let H := ReedSolomon.Smooth.H E
   let c := ReedSolomon.Smooth.a E
-  let : Fintype H := Fintype.ofFinite H
-  have coset : (↑(univ.image E) : Set F) = (fun x : Fˣ => (c : F) * x) '' (H : Set Fˣ) :=
-    ReedSolomon.Smooth.h_coset
-  have all (v : V) : ∃ z : H, v.val = (c : F) * ((z : Fˣ) : F) := by
-    have hx : E v ∈ (↑(univ.image E) : Set F) := mem_image_of_mem _ (mem_univ _)
-    rw [coset] at hx
-    obtain ⟨z, hz, he⟩ := hx
-    exact ⟨⟨z, hz⟩, he.symm⟩
-  choose z hz using all
-  have sur : Function.Surjective z := by
-    intro v
-    have h : (c : F) * ((v : Fˣ) : F) ∈ (↑(univ.image E) : Set F) :=
-      coset ▸ ⟨v.val, v.property, rfl⟩
-    obtain ⟨i, _, hi⟩ := mem_image.mp h
-    exact ⟨i, Subtype.ext (Units.ext (mul_left_cancel₀ c.ne_zero ((hz i).symm.trans hi)))⟩
+  obtain ⟨z, hz⟩ := SmoothDomainMcaEquivalence.coset_equiv E
+  let := Fintype.ofEquiv V z
   let W := V.erase v₀
   let z' (v : W) := z ⟨v.val, mem_of_mem_erase v.property⟩
   have coord (v : W) : v.val = (c : F) * ((z' v : Fˣ) : F) :=
     hz ⟨v.val, mem_of_mem_erase v.property⟩
   let D' : W ↪ F := ⟨fun v => ((z' v : Fˣ) : F), fun v w h =>
     Subtype.ext ((coord v).trans ((congrArg (fun a : F => (c : F) * a) h).trans (coord w).symm))⟩
-  have cardH := Fintype.card_le_of_surjective z sur
+  have cardH := (Fintype.card_congr z).ge
   rw [Fintype.card_coe] at cardH
   have low := PrescribedProductList.exceeds_budget D' H z' (fun _ => rfl) hj
     (B := B) (by
