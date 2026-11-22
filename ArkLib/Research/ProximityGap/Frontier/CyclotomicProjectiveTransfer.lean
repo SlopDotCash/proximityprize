@@ -18,7 +18,8 @@ open Polynomial Finset InnerProductSpace ArkLib.ProximityGap.Frontier.DyadicFrob
 open scoped ComplexInnerProductSpace
 noncomputable section
 
-private theorem hadamard {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ) :
+/-- Hadamard bounds a complex determinant by the product of its Euclidean row norms. -/
+theorem hadamard {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ) :
     ‖M.det‖ ≤ ∏ i, Real.sqrt (∑ j, ‖M i j‖^2) := by
   classical
   let f : Fin n → EuclideanSpace ℂ (Fin n) := fun i => WithLp.toLp 2 (M i)

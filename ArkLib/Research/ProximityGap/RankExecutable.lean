@@ -4,6 +4,7 @@ SPDX-License-Identifier: MIT OR Apache-2.0
 -/
 import ArkLib.Research.ProximityGap.RankReview
 import ArkLib.Research.ProximityGap.RankBinarySearch
+import ArkLib.Research.ProximityGap.ListCountCertificates
 import ArkLib.Research.ProximityGap.Frontier.ListSupportGaussian
 import ArkLib.Research.ProximityGap.Frontier.SimultaneousSupportGaussian
 import ArkLib.Data.CodingTheory.ProximityGap.MCAStaircaseRS
@@ -110,44 +111,56 @@ theorem packingBoundary_correct [Fintype I] [Nonempty I] [Fintype F]
       rw [hc, ← NNReal.coe_lt_coe, NNReal.coe_div, NNReal.coe_natCast, NNReal.coe_natCast]
     · cases result
 
-private def listSupportSafe (points : List I) (D : I ↪ F) (k q m B t : ℕ) : Bool :=
-  if 0 < m ∧ (B + 1).choose 2 ≤ q then
-    ListSupportRank.gaussianPairSafe points D k B t
-  else ListSupportRank.gaussianSafe points D k q m B t
+private def listSupportSafe (points : Thunk (List I)) (D : I ↪ F) (n k q m B t : ℕ) : Bool :=
+  match ListCountCertificates.test n k q m B t with
+  | some b => b
+  | none =>
+    if 0 < m ∧ (B + 1).choose 2 ≤ q then
+      ListSupportRank.gaussianPairSafe points.get D k B t
+    else ListSupportRank.gaussianSafe points.get D k q m B t
 
-private theorem listSupportSafe_iff [Fintype I] [Fintype F]
-    (points : List I) (hp : ∀ i, i ∈ points) (D : I ↪ F) (k m B t : ℕ)
+private theorem listSupportSafe_iff [Fintype I] [Nonempty I] [Fintype F]
+    (points : Thunk (List I)) (hp : ∀ i, i ∈ points.get) (D : I ↪ F) (k m B t : ℕ)
     (hn : 0 < Fintype.card I) (hk : k ≤ Fintype.card I) :
-    listSupportSafe points D k (Fintype.card F) m B t = true ↔
+    listSupportSafe points D (Fintype.card I) k (Fintype.card F) m B t = true ↔
       Lambda (interleavedCodeSet (κ := Fin m) (ReedSolomon.code D k : Set (I → F)))
         (1 - (t : ℝ) / Fintype.card I) ≤ (B : ℕ∞) := by
   unfold listSupportSafe
-  split_ifs with h
-  · exact ListSupportRank.gaussianPairSafe_iff points hp D k m B t hn hk h.1 h.2
-  · exact ListSupportRank.gaussianSafe_iff points hp D k m B t hn hk
+  split
+  · exact ListCountCertificates.test_correct D hk ‹_›
+  · split_ifs with h
+    · exact ListSupportRank.gaussianPairSafe_iff points.get hp D k m B t hn hk h.1 h.2
+    · exact ListSupportRank.gaussianSafe_iff points.get hp D k m B t hn hk
 
-private def listSupportBoundary (points : List I) (D : I ↪ F) (n k q m B : ℕ) : Boundary n :=
-  RankBinarySearch.search n fun e => listSupportSafe points D k q m B (n - e.val)
+private def listSupportBoundary (points : Unit → List I) (D : I ↪ F) (n k q m B : ℕ) : Boundary n :=
+  let coordinates := Thunk.mk points
+  RankBinarySearch.search n fun e => listSupportSafe coordinates D n k q m B (n - e.val)
 
-/-- Compute the list boundary from a coordinate list, its evaluation map, and an integer budget. -/
-def listBoundary (points : List I) (D : I ↪ F) (n k q m B : ℕ) : Boundary n :=
+/-- Compute the list boundary on any supplied domain. Materialize the coordinates
+on the first support-rank test and reuse them at any subsequent rank test. -/
+def listBoundaryWith (points : Unit → List I) (D : I ↪ F) (n k q m B : ℕ) : Boundary n :=
   match packingBoundary n k q m B with
   | some e => some e
   | none => listSupportBoundary points D n k q m B
 
-/-- Executing the list search produces the universal operational answer. -/
-theorem listBoundary_eq [Fintype I] [Fintype F] (points : List I) (hp : ∀ i, i ∈ points)
+/-- Compute the list boundary from a coordinate list, its evaluation map, and an integer budget. -/
+def listBoundary (points : List I) (D : I ↪ F) (n k q m B : ℕ) : Boundary n :=
+  listBoundaryWith (fun _ => points) D n k q m B
+
+/-- The on-demand search produces the universal operational answer. -/
+theorem listBoundaryWith_eq [Fintype I] [Fintype F] (points : Unit → List I)
+    (hp : ∀ i, i ∈ points ())
     (D : I ↪ F) (ε : NNReal) (k m : ℕ) (hn : 0 < Fintype.card I) (hk : k ≤ Fintype.card I) :
-    listBoundary points D (Fintype.card I) k (Fintype.card F) m (RankReview.budget F ε) =
+    listBoundaryWith points D (Fintype.card I) k (Fintype.card F) m (RankReview.budget F ε) =
       RankReview.listAnswer D ε k m := by
   let : Nonempty I := Fintype.card_pos_iff.mp hn
-  unfold listBoundary
+  unfold listBoundaryWith
   split
   · rename_i e he
     exact packingBoundary_correct D ε k m he
   · unfold listSupportBoundary
     let B := RankReview.budget F ε
-    have test := listSupportSafe_iff points hp D k m B
+    have test := listSupportSafe_iff (Thunk.mk points) hp D k m B
     rw [RankBinarySearch.search_eq_find?]
     · apply scan_eq_firstFailure
       intro e
@@ -162,6 +175,13 @@ theorem listBoundary_eq [Fintype I] [Fintype F] (points : List I) (hp : ∀ i, i
       apply div_le_div_of_nonneg_right _ (by positivity)
       exact_mod_cast Nat.sub_le_sub_left (show a.val ≤ b.val from hab) _
 
+/-- Executing the list search produces the universal operational answer. -/
+theorem listBoundary_eq [Fintype I] [Fintype F] (points : List I) (hp : ∀ i, i ∈ points)
+    (D : I ↪ F) (ε : NNReal) (k m : ℕ) (hn : 0 < Fintype.card I) (hk : k ≤ Fintype.card I) :
+    listBoundary points D (Fintype.card I) k (Fintype.card F) m (RankReview.budget F ε) =
+      RankReview.listAnswer D ε k m :=
+  listBoundaryWith_eq (fun _ => points) hp D ε k m hn hk
+
 /-- Compute the smooth-domain list cutoff. Coordinates are supplied on demand, so all
 parameter-only branches can run even when materializing the domain would exhaust memory. -/
 def smoothListBoundary (points : Unit → List I) (D : I ↪ F) (n k q m B : ℕ) : Boundary n :=
@@ -169,7 +189,7 @@ def smoothListBoundary (points : Unit → List I) (D : I ↪ F) (n k q m B : ℕ
   | some e => some e
   | none => match productBoundary n k m B with
     | some e => some e
-    | none => listSupportBoundary (points ()) D n k q m B
+    | none => listSupportBoundary points D n k q m B
 
 /-- The smooth-domain shortcuts and fallback return the same canonical first failure. -/
 theorem smoothListBoundary_eq [Fintype I] [Nonempty I] [Fintype F]
@@ -183,7 +203,8 @@ theorem smoothListBoundary_eq [Fintype I] [Nonempty I] [Fintype F]
   · rename_i hp
     split
     · exact productBoundary_correct D ε k m ‹_›
-    · simpa only [listBoundary, hp] using listBoundary_eq (points ()) hi D ε k m Fintype.card_pos hk
+    · simpa only [listBoundaryWith, hp] using
+        listBoundaryWith_eq points hi D ε k m Fintype.card_pos hk
 
 /-- Constant-time boundary when two parity checks determine the entire MCA curve. -/
 def twoCheckBoundary (n B : ℕ) : Boundary n :=
