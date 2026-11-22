@@ -309,7 +309,8 @@ theorem first_sponsor_no_nine_pencil_path {F J X : Type*} [Field F] [Fintype X]
       have left := hhead i (a i) (Or.inr (Or.inl rfl)) x
       have right := hhead (finRotate 9 i) (b (finRotate 9 i)) (Or.inr (Or.inr rfl)) x
       rw [← shared i hi] at right
-      exact left.symm.trans right)
+      have h := left.symm.trans right
+      simpa only [Function.comp_apply, ← shared i hi] using h)
     C hU hV
     (fun i hi ↦ by
       obtain ⟨j, hj, hk⟩ := step i hi
