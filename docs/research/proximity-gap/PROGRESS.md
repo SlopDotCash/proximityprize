@@ -4,7 +4,7 @@ The universal rank formula now determines the operational MCA and list cutoffs o
 
 At quarter rate on the second named prime, the first MCA failure is between **533,150,001 and 553,648,129 errors**. At the predecessor the two interpolation surfaces leave one resultant for all noncommon factors. Sharing the companion degree across all common nonlinear factors bounds the total at **2,128,352,044** bad scalars, with **19,131,604** below budget. The Gauss-graph and tangent duality arguments are written proofs. Lean checks the surfaces, shared resultant, arithmetic conditions and population sum. [Proof and certificate](quarter-common-factor-degrees.md)
 
-At half rate on the second named prime, a written proof puts the first failure at **312,250,001 errors or later** on every length-$2^{30}$ injective domain and at every positive width. Counting poles on the surface Gauss graph bounds the predecessor by **2,131,191,599** bad scalars, leaving **16,292,049** below budget. Lean checks the section slope, both interpolants and the finite allocation. [Geometric proof and verification](gauss-polar-section-heights.md)
+At half rate on the second named prime, first MCA failure lies between **312,800,001 and 387,740,104 errors** on the designated subgroup. Every injective domain is safe at the predecessor. Sparse surface polars and a shared companion degree bound the count by **2,115,023,520** bad scalars, with **32,460,128** to spare. The intersection arguments are written. Lean checks both surfaces and the allocation. [Half-rate proof and verification](half-sparse-gauss-window.md)
 
 At quarter rate on the second named prime, the first failing MCA count is in **[529,940,001, 553,648,129]**. The new safety proof charges every rational tangent outside the common line to its missing regular agreements and denominator degree. A weighted interpolant supplies the third degree constraint. All 9,880 residual inequalities fit, including scalar-only factors, with **1,238,985 labels** to spare. The surface construction and finite inequalities have Lean certificates. The logarithmic height and polar intersection steps are written arguments. [Transverse tangent bound](quarter-transverse-tangents.md)
 
@@ -37,6 +37,10 @@ Allowing arbitrary rational reparameterizations of the 16-node tetrahedron leave
 At rate one eighth on the second named prime, Lean proves that a single construction gives at least **2,148,807,811** bad scalars on one received pair at **679,477,248 errors**, at every positive interleaving width. Its four defining cores each have 394,264,575 sites. Thirteen quotient fibers suffice for the variable fractional-linear maps, and the collision allowance leaves 1,324,163 labels above budget. The same mass holds for every dimension from 134,217,728 to 394,264,575. [Construction](eighth-transverse-mobius.md) · [Lean endpoint](../../../ArkLib/Research/ProximityGap/Frontier/EighthTransverseAttack.lean)
 
 The **679,477,248-error** eighth-rate attack is exact among four-head witnesses for which three heads have a common direction and their scalar differences, after a common locator, factor through the sixty-fourth-root quotient. The fourth head and the number of fresh sites per witness are unrestricted. A production-field census covering 35,337,933,180 anchor/support pairs rules out the only stronger degree-seven root count. A private-core counting argument excludes the preceding error count. A further 110-anchor census rules out even a six-site third fiber of two septics, and every extremal sextic descends through $X^2$ to one of **33** cubic-pencil orbits on the thirty-second roots. An attaining primitive direction must have degree one or two. [Complete census, proof and verification](eighth-quotient-septic.md)
+
+At the first dimension above the exact sixteenth-rate window, **71,582,790**, a freely chosen production-length domain over a finite extension admits **2,147,483,654** actual bad scalars at **715,827,881 errors**. Marked fibers give sharp first crossings of the fixed integer budget $2n$ at the next three successive error levels when the domain and field may vary. The field-size denominator in the probability depends on the extension. On the named prime itself, an explicit 34-site domain has 72 literal bad scalars at 21 errors in dimension four. The production marked roots have not been placed in the designated subgroup. [Construction, schedules and prime-field reconstruction](three-head-marked-fibers.md)
+
+At the second named prime the first MCA failure on every injective length-$2^{30}$ domain lies in **[715,827,881, 715,827,882]** through dimension **71,582,790**, in **[715,827,880, 715,827,882]** through **71,582,792**, and in **[715,827,879, 715,827,882]** through **73,688,168**, for dimensions at least two. A third-moment argument extends a ten-error bracket through **77,807,386**. At the sharp nine-outside-label case a fixed projective involution gives at most nine distinct directions for fifteen necessary slots. Lean verifies the incidence inequalities, the third-moment test and the interpolant. The nonlinear section bound and the global assembly are written. [Full table and proof](three-head-successor-incidence.md)
 
 At the second prime, every dimension $2\le k\le76,695,848$ has its first MCA failure between **715,827,878 and 715,827,882** errors on every injective domain of length $2^{30}$ and at every positive width. This extends the dimension range by 5,113,059 above the exact window. At the predecessor, every outside witness belongs to a fourth head if there are at least two such witnesses. That head carries at most 14 labels. Lean verifies the actual residual count; the reduction through nonlinear factors is a written proof. At the first dimension beyond the exact window, failure at 715,827,881 additionally requires three disjoint split fibers of a coprime pencil of degree at least 23,860,930. [Proof and scope](three-head-residual-secant.md)
 
@@ -2771,7 +2775,7 @@ integral for an arbitrary coefficient polynomial. For a base derivation
 $\delta$ whose field extension preserves the integral closure the formal
 conclusion is $F_Y(z,q_z)\mid F(z,a) F^\delta(z,q_z)$ in $k[X]$.
 Independent kernel replay accepted 21,521 transitive declarations.
-The next result reduces that preservation to the concrete local DVRs; the repeated-root site argument remains separate. [Formal denominator theorem](../../../ArkLib/Research/ProximityGap/Frontier/NormalizedSectionSpecialization.lean) ·
+The next result reduces that preservation to the concrete local DVRs; the repeated-root site argument is formalized below. [Formal denominator theorem](../../../ArkLib/Research/ProximityGap/Frontier/NormalizedSectionSpecialization.lean) ·
 [Application to tangent heights](logarithmic-section-heights.md)
 
 **Height-one assembly on the normalized plane curve.**
@@ -2791,6 +2795,19 @@ kernel replay accepted 33,313 declarations for the combined plane theorem and
 [Unramified lifting](../../../ArkLib/Research/ProximityGap/Frontier/UnramifiedDerivationDVR.lean) ·
 [Intersection and denominator theorem](../../../ArkLib/Research/ProximityGap/Frontier/HeightOneNormalization.lean) ·
 [Height proof](logarithmic-section-heights.md)
+
+**Both tangent coordinates at a repeated received root.**
+Lean proves that the actual reduced tangent denominator is nonzero and both
+tangent coordinates equal the received rows at every good agreement site,
+for any multiplicity whose factorial survives in the field. The finite or
+infinite field needs more elements than the value degree. The proof constructs
+a good constant anchor. Clearing by the integral reciprocal gives
+$h^jt=(X-x)Q$ inside the full integral closure, with $h=S(Y-L)$ and $t$ nonzero
+at the site. Applying the checked repeated-derivative identity to $ht$ avoids
+any local regularity requirement beyond the previously identified branch DVRs.
+Independent verified kernel replay accepted all 33,355 transitive declarations.
+[Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/RepeatedSectionSpecialization.lean) ·
+[Argument](logarithmic-section-heights.md#ordinary-differentiation-at-a-repeated-received-root)
 
 ### Exact three-head window above rate one sixteenth
 
@@ -2923,6 +2940,8 @@ At **order 128**, every vanisher-ratio equality between two sites in **either na
 At **order 256**, both named fields have explicit disjoint degree-62 locators whose ratio is constant on four even test sites and separates over every primitive complex root. The first and second examples have 58 and 60 odd support sites, respectively, whose antipodes leave their support. Lean verifies the named roots, all four finite values, the disjoint supports, odd-site failures and complex separation using auxiliary prime 257. Pullback to each production length $2^{30}$ gives a modular-only ratio equality on **16,777,216 sites** between two locators of degree **260,046,848**, strictly below $2^{28}-1$. These are counterexamples to the individual ratio-transfer step. The shared six-row saturation problem remains open. [Proof, literal data and scope](mu256-actual-locator-counterexamples.md) · [Lean verification](../../../ArkLib/Research/ProximityGap/Frontier/Order256LocatorCounterexamples.lean) · [Independent integer calculations](../../../scripts/probes/probe_mu256_locator_counterexamples.py)
 
 On each named order-256 subgroup, relative to the designated primitive root, **nine consecutive exponent evaluations determine a monic locator up to scale** away from its support. A different sufficient pattern is five consecutive sites together with their antipodes. At order 128, five consecutive sites determine even a signed locator whose weights have absolute value at most two. Ten separate congruence-lattice checks across the two primes eliminate both reflection sectors and the antipodal remainder. The five ordinary consecutive site problem at order 256 and the full production saturation problem remain open. [Arguments and scope](mu256-nine-centres.md) · [Finite certificate](../../../scripts/probes/probe_mu256_locator_windows.py) · [Lean reflection and norm identities](../../../ArkLib/Research/ProximityGap/Frontier/DyadicLocatorReflection.lean)
+
+On either named order-256 domain, at most **eleven antipodal pairs** outside the supports of an asymmetric monic locator quotient can satisfy $R(x)=R(-x)$, even with different values on different pairs. Four pairs forming a parallelogram already force both supports to be antipodal. A three-term progression gives an antireflection; counting repeated distances gives the global cap. The finite certificate covers 12,034 congruence lattices. For a hypothetical three-fiber degree-63 pencil, at least 28 antipodal pairs must carry different fiber labels. [Proof and sharp scope](mu256-antipodal-collisions.md) · [Finite certificate](../../../scripts/probes/probe_mu256_paired_centers.py) · [Lean counting theorem](../../../ArkLib/Research/ProximityGap/Frontier/DyadicPairedCenterDensity.lean)
 
 ## The odd-redundancy spike and its parity endpoint
 
@@ -3107,3 +3126,7 @@ A determinant sieve and two independent integer implementations give the twelve-
 For a rational function of degree at most $d$ on any dyadic grid in a normal extension of the rationals, at most $8d$ distinct matched sites lack a signed antipodal match. If neither antipodal identity holds identically, at most $12d$ sites can match in total. A quadratic row with two preimages per output contributes at most ten outputs under its stated coefficient hypotheses. [Degree bound](../../../ArkLib/Research/ProximityGap/Frontier/DyadicRationalSites.lean) · [Quadratic row](../../../ArkLib/Research/ProximityGap/Frontier/DyadicQuadraticRows.lean)
 
 At dyadic length 512 and dimension 64 in the 390-bit prime field of order $235\cdot2^{382}+1$, Lean certifies the first failing list error count of 447 for all smooth domains and positive widths. The proof uses averaged cyclotomic minors. This field exceeds the 256-bit size highlighted in the prize paper. [Endpoint and realization](../../../ArkLib/Research/ProximityGap/Frontier/DyadicList512.lean)
+
+### Four remaining edge profiles for a saturated septic quartet on the named 64th roots
+
+At the second prime a saturated quartet with no three collinear cannot have a seven-site edge. Projection along its opposite edge would give the excluded septic pencil with three full fibers. This leaves exactly the edge profiles $(2,6,6),(3,5,6),(4,4,6),(4,5,5)$. A production-field census excludes a quarter turn cyclically permuting the four heads by one constant affine output transformation across 589,680 supports. Two reflection families of rational degree profile $(1,3,3)$ also fail. An unrestricted quartet on these 64 sites would lower the eighth-rate attack to 675,282,945 errors. The current verified endpoint remains 679,477,248. [Projection, symmetry restrictions and executable census](eighth-cyclic-septic-quartets.md)

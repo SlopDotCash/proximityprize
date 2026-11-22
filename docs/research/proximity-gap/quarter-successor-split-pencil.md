@@ -4,6 +4,8 @@ Let $H$ be the subgroup of order $n=2^{30}$ in the first designated prime field.
 
 A received pair exceeds the budget of $n$ bad scalar labels **if and only if** there are coprime degree-$D$ polynomials $P,Q$ such that $P,Q,P-Q$ all have $D$ distinct roots in $H$. Equivalently, the three polynomials have degree $D$ and $PQ(P-Q)$ divides $X^n-1$. In the failure case the exact worst-pair count is **$n+2=1073741826$**. The existence of this pencil over the named positive-characteristic field remains open. [Lean equivalence and sharp failure mass](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSuccessorSplitCriterion.lean) · [One uncovered site and three saturated intersections](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSuccessorOneHole.lean) · [Construction from the three fibers](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSuccessorSplitPencil.lean) · [Single divisibility test](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSplitPencilProduct.lean) · [Named threshold and rank scan](../../../ArkLib/Research/ProximityGap/FirstPrimeQuarterPencilReview.lean)
 
+The unlabelled union of the three fibers must also support an optimal elliptic quotient of its cyclic cubic cover. At length 16 the resulting Frobenius-factor test classifies all 8,008 candidate unions. [Unlabelled elliptic test](quarter-split-trigonal.md)
+
 Across 33,554,431 error counts beginning here, this same pencil controls the maximum relative to the line $n+6(e-447392428)$. [Interval theorem](quarter-collinear-interval.md)
 
 ## Forcing three affine heads
