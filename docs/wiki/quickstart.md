@@ -148,17 +148,19 @@ and without the build lock:
 
 `<base-commit>` is a commit whose build is trusted, such as the last one with a completed CI
 run. The tool selects every tracked research or prize-test module that changed since then,
-and every such module whose cached compiled module was built from a different source text.
-It reads that from the source hash Lake records in the module's `.trace` file. It then adds
-any research dependency of a selected module that has no compiled module in the cache, and
-every module that imports a selected one. The selection is compiled in dependency order. The
-research umbrella, the workbench and the library root are included, so they compile last.
-Files that the umbrella leaves out and nothing imports are skipped.
+including staged and working-copy edits, and every such module whose cached compiled module
+was built from a different source text. It reads that from the source hash Lake records in
+the module's `.trace` file. It then adds any research dependency of a selected module that
+has no compiled module, and every module that imports a selected one. The selection is
+compiled in dependency order. The research umbrella, the workbench and the library root are
+included, so they compile last. Files that the umbrella leaves out and nothing imports are
+skipped.
 
-Compiled modules go to a private mirror; the shared `.lake` is read and never written. Pass
-`--work DIR` to keep the mirror. A later run with the same directory skips the changed modules
-it already compiled from the current source text, compiles again whatever failed there, and
-finishes an interrupted run. Each module has its own log under the work directory.
+Compiled modules go to a private mirror; the shared `.lake` is read and never written. Each
+run gets a new subdirectory under `--work` with its summary, logs and mirror. To check `main`
+repeatedly, pass `--keep DIR` instead. The directory is then used in place by one run at a
+time. A later run there skips the changed modules it already compiled from the current source
+text, compiles again whatever failed, and finishes an interrupted run.
 
 Exit status 1 means a module failed, timed out, was blocked by a failed import, or imports a
 module with no source file, or that the cache replaced a module the run relied on. The tool

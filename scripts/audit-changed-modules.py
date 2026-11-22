@@ -18,24 +18,28 @@ It selects
 and compiles the selection in dependency order. Compiled modules go to a private mirror
 of the cache, so later modules see the fresh ones. The shared `.lake` is only read.
 
-A work directory can be kept and passed again. The tool then skips a changed module that
-it already compiled there from the current source text, and compiles again every module
-that failed there.
+`--work DIR` gives every run a new subdirectory of DIR. `--keep DIR` uses DIR itself and
+keeps it for the next run, one run at a time. A later run there skips a changed module it
+already compiled from the current source text, compiles again every module that failed,
+and finishes an interrupted run.
 
 The tool runs `lean` directly. The build-time plugins and Lake's linter options do not
 apply. Modules outside the audited trees are not rebuilt: a cached module there that does
 not match its source is reported, and the result is then not trustworthy for its
 importers. The project build remains the authoritative check.
 
-    scripts/audit-changed-modules.py BASE [--lake DIR] [--work DIR] [--jobs N]
+    scripts/audit-changed-modules.py BASE [--lake DIR] [--work DIR | --keep DIR] [--jobs N]
 
 Exit status 0 means every selected module compiled; 1 means a failure, a module blocked
-by a failed import, a timeout, or an import that has no source file.
+by a failed import, a timeout, an import that has no source file, or a cache that
+replaced a module during the run; 2 means the tool could not start.
 """
 from __future__ import annotations
 
 import argparse
 import concurrent.futures as futures
+import fcntl
+import glob
 import importlib.util
 import json
 import os
@@ -47,9 +51,11 @@ import sys
 import tempfile
 import time
 
+import lean_lexer
+
 SCRIPTS = Path(__file__).resolve().parent
 DEFAULT_TREES = ("ArkLib/Research/", "ArkLib/Tests/ProximityPrize/")
-IMPORT = re.compile(r"^(?:public\s+)?(?:meta\s+)?import\s+(?:all\s+)?(\S+)", re.M)
+IMPORT = re.compile(r"^[ \t]*(?:(?:public|meta)[ \t]+)*import[ \t]+(?:all[ \t]+)?([^\n]+)", re.M)
 MASK = (1 << 64) - 1
 MURMUR = 0xC6A4A7935BD1E995
 SIDECAR = ".source-hash"
@@ -89,7 +95,9 @@ def module_path(name: str) -> str:
 
 def parse_imports(text: str) -> list[str]:
     """Source paths of the `ArkLib` modules a file imports."""
-    return [module_path(name) for name in IMPORT.findall(text) if name.startswith("ArkLib")]
+    live, _ = lean_lexer.live_text(text)
+    return [module_path(name) for group in IMPORT.findall(live) for name in group.split()
+            if name == "ArkLib" or name.startswith("ArkLib.")]
 
 
 def lake_text_hash(data: bytes) -> str:
@@ -136,16 +144,21 @@ def recorded_source_hash(trace: Path, source: str) -> str | None:
     return None
 
 
+def compiled_here(mirror: Path, source: str) -> bool:
+    """Whether the mirror holds a module this tool compiled, not a link into the cache."""
+    private = mirror / (source[:-5] + ".olean")
+    return private.is_file() and not private.is_symlink()
+
+
 def cached_source_hash(library: Path, mirror: Path, source: str) -> str | None:
     """Hash of the source text the usable compiled module was built from.
 
     A module this tool compiled earlier into the mirror carries a sidecar file; a module
-    linked from the cache is described by its Lake trace file. `None` means there is no
-    compiled module or its origin is unknown.
+    of the cache is described by its Lake trace file. `None` means there is no compiled
+    module or its origin is unknown.
     """
     stem = source[:-5]
-    private = mirror / (stem + ".olean")
-    if private.exists() and not private.is_symlink():
+    if compiled_here(mirror, source):
         try:
             return (mirror / (stem + SIDECAR)).read_text(encoding="utf-8").strip() or None
         except OSError:
@@ -159,7 +172,8 @@ def select(imports: dict[str, list[str]], changed: set[str], compiled: set[str])
     """Modules to rebuild: the changed ones, their importers, and uncompiled dependencies.
 
     `imports` maps each audited source to the audited or external sources it imports.
-    `compiled` holds the sources that already have a usable compiled module.
+    `compiled` holds the sources that already have a usable compiled module. An importer
+    of a dependency that is rebuilt for want of a compiled module is rebuilt as well.
     """
     importers: dict[str, list[str]] = {}
     for source, dependencies in imports.items():
@@ -196,17 +210,26 @@ def git(root: Path, *args: str) -> str:
     return subprocess.check_output(["git", *args], cwd=root, text=True)
 
 
-def mirror_cache(library: Path, mirror: Path) -> None:
-    """Symlink the cached `ArkLib` tree, the only package this tool overrides."""
+def mirror_cache(library: Path, mirror: Path, rebuilding: set[str]) -> None:
+    """Symlink the cached `ArkLib` tree, the only package this tool overrides.
+
+    Nothing is linked for a module that is about to be rebuilt or that the mirror already
+    holds a private compiled module for, so no file of such a module comes from the cache.
+    """
     for directory, _, files in os.walk(library / "ArkLib"):
         relative = Path(directory).relative_to(library)
         (mirror / relative).mkdir(parents=True, exist_ok=True)
         for name in files:
+            source = (relative / (name.split(".", 1)[0] + ".lean")).as_posix()
+            if source in rebuilding or compiled_here(mirror, source):
+                continue
             link = mirror / relative / name
             if not link.is_symlink() and not link.exists():
                 link.symlink_to(Path(directory) / name)
     for entry in library.iterdir():
         link = mirror / entry.name
+        if entry.name.split(".", 1)[0] + ".lean" in rebuilding:
+            continue
         if entry.is_file() and not link.is_symlink() and not link.exists():
             link.symlink_to(entry)
 
@@ -215,12 +238,13 @@ def compile_module(root: Path, source: str, mirror: Path, logs: Path, env: dict[
                    timeout: int) -> tuple[str, int, float, list[str]]:
     target = mirror / source[:-5]
     target.parent.mkdir(parents=True, exist_ok=True)
-    for suffix in (".olean", ".ilean", ".trace", ".olean.hash", ".ilean.hash", SIDECAR,
-                   FAILED):
-        stale = Path(str(target) + suffix)
-        if stale.is_symlink() or stale.exists():
-            stale.unlink()   # never write through a link into the shared cache
-    text_hash = lake_text_hash((root / source).read_bytes())
+    for stale in target.parent.glob(glob.escape(target.name) + ".*"):
+        if stale.is_symlink() or stale.is_file():
+            stale.unlink()   # a kept mirror: never write through a link into the cache
+    try:
+        text_hash = lake_text_hash((root / source).read_bytes())
+    except OSError:
+        text_hash = None
     start = time.time()
     try:
         done = subprocess.run(
@@ -228,23 +252,26 @@ def compile_module(root: Path, source: str, mirror: Path, logs: Path, env: dict[
             cwd=root, env=env, capture_output=True, text=True, timeout=timeout)
         code, output = done.returncode, done.stdout + done.stderr
     except subprocess.TimeoutExpired as expired:
-        code, output = 124, (expired.stdout or "") + "\naudit: timed out"
-    Path(str(target) + (SIDECAR if code == 0 else FAILED)).write_text(
-        text_hash + "\n", encoding="utf-8")
+        # TimeoutExpired keeps partial output as bytes even with text=True.
+        partial = b"".join(value for value in (expired.stdout, expired.stderr) if value)
+        code, output = 124, partial.decode(errors="replace") + "\naudit: timed out"
+    if text_hash is not None:
+        Path(str(target) + (SIDECAR if code == 0 else FAILED)).write_text(
+            text_hash + "\n", encoding="utf-8")
     (logs / (source[:-5].replace("/", ".") + ".log")).write_text(output, encoding="utf-8")
     errors = [line for line in output.splitlines() if ": error" in line or "timed out" in line]
     return source, code, time.time() - start, errors[:3]
 
 
-def outside_mismatches(root: Path, library: Path, audited: set[str]) -> list[str]:
+def outside_mismatches(root: Path, library: Path, covered: set[str]) -> list[str]:
     """Cached `ArkLib` modules outside the audit that were built from another source text."""
     found = []
     for directory, _, files in os.walk(library / "ArkLib"):
         for name in files:
             if not name.endswith(".olean"):
                 continue
-            source = str((Path(directory) / name).relative_to(library))[:-6] + ".lean"
-            if source in audited or not (root / source).is_file():
+            source = (Path(directory) / name).relative_to(library).as_posix()[:-6] + ".lean"
+            if source in covered or not (root / source).is_file():
                 continue
             recorded = recorded_source_hash(library / (source[:-5] + ".trace"), source)
             if recorded != lake_text_hash((root / source).read_bytes()):
@@ -253,7 +280,7 @@ def outside_mismatches(root: Path, library: Path, audited: set[str]) -> list[str
 
 
 def run(root: Path, base: str, lake: Path, work: Path, jobs: int, trees: tuple[str, ...],
-        timeout: int) -> int:
+        timeout: int, keep: bool = False) -> int:
     excluded = research_exclusions()
     imports = {path: parse_imports((root / path).read_text(encoding="utf-8"))
                for path in git(root, "ls-files", "--", *trees).splitlines()
@@ -271,30 +298,43 @@ def run(root: Path, base: str, lake: Path, work: Path, jobs: int, trees: tuple[s
               f"sources, for example {outside[0]}")
 
     library = lake / "build" / "lib" / "lean"
+    work.mkdir(parents=True, exist_ok=True)
+    if keep:
+        lock = open(work / ".lock", "w", encoding="utf-8")   # held until the process exits
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError:
+            print(f"ERROR: another audit is using {work}", file=sys.stderr)
+            return 2
+    else:
+        # Every run owns its output, including when two audits share --work.
+        work = Path(tempfile.mkdtemp(prefix="run-", dir=work))
     mirror, logs = work / "mirror", work / "logs"
     mirror.mkdir(parents=True, exist_ok=True)
     logs.mkdir(parents=True, exist_ok=True)
-    mirror_cache(library, mirror)
 
     current = {path: lake_text_hash((root / path).read_bytes()) for path in tracked}
     origin = {path: cached_source_hash(library, mirror, path) for path in tracked}
-    present = {path for path in tracked if (mirror / (path[:-5] + ".olean")).exists()}
+    present = {path for path in tracked if compiled_here(mirror, path)
+               or (library / (path[:-5] + ".olean")).exists()}
     mismatched = {path for path in present if origin[path] != current[path]}
     compiled = present - mismatched
     here = {path: (mirror / (path[:-5] + ".olean")).stat().st_mtime for path in compiled
-            if not (mirror / (path[:-5] + ".olean")).is_symlink()}
+            if compiled_here(mirror, path)}
     failed_before = {path for path in tracked if (mirror / (path[:-5] + FAILED)).exists()}
     sourceless = {path: [d for d in imports[path] if not (root / d).is_file()]
                   for path in tracked}
     sourceless = {path: missing for path, missing in sourceless.items() if missing}
     todo = select(imports, (changed - set(here)) | mismatched | failed_before
                   | set(sourceless) | outdated(imports, here), compiled)
+    if todo:
+        mirror_cache(library, mirror, todo)
     print(f"{len(changed)} sources changed since {base} "
           f"({len((changed & set(here)) - todo)} already compiled in this work directory), "
           f"{len(mismatched)} compiled modules built from another source text, "
           f"{len(failed_before)} failed here before, {len(todo)} modules to compile, "
           f"logs in {logs}", flush=True)
-    foreign = outside_mismatches(root, library, set(tracked))
+    foreign = outside_mismatches(root, library, covered)
     if foreign:
         print(f"WARNING: {len(foreign)} cached modules outside the selected trees were built "
               f"from another source text, for example {foreign[0]}; their importers are "
@@ -371,11 +411,12 @@ def main() -> int:
                                      "commit with a completed CI run")
     parser.add_argument("--lake", help="a .lake directory with compiled modules "
                                        "(default: .lake in this checkout)")
-    parser.add_argument("--work", help="directory for the mirror and logs (default: a new "
-                                       "temporary directory); a directory from an earlier "
-                                       "run is reused, and modules it compiled from the "
-                                       "current source text are not compiled again unless "
-                                       "an import changed")
+    where = parser.add_mutually_exclusive_group()
+    where.add_argument("--work", help="parent directory; each run gets a new subdirectory "
+                                      "for its mirror, logs and summary (default: a new "
+                                      "temporary directory)")
+    where.add_argument("--keep", help="directory used in place and kept for the next run, "
+                                      "which then compiles only what changed or failed")
     parser.add_argument("--jobs", type=int, default=4, help="concurrent compilations")
     parser.add_argument("--timeout", type=int, default=3600, help="seconds per module")
     parser.add_argument("--tree", action="append", help="audited source prefix; repeatable")
@@ -385,9 +426,13 @@ def main() -> int:
     if not (lake / "build" / "lib" / "lean" / "ArkLib").is_dir():
         print(f"ERROR: no compiled ArkLib modules under {lake}", file=sys.stderr)
         return 2
-    work = Path(args.work).resolve() if args.work else Path(tempfile.mkdtemp(prefix="arklib-audit-"))
+    if args.keep:
+        work = Path(args.keep).resolve()
+    else:
+        work = Path(args.work).resolve() if args.work else Path(
+            tempfile.mkdtemp(prefix="arklib-audit-"))
     trees = tuple(args.tree) if args.tree else DEFAULT_TREES
-    return run(root, args.base, lake, work, args.jobs, trees, args.timeout)
+    return run(root, args.base, lake, work, args.jobs, trees, args.timeout, bool(args.keep))
 
 
 if __name__ == "__main__":
