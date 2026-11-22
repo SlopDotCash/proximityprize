@@ -133,6 +133,27 @@ It checks the file against the source policy and audits any axiom reports it emi
 Compilation failures, admission warnings, and unapproved reported axioms fail the check.
 Treat such a probe as provisional until the source passes the project build.
 
+### Rechecking merged modules against current sources
+
+`pg-iterate.sh` trusts the compiled modules in the shared cache. If an import changed after
+that cache was built, a file can pass there and still fail against the current sources. A CI
+run on `main` is also cancelled whenever a newer commit arrives. To recheck a range of merges
+without a Lake build and without the build lock:
+
+```bash
+./scripts/audit-changed-modules.py <base-commit> --lake /path/to/.lake --jobs 4
+```
+
+`<base-commit>` is a commit whose build is trusted, such as the last one with a completed CI
+run. The tool recompiles, in dependency order, every tracked research or prize-test module
+changed since then, every such module that imports one of them, and any of their research
+dependencies that has no compiled module in the cache. The research umbrella is included, so
+it compiles last. Compiled modules go to a private mirror; the shared `.lake` is read and
+never written. Changed Lean sources outside those trees are reported and not rebuilt. Exit
+status 1 means a module failed, timed out, or was blocked by a failed import, and each module
+has its own log. This is a direct `lean` run: the build-time plugins and Lake's linter options
+do not apply, and the project build stays authoritative.
+
 When agents are running a shared shell script, replace that script atomically through a temporary
 file and rename, or coordinate a boundary with no new invocations. An in-place rewrite can shift
 byte offsets in an existing Bash reader after a long command returns, causing a spurious syntax
