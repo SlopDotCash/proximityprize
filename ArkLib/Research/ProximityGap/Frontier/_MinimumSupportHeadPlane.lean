@@ -34,7 +34,8 @@ theorem residual_on_minimum_support {F X : Type*} [Field F] [DecidableEq X]
       omega
     · intro x hx
       by_cases hxp : x = p
-      · simpa [hxp] using hzp
+      · subst x
+        exact hzp
       · exact hzS x (fun hxS => hx (Finset.mem_erase.mpr ⟨hxp, hxS⟩))
   have hvnz : ∀ x ∈ S, v x ≠ 0 := fun x hx h => hv0 (vanishes hv hvS hx h)
   have hSnonempty : S.Nonempty := by
@@ -68,7 +69,7 @@ theorem affine_heads_on_minimum_support {F X I : Type*} [Field F] [DecidableEq X
       change w i x - (U x + γ i * V x) = 0
       rw [hoff i x hx, sub_self]
     obtain ⟨a, ha⟩ := (residual_on_minimum_support C S D hS hdist v r hv hr hv0 hvS hrS).2
-    exact ⟨a, by simpa [add_comm] using (sub_eq_iff_eq_add.mp ha)⟩
+    exact ⟨a, (sub_eq_iff_eq_add.mp ha).trans (add_comm _ _)⟩
   choose a ha using hfit
   exact ⟨a, ha⟩
 
