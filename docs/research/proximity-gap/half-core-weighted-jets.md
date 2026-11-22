@@ -2,6 +2,8 @@
 
 On the second named prime at length $n=2^{30}$ and dimension $k=n/2$, every injective domain and every positive interleaving width has first MCA failure at **310,285,001 errors or later**. At 310,285,000 errors the written proof bounds the number of bad scalars by **2,101,754,336**, leaving **45,729,312** below the 128-bit budget. This raises the preceding tangent-polar lower bound by 485,000 errors. Lean checks the mixed interpolants under the two ownership counts, the rational triangle determinant, and the finite degree allocations. The passage from a nonlinear factor to its tangent heights and the plane-curve duality argument use the published written proofs. [Lean certificates](../../../ArkLib/Research/ProximityGap/Frontier/HalfCoreWeightedJets.lean) · [Independent exact enumeration](../../../scripts/probes/probe_half_core_weighted_jets.py) · [Preceding tangent-polar windows](tangent-polar-windows.md)
 
+A subsequent bound on the total tangent pole degree raises the half-rate lower endpoint to **312,250,001**. [Surface Gauss graph proof](gauss-polar-section-heights.md)
+
 ## Removing the rich affine heads
 
 Put $d=k-1$, $e=310285000$, $t=n-e$ and $C=t-255$. Select one bad witness section $(z,q_z)$ per bad scalar. Use an unconditioned mixed Hasse surface of order 26, value degree 36, and total scalar/value degree 227608. Its positive dimension surplus is 2,142,924. Each selected section lies on this surface.

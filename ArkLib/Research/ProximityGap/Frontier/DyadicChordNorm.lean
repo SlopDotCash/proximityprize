@@ -34,7 +34,8 @@ theorem chord (hm : 0<m) (hz : IsPrimitiveRoot z (2^(m+1))) {e : ℕ}
   exact prime.norm_pow_sub_one_eq_prime_pow_of_ne_zero
     (cyclotomic.irreducible_rat (by positivity)) hs (by omega)
 
-private theorem norm_root (hm : 0<m) (hz : IsPrimitiveRoot z (2^(m+1))) :
+/-- A primitive dyadic root in order at least four has rational norm one. -/
+theorem norm_root (hm : 0<m) (hz : IsPrimitiveRoot z (2^(m+1))) :
     Algebra.norm ℚ z=1 := by
   apply hz.norm_eq_one _ (cyclotomic.irreducible_rat (by positivity))
   exact ne_of_gt (lt_of_lt_of_le (by decide : 2<2^2) (Nat.pow_le_pow_right (by decide) (by omega)))

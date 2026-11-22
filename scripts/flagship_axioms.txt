@@ -85,6 +85,7 @@ ArkLib.Research.ProximityGap.Frontier.EighthThreePlusOne ArkLib.ProximityGap.Fro
 # Four product heads attain all separated off-core slots over finite extensions
 ArkLib.Research.ProximityGap.Frontier.FourHeadExtensionSharpness ArkLib.ProximityGap.Frontier.FourHeadExtensionSharpness.full_capacity
 ArkLib.Research.ProximityGap.Frontier.FourHeadExtensionSharpness ArkLib.ProximityGap.Frontier.FourHeadExtensionSharpness.sides
+ArkLib.Research.ProximityGap.Frontier.FourHeadExtensionSharpness ArkLib.ProximityGap.Frontier.FourHeadExtensionSharpness.named_size_check
 
 # End-to-end selected-scalar cap in the five-rich-head tangent allocation
 ArkLib.Research.ProximityGap.Frontier.EighthFiveRichSafety ArkLib.ProximityGap.Frontier.EighthFiveRichSafety.covered
@@ -461,3 +462,6 @@ ArkLib.Research.ProximityGap.SixteenJohnsonSeparation ProximityPrize.SixteenJohn
 ArkLib.Research.ProximityGap.JointJohnsonEquality ProximityPrize.JointJohnsonEquality.both_iff
 ArkLib.Research.ProximityGap.JohnsonMcaRealization ProximityPrize.JointJohnsonEquality.quartic_mca_answer
 ArkLib.Research.ProximityGap.JohnsonMcaRealization ProximityPrize.JointJohnsonEquality.mca_iff
+
+# Pairwise support packing at the first unresolved quarter-rate list step
+ArkLib.Research.ProximityGap.Frontier.QuarterSupportPackingBarrier ProximityGap.QuarterSupportPackingBarrier.production_on
