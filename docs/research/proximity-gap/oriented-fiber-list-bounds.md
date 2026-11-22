@@ -103,3 +103,54 @@ For each candidate set of exponents $T$ put $s(T)=\sum_{j\in T}\gcd(j,M)$. Its o
 Write $y=u^{aM/d}$ for the quotient root at serving anchor $a$. Translating all original exponents by $-aM/d$ preserves the excluded subgroup and gives the locator identity $L_T(y)=y^{17}L_{T/y}(1)$. Thus the existing signed labels at $1$ give one actual locator value at $y$. The integer verifier fixes original product exponent 1 at quarter rate and 16 at eighth rate. For anchor $a$, it reads the two signed exponent lifts of the rotated product class $r-17aM/d$ modulo $M$, accepting only the assigned sums. Summing the largest allowed signed-label populations on each serving fiber counts disjoint original sets. A fiber with at most $K$ allocated values supplies $\lfloor h/K\rfloor$ agreements, on top of the $17h$ ordinary agreements and the $h-1$ common roots.
 
 Lean constructs one center for arbitrary serving palettes and proves the distinct-word list bound from the common constant, the root sets and the fiber capacities. The exact integer verifier checks the four production populations. At quotient order 16 it also exhausts the restricted histograms and evaluates the resulting degree-bounded words and common centers on all 128 coordinates over $\mathbb F_{257}$. [General allocation and locator theorem](../../../ArkLib/Research/ProximityGap/Frontier/TwoAnchorListWitness.lean) · [Production and finite checks](../../../scripts/probes/probe_serving_subgroup_lists.py)
+
+## Can the full-field shifted-cube lists reach the first open step?
+
+On the two named subgroups $H=\mu_n\subset\mathbb F_p^\times$, $n=2^{30}$, the first
+unresolved closed ball at each of the four rates requires an agreement count $T=n-e$
+satisfying both $3T>4k$ and $T\ge268{,}435{,}453$. Here $k$ is the code dimension and
+$e$ is one more than the last proved safe error count. At rate $1/8$ the second prime
+has one more proved safe error than the first. [Four-rate safety](../../../ArkLib/Research/ProximityGap/Frontier/InterleavedListJohnsonRank.lean) · [Extra safe step](../../../ArkLib/Research/ProximityGap/Frontier/InterleavedListJohnsonPuncture.lean)
+
+Alrabiah, Goyal and Guruswami construct large lists over the full prime field.
+Take a subgroup $S=\mu_t$, with $t\mid p-1$, and a polynomial $f$ with $f(0)=0$
+and degree $2\le d<t$. Put $P_f(X)=\prod_{u\in S}(X-f(u))$. Their coefficient
+bound gives $\deg(X^t-P_f)\le t-\lceil t/d\rceil$. For $\ell\ge1$ such maps,
+the received word is $X^{\ell t}$ and the message is $X^{\ell t}-\prod_i P_{f_i}$.
+Its agreements on $H$ form the union of the sets $f_i(S)\cap H$.
+The published degree bound certifies membership in the dimension-$k$ code when
+$\ell t-\lceil t/d\rceil+1\le k$. The paper uses shifted cubes
+$f_a(X)=(X+a)^3-a^3$ in its prime-field examples. [Section 4, Lemmas 4.1–4.3 and amplification](https://arxiv.org/html/2611.07607v1#S4)
+
+The construction needs $T\le\ell t$. The certified degree condition gives
+$k>\ell t-t/d$, so $\ell t<k\ell d/(\ell d-1)$. If $\ell d\ge4$, this
+allows fewer than $4k/3$ agreements even before restricting the evaluation set.
+The remaining cases have $\ell=1$, $d=2$ or $3$, and $t<2k\le n$.
+
+For a nonmonomial $f$ in either remaining case, its graph $y=f(x)$ in the
+two-dimensional torus is absolutely irreducible of bidegree $(d,1)$. Over the
+algebraic closure its smooth completion is the projective line. Removing infinity
+and the distinct roots of $f$ gives the torus graph. Thus its Euler
+characteristic in the convention of Corvaja and Zannier is
+$\chi=\#\{\text{distinct roots of }f\}-1$, with $1\le\chi\le d-1$.
+At a nonzero root of $f$, the valuation of $x$ is zero and the valuation of
+$f(x)$ is positive. This excludes a relation $x^i f(x)^j=\mathrm{constant}$
+for $(i,j)\ne(0,0)$, as required to exclude a translate of a subtorus.
+Corollary 2 gives
+\[
+ |f(\mu_t)\cap\mu_n|\le
+ |\{u\in\mu_t:f(u)\in\mu_n\}|\le
+ \max\left\{3(2tnd\chi)^{1/3},\,12tnd/p\right\}.
+\]
+Both primes exceed $2^{158}$. The second term is less than one, and the cube of
+the first is at most $324n^2<7{,}201{,}920^3$. Thus even a single nonmonomial
+has at most **7,201,919** agreements on the required domain. [Corvaja–Zannier, Corollary 2, p. 1930](https://ems.press/content/serial-article-files/31918#page=4)
+
+For a monomial $f(X)=cX^d$ injective on the seed, the image is $c\mu_t$ and
+$X^t-P_f=c^t$ is constant. At most $\lfloor n/T\rfloor$ constants can have $T$
+agreements with a fixed word, since their agreement sets are disjoint. These
+counts rule out the published degree certificate as a witness at all eight
+first unresolved steps. A proof of extra coefficient cancellation, including
+after reduction modulo $X^n-1$, could certify other parameter choices. The
+argument is a written application of the two papers and leaves safety of the
+eight closed balls open.
