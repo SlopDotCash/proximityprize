@@ -134,7 +134,8 @@ theorem no_protected_list {ι : Type*} [Fintype ι] (s : Shape) (h threshold : �
   have two (t : Bool) : ∃ i j, i ≠ j ∧ heavy t i = true ∧ heavy t j = true := by
     simpa [heavy] using two_heavy_of_mass h threshold (counts t) hh (hmax t) (hmass t)
   have both (i : Head) : heavy false i = true ∨ heavy true i = true := by
-    simpa [heavy] using heavy_somewhere h (counts false i) (counts true i) threshold (by omega) (hcover i)
+    simpa [heavy] using
+      heavy_somewhere h (counts false i) (counts true i) threshold (by omega) (hcover i)
   obtain ⟨split, side, h₁, h₂, h₃, h₄⟩ := complementary_pairs _ _ (two false) (two true) both
   let sideAt (i : ι) := if source i then !side else side
   have hit (i : ι) : heavy (source i) (pair split (sideAt i)).1 = true ∧
