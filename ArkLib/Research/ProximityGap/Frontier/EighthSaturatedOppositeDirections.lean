@@ -10,7 +10,7 @@ import ArkLib.Research.ProximityGap.Frontier._HalfPredecessorRateQuarterDetermin
 namespace ArkLib.ProximityGap.Frontier.EighthSaturatedOppositeDirections
 open Finset Polynomial _root_.ProximityGap.FourHeadCoreDeterminant
 
-variable {F I : Type*} [Field F] [DecidableEq I]
+variable {F I : Type*} [Field F]
 
 private def bit (b : Fin 4 → Bool) (i : Fin 4) : ℕ := if b i then 1 else 0
 
@@ -77,25 +77,26 @@ theorem layout [Fintype I] (b : I → Fin 4 → Bool)
     sum_boole, Nat.cast_id] at doubles private_sum
   exact ⟨regular, by omega, by omega⟩
 
+open HalfPredecessorRateQuarterDeterminantMultiplicity in
 /-- The four charge inequalities for the physical core masks follow from the
 actual nonzero triangle determinants and the degree bound. -/
 theorem face_budgets {K : Type} [Field K] {J : Type} [Fintype J]
     (dom : J ↪ K) (u v : J → K) (W : Fin 4 → K[X] × K[X])
     (b : J → Fin 4 → Bool)
     (mask : ∀ x i, b x i = true ↔
-      HalfPredecessorRateQuarterDeterminantMultiplicity.AgreesAt (u x) (v x) (dom x) (W i))
+      AgreesAt (u x) (v x) (dom x) (W i))
     (degrees : ∀ i, (W i).1.natDegree < 134217728 ∧ (W i).2.natDegree < 134217728)
-    (triangles : ∀ j, HalfPredecessorRateQuarterDeterminantMultiplicity.threeLineDeterminant
+    (triangles : ∀ j, threeLineDeterminant
       (W (face j 0)) (W (face j 1)) (W (face j 2)) ≠ 0) :
     ∀ j, (∑ x, charge (b x) j) ≤ 268435454 := by
   classical
   intro j
-  have tri := HalfPredecessorRateQuarterDeterminantMultiplicity.sum_coreCount_sub_one_le_natDegree
+  have tri := sum_coreCount_sub_one_le_natDegree
     dom u v _ _ _ univ (triangles j)
-  have degree := HalfPredecessorRateQuarterDeterminantMultiplicity.natDegree_threeLineDeterminant_le_two_mul_sub_two
+  have degree := natDegree_threeLineDeterminant_le_two_mul_sub_two
     (degrees (face j 0)).1 (degrees (face j 0)).2 (degrees (face j 1)).1 (degrees (face j 1)).2
     (degrees (face j 2)).1 (degrees (face j 2)).2
-  simpa only [charge, bit, mask, HalfPredecessorRateQuarterDeterminantMultiplicity.coreCount]
+  simpa only [charge, bit, mask, coreCount]
     using tri.trans degree
 
 /-- Two actual finite folded labels on opposite edges satisfy the same
