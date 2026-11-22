@@ -2,6 +2,8 @@
 
 The universal rank formula now determines the operational MCA and list cutoffs on every supplied smooth prize code. Evaluating it at large dimensions can be impractical. The table records numerical values and bounds with their verification status. Dated entries preserve intermediate results. [Current reviewer guide](full-prize-review.md) · [November 21 integration assessment](integration-assessment-2026-11-21.md)
 
+At the first quarter-rate successor, **447,392,428 errors**, every potential over-budget pencil has combined ramification index at zero and infinity at most **100,527,252**. Its lowest-degree nonzero polynomial has degree at least **167,908,203**. Equal power sums at odd frequencies and at twice-odd frequencies force two of the three fibers to consist of whole four-point blocks, contrary to their required size, whenever the index bound is exceeded. For a pencil factoring through squaring the combined index is at most **97,129,336**. Candidates with smaller ramification remain open. [Proof and exact arithmetic](quarter-successor-split-pencil.md#ramification-at-zero-and-infinity)
+
 At quarter rate on the second named prime, every injective length-$2^{30}$ domain is safe through **525,150,000 errors** at every positive width. A third interpolant lowers its jet order at sites belonging to any of three rich cores. It contains every remaining polynomial witness and bounds the total bad-scalar count by **2,081,389,015**, including scalar-only factors. This extends the earlier tangent-height estimate by **450,000 errors**. The tangent determinant bound reaches **529,350,000 errors** at this rate. Lean checks the interpolants and count. The nonlinear estimate uses the written tangent-height argument. [Proof and verification scope](quarter-core-weighted-jets.md)
 
 At rate one eighth on the second named prime, every injective length-$2^{30}$ domain is safe through **671,088,639 errors** at every positive width. On the named subgroup the first failure is in **[671,088,640, 679,477,248]**. The safety proof bounds all 3,370 factor allocations and uses one constant projective involution to control the only saturated four-head case. Lean checks the two interpolants, finite degree allocations, deficit arithmetic and the constant-form identity. The nonlinear tangent estimate uses a written geometric argument. [Safety proof and verification scope](eighth-rich-head-safety.md) · [Kernel-checked failure witness](../../../ArkLib/Research/ProximityGap/Frontier/EighthTransverseAttack.lean)
@@ -30,6 +32,7 @@ At the second production prime and length $2^{30}$, the written lower bounds on 
 
 | Question | Result | Verification |
 |---|---|---|
+| Actual list equality with Johnson | At 128-bit tolerance there exists a field below $2^{256}$ and a smooth domain whose list cutoff equals Johnson at all positive widths exactly for $k=1$, or $k=2$ with $n=4$ or $16$. On the 16-point subgroup of $\mathrm{GF}(17^{32})$, the first list failure is at 12 errors and the first MCA failure is at six. | [Classification and witnesses](../../../ArkLib/Research/ProximityGap/JohnsonEqualityClassification.lean) · [Joint example](../../../ArkLib/Research/ProximityGap/JohnsonPrimePowerList.lean) |
 | Earlier four-rate bounds at every larger smooth length | Write $n=mh$, where $h$ is 256, 256, 256 or 512 in descending rate order, and $j=hk/n$. At $q<2^{256}$ both 128-bit budgets fail by $(h-j-2)m+1$ errors, uniformly over fields and positive widths. The rate-$1/8$ maximum $223/256$ can therefore be attained only at length 256. The same count with $h=1024,1024,1024,2048$ gives MCA probability one and some list larger than $q^2$. | [List proof and equality case](../../../ArkLib/Research/ProximityGap/SmoothReservedListBoundary.lean) · [MCA proof and numerical counts](../../../ArkLib/Research/ProximityGap/SmoothReservedMcaBoundary.lean) |
 | A whole safe list count beyond Johnson | On any injective domain of $n\ge256$ points, the first integer error count strictly above the finite Johnson radius has list size at most $40n,32n,14n,14n$, respectively. When the budget covers the relevant bound, the first failing count is at least one integer later. | [Multiple-omission proof](../../../ArkLib/Research/ProximityGap/Frontier/MultipleOmissionJohnson.lean) · [Two-sided rank answer](../../../ArkLib/Research/ProximityGap/SmoothListRankBracket.lean) |
 | First-prime quarter-rate decision at 447,392,428 errors | A line exceeds the $2^{30}$ budget at this count exactly when degree-268,435,454 polynomials $P,Q,P-Q$ have three disjoint full root sets in the supplied domain. In that case the maximum is **1,073,741,826** bad scalars. The proof derives one uncovered site and three exact overlaps from any failure. Whether the designated subgroup admits such polynomials remains open. | [Equivalence and exact mass](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSuccessorSplitCriterion.lean) · [Geometric proof](quarter-successor-split-pencil.md) |
@@ -2098,7 +2101,7 @@ computes a much smaller search region from its explicit basis.
 
 ## Production list bounds at the Johnson threshold and one step beyond
 
-At the next candidate production list steps, the combination of affine coordinate cuts and shortened pair counts gives lower bounds for the affine dimension of any over-budget list. At half rate and 314,491,700 errors the first and second named budgets require dimensions **58** and **60**. At one-eighth rate the corresponding dimensions are **20** at 694,116,763 errors and **21** at 694,116,764 errors. At one quarter the dimensions are **29** and **30**, and at one sixteenth they are **15** and **16**. These conditions hold for every injective domain and every positive width. The written proof and exact integer certificates concern the dimension of a prospective violating list. [Proof and eight numeric certificates](saturated-list-pencils.md#affine-rank-from-shortened-pair-counts)
+At the next candidate production list steps, the combination of affine coordinate cuts and shortened pair counts gives lower bounds for the affine dimension of any over-budget list. At half rate and 314,491,700 errors the first and second named budgets require dimensions **58** and **60**. At one-eighth rate the corresponding dimensions are **20** at 694,116,763 errors and **21** at 694,116,764 errors. At one quarter the dimensions are **29** and **30**, and at one sixteenth they are **15** and **16**. These conditions hold for every injective domain and every positive width. Lean verifies the affine-dimension recurrence, its specialization to actual interleaved Reed–Solomon lists and all eight numerical certificates. [Proof and eight numeric certificates](saturated-list-pencils.md#affine-rank-from-shortened-pair-counts)
 
 For $n=2^{30}$ the following closed balls have list size at most $n$ on
 **every** injective evaluation domain, for every finite interleaving width.
@@ -2704,6 +2707,18 @@ Independent replay of the scalar-count and all-width probability bounds accepted
 ### A resultant bound for all tangent denominators
 
 Two derivations preserving the reduced branch divisor give a written algebraic bound on the sum of the denominator degrees of the selected section tangents. One resultant charges collisions of the reduced discriminant and its coordinate derivative, and a second charges the base points of the ordinate. At the new three-head window the largest resulting nonlinear population cap is **98,657** on a sextic. This gives an independent route to the cutoff through dimension 71,582,789 using tame lifting of derivations in place of surface intersection theory. Independent kernel checks accepted 19,217 declarations for the two-resultant and residue calculations and 16,367 for the counting inequality. [Full proof and numerical bounds](logarithmic-section-heights.md)
+
+**Tame DVR lifting inside the logarithmic section-height proof.**
+Lean proves that a fraction-field derivation regular on the base with
+$D\pi\in\pi R$ preserves the normalized DVR $B$ and sends its uniformizer
+$u$ into $uB$. A single denominator is derived for a localization of a
+finite base algebra. Lifting separable residue minimal polynomials and
+differentiating $\pi=u^e v$ with $e$ invertible reduces its exponent
+one step at a time. Independent verified kernel replay accepted all 10,568
+declarations needed by the full local theorem. The geometric identification of the height-one local
+rings and the subsequent section specializations are still written steps.
+[Local Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/TameLogarithmicDVR.lean) ·
+[Use in the height argument](logarithmic-section-heights.md)
 
 ### Exact three-head window above rate one sixteenth
 
