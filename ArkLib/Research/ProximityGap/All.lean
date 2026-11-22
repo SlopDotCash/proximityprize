@@ -359,6 +359,7 @@ import ArkLib.Research.ProximityGap.Frontier.DyadicOddPencilCount
 import ArkLib.Research.ProximityGap.Frontier.DyadicOddPencilExclusion
 import ArkLib.Research.ProximityGap.Frontier.DyadicOrbitIndependence
 import ArkLib.Research.ProximityGap.Frontier.DyadicPairMinorTransfer
+import ArkLib.Research.ProximityGap.Frontier.DyadicPairedCenterDensity
 import ArkLib.Research.ProximityGap.Frontier.DyadicParityGalois
 import ArkLib.Research.ProximityGap.Frontier.DyadicParityLemma
 import ArkLib.Research.ProximityGap.Frontier.DyadicPenalty1024
