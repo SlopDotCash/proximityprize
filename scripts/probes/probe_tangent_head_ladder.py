@@ -14,7 +14,10 @@ cores of size at least C = t - 255 that pairwise meet in at most d sites, so
 there are at most n (C - d) / (C^2 - n d) of them.
 
 A second table gives the same statement at integer budgets 9n/8, ..., 15n/8,
-between the budgets n and 2n of the two named primes.
+between the budgets n and 2n of the two named primes, and a third at length
+2**40 with budgets 2n and 64n.  The caps are numbers that do not grow with the
+length, so at the larger length the same budgets relative to n reach closer
+to the Johnson count.
 
 The certificate is the proportional-price test used in the Lean window
 files: for j rich heads and total value degree l, every value degree b costs
@@ -47,40 +50,40 @@ def check(condition, message):
         raise SystemExit(f'CHECK FAILED: {message}')
 
 
-def surplus(shape, t, d):
+def surplus(shape, t, d, n=N):
     r, v, s = shape
     cols = sum((s-j+1)*max(0, r*t-j*d) for j in range(v+1))
-    rows = N*sum((r-j)*(s+1-j) for j in range(r))
+    rows = n*sum((r-j)*(s+1-j) for j in range(r))
     return cols-rows
 
 
-def tangent_cap(b, m, w, t, d):
+def tangent_cap(b, m, w, t, d, n=N):
     bx = (2*b-2)*m-b*(b-1)+1
     bz = (2*b-2)*w-b*(b-1)*d+1
     budget = 2*bx*bz+b*(w*(m-b)+m*(w-b*d))
-    return bx+(m*N*(2*t+N)+2*budget*(t+N))//(t*t-N*d)
+    return bx+(m*n*(2*t+n)+2*budget*(t+n))//(t*t-n*d)
 
 
-def certify(rate, budget, errors, outer, secondary):
+def certify(rate, budget, errors, outer, secondary, n=N):
     """Return the largest allocation total found by the price test."""
-    d = N//rate-1
-    t = N-errors
+    d = n//rate-1
+    t = n-errors
     r, v, s = outer
     _, va, a = secondary
-    check(t*t > N*d, 'below the Johnson radius')
-    check(surplus(outer, t, d) > 0 and surplus(secondary, t, d) > 0,
+    check(t*t > n*d, 'below the Johnson radius')
+    check(surplus(outer, t, d, n) > 0 and surplus(secondary, t, d, n) > 0,
           'nonzero interpolants')
     cutoff = max(errors//256+1, s*va+v*a+1)
-    check(t-a*N//cutoff-3*(a*N//(cutoff-a)) > d, 'affine-head test')
+    check(t-a*n//cutoff-3*(a*n//(cutoff-a)) > d, 'affine-head test')
     core = t-255
-    check(core*core > N*d, 'rich cores are above the Johnson size')
-    if 3*core > N+2*d:
+    check(core*core > n*d, 'rich cores are above the Johnson size')
+    if 3*core > n+2*d:
         group = 3
-    elif 4*core > N+4*d:
+    elif 4*core > n+4*d:
         group = 4
     else:
         group = None
-    rich_max = (N*(core-d))//(core*core-N*d)
+    rich_max = (n*(core-d))//(core*core-n*d)
 
     def mass(j):
         if group is None or j < group:
@@ -88,8 +91,8 @@ def certify(rate, budget, errors, outer, secondary):
         divisor = core+(j-1)*d
         covered = (j*core*core+divisor-1)//divisor
         # the union of j cores also has at least j C - binom(j, 2) d sites
-        covered = min(N, max(covered, j*core-(j*(j-1)//2)*d))
-        return min(j*(errors+1), j*N-(j-1)*covered)
+        covered = min(n, max(covered, j*core-(j*(j-1)//2)*d))
+        return min(j*(errors+1), j*n-(j-1)*covered)
 
     worst = 0
     for j in range(min(v, rich_max)+1):
@@ -106,13 +109,13 @@ def certify(rate, budget, errors, outer, secondary):
                 if w < b*d or m < b:
                     price = cutoff
                 else:
-                    price = max(cutoff, tangent_cap(b, m, w, t, d))
+                    price = max(cutoff, tangent_cap(b, m, w, t, d, n))
                 check(rest*price <= b*room, 'proportional price')
                 if b == rest:
                     worst = max(worst, heads+price)
     check(worst <= budget, 'largest allocation')
     # Theorem D' needs characteristic above max(b, B_Z) for every factor
-    check((2*v-2)*(r*t-1)+1 < 2**47, 'characteristic bound 2^47')
+    check((2*v-2)*(r*t-1)+1 < 2**47*(n//N), 'characteristic bound')
     return worst
 
 
@@ -180,6 +183,21 @@ BUDGET_ROWS = (
 )
 
 
+N40 = 2**40
+
+LENGTH40_ROWS = (
+    # length 2**40: rate, log2(budget / n), safe errors, first shape, second shape
+    (2, 1, 319230068958, (40, 56, 156913), (80, 113, 3156)),
+    (2, 6, 320634784370, (81, 114, 372525), (162, 229, 12508)),
+    (4, 1, 545382552916, (31, 62, 289769), (62, 124, 2716)),
+    (4, 6, 547825429161, (71, 142, 808376), (141, 282, 13706)),
+    (8, 1, 687188686354, (5, 14, 120547), (10, 29, 126)),
+    (8, 6, 707216801511, (35, 99, 894889), (70, 199, 4832)),
+    (16, 1, 731100741633, (2, 5, 67), (2, 9, 12)),
+    (16, 6, 819792658433, (21, 85, 350327), (42, 170, 2531)),
+)
+
+
 DEEP_ROWS = (
     # larger shapes; checked only with --deep (about two minutes)
     (2, 52, 313793593, (159, 224, 60088785), (319, 451, 48072)),
@@ -219,6 +237,10 @@ if __name__ == '__main__':
         print(f'rate 1/{rate}, budget {budget} = {budget*8//N}n/8: safe through '
               f'{errors} errors with shapes {outer} and {secondary}; largest '
               f'allocation {worst}')
+    for rate, kappa, errors, outer, secondary in LENGTH40_ROWS:
+        worst = certify(rate, N40*2**kappa, errors, outer, secondary, N40)
+        print(f'length 2^40, rate 1/{rate}, budget 2^{kappa} n: safe through '
+              f'{errors} errors, {errors/N40:.5f} n; largest allocation {worst}')
     four_head_boundary(8, 671088385)
     four_head_boundary(16, 738197249)
     print(f'{CHECKS} explicit checks passed')

@@ -59,3 +59,5 @@ Write the full map as $V\circ W\circ U$, where $W$ is this primitive stage and $
 There is also a consequence for applying torsion bounds to this factor: the locus of ordered, pairwise distinct $j$-tuples in unramified fibers of $W$ is geometrically irreducible for every $2\le j\le m-2$. Its geometric connected components are the orbits of $G$ on such tuples, and $A_m$ is $(m-2)$-transitive. In particular the off-diagonal collision curve of $W$ has a single component.
 
 The classification and function-field arguments are written above. The stage degrees, modular orders, flag and point counts, alternating-group index bound and fixed-point-ratio comparison have Lean proofs.
+
+The resulting pair curve excludes a $(2,3,7)$ signature in every case and gives stronger exclusions at the smaller prefix degrees. [Branch orders and genus restriction](quarter-split-branch-orders.md)

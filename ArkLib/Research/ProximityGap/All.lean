@@ -758,6 +758,7 @@ import ArkLib.Research.ProximityGap.Frontier.PrimeThreeLineCutoff
 import ArkLib.Research.ProximityGap.Frontier.PrimeThreeLineFamily
 import ArkLib.Research.ProximityGap.Frontier.PrimitiveIntegralSectionChart
 import ArkLib.Research.ProximityGap.Frontier.PrimitiveReceivedInterpolation
+import ArkLib.Research.ProximityGap.Frontier.PrimitiveSaturatedStar
 import ArkLib.Research.ProximityGap.Frontier.Prize407EntropyPinSynthesis
 import ArkLib.Research.ProximityGap.Frontier.PrizeConditionalPinCapstone
 import ArkLib.Research.ProximityGap.Frontier.PrizeEquivalencePin
@@ -818,6 +819,7 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor
 import ArkLib.Research.ProximityGap.Frontier.QuarterRootScoreSymmetry
 import ArkLib.Research.ProximityGap.Frontier.QuarterSlopePowerBarrier
 import ArkLib.Research.ProximityGap.Frontier.QuarterSlopeReconstruction
+import ArkLib.Research.ProximityGap.Frontier.QuarterSplitBranchOrders
 import ArkLib.Research.ProximityGap.Frontier.QuarterSplitFiberSymmetry
 import ArkLib.Research.ProximityGap.Frontier.QuarterSplitMonodromy
 import ArkLib.Research.ProximityGap.Frontier.QuarterSplitPencilProduct
@@ -835,6 +837,7 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorSplitPencil
 import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorThreeHeads
 import ArkLib.Research.ProximityGap.Frontier.QuarterSupportPackingBarrier
 import ArkLib.Research.ProximityGap.Frontier.QuarterTransverseSurfaces
+import ArkLib.Research.ProximityGap.Frontier.QuarterTransverseTangentBudget
 import ArkLib.Research.ProximityGap.Frontier.QuarticFieldProductionThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarticIntrinsicAuxiliary
 import ArkLib.Research.ProximityGap.Frontier.QuotientAnchorAllocation

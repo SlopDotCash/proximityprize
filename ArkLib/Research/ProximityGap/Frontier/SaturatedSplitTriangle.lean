@@ -52,7 +52,8 @@ theorem small_triple (S : Fin 4 → Finset I) {t d : ℕ}
   omega
 
 omit [Fintype I] [DecidableEq I] in
-private theorem saturated_factor (D : I ↪ F) (A : Finset I) {f : F[X]} (hn : f ≠ 0)
+/-- A polynomial attaining its root bound is a nonzero scalar times its nodal polynomial. -/
+theorem saturated_factor (D : I ↪ F) (A : Finset I) {f : F[X]} (hn : f ≠ 0)
     (hd : f.natDegree ≤ A.card) (hf : ∀ i ∈ A, f.eval (D i) = 0) :
     ∃ b : F, b ≠ 0 ∧ f = C b * Lagrange.nodal A D := by
   obtain ⟨Q,hQ⟩ := Polynomial.prod_X_sub_C_dvd A D D.injective.injOn f hf
