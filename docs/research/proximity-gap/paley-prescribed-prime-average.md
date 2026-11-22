@@ -115,39 +115,39 @@ Let $m=\min(a,b)$ and $n=\max(a,b)$. For any prescribed sets in an interval of l
    \left(\frac{\|M_p\|}{\sqrt{ab}}\right)^4
  \ll P^{1+o(1)}\left(m^{-1}+n^{-1/8}\right).\quad}                 \tag{4}
 \]
-Thus if $a,b\ge P^\epsilon$, for every $0<\delta<\epsilon/32$ the two-sided norm bound (3) holds outside $O(P^{1-\epsilon/8+4\delta+o(1)})$ primes. At a retained prime the bound is simultaneous for all choices of complex weights on both sides and every common projective image. With $A=B$ the singular four-site fraction is consequently $1/4+O(P^{-2\delta}+1/a)$. The exceptional set of primes may depend on the two integer sets.
+Thus if $a,b\ge P^\epsilon$, for every $0<\delta<\epsilon/32$ the two-sided norm bound (3) holds outside $O(P^{1-\epsilon/4+8\delta+o(1)})$ primes. At a retained prime the bound is simultaneous for all choices of complex weights on both sides and every common projective image. With $A=B$ the singular four-site fraction is consequently $1/4+O(P^{-2\delta}+1/a)$. The exceptional set of primes may depend on the two integer sets.
 
 More generally, for any fixed $C>0$, suppose $H\le P^C$ and choose an integer $k\ge\max(2,4C)$. Then (4) holds with $n^{-1/(2k)}$ replacing $n^{-1/8}$. If the labels include integers with equal residues modulo a prime, the matrix in this claim is indexed by the original integer labels. The graph interpretation on all labels applies at primes with injective reduction on the domain.
 
-To prove this, use the same nonnegative trace over odd moduli and the same decomposition of $K$ as above. By transposition arrange that $a=m$ and $b=n$. For every odd squarefree $q>1$ with $q\le Q=H^4$, put
+Let $\mathcal E$ be any subset of the primes in $[P,2P]$, and put $L=|\mathcal E|\ge1$. By transposition take $a=m$, $b=n$. Expand $\sum_{p\in\mathcal E}\operatorname{tr}((M_pM_p^*)^2)$ in the integer products $K$ from the preceding section. Write $K=\pm 2^e q s^2$ for a nonzero product, with $q$ odd and squarefree and $s$ odd. Set $Q=H^4$. For $1<q\le Q$ put
 \[
- U(q)=\max_{\substack{1\le e\le2P \\ j=1,3,5,7}}
- \left|\sum_{\substack{P/e\le v\le 2P/e\\v\equiv j\bmod 8}}(v/q)\right|.
+ U(q)=\max_{j=1,3,5,7}
+ \left|\sum_{\substack{p\in\mathcal E\\p\equiv j\bmod 8}}(p/q)\right|.
 \]
-The Möbius expansion over the square factor $s$ shows that the complete odd-modulus sum for this $K$ is at most $4\tau(s)U(q)$ in absolute value. It suffices that $K\ne0$ and its odd squarefree kernel is $q$, including when $s$ and $q$ share prime factors.
+Quadratic reciprocity on these four classes bounds $|\sum_{p\in\mathcal E}(K/p)|$ by $4U(q)+O_C(1)$. The additive error covers primes dividing $s$. Their number is bounded because $s\le H^2\le P^{2C}$. At $H\le P$ the differences have magnitude strictly below every $p$ and the error is zero.
 
-For fixed $e,j$, raise the inner character sum to its $k$-th power. Its coefficients $c_\ell$ count ordered $k$-tuples of the permitted integers with product $\ell\le N=\lfloor 2P/e\rfloor^k$. Thus $0\le c_\ell\le d_k(\ell)=P^{o(1)}$ uniformly, for fixed $k$. The number of ordered pairs of positive integers at most $N$ whose product is a square is bounded by
+For each class raise the inner character sum to its $k$-th power. A coefficient $c_\ell$ counts ordered $k$-tuples of the permitted primes with product $\ell\le N=\lfloor2P\rfloor^k$. The square-pair sum $\sum_{\ell t=\square}c_\ell c_t$ counts ordered $2k$-tuples with square product. Each such tuple has at most $k$ distinct prime labels because every multiplicity is even. There are $O_k(L^k)$ choices, including their orders. The arbitrary-index quadratic large sieve for the distinct primitive characters $(\cdot/q)$ bounds the sum of squared magnitudes of these $k$-th powers by $P^{o(1)}(Q+N)L^k$. Sum over the four classes and use $Q\le P^k$ to get
 \[
- \sum_{h\le N\ {\rm squarefree}}\left\lfloor\sqrt{N/h}\right\rfloor^2
- \le N(1+\log N).
+                         \sum_q U(q)^{2k}\ll P^{k+o(1)}L^k .       \tag{5}
 \]
-Apply the arbitrary-index quadratic large sieve to these coefficients and the distinct primitive characters $(\cdot/q)$. Its bound for the sum of squared magnitudes of these $k$-th powers is $P^{o(1)}(Q+N)N$. Summing over the four classes and $e\le2P$ also bounds the maximum defining $U$. Since $Q\le P^k$, $N\le(2P/e)^k$ and $k\ge2$, summing the convergent series in $e^{-k}$ gives
-\[
-                         \sum_q U(q)^{2k}\ll P^{2k+o(1)} .          \tag{5}
-\]
-Constants may depend on $C$ and $k$. [Heath-Brown, Corollary 2](https://matwbn.icm.edu.pl/ksiazki/aa/aa72/aa7234.pdf)
+The constants can depend on $C$ and $k$. [Heath-Brown, Corollary 2](https://matwbn.icm.edu.pl/ksiazki/aa/aa72/aa7234.pdf)
 
-For each fixed odd squarefree $q$, let $N_q$ count nonzero-product quadruples with $x\ne y$ and odd squarefree kernel $q$. Once $x,y,t$ are fixed, the odd squarefree part of $|F_u|$ is determined: its prime factors are the symmetric difference of those of $q$ and the odd squarefree part of $|F_t|$. The sign and the factor of two leave at most four signed squarefree values. The uniform Pell estimate yields
+For each fixed odd squarefree $q$, let $N_q$ count nonzero-product quadruples with $x\ne y$ and odd squarefree kernel $q$. Once $x,y,t$ are fixed, the odd squarefree part of $|F_u|$ is determined. Its prime factors are the symmetric difference of those of $q$ and the odd squarefree part of $|F_t|$. The sign and the factor of two leave at most four signed squarefree values. The uniform Pell estimate yields
 \[
              N_q\le a^2 b\,P^{o(1)},\qquad \sum_q N_q\le a^2b^2 .
 \]
-This holds also for $q=1$, whose contribution is bounded separately by $O(PN_1)$. Weighted Hölder and (5) give
+The first bound holds also for $q=1$, whose contribution is at most $L N_1$. Weighted Hölder gives
 \[
- \sum_{q>1} N_q U(q)
-  \le \left(\sum_q N_q\right)^{1-1/(2k)}
-       \left(\max_q N_q\sum_{q>1}U(q)^{2k}\right)^{1/(2k)}
-  \ll a^2b^2 P^{1+o(1)}b^{-1/(2k)} .
+ \sum_{q>1}N_q U(q)
+ \le \left(\sum_q N_q\right)^{1-1/(2k)}
+     \left(\max_q N_q\sum_{q>1}U(q)^{2k}\right)^{1/(2k)} .
 \]
-Finally, $x=y$ contributes at most $O(Pab^2)$ before normalization. Adding all three contributions and dividing by $a^2b^2$ proves the claim. This averaging argument gives a power saving even when the single-conductor Burgess estimate reaches its length threshold.
+The terms with $x=y$ contribute at most $Lab^2$. After dividing by $a^2b^2$, the prime trace estimate becomes
+\[
+ \sum_{p\in\mathcal E}\frac{\|M_p\|^4}{a^2b^2}
+ \ll P^{o(1)}
+       \left(\frac Lm+\frac Ln+\sqrt{PL}\,n^{-1/(2k)}+1\right).  \tag{6}
+\]
+Using every prime gives (4) when $H\le P$, $k=4$, and gives its polynomial-height version for general $k$. For the sharper exceptional count, take just the primes at which the normalized norm exceeds $P^{-\delta}$. If $m,n\ge P^\epsilon$ and $0<\delta<\epsilon/(8k)$, the left is at least $LP^{-4\delta}$ and the first two terms can be absorbed for large $P$. This gives $L\ll P^{4\delta+o(1)}+P^{1-\epsilon/k+8\delta+o(1)}$. For $0<\epsilon\le1$ the second term dominates. Taking $k=4$ yields the stated full-interval exceptional count.
 
-In fact the same exceptional-count exponent holds when normalizing by the sizes of the **distinct reductions**, even for $H\le P^C$. Suppose $0<\epsilon\le1$, $a,b\ge P^\epsilon$ and put $\eta=\epsilon/(2k)$. Truncate each side $X$ to any $s=\min(|X|,\lfloor P^{1-\eta}\rfloor)$ integer labels. Each nonzero difference of magnitude at most $P^C$ has at most $C$ prime divisors in $[P,2P]$. Thus the ordered distinct colliding pairs, summed over these primes, number $O_C(s^2)$. If fewer than $s/2$ residues survive, Cauchy–Schwarz gives more than $s$ such pairs. Exclude $O_C(P^{1-\eta})$ primes for each side. When neither side was truncated, take one representative per residue in the labelled operator. Normalizing by the distinct-image sizes loses at most a factor two, which can be absorbed by doubling the threshold in the moment estimate. If a side was truncated, the product of the full image sizes is $\gg P^{1-\eta+\min(\epsilon,1-\eta)}$. By shift orthogonality the complete Paley matrix has norm $\sqrt p$. Dividing by the square root of the image-size product saves exponent $(\min(\epsilon,1-\eta)-\eta)/2>\eta/4$, since $\eta\le\epsilon/4\le1/4$. In both cases, for every fixed $0<\delta<\eta/4$, the normalized distinct-image norm is at most $P^{-\delta}$ outside $O(P^{1-\eta+4\delta+o(1)})$ primes.
+The same exceptional-count exponent holds when normalizing by the sizes of the **distinct reductions**, even for $H\le P^C$. Assume $0<\epsilon\le\min(1,C)$ and put $\eta=\epsilon/k\le1/4$. Truncate each side $X$ to any $s=\min(|X|,\lfloor P^{1-\eta}\rfloor)$ integer labels. Each nonzero difference of magnitude at most $P^C$ has at most $C$ prime divisors in $[P,2P]$. Thus ordered distinct colliding pairs, summed over these primes, number $O_C(s^2)$. If fewer than $s/2$ residues survive, Cauchy–Schwarz gives more than $s$ such pairs. Exclude $O_C(P^{1-\eta})$ primes for each side. When neither side was truncated, take one representative per residue in the labelled operator. Normalizing by the distinct-image sizes loses at most a factor two. Estimate (6) applies at half the target threshold with the same exceptional-count exponent. If a side was truncated, the product of the full image sizes is $\gg P^{1-\eta+\min(\epsilon,1-\eta)}$. By shift orthogonality the complete Paley matrix has norm $\sqrt p$. Dividing by the square root of the image-size product saves exponent $(\min(\epsilon,1-\eta)-\eta)/2>\eta/8$, since $\eta\le1/4$ and $\epsilon\ge2\eta$. In both cases, for every fixed $0<\delta<\eta/8$, the normalized distinct-image norm is at most $P^{-\delta}$ outside $O(P^{1-\eta+8\delta+o(1)})$ primes.
