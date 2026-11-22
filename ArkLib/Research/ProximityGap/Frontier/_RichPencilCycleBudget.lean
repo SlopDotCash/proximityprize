@@ -249,9 +249,9 @@ theorem affine_path_distance_budget {F I X : Type*} [Field F] [Fintype I]
         x ∈ affineHeadErrors u₀ u₁ (U i) (V i) c ∨
           x ∈ affineHeadErrors u₀ u₁ (U i) (V i) d :=
       Finset.mem_union.mp (affine_support_pair_cover u₀ u₁ (U i) (V i) c d hne hx)
-    have h01 : x ∈ P i ∨ x ∈ H i := (pair _ _ hpa).imp id (outgoing i)
-    have h02 : x ∈ P i ∨ x ∈ H (σ.symm i) := (pair _ _ hpb).imp id hin
-    have h12 : x ∈ H i ∨ x ∈ H (σ.symm i) := (pair _ _ hab).imp (outgoing i) hin
+    have h01 : x ∈ P i ∨ x ∈ H i := (pair _ _ hpa).imp id (fun h ↦ outgoing i h)
+    have h02 : x ∈ P i ∨ x ∈ H (σ.symm i) := (pair _ _ hpb).imp id (fun h ↦ hin h)
+    have h12 : x ∈ H i ∨ x ∈ H (σ.symm i) := (pair _ _ hab).imp (fun h ↦ outgoing i h) (fun h ↦ hin h)
     by_cases hP : x ∈ P i
     all_goals by_cases hH : x ∈ H i
     all_goals by_cases hI : x ∈ H (σ.symm i)
