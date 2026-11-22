@@ -20,6 +20,14 @@ The cone contains more than 800 files and a full build traces over 3,000 jobs. D
 When several agents share the checkout, develop in a detached `/tmp` worktree whose `.lake` points
 to this checkout. Never run concurrent unserialized Lake builds: they can corrupt `.lake` artifacts.
 
+Every worktree linked this way writes its own versions of modules into the same cache, so step 2
+can check a file against an import compiled from another branch. Before merging a change to a
+module that other modules import, run
+`scripts/audit-changed-modules.py origin/main --lake <shared .lake>`. It recompiles the changed
+modules, the cached modules that do not match their source, and all their importers against the
+current sources, without the build lock. Details are in
+[`docs/wiki/quickstart.md`](../../wiki/quickstart.md#rechecking-merged-modules-against-current-sources).
+
 ## Honesty contract
 
 - A mathematical advance is an axiom-clean Lean theorem or a reproducible probe.
