@@ -134,9 +134,68 @@ theorem distance_le_twice_radius_of_affine_cycle {F I X : Type*} [Field F]
   all_goals by_cases hI : x ∈ H (σ.symm i)
   all_goals simp [bit, hP, hH, hI] at h01 h02 h12 ⊢
 
+
+/-- A path is represented by omitting the last-to-first distance constraint.
+The bridge row on that edge can combine the two extra private endpoint rows,
+so its budget is twice the radius. -/
+theorem path_distance_budget {I X : Type*} [Fintype I] [Fintype X] [DecidableEq X]
+    (σ : Equiv.Perm I) (S P H : I → Finset X) (last : I) (D t : ℕ)
+    (hlocal : ∀ i x, x ∈ S i → 2 ≤
+      bit (x ∈ P i) + bit (x ∈ H i) + bit (x ∈ H (σ.symm i)))
+    (hpair : ∀ i, i ≠ last → D ≤ (S i ∪ S (σ i)).card)
+    (hP : ∀ i, (P i).card ≤ t)
+    (hH : ∀ i, i ≠ last → (H i).card ≤ t)
+    (hLast : (H last).card ≤ 2 * t) :
+    (Fintype.card I - 1) * D ≤ (2 * Fintype.card I + 1) * t := by
+  classical
+  let rest := (Finset.univ : Finset I).erase last
+  let pairSize (i : I) := (S i ∪ S (σ i)).card
+  have restCard : rest.card = Fintype.card I - 1 := by
+    simp [rest]
+  have lower : (Fintype.card I - 1) * D ≤ ∑ i ∈ rest, pairSize i := by
+    calc
+      _ = ∑ _i ∈ rest, D := by simp [restCard]
+      _ ≤ _ := Finset.sum_le_sum fun i hi ↦ hpair i (Finset.mem_erase.mp hi).1
+  have extend : (∑ i ∈ rest, pairSize i) ≤ ∑ i, pairSize i := by
+    rw [← Finset.sum_erase_add Finset.univ pairSize (Finset.mem_univ last)]
+    exact Nat.le_add_right _ _
+  have privateUpper : (∑ i, (P i).card) ≤ Fintype.card I * t := by
+    calc
+      _ ≤ ∑ _i : I, t := Finset.sum_le_sum fun i _ ↦ hP i
+      _ = _ := by simp
+  have sharedUpper : (∑ i, (H i).card) ≤ (Fintype.card I - 1) * t + 2 * t := by
+    rw [← Finset.sum_erase_add Finset.univ (fun i ↦ (H i).card) (Finset.mem_univ last)]
+    apply Nat.add_le_add _ hLast
+    calc
+      _ ≤ ∑ _i ∈ rest, t :=
+        Finset.sum_le_sum fun i hi ↦ hH i (Finset.mem_erase.mp hi).1
+      _ = _ := by simp [restCard]
+  have hpos : 0 < Fintype.card I := Fintype.card_pos_iff.mpr ⟨last⟩
+  have hcard : (Fintype.card I - 1) + 1 = Fintype.card I := by omega
+  have heq : Fintype.card I * t + ((Fintype.card I - 1) * t + 2 * t) =
+      (2 * Fintype.card I + 1) * t := by
+    have hm := congrArg (fun k : ℕ ↦ k * t) hcard
+    simp only [Nat.add_mul, one_mul, two_mul] at hm ⊢
+    omega
+  calc
+    _ ≤ ∑ i, pairSize i := lower.trans extend
+    _ ≤ (∑ i, (P i).card) + ∑ i, (H i).card :=
+      adjacent_exception_mass_le σ S P H hlocal
+    _ ≤ _ := by
+      rw [← heq]
+      exact Nat.add_le_add privateUpper sharedUpper
+
+/-- The path budget limits the number of rich pencils at the current first
+sponsor radius, once the path has been encoded with its two endpoint rows. -/
+theorem first_sponsor_path_card_le_eight (m : ℕ)
+    (h : (m - 1) * 536870913 ≤ (2 * m + 1) * 221512373) : m ≤ 8 := by
+  omega
+
 end ProximityGap.RichPencilCycleBudget
 
 #print axioms ProximityGap.RichPencilCycleBudget.adjacent_exception_mass_le
 #print axioms ProximityGap.RichPencilCycleBudget.distance_le_twice_radius_of_cycle
 
 #print axioms ProximityGap.RichPencilCycleBudget.distance_le_twice_radius_of_affine_cycle
+#print axioms ProximityGap.RichPencilCycleBudget.path_distance_budget
+#print axioms ProximityGap.RichPencilCycleBudget.first_sponsor_path_card_le_eight

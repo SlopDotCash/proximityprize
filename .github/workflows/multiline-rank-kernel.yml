@@ -58,7 +58,7 @@ jobs:
           from pathlib import Path
           text = Path('multiline-axioms.log').read_text()
           assert 'sorryAx' not in text
-          matches = re.findall(r"'(ProximityGap\.IncidenceDependencyArithmetic\.[^']+)'\s+(?:depends on axioms:\s*\[([^\]]*)\]|(does not depend on any axioms))",text)
+          matches = re.findall(r"'(ProximityGap\.IncidenceDependencyArithmetic\.[^']+)'\s+(?:(?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)|(does not depend on any axioms))",text)
           expected = {
               'coordinate_count_bound',
               'shortened_subspace_bound',
@@ -103,7 +103,7 @@ jobs:
           import re
           from pathlib import Path
           text = Path('active-error-axioms.log').read_text()
-          matches = re.findall(r"'ProximityGap\.ActiveErrorAffineCollapse\.([^']+)'\s+(?:depends on axioms:\s*\[([^\]]*)\]|(does not depend on any axioms))", text)
+          matches = re.findall(r"'ProximityGap\.ActiveErrorAffineCollapse\.([^']+)'\s+(?:(?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)|(does not depend on any axioms))", text)
           expected = {'relation_sum_restrict', 'full_support_relation_on_active',
                       'affine_heads_of_active_errors', 'affine_heads_of_active_error_incidence'}
           assert {name for name, _, _ in matches} == expected
@@ -121,7 +121,7 @@ jobs:
           import re
           from pathlib import Path
           text = Path('pencil-cycle-axioms.log').read_text()
-          result = re.search(r"'ProximityGap\.PencilCycleShortening\.pencilCycle_jumps_mem' depends on axioms:\s*\[([^\]]*)\]", text)
+          result = re.search(r"'ProximityGap\.PencilCycleShortening\.pencilCycle_jumps_mem' (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)", text)
           assert result is not None
           assert {axiom.strip() for axiom in result[1].split(',')} <= {'propext', 'Classical.choice', 'Quot.sound'}
       - name: Check rich pencil cycle budgets and audit axioms
@@ -132,9 +132,9 @@ jobs:
           import re
           from pathlib import Path
           text = Path('rich-pencil-axioms.log').read_text()
-          results = re.findall(r"'ProximityGap\.RichPencilCycleBudget\.([^']+)' depends on axioms:\s*\[([^\]]*)\]", text)
-          assert {name for name, _ in results} == {'adjacent_exception_mass_le', 'distance_le_twice_radius_of_cycle', 'distance_le_twice_radius_of_affine_cycle'}
-          assert len(results) == 3
+          results = re.findall(r"'ProximityGap\.RichPencilCycleBudget\.([^']+)' (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)", text)
+          assert {name for name, _ in results} == {'adjacent_exception_mass_le', 'distance_le_twice_radius_of_cycle', 'distance_le_twice_radius_of_affine_cycle', 'path_distance_budget', 'first_sponsor_path_card_le_eight'}
+          assert len(results) == 5
           for name, axioms in results:
-              assert {axiom.strip() for axiom in axioms.split(',')} <= {'propext', 'Classical.choice', 'Quot.sound'}, name
+              assert {axiom.strip() for axiom in axioms.split(',') if axiom.strip()} <= {'propext', 'Classical.choice', 'Quot.sound'}, name
           PY
