@@ -10,6 +10,8 @@ Allowing arbitrary rational reparameterizations of the 16-node tetrahedron leave
 
 At rate one eighth on the second named prime, a written construction gives at least **2,148,807,811** bad scalars on one received pair at **679,477,248 errors**, one error earlier than the previous Lean endpoint. Its four defining cores each have 394,264,575 sites. Thirteen quotient fibers suffice for the variable fractional-linear maps, and the collision allowance leaves 1,324,163 labels above budget. [Construction and verification](eighth-transverse-mobius.md)
 
+The **679,477,248-error** eighth-rate attack is exact among four-head witnesses for which three heads have a common direction and their scalar differences, after a common locator, factor through the sixty-fourth-root quotient. The fourth head and the number of fresh sites per witness are unrestricted. A production-field census covering 35,337,933,180 anchor/support pairs rules out the only stronger degree-seven root count. A private-core counting argument excludes the preceding error count. [Complete census, proof and verification](eighth-quotient-septic.md)
+
 ## Verified results and open cases
 
 | Question | Result | Verification |
