@@ -86,19 +86,20 @@ theorem hypotheses (i : Fin 3) :
 
 set_option maxRecDepth 100000 in
 set_option maxHeartbeats 18000000 in
-private theorem finite_price : ∀ i : Fin 3, ∀ f : Fin ((window i).degree+1),
-    ∀ j : Fin (f.val+1), ∀ b : Fin (f.val-j.val+1),
+-- Reduce every allowed degree partition at the three production inputs.
+private theorem finite_price : ∀ i : Fin 3, ∀ f : Fin ((window i).degree + 1),
+    ∀ j : Fin (f.val + 1), ∀ b : Fin (f.val - j.val+1),
     let w := window i
     let base := headMass w j.val+w.first
     base ≤ w.bound ∧ (0 < b.val →
-      (f.val-j.val)*price w f.val j.val b.val ≤ b.val*(w.bound-base+1)-1) := by
+      (f.val - j.val)*price w f.val j.val b.val ≤ b.val*(w.bound-base+1)-1) := by
   decide +kernel
 
 /-- Every partition into positive factor degrees fits the stated integer cap.
 The local price majorants allow a fractional average before the final flooring. -/
 theorem allocations {ι : Type*} (S : Finset ι) (value cost : ι → ℕ)
-    (i : Fin 3) (f : Fin ((window i).degree+1)) (j : Fin (f.val+1))
-    (hv : ∀ a ∈ S, 0 < value a) (he : ∑ a ∈ S, value a = f.val-j.val)
+    (i : Fin 3) (f : Fin ((window i).degree + 1)) (j : Fin (f.val + 1))
+    (hv : ∀ a ∈ S, 0 < value a) (he : ∑ a ∈ S, value a = f.val - j.val)
     (hc : ∀ a ∈ S, cost a ≤ price (window i) f.val j.val (value a)) :
     headMass (window i) j.val+(window i).first+∑ a ∈ S, cost a ≤ (window i).bound := by
   classical
@@ -108,8 +109,9 @@ theorem allocations {ι : Type*} (S : Finset ι) (value cost : ι → ℕ)
   by_cases empty : S = ∅
   · simpa [empty] using hb
   obtain ⟨x,hx⟩ := nonempty_iff_ne_empty.mpr empty
-  let r := f.val-j.val
-  have nonzero : 0 < r := (hv x hx).trans_le ((single_le_sum (fun a _ => Nat.zero_le (value a)) hx).trans_eq he)
+  let r := f.val - j.val
+  have nonzero : 0 < r :=
+    (hv x hx).trans_le ((single_le_sum (fun a _ => Nat.zero_le (value a)) hx).trans_eq he)
   let B := (window i).bound-base+1
   have pos : 0 < B := by dsimp [B]; omega
   have hh (a : ι) (ha : a ∈ S) : r * cost a < value a * B := by

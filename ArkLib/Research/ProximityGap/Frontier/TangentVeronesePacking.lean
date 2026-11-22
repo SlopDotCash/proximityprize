@@ -20,8 +20,8 @@ variable {K I J : Type*} [Field K] [Fintype J] [DecidableEq J]
 /-- Local divisibility for any translated evaluation matrix with column weights.
 The finite sum on the left accounts for the columns lighter than a. -/
 theorem local_charge (M : Matrix J J K[X]) (x : K) (S : Finset J) (w : J → ℕ) (a : ℕ)
-    (h : ∀ i ∈ S, ∀ j, (X-C x)^(w j) ∣ M i j) :
-    (X-C x)^(a*S.card-∑ j, (a-w j)) ∣ M.det := by
+    (h : ∀ i ∈ S, ∀ j, (X - C x) ^ (w j) ∣ M i j) :
+    (X - C x)^(a*S.card-∑ j, (a-w j)) ∣ M.det := by
   classical
   rw [det_apply]
   apply dvd_sum
@@ -37,8 +37,8 @@ theorem local_charge (M : Matrix J J K[X]) (x : K) (S : Finset J) (w : J → ℕ
     · simp [v,hj]
   have hsum := sum_le_sum (s:=univ) (fun j _ => pointwise j)
   rw [hcount,sum_add_distrib] at hsum
-  have hd : (X-C x)^(a*S.card-∑ j, (a-w j)) ∣ ∏ j, M (σ j) j := by
-    apply (pow_dvd_pow (X-C x) (show a*S.card-∑ j, (a-w j) ≤ ∑ j, v j by omega)).trans
+  have hd : (X - C x)^(a*S.card-∑ j, (a-w j)) ∣ ∏ j, M (σ j) j := by
+    apply (pow_dvd_pow (X - C x) (show a*S.card-∑ j, (a-w j) ≤ ∑ j, v j by omega)).trans
     rw [← prod_pow_eq_pow_sum]
     apply prod_dvd_prod_of_dvd
     intro j _
@@ -64,10 +64,10 @@ theorem degree_bound (M : Matrix J J K[X]) (row col : J → ℕ)
 degree of the original minor. Factoring the original evaluation matrix through
 the translated one suffices at each site. -/
 theorem incidence [Fintype I] (dom : I ↪ K) (M : Matrix J J K[X]) (hn : M.det ≠ 0)
-    (w row : J → ℕ) (d a : ℕ) (hdeg : ∀ i j, (M i j).natDegree ≤ row i + w j*d)
+    (w row : J → ℕ) (d a : ℕ) (hdeg : ∀ i j, (M i j).natDegree ≤ row i + w j * d)
     (S : I → Finset J) (localM basis : I → Matrix J J K[X])
     (heq : ∀ x, M = localM x * basis x)
-    (hvan : ∀ x, ∀ i ∈ S x, ∀ j, (X-C (dom x))^(w j) ∣ localM x i j) :
+    (hvan : ∀ x, ∀ i ∈ S x, ∀ j, (X - C (dom x)) ^ (w j) ∣ localM x i j) :
     a*(∑ x, (S x).card) ≤
       Fintype.card I*(∑ j, (a-w j)) + (∑ i, row i) + (∑ j, w j)*d := by
   classical
@@ -87,7 +87,7 @@ theorem incidence [Fintype I] (dom : I ↪ K) (M : Matrix J J K[X]) (hn : M.det 
     calc
       _ = ∑ x ∈ univ.image dom, M.det.rootMultiplicity x := by rw [sum_image dom.injective.injOn]
       _ ≤ _ := Polynomial.sum_rootMultiplicity_le_natDegree _
-  have hd := degree_bound M row (fun j => w j*d) hdeg
+  have hd := degree_bound M row (fun j => w j * d) hdeg
   rw [← sum_mul] at hd
   calc
     _ ≤ _ := hs
@@ -116,7 +116,7 @@ private def translateCoeff (u v : R) (ab ij : ℕ × ℕ) : R :=
 
 /-- Translating the two affine coordinates gives a common column transformation
 for every homogeneous row, including rows with different denominators. -/
-theorem translate_row (s a b : ℕ) (hab : a+b ≤ s) (h x y u v : R) :
+theorem translate_row (s a b : ℕ) (hab : a + b ≤ s) (h x y u v : R) :
     monomial s (a,b) h x y = ∑ ij ∈ monomials s,
       monomial s ij h (x-u*h) (y-v*h)*translateCoeff u v (a,b) ij := by
   classical
@@ -155,7 +155,7 @@ theorem translate_row (s a b : ℕ) (hab : a+b ≤ s) (h x y u v : R) :
 denominators. The received values may vary arbitrarily by site. -/
 theorem tangent_incidence [Fintype I] (s d a : ℕ) (dom : I ↪ K) (u v : I → K)
     (h x y : ↥(monomials s) → K[X]) (c : ↥(monomials s) → ℕ)
-    (hd : ∀ i, (h i).natDegree ≤ c i ∧ (x i).natDegree ≤ d+c i ∧ (y i).natDegree ≤ d+c i)
+    (hd : ∀ i, (h i).natDegree ≤ c i ∧ (x i).natDegree ≤ d + c i ∧ (y i).natDegree ≤ d + c i)
     (hn : Matrix.det (fun i j : ↥(monomials s) => monomial s j.val (h i) (x i) (y i)) ≠ 0)
     (S : I → Finset ↥(monomials s))
     (hs : ∀ z, ∀ i ∈ S z, (x i).eval (dom z) = u z * (h i).eval (dom z) ∧
@@ -167,7 +167,8 @@ theorem tangent_incidence [Fintype I] (s d a : ℕ) (dom : I ↪ K) (u v : I →
     fun i j => monomial s j.val (h i) (x i) (y i)
   let L : I → Matrix ↥(monomials s) ↥(monomials s) K[X] := fun z i j =>
     monomial s j.val (h i) (x i-C (u z)*h i) (y i-C (v z)*h i)
-  let B : I → Matrix ↥(monomials s) ↥(monomials s) K[X] := fun z i j => translateCoeff (C (u z)) (C (v z)) j.val i.val
+  let B : I → Matrix ↥(monomials s) ↥(monomials s) K[X] := fun z i j =>
+    translateCoeff (C (u z)) (C (v z)) j.val i.val
   apply incidence dom M hn (fun j => j.val.1+j.val.2) (fun i => s*c i) d a _ S L B
   · intro z
     apply Matrix.ext
@@ -179,8 +180,8 @@ theorem tangent_incidence [Fintype I] (s d a : ℕ) (dom : I ↪ K) (u v : I →
       ((monomials s).sum_coe_sort _).symm
   · intro z i hi j
     have hz := hs z i hi
-    have hx : X-C (dom z) ∣ x i-C (u z)*h i := dvd_iff_isRoot.mpr (by simp [IsRoot,hz.1])
-    have hy : X-C (dom z) ∣ y i-C (v z)*h i := dvd_iff_isRoot.mpr (by simp [IsRoot,hz.2])
+    have hx : X - C (dom z) ∣ x i-C (u z)*h i := dvd_iff_isRoot.mpr (by simp [IsRoot,hz.1])
+    have hy : X - C (dom z) ∣ y i-C (v z)*h i := dvd_iff_isRoot.mpr (by simp [IsRoot,hz.2])
     unfold L monomial
     rw [pow_add,mul_assoc]
     exact dvd_mul_of_dvd_right (mul_dvd_mul (pow_dvd_pow_of_dvd hx _) (pow_dvd_pow_of_dvd hy _)) _
@@ -192,7 +193,7 @@ theorem tangent_incidence [Fintype I] (s d a : ℕ) (dom : I ↪ K) (u v : I →
     have hh : s-(j.val.1+j.val.2)+(j.val.1+j.val.2)=s := Nat.sub_add_cancel hj
     calc
       _ ≤ _ := natDegree_mul_le
-      _ ≤ ((s-(j.val.1+j.val.2))*c i + j.val.1*(d+c i)) + j.val.2*(d+c i) := by
+      _ ≤ ((s-(j.val.1+j.val.2))*c i + j.val.1*(d + c i)) + j.val.2*(d + c i) := by
         apply Nat.add_le_add
         · apply natDegree_mul_le.trans
           apply Nat.add_le_add

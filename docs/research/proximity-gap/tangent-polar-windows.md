@@ -1,6 +1,6 @@
 # Tangent determinants and three second-prime safety bounds
 
-At the second designated prime and length $n=2^{30}$, the first failing MCA error count on any injective domain and at any positive width has the following lower bounds. The proof uses the written normalization and tame differentiation argument for rational tangent heights. [Tangent heights and exceptional incidences](logarithmic-section-heights.md) · [Lean interpolants and prices](../../../ArkLib/Research/ProximityGap/Frontier/TangentPolarWindows.lean) · [Integer calculation](../../../scripts/probes/probe_tangent_polar_windows.py)
+At the second designated prime and length $n=2^{30}$, the first failing MCA error count on any injective domain and at any positive width has the following lower bounds. Independent kernel replay accepted 10,509 declarations for the determinant theorem on actual rational coordinates and 16,603 for the six interpolants and finite allocations. The normalization, tame differentiation and plane-curve duality steps are written mathematics. [Tangent heights and exceptional incidences](logarithmic-section-heights.md) · [Lean interpolants and prices](../../../ArkLib/Research/ProximityGap/Frontier/TangentPolarWindows.lean) · [Integer calculation](../../../scripts/probes/probe_tangent_polar_windows.py)
 
 | Rate | Safe through | First failure at least | Maximum number of bad labels in the proof |
 |---|---:|---:|---:|
