@@ -44,6 +44,7 @@ import ArkLib.Research.ProximityGap.EtaShiftRealPartPairing
 import ArkLib.Research.ProximityGap.ExternalDebt
 import ArkLib.Research.ProximityGap.FirstPrimeQuarterPencilReview
 import ArkLib.Research.ProximityGap.Frontier.AbelianCoverPeriodFloor
+import ArkLib.Research.ProximityGap.Frontier.AbelianDyadicRadical
 import ArkLib.Research.ProximityGap.Frontier.ActualCubicBranchCollisions
 import ArkLib.Research.ProximityGap.Frontier.ActualCubicHodgeIncidences
 import ArkLib.Research.ProximityGap.Frontier.ActualTerminalQuartic
@@ -319,6 +320,7 @@ import ArkLib.Research.ProximityGap.Frontier.DoubleInterpolationCommonFactor
 import ArkLib.Research.ProximityGap.Frontier.DoubleQuadraticHeadCount
 import ArkLib.Research.ProximityGap.Frontier.DoubleQuadraticPhase
 import ArkLib.Research.ProximityGap.Frontier.DoubleQuadraticThreshold
+import ArkLib.Research.ProximityGap.Frontier.DyadicAntiperiodicReflection
 import ArkLib.Research.ProximityGap.Frontier.DyadicCharacterCirculant
 import ArkLib.Research.ProximityGap.Frontier.DyadicFourCycleCount
 import ArkLib.Research.ProximityGap.Frontier.DyadicFourCycleExclusion
@@ -328,6 +330,7 @@ import ArkLib.Research.ProximityGap.Frontier.DyadicLocatorSumBarrier
 import ArkLib.Research.ProximityGap.Frontier.DyadicLogWitness237
 import ArkLib.Research.ProximityGap.Frontier.DyadicOddPencilCount
 import ArkLib.Research.ProximityGap.Frontier.DyadicOddPencilExclusion
+import ArkLib.Research.ProximityGap.Frontier.DyadicOrbitIndependence
 import ArkLib.Research.ProximityGap.Frontier.DyadicParityLemma
 import ArkLib.Research.ProximityGap.Frontier.DyadicPeriodCeiling
 import ArkLib.Research.ProximityGap.Frontier.DyadicSidonTriple
