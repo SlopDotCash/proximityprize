@@ -50,3 +50,20 @@ Since all pair unions have size at most `2t`, a fraction at least `(mu-e0)/(2t-e
 ```
 
 of all unordered triples are long. The distinct-triple excess inequality in #841 then contradicts the falling-cubic lower bound at `t`. This proves the stated mathematical incidence bound under the witness, line-cap and rich-disjointness lemmas above.
+
+## Band of near-minimal supports and a 30,000-step improvement
+
+The same reduction works for noncollinear completions whose error union has size in `[D,D+J]`. Let `J = 210000` and replace `t` by `221542374`. For a completion with support size `D+j`, its outer support has size `k+j`, and factoring the evaluation roots outside that support gives
+
+```
+v_c L_c = h_c P,  deg L_c = k+j,  deg h_c <= j.
+q_c = (gamma-beta) L_c / h_c.
+```
+
+Here `h_c` is a nonzero polynomial and `q_c` is a rational function. Every root of `L_c` is an actual outer error, where both `v_c` and its prescribed root factor are nonzero, hence `h_c` is nonzero at every root of `L_c`. In particular the zero set of `q_c` in the evaluation domain is exactly the outer support. At the agreement coordinates in `E_a` symmetric difference `E_b`, the same substitution for `v_c` is nonzero, so `h_c` is nonzero there and the transformed relation holds. Each completion still uses at most `t-k` errors on the restriction. For a noncollinear triple of rational locator heads, interpolate through two using the transformed scalar parameters and clear the three denominators. The resulting nonzero polynomial is of degree at most `k+3J`, so common agreements are at most `k+3J`.
+
+After deleting at most two heads to exclude cross-collinear triples, the pointwise four-set inequality bounds the size of the symmetric difference of any two outer supports below by `2l`. Their sizes differ by at most `J`, so each one-sided difference has size at least `l-J/2`. For a rational locator line through two heads, any shared root of their numerators is a zero of all the other locator heads on the line. To see this at a potentially problematic coordinate, clear the three denominators in the affine combination and use that the first two denominators are nonzero there. This forces the third numerator to vanish there, and its denominator is then also nonzero. Thus the private roots remain disjoint. Each head on that line has at least `l-J/2` private roots by pairing with any other head. The line cap remains 11 since `12(l-J/2) > n`.
+
+For the same cutoff `e0`, the local margin is the previous margin minus `3J`. At `e0` it exceeds `36925` for the new `t`. Monotonicity in `e` is unchanged. There are fewer than `144000` surviving near-minimal completions per high-union pair, since `24t / margin < 144000`. Allowing for the two deletions and at most one collinear triple costs at most `144003` completions per such pair.
+
+The global estimate with `q = 852199450` gives a fraction greater than `0.3031` of triples with error union at least `D+J+1`, after the pair-to-triple count and all exceptional completions. Using only a fraction of `0.30` in the upper ledger subtracts `floor(0.30 * choose(b,3)) * (J+1)` common agreements. The falling-cubic lower bound still exceeds this upper ledger at `t = 221542374`. Consequently the mathematical incidence argument gives the lattice floor `221542375 / 2^30` on the same code. The rational-function transfer, aggregate counts, and their sponsor-facing integration still require end-to-end formalization.

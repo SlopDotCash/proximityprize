@@ -88,14 +88,13 @@ theorem agreement_on_residual_line {F : Type*} [Field F]
   · intro h
     linear_combination h
 
-/-- Tight triples sharing an edge separate by the distance margin if each
-cross triple also satisfies the distance lower bound. -/
-theorem tight_support_separation {X : Type*} [Fintype X] [DecidableEq X]
+/-- The two cross triples force separation between the original triple supports. -/
+theorem support_symmetric_difference_bound {X : Type*} [Fintype X] [DecidableEq X]
     (A B C E : Finset X) (D t : ℕ)
     (hA : A.card ≤ t) (hB : B.card ≤ t) (hC : C.card ≤ t) (hE : E.card ≤ t)
-    (hACE : D ≤ ((A ∪ C) ∪ E).card) (hBCE : D ≤ ((B ∪ C) ∪ E).card)
-    (hABC : ((A ∪ B) ∪ C).card = D) (hABE : ((A ∪ B) ∪ E).card = D) :
-    D ≤ 2 * t + (((A ∪ B) ∪ C) \ ((A ∪ B) ∪ E)).card := by
+    (hACE : D ≤ ((A ∪ C) ∪ E).card) (hBCE : D ≤ ((B ∪ C) ∪ E).card) :
+    2 * D ≤ 4 * t + (((A ∪ B) ∪ C) \ ((A ∪ B) ∪ E)).card +
+      (((A ∪ B) ∪ E) \ ((A ∪ B) ∪ C)).card := by
   classical
   let S := (A ∪ B) ∪ C
   let T := (A ∪ B) ∪ E
@@ -112,6 +111,24 @@ theorem tight_support_separation {X : Type*} [Fintype X] [DecidableEq X]
   have summed := Finset.sum_le_sum (s := (Finset.univ : Finset X)) (fun x _ ↦ charge x)
   have count (P : Finset X) : (∑ x : X, if x ∈ P then 1 else 0) = P.card := by simp
   simp only [Finset.sum_add_distrib, count] at summed
+  change 2 * D ≤ 4 * t + (S \ T).card + (T \ S).card
+  omega
+
+/-- Near-minimal triple supports sharing an edge have a large one-sided difference. -/
+theorem near_minimal_support_separation {X : Type*} [Fintype X] [DecidableEq X]
+    (A B C E : Finset X) (D t J : ℕ)
+    (hA : A.card ≤ t) (hB : B.card ≤ t) (hC : C.card ≤ t) (hE : E.card ≤ t)
+    (hACE : D ≤ ((A ∪ C) ∪ E).card) (hBCE : D ≤ ((B ∪ C) ∪ E).card)
+    (hABC : D ≤ ((A ∪ B) ∪ C).card) (hABE : ((A ∪ B) ∪ E).card ≤ D + J) :
+    2 * D ≤ 4 * t + J + 2 * (((A ∪ B) ∪ C) \ ((A ∪ B) ∪ E)).card := by
+  classical
+  let S := (A ∪ B) ∪ C
+  let T := (A ∪ B) ∪ E
+  have hsep := support_symmetric_difference_bound A B C E D t hA hB hC hE hACE hBCE
+  change 2 * D ≤ 4 * t + (S \ T).card + (T \ S).card at hsep
+  change D ≤ S.card at hABC
+  change T.card ≤ D + J at hABE
+  change 2 * D ≤ 4 * t + J + 2 * (S \ T).card
   have split (P Q : Finset X) : (P \ Q).card + (P ∩ Q).card = P.card := by
     have h : P \ (P ∩ Q) = P \ Q := by
       ext x
@@ -122,9 +139,17 @@ theorem tight_support_separation {X : Type*} [Fintype X] [DecidableEq X]
   have splitS := split S T
   have splitT := split T S
   rw [Finset.inter_comm T S] at splitT
-  change S.card = D at hABC
-  change T.card = D at hABE
-  change D ≤ 2 * t + (S \ T).card
+  omega
+
+/-- Tight triples sharing an edge separate by the distance margin. -/
+theorem tight_support_separation {X : Type*} [Fintype X] [DecidableEq X]
+    (A B C E : Finset X) (D t : ℕ)
+    (hA : A.card ≤ t) (hB : B.card ≤ t) (hC : C.card ≤ t) (hE : E.card ≤ t)
+    (hACE : D ≤ ((A ∪ C) ∪ E).card) (hBCE : D ≤ ((B ∪ C) ∪ E).card)
+    (hABC : ((A ∪ B) ∪ C).card = D) (hABE : ((A ∪ B) ∪ E).card = D) :
+    D ≤ 2 * t + (((A ∪ B) ∪ C) \ ((A ∪ B) ∪ E)).card := by
+  have h := near_minimal_support_separation A B C E D t 0 hA hB hC hE hACE hBCE
+    hABC.ge (by simpa using hABE.le)
   omega
 
 /-- A residual with a full set of prescribed roots has a complementary locator. -/
@@ -150,7 +175,9 @@ theorem residual_mul_nodal_complement {F X : Type*} [Field F] [DecidableEq X]
     exact hR0 (by simpa [h] using hRC)
   · have hpartition : Lagrange.nodal (G \ B) z * Lagrange.nodal B z =
         Lagrange.nodal G z := Finset.prod_sdiff hB
-    rw [hR, hRC, mul_right_comm, hpartition, mul_comm]
+    have hscaled : v = Lagrange.nodal (G \ B) z * Polynomial.C (R.coeff 0) :=
+      hR.trans (congrArg (fun f => Lagrange.nodal (G \ B) z * f) hRC)
+    rw [hscaled, mul_right_comm, hpartition, mul_comm]
 
 /-- Evaluation of a reciprocal locator on a coordinate explained by the received line. -/
 theorem reciprocal_locator_evaluation {F : Type*} [Field F]
@@ -186,6 +213,29 @@ theorem first_sponsor_reciprocal_locator_margins :
     3 * (2 * t - e) * denom * (b - 2) < 10 * (meanNum - e * denom) * (b - 2 - 7001) := by
   norm_num
 
+/-- Exact integer margins for the near-minimal-support band of 210000 coordinates. -/
+theorem first_sponsor_near_minimal_locator_margins :
+    let n : ℤ := 1073741824
+    let D : ℤ := 536870913
+    let t : ℤ := 221542374
+    let J : ℤ := 210000
+    let e : ℤ := 377420252
+    let q : ℤ := 852199450
+    let b := n + 1
+    let s := e - t
+    let l := D - 2 * t
+    let g := b * (n - t)
+    let triples := b * (b - 1) * (b - 2) / 6
+    let U := (n - D) * b * (b - 1) * (b - 2) + 2 * D * b + 3 * n * b^2
+    let denom := 3 * q * b * (b - 1)
+    let meanNum := n * denom - (2 * U + n * q^3) + 3 * q * b * (n - t)
+    n < 12 * (l - J / 2) ∧
+    24 * t * (4 * s^2) < 144000 * ((s + l)^3 - 4 * s^2 * (D - e + 3 * J)) ∧
+    3031 * (2 * t - e) * denom * (b - 2) < 10000 * (meanNum - e * denom) * (b - 2 - 144003) ∧
+    6 * n^2 * ((n - D) * triples + D * (b / 3) - (3 * triples / 10) * (J + 1)) <
+      g * (g - n) * (g - 2 * n) := by
+  norm_num
+
 end ProximityGap.MinimumSupportHeadPlane
 
 #print axioms ProximityGap.MinimumSupportHeadPlane.residual_on_minimum_support
@@ -195,3 +245,6 @@ end ProximityGap.MinimumSupportHeadPlane
 #print axioms ProximityGap.MinimumSupportHeadPlane.first_sponsor_reciprocal_locator_margins
 #print axioms ProximityGap.MinimumSupportHeadPlane.residual_mul_nodal_complement
 #print axioms ProximityGap.MinimumSupportHeadPlane.reciprocal_locator_evaluation
+#print axioms ProximityGap.MinimumSupportHeadPlane.support_symmetric_difference_bound
+#print axioms ProximityGap.MinimumSupportHeadPlane.near_minimal_support_separation
+#print axioms ProximityGap.MinimumSupportHeadPlane.first_sponsor_near_minimal_locator_margins
