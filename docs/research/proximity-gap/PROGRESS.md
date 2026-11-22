@@ -3129,3 +3129,9 @@ At dyadic length 512 and dimension 64 in the 390-bit prime field of order $235\c
 ### Four remaining edge profiles for a saturated septic quartet on the named 64th roots
 
 At the second prime a saturated quartet with no three collinear cannot have a seven-site edge. Projection along its opposite edge would give the excluded septic pencil with three full fibers. This leaves exactly the edge profiles $(2,6,6),(3,5,6),(4,4,6),(4,5,5)$. A production-field census excludes a quarter turn cyclically permuting the four heads by one constant affine output transformation across 589,680 supports. Two reflection families of rational degree profile $(1,3,3)$ also fail. An unrestricted quartet on these 64 sites would lower the eighth-rate attack to 675,282,945 errors. The current verified endpoint remains 679,477,248. [Projection, symmetry restrictions and executable census](eighth-cyclic-septic-quartets.md)
+
+### Root-product phases of the protected pencils
+
+At the first production endpoint, every odd-exponent reciprocal reflection moves at least 268,435,457 sites out of their original fiber in each protected pencil. Coincident products raise this to 268,435,459. In the triple-overlap shape at least one pencil has distinct root products and its constant is determined by their chord ratio. In the six-double shape coincidence for all four pencils forces every opposite-edge product to be the same and the puncture and all-agree site to have the same exponent parity.
+
+At both named primes on the order-256 grid, if two different fibers of a degree-at-most-63 split pencil contain complete antipodal pairs, their three root products all have the same exponent parity. For distinct products even a single complete pair lifts its prescribed folded ratio to the complex roots. The two exact 6,112-target enumerations have seven surviving lattice points altogether, each separated from the allowable weights. [Proof and arithmetic replay](split-pencil-root-products.md)
