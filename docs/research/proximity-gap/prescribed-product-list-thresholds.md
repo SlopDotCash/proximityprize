@@ -66,6 +66,23 @@ The general Lean lemmas are in [AgreementSubsetListPacking](../../../ArkLib/Rese
 
 The uniform [budget-window theorem](../../../ArkLib/Research/ProximityGap/Frontier/PrescribedProductThreshold.lean) proves the exact cutoff for any positive width whenever the two displayed counting bounds straddle the budget. The [BLS12-381 theorem](../../../ArkLib/Research/ProximityGap/Frontier/BlsScalarListThreshold.lean) and [degree-27 extension theorem](../../../ArkLib/Research/ProximityGap/Frontier/SubfieldQuarterListThreshold.lean) instantiate the sponsor's unrounded tolerance. The BLS theorem also proves that the first failure at dimension 16 is 241 errors, by the minimum-distance argument.
 
+## Uniform bounds at larger smooth lengths
+
+Let $h$ be the minimum length in the table below, let $j=hR$ for the stated rate $R$, and write $n=mh$. On every smooth domain over $q<2^{256}$, the first failing Hamming count at tolerance $2^{-128}$ is at most $(h-j-2)m+1$ for every positive interleaving width. The strict comparison uses the actual unrounded sponsor budget. [Four-rate bounds and first-failure theorem](../../../ArkLib/Research/ProximityGap/SmoothReservedListBoundary.lean)
+
+| Rate | Base $h$ | First failing errors at most | Uniform failing radius for $n>h$ |
+|---|---:|---:|---:|
+| $1/2$ | 256 | $126m+1$ | $253/512$ |
+| $1/4$ | 256 | $190m+1$ | $381/512$ |
+| $1/8$ | 256 | $222m+1$ | $445/512$ |
+| $1/16$ | 512 | $478m+1$ | $957/1024$ |
+
+To see why the bound improves with length, reserve one of the $h$ values of the power map $x\mapsto x^m$. On the remaining $h-1$ values, the prescribed-product count gives a list larger than the budget at $j+1$ agreements. Compose each candidate polynomial with the power map. Its degree is at most $(j-1)m$, leaving room to multiply both the candidate and the received word by a common locator of degree $m-1$. Put those roots at all but one site of the reserved fiber. Every candidate then has at least $(j+1)m+(m-1)$ agreements. The argument is Al Kindi’s finite construction. Lean also proves the lift for arbitrary regular projections defined by a degree-$m$ polynomial and for arbitrary punctured base lists. [Al Kindi, Theorem 1.1](https://eprint.iacr.org/2026/2245) · [Lean lift](../../../ArkLib/Research/ProximityGap/Frontier/SmoothReservedProductList.lean)
+
+The exact uniform one-eighth threshold $223/256$ is therefore attained **only at length 256**. The BLS12-381 example above attains it there. At the other three rates, attainability of the earlier bounds $127/256$, $191/256$, and $479/512$ would likewise require the base length. The unresolved safe steps at those lengths ask about lists with, respectively, 130, 66, and 34 agreements.
+
+Pairwise packing alone cannot certify those three steps. Apply the existing locator-coloring theorem to 130- and 66-subsets of 256 points with auxiliary field size 257, and to 34-subsets of 512 points with auxiliary field size 521. In each case the binomial count exceeds $2^{128}$ times the square of the auxiliary field size. A largest color thus has more than $2^{128}$ supports, with every pair meeting in fewer than $k$ sites. Whether a single received word can realize such an over-budget family on a given smooth domain is an additional algebraic question. [Support-family theorem](../../../ArkLib/Research/ProximityGap/Frontier/AgreementSupportBarrier.lean)
+
 ## A prime-field family of unbounded dyadic length
 
 For every sufficiently large power of two $n$, there exists a prime $p\equiv1\pmod n$ for which the four first bad error counts are $n/2-1$, $3n/4+1$, $7n/8+1$, and $15n/16+1$. The field size in this asymptotic corollary grows exponentially with the length and eventually exceeds the sponsor's preferred 256-bit range.

@@ -34,7 +34,9 @@ noncomputable def saturationRadius : Fin 4 → ℝ≥0 := ![511/1024, 767/1024, 
 variable {F I : Type} [Field F] [Fintype F] [DecidableEq F] [Fintype I] [Nonempty I]
 
 omit [Fintype F] in
-private theorem dimensions (D : I ↪ F) [ReedSolomon.Smooth D] (i : Fin 4) {h : ℕ}
+/-- Write every sufficiently large smooth length as a multiple of a dyadic base while
+tracking the dimension at the requested prize rate. -/
+theorem dimensions (D : I ↪ F) [ReedSolomon.Smooth D] (i : Fin 4) {h : ℕ}
     (power : ∃ b : ℕ, h = 2 ^ b) (large : h ≤ Fintype.card I) (divides : prizeDenominator i ∣ h) :
     ∃ m, 0 < m ∧ Fintype.card I = m * h ∧
       prizeDimension (ι := I) i = (h / prizeDenominator i) * m := by
@@ -50,7 +52,8 @@ private theorem dimensions (D : I ↪ F) [ReedSolomon.Smooth D] (i : Fin 4) {h :
     simp [show m = 0 by omega] at hm
   · rw [prizeDimension, hm, Nat.mul_div_assoc _ divides, Nat.mul_comm]
 
-private theorem prize_budget {q : ℕ} (hpos : 0 < q) (hq : q < 2 ^ 256) :
+/-- The field budget is below two to the 128th power and satisfies pair separation. -/
+theorem prize_budget {q : ℕ} (hpos : 0 < q) (hq : q < 2 ^ 256) :
     q / 2 ^ 128 < 2 ^ 128 ∧ (q / 2 ^ 128 + 1).choose 2 ≤ q := by
   have hb : q / 2 ^ 128 < 2 ^ 128 := by omega
   refine ⟨hb, ToleranceCircuitCriterion.pair_bound_of_square ?_⟩
