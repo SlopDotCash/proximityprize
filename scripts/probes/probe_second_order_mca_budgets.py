@@ -2,12 +2,13 @@
 """Recompute the order-two symbolic interpolation and recovery budgets in integers."""
 
 from fractions import Fraction
+from math import prod
 
 
 WITNESS_PRIME = 126205134105047729256068842055334737587878534445324289139206048206460929
 
 
-def profile(n, k, agreement, multiplicity, derivative_weight, *, coarse_degree=None):
+def origin_profile(n, k, agreement, multiplicity, derivative_weight, *, coarse_degree=None):
     """Count the source and the smaller side of each local Taylor bidegree block."""
     degree = k - 1 if coarse_degree is None else coarse_degree
     cutoff = multiplicity * agreement
@@ -41,11 +42,30 @@ def profile(n, k, agreement, multiplicity, derivative_weight, *, coarse_degree=N
     rank_bound = n * local_rank_bound
     assert rank_bound < dimension
     height = rank_bound * jet_cap // (dimension - rank_bound)
+    return dimension, local_rank_bound, jet_cap, height
+
+
+def profile(n, k, agreement, multiplicity, derivative_weight, *, coarse_degree=None):
+    dimension, local_rank_bound, jet_cap, height = origin_profile(
+        n, k, agreement, multiplicity, derivative_weight, coarse_degree=coarse_degree)
     gap = Fraction(agreement - k, n)
     coefficient = height + 4 * jet_cap**4 / gap**2 * (33 * height / gap + 3)
     required_field = 2**128 * n**3 * coefficient
     assert required_field <= WITNESS_PRIME
     return dimension, local_rank_bound, jet_cap, height, required_field
+
+
+def stage_unit(order, n, k, agreement, intermediate, height):
+    """Maximum stage cost divided by the appropriate power of its actual jet degree."""
+    exponent = 2 * k
+    cut_height = 1 + exponent * height
+
+    def incidence(threshold):
+        return prod(Fraction(n-k+j+1, threshold-k+j+1) for j in range(order))
+
+    mixed = height * exponent**(order+1) + (order+1) * cut_height * exponent**order
+    return (mixed * Fraction(n-intermediate+1, agreement-intermediate+1) * incidence(agreement)
+            + (n-intermediate) * exponent**order * incidence(intermediate))
 
 
 def main():
@@ -78,6 +98,23 @@ def main():
         assert (cost.numerator + cost.denominator - 1) // cost.denominator == ceiling
         assert ceiling * (2**18)**3 * 2**128 <= WITNESS_PRIME
         print(f'n=4096*b k={k}*b errors={4096-agreement}*b coefficient={ceiling}')
+
+    bls_prime = 52435875175126190479447740508185965837690552500527637822603658699938581184513
+    production = [
+        (268435456, 503316480, 25, 15, 277595815, 2176),
+        (134217728, 339738624, 26, 19, 143877210, 2800),
+        (67108864, 230686720, 24, 21, 75451334, 3216),
+    ]
+    n = 2**30
+    for k, agreement, multiplicity, cap, intermediate, errors in production:
+        cols, rank, jet_cap, height = origin_profile(n, k, agreement, multiplicity, cap)
+        unit = max(stage_unit(r, n, k, agreement, intermediate, height) for r in range(3))
+        cubes = (jet_cap * (jet_cap+1)//2)**2
+        total = height + cubes*unit
+        assert 2**128 * total <= bls_prime
+        assert 4096 * (n-agreement) == n*errors
+        print(f'n={n} k={k} errors_per_4096={errors} source={cols} '
+              f'rank_per_site={rank} height={height} jet_cap={jet_cap}')
 
 
 if __name__ == '__main__':
