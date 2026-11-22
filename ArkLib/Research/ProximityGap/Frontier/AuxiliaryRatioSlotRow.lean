@@ -51,6 +51,59 @@ private def layer (a : Archive) (i : Fin a.heavyCount) (l : Fin 3) :=
 private def chargeId (a : Archive) (i : Fin a.heavyCount) (x : I) (l : Fin 3) :=
   128*layer a i l+x.val
 
+/-- Encoded distinct pairs agreeing in product and rank coincide. A rank of at
+least two identifies the unique stored product capable of a third representation. -/
+structure PairTagFacts [Fact (Nat.Prime modulus)] (a : Archive) (D : I ↪ K) (v : I) where
+  tag : Finset I → ℕ
+  injective : ∀ A B : Finset I, A ∈ ((univ.erase 0).erase v).powersetCard 2 →
+    B ∈ ((univ.erase 0).erase v).powersetCard 2 →
+    (∏ x ∈ A,ratio D 0 v x) = ∏ x ∈ B,ratio D 0 v x → tag A=tag B → A=B
+  tagged : ∀ A ∈ ((univ.erase 0).erase v).powersetCard 2, 1≤tag A →
+    ∃ i : Fin a.heavyCount, (digit a.keys 28 i : K) = (∏ x ∈ A,ratio D 0 v x) ∧
+      (2≤tag A → i.val=a.tripleKey)
+
+/-- Interpret the pair part of the integer archive independently of the
+weighted-charge certificate. -/
+noncomputable def pairTagFacts [Fact (Nat.Prime modulus)] (d : ℕ) (a : Archive) (D : I ↪ K) (v : I)
+    (hv : v.val=d)
+    (rat : ∀ x : I, validSite d x=true → ratio D 0 v x=(digit a.ratios 28 x:K))
+    (pairInj : Set.InjOn (pairCode a) {id | validPair d id=true})
+    (tagged : ∀ {id}, validPair d id=true → 1≤digit a.pairTags 6 id →
+      let h := digit a.pairKeys 8 id
+      h<a.heavyCount ∧ digit a.keys 28 h=pairValue a id ∧ (2≤digit a.pairTags 6 id → h=a.tripleKey)) :
+    PairTagFacts a D v := by
+  classical
+  let tag (A : Finset I) := digit a.pairTags 6 (pairId A)
+  let sites : Finset I := (univ.erase 0).erase v
+  have pair {A : Finset I} (hA : A∈sites.powersetCard 2) :
+      validPair d (pairId A)=true ∧ (pairValue a (pairId A):K)=∏ x ∈ A,ratio D 0 v x := by
+    obtain ⟨sub,size⟩ := mem_powersetCard.mp hA
+    obtain ⟨rep,ord⟩ := bounds_pair size
+    have elems : ({lo A,hi A} : Finset I)⊆sites := rep ▸ sub
+    have hl : lo A∈sites := elems (mem_insert_self ..)
+    have hh : hi A∈sites := elems (mem_insert_of_mem (mem_singleton_self _))
+    have px : pairId A/128=(lo A).val := by unfold pairId;have := (hi A).isLt;omega
+    have py : pairId A%128=(hi A).val := by unfold pairId;have := (hi A).isLt;omega
+    refine ⟨by simp [validPair,px,py,valid_site hv hl,valid_site hv hh,show (lo A).val<(hi A).val from ord],?_⟩
+    calc
+      _ = ratio D 0 v (lo A)*ratio D 0 v (hi A) := by
+        rw [rat _ (valid_site hv hl),rat _ (valid_site hv hh)]
+        simp [pairValue,px,py,ZMod.natCast_mod]
+      _ = _ := by conv_rhs => rw [rep]
+                  simp [ord.ne]
+  refine ⟨tag,?_,?_⟩
+  · intro A B hA hB he ht
+    obtain ⟨va,pa⟩ := pair hA
+    obtain ⟨vb,pb⟩ := pair hB
+    have same := residue_eq (s:=pairValue a (pairId A)) (t:=pairValue a (pairId B))
+      (Nat.mod_lt _ (by decide)) (Nat.mod_lt _ (by decide)) (pa.trans (he.trans pb.symm))
+    exact pair_id_inj (mem_powersetCard.mp hA).2 (mem_powersetCard.mp hB).2
+      (pairInj va vb (by change pairValue a (pairId A)*128+tag A=pairValue a (pairId B)*128+tag B; rw [same,ht]))
+  · intro A hA pos
+    obtain ⟨valid,prod⟩ := pair hA
+    obtain ⟨bound,eq,triple⟩ := tagged valid pos
+    exact ⟨⟨_,bound⟩,(congrArg (fun t : ℕ => (t:K)) eq).trans prod,triple⟩
+
 /-- A checked archive supplies all hypotheses of the twelve-slot row bound.
 Only entries corresponding to actual unordered pairs or actual charged
 key-site-layer triples participate. -/
@@ -69,42 +122,18 @@ theorem row_of_facts [Fact (Nat.Prime modulus)] (d : ℕ) (a : Archive) (D : I �
   classical
   let key (i : Fin a.heavyCount) : K := digit a.keys 28 i
   let cost (i : Fin a.heavyCount) := if i.val=a.tripleKey then 3 else 1
-  let tag (A : Finset I) := digit a.pairTags 6 (pairId A)
+  let facts := pairTagFacts d a D v hv rat pairInj tagged
+  let tag := facts.tag
   let slot (i : Fin a.heavyCount) (x : I) (l : Fin 3) : Fin 12 :=
     ⟨digit a.chargeTags 4 (chargeId a i x l)%12,Nat.mod_lt _ (by decide)⟩
   let sites : Finset I := (univ.erase 0).erase v
-  have pair {A : Finset I} (hA : A∈sites.powersetCard 2) :
-      validPair d (pairId A)=true ∧ (pairValue a (pairId A):K)=∏ x ∈ A,ratio D 0 v x := by
-    obtain ⟨sub,size⟩ := mem_powersetCard.mp hA
-    obtain ⟨rep,ord⟩ := bounds_pair size
-    have elems : ({lo A,hi A} : Finset I)⊆sites := rep ▸ sub
-    have hl : lo A∈sites := elems (mem_insert_self ..)
-    have hh : hi A∈sites := elems (mem_insert_of_mem (mem_singleton_self _))
-    have px : pairId A/128=(lo A).val := by unfold pairId;have := (hi A).isLt;omega
-    have py : pairId A%128=(hi A).val := by unfold pairId;have := (hi A).isLt;omega
-    refine ⟨by simp [validPair,px,py,valid_site hv hl,valid_site hv hh,show (lo A).val<(hi A).val from ord],?_⟩
-    calc
-      _ = ratio D 0 v (lo A)*ratio D 0 v (hi A) := by
-        rw [rat _ (valid_site hv hl),rat _ (valid_site hv hh)]
-        simp [pairValue,px,py,ZMod.natCast_mod]
-      _ = _ := by conv_rhs => rw [rep]
-                  simp [ord.ne]
   have access {A : Finset I} (hA : A∈sites.powersetCard 2) (pos : 1≤tag A) :
       ∃ i, key i=∏ x ∈ A,ratio D 0 v x ∧ (2≤tag A → cost i=3) := by
-    obtain ⟨valid,prod⟩ := pair hA
-    obtain ⟨bound,eq,triple⟩ := tagged valid pos
-    let i : Fin a.heavyCount := ⟨_,bound⟩
-    refine ⟨i,(congrArg (fun t : ℕ => (t:K)) eq).trans prod,fun two => ?_⟩
-    simp [cost,i,triple two]
+    obtain ⟨i,hi,htr⟩ := facts.tagged A hA pos
+    exact ⟨i,hi,fun h => by simp [cost,htr h]⟩
   refine rowPenaltyBound_of_pair_tags D 0 v key cost (fun i => by unfold cost;split <;> simp)
     (fun i j eq => keyInj (residue_eq (keyBound i) (keyBound j) eq)) tag ?_ ?_ ?_ slot ?_
-  · intro A B hA hB he ht
-    obtain ⟨va,pa⟩ := pair hA
-    obtain ⟨vb,pb⟩ := pair hB
-    have same := residue_eq (s:=pairValue a (pairId A)) (t:=pairValue a (pairId B))
-      (Nat.mod_lt _ (by decide)) (Nat.mod_lt _ (by decide)) (pa.trans (he.trans pb.symm))
-    exact pair_id_inj (mem_powersetCard.mp hA).2 (mem_powersetCard.mp hB).2
-      (pairInj va vb (by change pairValue a (pairId A)*128+tag A=pairValue a (pairId B)*128+tag B; rw [same,ht]))
+  · exact facts.injective
   · intro A ha ht
     obtain ⟨i,he,_⟩ := access ha ht
     exact ⟨i,he⟩

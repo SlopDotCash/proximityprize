@@ -66,6 +66,29 @@ Suppose the two unsigned selections in the table receive $x$ and $y$ sites, resp
 
 Writing $I$ for incidence count and $U$ for union size, at most $(I-U)/(j-1)$ candidates of a given pool have at least $j\ge2$ hits, since each such candidate contributes at least $j-1$ to $I-U$. Gain 11 forces either $r\ge2$ or $s\ge3$. The unsigned table thus bounds this population by $152188880+476279216/2=390328488$, below the first budget. Gain 5 forces $r\ge1$ or $s\ge2$, for at most $1124276896+476279216=1600556112$ candidates, below the second budget. This counts only the memberships and the uniform per-mode allocations specified here. Different selections or certified coincidences between locator values could change the conclusion.
 
+## A gain-five upper bound for every allocation in the signed dictionary
+
+At the second budget the prescribed-product-one construction exceeds $2^{31}$ words with four extra agreements. To test five, use all signed modes over the **1,923,274** leaf vectors of even weight and raw score greater than 7,680. Permit an arbitrary allocation on each of the fifteen anchors. If $x_{a,v}$ sites are allotted to signed mode $v$ at anchor $a$, charge each allocated site to its mode, so $\sum_v x_{a,v}\le h$. A candidate receives the sum of its allocations at all fifteen anchors. Replacing each $x_{a,v}$ by $\min(x_{a,v},5)$ preserves whether that sum reaches five. In this model at most **2,053,061,200** candidates can gain five agreements, **94,422,448** below the second budget.
+
+To see this, first construct a reference selection using only the prescribed-product populations $P_a$, allowing $K=\lfloor h/5\rfloor=1,677,721$ signed modes per anchor. Use the stabilizer-orbit order and capacity rule above. Of all candidates, **1,422,335,424** occur at exactly one reference anchor and **364,739,488** occur at two or more. Set aside every candidate in the latter group. This choice of reference selections only designates the candidates being set aside. The allocations to be bounded can choose any modes in the dictionary.
+
+For each signed mode, count the remaining candidates of that mode. At one anchor, every remaining candidate belongs to at most one dictionary mode. Each allocated site contributes at most its mode's remaining population to the sum of agreements. Since at most five sites per mode are needed, the maximum sum charges five sites to each of the $K$ largest populations and the last three sites to the next one. The counts below apply separately at every anchor in the indicated orbit.
+
+| Representative anchor exponent | Orbit size | Sum of the $K$ largest remaining populations | Next population |
+|---:|---:|---:|---:|
+| 8 | 8 | 111,800,157 | 59 |
+| 16 | 4 | 111,398,538 | 58 |
+| 32 | 2 | 111,168,866 | 58 |
+| 64 | 1 | 125,988,044 | 60 |
+
+Sum the incidence bounds over the anchor orbits, divide by five for each qualifying remaining candidate, and add back all 364,739,488 set-aside candidates. This gives the stated ceiling. The bound includes arbitrary mixtures of full and partial allocations, whose agreements may accumulate across anchors. Other root products, additional signatures and equalities of field values shared by separately charged modes require different counts.
+
+Run the optional verifier from the repository root. It checks every residual capacity and the resulting bound against direct enumeration on both small boards before recomputing the production table. [Exact census](../../../scripts/probes/probe_sixteenth_locator_union.cpp) · [Driver and independent controls](../../../scripts/probes/check_sixteenth_locator_union.py)
+
+```sh
+python3 scripts/probes/check_sixteenth_locator_union.py --gain-five-cap --workers 3
+```
+
 ## Reproduction
 
 Run the following from the repository root with Python 3 and a C++17 compiler supporting unsigned 128-bit integers. The program builds in a temporary directory. Select one to three workers.
