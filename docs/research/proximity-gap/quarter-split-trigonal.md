@@ -22,6 +22,21 @@ Over every odd-degree extension of $\mathbb F_p$, cubing is bijective. The affin
 
 Here $D$ and $g=3D-2$ are even. The functional equation pairs coefficients of $G$ at equal distances from $m=g/2$. A paired term has the form $b U^{m-j}(U^{2j}+p^{2j})$. Modulo $(U+p)^2$ it equals $2b(-p)^jU^m$, because $(U^j-(-p)^j)^2$ is divisible by $(U+p)^2$. Thus $G$ is congruent to a scalar multiple of $U^m$. Evaluating at $-p\ne0$ shows that scalar vanishes whenever $G(-p)=0$. This proves $(T^2+p)^2\mid F_C(T)$ over the integers, using monic division. The square uses even genus. The geometric degree and Jacobian arguments above, and the application of the Weil functional equation, are written proofs. Lean verifies the general reciprocal-square calculation and the fixed-fiber capacity. [Lean algebra](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSplitTrigonal.lean)
 
+## Full pullbacks and the odd-degree level test
+
+Some production unions satisfy the squared Frobenius condition automatically. Let $R$ have degree $h\mid D$ over $\mathbb F_p$, and let $S$ be the entire simple preimage of $3D_0$ rational sites $S_0$, with $D_0=D/h$ odd. Choose a target coordinate in which those sites are finite. Writing $R=P/Q$, each polynomial $P-sQ$ has exactly $h$ simple roots in $S$. Thus $L_{S_0}(R)=cL_S/Q^{3D_0}$. Taking a cube root of $c$ gives a degree-$h$ map from $C_S$ to $C_{S_0}$, just as for the elliptic map above.
+
+The genus $g_0=3D_0-2$ downstairs is odd. Its even Frobenius characteristic polynomial is $G_0(T^2)$. Reciprocity gives $G_0(-p)=(-1)^{g_0}G_0(-p)$, forcing $G_0(-p)=0$ for every such $S_0$. Pulling this factor upstairs and applying even-genus reciprocity gives the square in $F_C$. In particular **all** $\binom{536870912}{402653181}$ antipodal production unions pass the unlabelled test via $R=X^2$. This conclusion assumes only that the union descends.
+
+There is an additional obstruction when each **individual fiber** descends. The three descended sets would be the complete fibers of a degree-$D_0$ pencil over $\mathbb F_p$. This is the requirement on the source quotients $X^2$ and $X+u/X$ when the original pencil has a quadratic inner map. In this case write $G_0(U)=(U+p)W(U)$. Then
+\[
+               134217727\ \mid\ G_0'(-p)
+               \qquad\text{when }D_0=D/2.
+\]
+Indeed the degree-$D_0$ elliptic map $f_0$ is optimal by the fixed-point argument. Its connected kernel $B\subset J(C_{S_0})$ contains $f_0^*E[D_0]$. The Frobenius polynomial of $B$ is $W(T^2)$ by the exact sequence of rational Tate modules. For every prime $\ell\mid D_0$, the actual $\mathbb F_p$-embedding $E[\ell]\hookrightarrow B[\ell]$ forces $T^2+p$ to divide $W(T^2)$ modulo $\ell$. The residue at $T^2=-p$ is $W(-p)=G_0'(-p)$. The three primes $7,73,262657$ multiply to $D_0$ and are distinct. Odd-genus reciprocity alone permits $G_0(U)=(U+p)(U^2+p^2)^{(g_0-1)/2}$, whose derivative at $-p$ is a unit modulo all three primes. [Quadratic source quotients](quarter-split-pencil-pullbacks.md) · [Lean derivative and divisibility test](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSplitTrigonal.lean)
+
+On the same three torsion spaces Frobenius squared is multiplication by $-p$. Its scalar multiplicative orders modulo $7,73,262657$ are $2,9,131328$. Consequently the connected kernel must contain rational copies of the full elliptic $7$-, $73$-, and $262657$-torsion over extensions of degrees $4,18,262656$ respectively. This level condition leaves the existence question on both quadratic quotients open.
+
 ## Every six-site union in the order-16 example
 
 Over $\mathbb F_{17}$, each of the $\binom{16}{6}=8008$ unlabelled candidates has genus four. Write $G(U)=U^4+aU^3+bU^2+p^2 aU+p^4$. With $t_i=p^i+1-\#C_S(\mathbb F_{p^i})$, Newton's identities give $a=-t_2/2$, $b=(t_2^2-2t_4)/8$. The obstruction is $G(-p)/p^2=b-2pa+2p^2$. Only the quadratic and quartic extension point counts enter.
