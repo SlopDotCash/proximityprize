@@ -1,13 +1,13 @@
 /-
 Copyright (c) 2026 Proximity Prize Contributors. All rights reserved.
-SPDX - License - Identifier: MIT OR Apache - 2.0
+SPDX-License-Identifier: MIT OR Apache-2.0
 -/
 import ArkLib.Research.ProximityGap.Frontier.QuarterCoreWeightedJets
 import ArkLib.Research.ProximityGap.Frontier._FSMB_CoreAbsorptionLadder
 
 /-! # Three received-row interpolants at 529,940,000 quarter-rate errors
 
-The two ordinary surfaces capture every agreeing section. The order - 38
+The two ordinary surfaces capture every agreeing section. The order-38
 surface reduces its local order by two for each of three owning joint cores.
 It captures every agreeing section different from all three affine heads.
 -/

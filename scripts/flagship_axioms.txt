@@ -465,3 +465,8 @@ ArkLib.Research.ProximityGap.JohnsonMcaRealization ProximityPrize.JointJohnsonEq
 
 # Pairwise support packing at the first unresolved quarter-rate list step
 ArkLib.Research.ProximityGap.Frontier.QuarterSupportPackingBarrier ProximityGap.QuarterSupportPackingBarrier.production_on
+ArkLib.Research.ProximityGap.Frontier.FiveHeadFiberRigidity ProximityGap.FiveHeadFiberRigidity.natural_words_eq
+
+# A split-pencil sufficient condition at the second-prime quarter-rate Johnson test
+ArkLib.Research.ProximityGap.Frontier.SecondPrimeTransversePencil ArkLib.ProximityGap.Frontier.SecondPrimeTransversePencil.actual_events
+ArkLib.Research.ProximityGap.Frontier.SecondPrimeTransversePencil ArkLib.ProximityGap.Frontier.SecondPrimeTransversePencil.quarter_below_of_split
