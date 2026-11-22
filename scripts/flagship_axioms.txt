@@ -418,3 +418,7 @@ ArkLib.Research.ProximityGap.SmoothBaseSubfieldObstruction ProximityPrize.Smooth
 ArkLib.Research.ProximityGap.SmoothBaseSubfieldObstruction ProximityPrize.SmoothBaseSubfieldObstruction.subfield_predecessor_fails
 ArkLib.Research.ProximityGap.SmoothBaseSubfieldObstruction ProximityPrize.SmoothBaseSubfieldObstruction.attainment_requires
 ArkLib.Research.ProximityGap.SmoothBaseSubfieldObstruction ProximityPrize.SmoothBaseSubfieldObstruction.extension_degree_le
+
+# Hamming grid search and its worst-case probe count
+ArkLib.Research.ProximityGap.RankBinarySearch ProximityPrize.RankBinarySearch.search_eq_find?
+ArkLib.Research.ProximityGap.RankBinarySearch ProximityPrize.RankBinarySearch.checks_le
