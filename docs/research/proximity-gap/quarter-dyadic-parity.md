@@ -12,6 +12,16 @@ This proves independence of the square classes. Lean also checks the binary orbi
 
 If an integer product of these factors is a root of unity, divide all exponents by their largest common power of two. The reduced product is still a root of unity. Any nonzero relation would now give a nonzero binary square-class relation, which was just excluded. This proves multiplicative independence modulo roots of unity using only dyadic Galois theory.
 
+### Independence within a real abelian field
+
+One can also work in a single real cyclotomic field and obtain the independence of chord **lengths** directly. Take $n=2^{k+2}$, $m=n/4$, $t=\exp(\pi i/n)$, and $E=\mathbb Q(t)\cap\mathbb R$. This is an ordered abelian Galois extension of $\mathbb Q$. Set $s_r=i(t^{-r}-t^r)$; here $i=t^{n/2}$, $s_r$ belongs to $E$, and $s_r^2=(1-\zeta^r)(1-\zeta^{-r})$ for $\zeta=t^2$. Replacing $r$ by its negative or adding $n$ changes at most the sign of $s_r$.
+
+Index the $m$ units by $r=5^j$ modulo sign and $n$. Their squared product is two, by grouping all primitive roots in inverse pairs in $\Phi_n(1)$. For any translation of $j$, the automorphism of $\mathbb Q(t)$ that raises $t$ to the corresponding power of five preserves $E$ and carries the squared units to the translated squared units. Thus the signed real orbit satisfies the hypotheses of the following Lean theorem: in an ordered abelian extension, if the translations act up to sign and the product squared is two, a signed integer product equal to $1$ or $-1$ has every exponent zero.
+
+For the proof take the multiplicative group modulo the subgroup of $x$ satisfying $x^2=y^4$ for some $y$. All squares vanish there. The total product survives because a fourth power cannot equal two in the ordered field. The binary orbit test forces all exponents even in any signed relation. Halving the exponents preserves signed relations, since a real fourth root of one has square one. Repetition reduces the maximum absolute exponent to zero. Because $|s_r|=|1-\zeta^r|$, the same independence holds for the positive chord lengths. Lean checks the orbit theorem, including the passage from binary to integer exponents; the identification of its inputs with these cyclotomic chords is the calculation above. [Signed real orbit theorem](../../../ArkLib/Research/ProximityGap/Frontier/DyadicSquareOrbit.lean) · [Fourth-root obstruction](../../../ArkLib/Research/ProximityGap/Frontier/AbelianDyadicRadical.lean)
+
+Franz's independence lemma gives a classical route through cyclotomic relations. Wang states it and applies it to absolute values of factors at roots of unity in Section 3.1. A local copy of the 27-page paper is available in `research/wang-cosmetic-surgeries-genus-one-cyclotomic-relations.pdf`. [Wang, *Cosmetic surgeries on genus one knots*](https://msp.org/agt/2006/6-3/agt-v6-n3-p19-s.pdf)
+
 ## Three equal ratios in one parity class
 
 For disjoint sets $P,N$ of site exponents write $L_P,L_N$ for their monic locators. If $L_P/L_N$ agrees at three distinct test sites in the same exponent parity, both $P$ and $N$ are invariant under $i\mapsto i+n/2$ on the opposite parity. The common ratio lies in the cyclotomic field by evaluation, including when the original head coefficients lie in a bigger characteristic-zero field.

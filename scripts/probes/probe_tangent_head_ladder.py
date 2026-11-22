@@ -13,6 +13,9 @@ for a nonlinear factor, and one further input: rich affine heads have joint
 cores of size at least C = t - 255 that pairwise meet in at most d sites, so
 there are at most n (C - d) / (C^2 - n d) of them.
 
+A second table gives the same statement at integer budgets 9n/8, ..., 15n/8,
+between the budgets n and 2n of the two named primes.
+
 The certificate is the proportional-price test used in the Lean window
 files: for j rich heads and total value degree l, every value degree b costs
 at most its share b / (l - j) of the budget left by the heads.
@@ -58,9 +61,8 @@ def tangent_cap(b, m, w, t, d):
     return bx+(m*N*(2*t+N)+2*budget*(t+N))//(t*t-N*d)
 
 
-def certify(rate, beta, errors, outer, secondary):
+def certify(rate, budget, errors, outer, secondary):
     """Return the largest allocation total found by the price test."""
-    budget = 2**beta
     d = N//rate-1
     t = N-errors
     r, v, s = outer
@@ -85,6 +87,8 @@ def certify(rate, beta, errors, outer, secondary):
             return j*(errors+1)
         divisor = core+(j-1)*d
         covered = (j*core*core+divisor-1)//divisor
+        # the union of j cores also has at least j C - binom(j, 2) d sites
+        covered = min(N, max(covered, j*core-(j*(j-1)//2)*d))
         return min(j*(errors+1), j*N-(j-1)*covered)
 
     worst = 0
@@ -153,6 +157,29 @@ ROWS = (
 )
 
 
+EIGHTH = N//8
+
+BUDGET_ROWS = (
+    # rate, integer budget, safe errors, first shape, second shape:
+    # budgets between the two named ones, 2**30 and 2**31
+    (2, 9*EIGHTH, 293018651, (5, 7, 140), (8, 11, 58)),
+    (2, 10*EIGHTH, 302936496, (10, 13, 49960), (17, 24, 188)),
+    (2, 11*EIGHTH, 305038412, (11, 15, 340818), (22, 31, 277)),
+    (2, 12*EIGHTH, 305705113, (12, 17, 51353), (24, 34, 320)),
+    (2, 13*EIGHTH, 305940243, (13, 18, 1396), (24, 34, 338)),
+    (2, 14*EIGHTH, 306465090, (13, 18, 95004), (27, 38, 382)),
+    (4, 9*EIGHTH, 469749153, (2, 3, 23419), (3, 6, 15)),
+    (4, 10*EIGHTH, 488619120, (3, 5, 115), (5, 10, 27)),
+    (4, 11*EIGHTH, 504801583, (4, 8, 203), (7, 14, 57)),
+    (4, 12*EIGHTH, 518960616, (7, 14, 49036), (14, 28, 169)),
+    (4, 13*EIGHTH, 522404939, (9, 18, 2657), (17, 34, 253)),
+    (4, 14*EIGHTH, 523490200, (10, 20, 1655), (19, 38, 294)),
+    (4, 15*EIGHTH, 524083702, (10, 20, 215373), (20, 40, 321)),
+    (8, 9*EIGHTH, 601620356, (2, 4, 27), (2, 6, 11)),
+    (8, 10*EIGHTH, 625533909, (2, 5, 34), (3, 9, 18)),
+)
+
+
 DEEP_ROWS = (
     # larger shapes; checked only with --deep (about two minutes)
     (2, 52, 313793593, (159, 224, 60088785), (319, 451, 48072)),
@@ -172,7 +199,7 @@ if __name__ == '__main__':
         rows = tuple(sorted(ROWS+DEEP_ROWS))
     previous = {}
     for rate, beta, errors, outer, secondary in rows:
-        worst = certify(rate, beta, errors, outer, secondary)
+        worst = certify(rate, 2**beta, errors, outer, secondary)
         check(errors < JOHNSON_COUNT[rate], 'below the Johnson count')
         if rate in previous:
             check(errors >= previous[rate], 'monotone in the budget')
@@ -183,6 +210,15 @@ if __name__ == '__main__':
         print(f'rate 1/{rate}, beta {beta}: safe through {errors} errors '
               f'with shapes {outer} and {secondary}; largest allocation '
               f'{worst} <= 2^{beta}{gain}')
+    last = {}
+    for rate, budget, errors, outer, secondary in BUDGET_ROWS:
+        worst = certify(rate, budget, errors, outer, secondary)
+        check(N < budget < 2*N, 'between the two named budgets')
+        check(errors >= last.get(rate, 0), 'monotone in the budget')
+        last[rate] = errors
+        print(f'rate 1/{rate}, budget {budget} = {budget*8//N}n/8: safe through '
+              f'{errors} errors with shapes {outer} and {secondary}; largest '
+              f'allocation {worst}')
     four_head_boundary(8, 671088385)
     four_head_boundary(16, 738197249)
     print(f'{CHECKS} explicit checks passed')
