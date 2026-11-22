@@ -324,6 +324,7 @@ import ArkLib.Research.ProximityGap.Frontier.DyadicParityLemma
 import ArkLib.Research.ProximityGap.Frontier.DyadicPeriodCeiling
 import ArkLib.Research.ProximityGap.Frontier.DyadicSidonTriple
 import ArkLib.Research.ProximityGap.Frontier.DyadicTwoCenterReflection
+import ArkLib.Research.ProximityGap.Frontier.DyadicUnitExponentBound
 import ArkLib.Research.ProximityGap.Frontier.E2GenuineQuadStrictExcess
 import ArkLib.Research.ProximityGap.Frontier.E2GuaranteedQuadsExact
 import ArkLib.Research.ProximityGap.Frontier.E2RigidityCountTransfer
@@ -527,6 +528,7 @@ import ArkLib.Research.ProximityGap.Frontier.LiuZhouSplitRecursion
 import ArkLib.Research.ProximityGap.Frontier.LocatorShortening
 import ArkLib.Research.ProximityGap.Frontier.LogRatioTowerBoundedIncrement
 import ArkLib.Research.ProximityGap.Frontier.LogRatioTowerExpForm
+import ArkLib.Research.ProximityGap.Frontier.LogarithmicSectionHeights
 import ArkLib.Research.ProximityGap.Frontier.LowDimensionCubicPlateau
 import ArkLib.Research.ProximityGap.Frontier.LowDimensionThreeLinePhase
 import ArkLib.Research.ProximityGap.Frontier.MGFGeneralToConvergenceHub
