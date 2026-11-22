@@ -35,7 +35,7 @@ theorem sum_opposite (h : ℕ) (S : Finset ℕ) (hs : ∀ j ∈ S, j < 2 * h) :
     by_cases ha : h ≤ j
     · simp [filter_insert, ha, hj, mul_add, add_mul] at hjstep ⊢
       omega
-    · simp [filter_insert, ha, hj, mul_add, add_mul] at hjstep ⊢
+    · simp [filter_insert, ha, hj, add_mul] at hjstep ⊢
       omega
 
 /-- The original signed exponent and the wrap parity determine the opposite signed exponent. -/
