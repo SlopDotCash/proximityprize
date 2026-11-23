@@ -52,6 +52,9 @@ jobs:
       - name: Check the completion count and audit axioms
         run: |
           set -o pipefail
+          ./scripts/lake-locked.sh build \
+            ArkLib.Research.ProximityGap.Frontier._IncidenceTripleMass \
+            ArkLib.Research.ProximityGap.Frontier._PairUnionMomentMean
           lake env lean ArkLib/Research/ProximityGap/Frontier/_CompletionCountThirdMoment.lean | tee completion-count-axioms.log
           python3 - <<'PY'
           import re
