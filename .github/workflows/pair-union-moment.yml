@@ -20,6 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - run: python3 scripts/probes/probe_weighted_locator_certificate.py
+      - run: python3 scripts/probes/probe_weighted_locator_certificate.py --frontier
 
   kernel:
     runs-on: ubuntu-latest
