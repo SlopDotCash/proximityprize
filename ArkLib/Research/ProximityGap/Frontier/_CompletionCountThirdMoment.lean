@@ -37,7 +37,7 @@ namespace ProximityGap.CompletionCount
 open scoped BigOperators
 
 /-- Jensen for the cube of a sum, in integer form. -/
-theorem cube_sum_le_card_sq_mul_sum_cube_int {X : Type*} [Fintype X] [Nonempty X]
+theorem cube_sum_le_card_sq_mul_sum_cube_int {X : Type} [Fintype X] [Nonempty X]
     (f : X → ℤ) (hf : ∀ x, 0 ≤ f x) :
     (∑ x, f x) ^ 3 ≤ (Fintype.card X : ℤ) ^ 2 * ∑ x, f x ^ 3 := by
   have h := ProximityGap.IncidenceTripleMass.nat_cube_sum_le_card_sq_mul_sum_cube
@@ -57,7 +57,7 @@ theorem cube_sum_le_card_sq_mul_sum_cube_int {X : Type*} [Fintype X] [Nonempty X
 
 /-- The completion bound: a third-moment cap and a mass bound force a small
 number of surviving heads. -/
-theorem completion_count_bound {I X : Type*} [Fintype I] [DecidableEq I]
+theorem completion_count_bound {I : Type*} {X : Type} [Fintype I] [DecidableEq I]
     [Fintype X] [DecidableEq X] [Nonempty X] (T : I → Finset X) (L u k C : ℤ)
     (hL : (Fintype.card X : ℤ) = L)
     (hmass : (Fintype.card I : ℤ) * (L - u) ≤ ∑ i, ((T i).card : ℤ))
