@@ -37,8 +37,8 @@ namespace ProximityGap.CompletionCount
 open scoped BigOperators
 
 /-- Jensen for the cube of a sum, in integer form. -/
-theorem cube_sum_le_card_sq_mul_sum_cube_int {X : Type*} [Fintype X] (f : X → ℤ)
-    (hf : ∀ x, 0 ≤ f x) :
+theorem cube_sum_le_card_sq_mul_sum_cube_int {X : Type*} [Fintype X] [Nonempty X]
+    (f : X → ℤ) (hf : ∀ x, 0 ≤ f x) :
     (∑ x, f x) ^ 3 ≤ (Fintype.card X : ℤ) ^ 2 * ∑ x, f x ^ 3 := by
   have h := ProximityGap.IncidenceTripleMass.nat_cube_sum_le_card_sq_mul_sum_cube
     (fun x => (f x).toNat)
@@ -58,7 +58,7 @@ theorem cube_sum_le_card_sq_mul_sum_cube_int {X : Type*} [Fintype X] (f : X → 
 /-- The completion bound: a third-moment cap and a mass bound force a small
 number of surviving heads. -/
 theorem completion_count_bound {I X : Type*} [Fintype I] [DecidableEq I]
-    [Fintype X] [DecidableEq X] (T : I → Finset X) (L u k C : ℤ)
+    [Fintype X] [DecidableEq X] [Nonempty X] (T : I → Finset X) (L u k C : ℤ)
     (hL : (Fintype.card X : ℤ) = L)
     (hmass : (Fintype.card I : ℤ) * (L - u) ≤ ∑ i, ((T i).card : ℤ))
     (h3 : ∑ x, (ProximityGap.PairUnionMoment.degree T x) ^ 3 ≤
@@ -82,7 +82,17 @@ theorem completion_count_bound {I X : Type*} [Fintype I] [DecidableEq I]
     rw [hL] at h
     rw [hS]
     exact h
-  have hmono : (m * (L - u)) ^ 3 ≤ S ^ 3 := pow_le_pow_left' hmass' 3
+  have hmono : (m * (L - u)) ^ 3 ≤ S ^ 3 := by
+    have hfac : S ^ 3 - (m * (L - u)) ^ 3 =
+        (S - m * (L - u)) * (S ^ 2 + S * (m * (L - u)) + (m * (L - u)) ^ 2) := by
+      ring
+    have hq : 0 ≤ S ^ 2 + S * (m * (L - u)) + (m * (L - u)) ^ 2 := by
+      nlinarith [sq_nonneg S, sq_nonneg (m * (L - u)),
+        sq_nonneg (S + m * (L - u))]
+    have hSa : 0 ≤ S - m * (L - u) := by linarith
+    have hprod : 0 ≤ (S - m * (L - u)) *
+        (S ^ 2 + S * (m * (L - u)) + (m * (L - u)) ^ 2) := mul_nonneg hSa hq
+    linarith [hfac, hprod]
   have hcube : (m * (L - u)) ^ 3 ≤ L ^ 2 * (k * m ^ 3 + C * L * m ^ 2) := by
     refine hmono.trans ?_
     exact hjensen.trans (mul_le_mul_of_nonneg_left h3' (by nlinarith [sq_nonneg L]))
@@ -94,7 +104,6 @@ theorem completion_count_bound {I X : Type*} [Fintype I] [DecidableEq I]
   have hcancel : m * ((L - u) ^ 3 - k * L ^ 2) ≤ C * L ^ 3 :=
     le_of_mul_le_mul_left (a := m ^ 2) (b := m * ((L - u) ^ 3 - k * L ^ 2))
       (c := C * L ^ 3) (by nlinarith [hkey]) hm2
-  rw [← hmm]
   exact hcancel
 
 /-- Exact values at the first sponsor cutoff: the restricted width, the
