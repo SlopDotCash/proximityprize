@@ -90,7 +90,7 @@ theorem bad_indicator_le (ln : I → I → Finset I) (i j l : I) :
         (if i = l then (1 : ℤ) else 0) +
         (if i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∈ ln i j then (1 : ℤ) else 0) := by
   by_cases hij : i = j <;> by_cases hjl : j = l <;> by_cases hil : i = l <;>
-    by_cases hmem : l ∈ ln i j <;> simp [hij, hjl, hil, hmem]
+    by_cases hmem : l ∈ ln i j <;> simp [hij, hjl, hil, hmem] <;> norm_num
 
 /-- The first coordinate equality summed over the triple product. -/
 theorem sum_sum_sum_eq_left (c : ℤ) :
@@ -105,39 +105,48 @@ theorem sum_sum_sum_eq_left (c : ℤ) :
     intro i
     simp only [hconst]
     rw [← Finset.mul_sum, sum_ite_eq_const i c]
-  simp only [hmid]
-  rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-  ring
+  calc (∑ i : I, ∑ j : I, ∑ l : I, (if i = j then c else 0))
+      = ∑ i : I, (Fintype.card I : ℤ) * c :=
+        Finset.sum_congr rfl (fun i _ => hmid i)
+    _ = (Fintype.card I : ℤ) ^ 2 * c := by
+        rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+        ring
 
 /-- The second coordinate equality summed over the triple product. -/
 theorem sum_sum_sum_eq_mid (c : ℤ) :
-    (∑ _i : I, ∑ j : I, ∑ l : I, (if j = l then c else 0)) =
+    (∑ i : I, ∑ j : I, ∑ l : I, (if j = l then c else 0)) =
       (Fintype.card I : ℤ) ^ 2 * c := by
   have hinner : ∀ j : I, (∑ l : I, (if j = l then c else 0)) = c :=
     fun j => sum_ite_eq_const j c
-  have hmid : ∀ _i : I, (∑ j : I, ∑ l : I, (if j = l then c else 0)) =
+  have hmid : ∀ i : I, (∑ j : I, ∑ l : I, (if j = l then c else 0)) =
       (Fintype.card I : ℤ) * c := by
-    intro _
+    intro i
     simp only [hinner]
     rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-  simp only [hmid]
-  rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-  ring
+  calc (∑ i : I, ∑ j : I, ∑ l : I, (if j = l then c else 0))
+      = ∑ i : I, (Fintype.card I : ℤ) * c :=
+        Finset.sum_congr rfl (fun i _ => hmid i)
+    _ = (Fintype.card I : ℤ) ^ 2 * c := by
+        rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+        ring
 
 /-- The third coordinate equality summed over the triple product. -/
 theorem sum_sum_sum_eq_right (c : ℤ) :
-    (∑ i : I, ∑ _j : I, ∑ l : I, (if i = l then c else 0)) =
+    (∑ i : I, ∑ j : I, ∑ l : I, (if i = l then c else 0)) =
       (Fintype.card I : ℤ) ^ 2 * c := by
-  have hinner : ∀ i _j : I, (∑ l : I, (if i = l then c else 0)) = c :=
+  have hinner : ∀ i : I, ∀ j : I, (∑ l : I, (if i = l then c else 0)) = c :=
     fun i _ => sum_ite_eq_const i c
-  have hmid : ∀ i : I, (∑ _j : I, ∑ l : I, (if i = l then c else 0)) =
+  have hmid : ∀ i : I, (∑ j : I, ∑ l : I, (if i = l then c else 0)) =
       (Fintype.card I : ℤ) * c := by
     intro i
     simp only [hinner i]
     rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-  simp only [hmid]
-  rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-  ring
+  calc (∑ i : I, ∑ j : I, ∑ l : I, (if i = l then c else 0))
+      = ∑ i : I, (Fintype.card I : ℤ) * c :=
+        Finset.sum_congr rfl (fun i _ => hmid i)
+    _ = (Fintype.card I : ℤ) ^ 2 * c := by
+        rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+        ring
 
 /-- Distinct collinear ordered triples are bounded by nine per ordered pair. -/
 theorem collinear_distinct_le (ln : I → I → Finset I)
@@ -217,10 +226,16 @@ theorem bad_count_le (ln : I → I → Finset I)
           (if i = l then (1 : ℤ) else 0) +
           (if i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∈ ln i j then (1 : ℤ) else 0) :=
     bad_indicator_le ln
-  have hA := sum_sum_sum_eq_left (1 : ℤ)
-  have hB := sum_sum_sum_eq_mid (1 : ℤ)
-  have hC := sum_sum_sum_eq_right (1 : ℤ)
-  have hD := collinear_distinct_le ln hrefl hline
+  have hA : (∑ i : I, ∑ j : I, ∑ l : I, (if i = j then (1 : ℤ) else 0)) =
+      (Fintype.card I : ℤ) ^ 2 := by
+    simpa using sum_sum_sum_eq_left (I := I) (1 : ℤ)
+  have hB : (∑ i : I, ∑ j : I, ∑ l : I, (if j = l then (1 : ℤ) else 0)) =
+      (Fintype.card I : ℤ) ^ 2 := by
+    simpa using sum_sum_sum_eq_mid (I := I) (1 : ℤ)
+  have hC : (∑ i : I, ∑ j : I, ∑ l : I, (if i = l then (1 : ℤ) else 0)) =
+      (Fintype.card I : ℤ) ^ 2 := by
+    simpa using sum_sum_sum_eq_right (I := I) (1 : ℤ)
+  have hD := collinear_distinct_le (I := I) ln hrefl hline
   have hsplit : (∑ i : I, ∑ j : I, ∑ l : I,
       ((if i = j then (1 : ℤ) else 0) + (if j = l then (1 : ℤ) else 0) +
         (if i = l then (1 : ℤ) else 0) +
@@ -262,33 +277,49 @@ theorem third_moment_cap (T : I → Finset X) (ln : I → I → Finset I) (k : �
             (if i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j then (0 : ℤ) else 1) := by
     intro i j l
     by_cases hg : i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j <;> simp [hg]
+  have hone : (∑ i : I, ∑ j : I, ∑ l : I, ((1 : ℤ))) = (Fintype.card I : ℤ) ^ 3 := by
+    simp [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+    ring
+  have hcomb : (∑ i : I, ∑ j : I, ∑ l : I,
+      ((if i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j then (1 : ℤ) else 0) +
+        (if i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j then (0 : ℤ) else 1))) =
+      (∑ i : I, ∑ j : I, ∑ l : I,
+        (if i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j then (1 : ℤ) else 0)) +
+      (∑ i : I, ∑ j : I, ∑ l : I,
+        (if i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j then (0 : ℤ) else 1)) := by
+    simp only [Finset.sum_add_distrib]
+  have hsum1 : (∑ i : I, ∑ j : I, ∑ l : I,
+      ((if i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j then (1 : ℤ) else 0) +
+        (if i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j then (0 : ℤ) else 1))) =
+      (Fintype.card I : ℤ) ^ 3 := by
+    rw [hone]
+    apply Finset.sum_congr rfl
+    intro i _
+    apply Finset.sum_congr rfl
+    intro j _
+    apply Finset.sum_congr rfl
+    intro l _
+    by_cases hg : i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j <;> simp [hg]
   have hgood : (∑ i : I, ∑ j : I, ∑ l : I,
-      (if i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j then (1 : ℤ) else 0)) +
+        (if i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j then (1 : ℤ) else 0)) +
       (∑ i : I, ∑ j : I, ∑ l : I,
         (if i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j then (0 : ℤ) else 1)) =
       (Fintype.card I : ℤ) ^ 3 := by
-    rw [← Finset.sum_add_distrib]
-    have hone : (∑ i : I, ∑ j : I, ∑ l : I, ((1 : ℤ))) = (Fintype.card I : ℤ) ^ 3 := by
-      rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-      rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-      rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-      ring
-    calc (∑ i : I, ∑ j : I, ∑ l : I,
-          ((if i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j then (1 : ℤ) else 0) +
-            (if i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j then (0 : ℤ) else 1)))
-        = ∑ i : I, ∑ j : I, ∑ l : I, ((1 : ℤ)) := by
-          apply Finset.sum_congr rfl
-          intro i _
-          apply Finset.sum_congr rfl
-          intro j _
-          apply Finset.sum_congr rfl
-          intro l _
-          by_cases hg : i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j <;> simp [hg]
-      _ = _ := hone
-  have hB := bad_count_le ln hrefl hline
+    rw [← hcomb]
+    exact hsum1
+  have hB := bad_count_le (I := I) ln hrefl hline
   have hk : (k : ℤ) ≤ (Fintype.card X : ℤ) := by exact_mod_cast hkL
-  have hm : (0 : ℤ) ≤ (Fintype.card I : ℤ) := by positivity
   have hLX : (0 : ℤ) ≤ (Fintype.card X : ℤ) := by positivity
+  have hm : (0 : ℤ) ≤ (Fintype.card I : ℤ) := by positivity
+  have hnn : (0 : ℤ) ≤ ∑ i : I, ∑ j : I, ∑ l : I,
+      (if i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j then (0 : ℤ) else 1) := by
+    apply Finset.sum_nonneg
+    intro i _
+    apply Finset.sum_nonneg
+    intro j _
+    apply Finset.sum_nonneg
+    intro l _
+    by_cases hg : i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j <;> simp [hg]
   rw [← triple_mass_eq_degree_cube]
   calc (∑ i : I, ∑ j : I, ∑ l : I, ((T i ∩ T j ∩ T l).card : ℤ))
       ≤ ∑ i : I, ∑ j : I, ∑ l : I,
@@ -309,34 +340,12 @@ theorem third_moment_cap (T : I → Finset X) (ln : I → I → Finset I) (k : �
     _ = (k : ℤ) * (Fintype.card I : ℤ) ^ 3 +
           ((Fintype.card X : ℤ) - (k : ℤ)) * (∑ i : I, ∑ j : I, ∑ l : I,
             (if i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j then (0 : ℤ) else 1)) := by
-        have hsub : ((Fintype.card X : ℤ) - (k : ℤ)) *
-            (∑ i : I, ∑ j : I, ∑ l : I,
-              (if i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j then (0 : ℤ) else 1)) =
-            (Fintype.card X : ℤ) * (∑ i : I, ∑ j : I, ∑ l : I,
-              (if i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j then (0 : ℤ) else 1)) -
-              (k : ℤ) * (∑ i : I, ∑ j : I, ∑ l : I,
-                (if i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j then (0 : ℤ) else 1)) := by
-          ring
-        rw [hsub]
-        have := hgood
+        rw [← hgood]
         ring
     _ ≤ (k : ℤ) * (Fintype.card I : ℤ) ^ 3 +
           (Fintype.card X : ℤ) * (12 * (Fintype.card I : ℤ) ^ 2) := by
-        have hnn : (0 : ℤ) ≤ ∑ i : I, ∑ j : I, ∑ l : I,
-            (if i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j then (0 : ℤ) else 1) := by
-          apply Finset.sum_nonneg
-          intro i _
-          apply Finset.sum_nonneg
-          intro j _
-          apply Finset.sum_nonneg
-          intro l _
-          by_cases hg : i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j <;> simp [hg]
-        have h1 : ((Fintype.card X : ℤ) - (k : ℤ)) *
-            (∑ i : I, ∑ j : I, ∑ l : I,
-              (if i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∉ ln i j then (0 : ℤ) else 1)) ≤
-            (Fintype.card X : ℤ) * (12 * (Fintype.card I : ℤ) ^ 2) := by
-          have hle : ((Fintype.card X : ℤ) - (k : ℤ)) ≤ (Fintype.card X : ℤ) := by linarith
-          exact mul_le_mul hle hB hnn hLX
+        have hle : ((Fintype.card X : ℤ) - (k : ℤ)) ≤ (Fintype.card X : ℤ) := by linarith
+        have hprod := mul_le_mul hle hB hnn hLX
         linarith
     _ = (k : ℤ) * (Fintype.card I : ℤ) ^ 3 +
           12 * (Fintype.card X : ℤ) * (Fintype.card I : ℤ) ^ 2 := by
