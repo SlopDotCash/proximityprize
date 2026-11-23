@@ -1,0 +1,91 @@
+name: Third-moment cap from a line structure
+
+on:
+  push:
+    branches: [research/third-moment-cap]
+  pull_request:
+    paths:
+      - ArkLib/Research/ProximityGap/Frontier/_ThirdMomentCap.lean
+      - ArkLib/Research/ProximityGap/Frontier/_CompletionCountThirdMoment.lean
+      - .github/workflows/third-moment-cap.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  kernel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      LEAN_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: leanprover/lean-action@v1.7.0
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          use-mathlib-cache: false
+      - uses: actions/cache/restore@v6
+        with:
+          path: |
+            .lake
+            !.lake/**/*.setup.json
+          key: third-moment-kernel-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            completion-count-kernel-${{ runner.os }}-
+            pair-union-kernel-${{ runner.os }}-
+            multiline-kernel-${{ runner.os }}-
+            incidence-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
+      - name: Fetch dependency cache
+        run: ./scripts/lake-locked.sh exe cache get
+      - name: Check the third-moment cap and audit axioms
+        run: |
+          set -o pipefail
+          ./scripts/lake-locked.sh build \
+            ArkLib.Research.ProximityGap.Frontier._IncidenceTripleMass \
+            ArkLib.Research.ProximityGap.Frontier._PairUnionMomentMean
+          lake env lean ArkLib/Research/ProximityGap/Frontier/_ThirdMomentCap.lean | tee third-moment-axioms.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          text = Path('third-moment-axioms.log').read_text()
+          results = re.findall(
+              r"'ProximityGap\.ThirdMomentCap\.([^']+)' "
+              r"(?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)",
+              text)
+          expected = {
+              'degree_eq_card_filter',
+              'triple_mass_eq_degree_cube',
+              'sum_ite_eq_const',
+              'sum_ite_one_eq_card',
+              'bad_indicator_le',
+              'sum_sum_sum_eq_left',
+              'sum_sum_sum_eq_mid',
+              'sum_sum_sum_eq_right',
+              'collinear_distinct_le',
+              'bad_count_le',
+              'third_moment_cap',
+          }
+          assert {name for name, _ in results} == expected, sorted({name for name, _ in results} ^ expected)
+          assert len(results) == len(expected)
+          for name, axioms in results:
+              ax = {a.strip() for a in (axioms or '').split(',') if a.strip()}
+              assert ax <= {'propext', 'Classical.choice', 'Quot.sound'}, name
+          assert 'sorryAx' not in text
+          print('Eleven third-moment declarations axiom-clean')
+          PY
+      - name: Stop Lean workers
+        if: always() && !cancelled()
+        run: bash scripts/ci-stop-lean.sh
+      - name: Preserve dependencies
+        if: always() && !cancelled()
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            .lake
+            !.lake/**/*.setup.json
+          key: third-moment-kernel-${{ runner.os }}-${{ github.run_id }}

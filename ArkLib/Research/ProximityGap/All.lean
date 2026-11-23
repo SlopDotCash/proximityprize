@@ -3777,6 +3777,7 @@ import ArkLib.Research.ProximityGap.Frontier._TensorRowSpanCriterion
 import ArkLib.Research.ProximityGap.Frontier._ThesisCapstone
 import ArkLib.Research.ProximityGap.Frontier._ThesisCapstoneGoodPrimeVacuousAtPrize
 import ArkLib.Research.ProximityGap.Frontier._ThetaPoissonNormMismatchNoGo
+import ArkLib.Research.ProximityGap.Frontier._ThirdMomentCap
 import ArkLib.Research.ProximityGap.Frontier._ThirdMomentJensenGeneral
 import ArkLib.Research.ProximityGap.Frontier._ThirdMomentUpperLineCap
 import ArkLib.Research.ProximityGap.Frontier._ThornerZamanPNTStatement
