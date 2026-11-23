@@ -41,7 +41,7 @@ theorem cube_sum_le_card_sq_mul_sum_cube_int {X : Type*} [Fintype X] [Nonempty X
     (f : X → ℤ) (hf : ∀ x, 0 ≤ f x) :
     (∑ x, f x) ^ 3 ≤ (Fintype.card X : ℤ) ^ 2 * ∑ x, f x ^ 3 := by
   have h := ProximityGap.IncidenceTripleMass.nat_cube_sum_le_card_sq_mul_sum_cube
-    (fun x => (f x).toNat)
+    (fun x : X => (f x).toNat)
   have hcast : ((∑ x, (f x).toNat : ℕ) : ℤ) ^ 3 ≤
       ((Fintype.card X : ℕ) : ℤ) ^ 2 * (((∑ x, ((f x).toNat) ^ 3 : ℕ)) : ℤ) := by
     exact_mod_cast h
@@ -116,7 +116,7 @@ theorem first_sponsor_completion_margin :
   norm_num
 
 /-- At the first sponsor cutoff the surviving heads number at most `4806`. -/
-theorem first_sponsor_completion_count (m : ℤ) (hm : 0 < m)
+theorem first_sponsor_completion_count (m : ℤ)
     (h : m * 75689626096007542452211 ≤ 12 * 311815756 ^ 3) : m ≤ 4806 := by
   have hA : (0 : ℤ) < 75689626096007542452211 := by norm_num
   have hC : 12 * 311815756 ^ 3 < 4807 * 75689626096007542452211 := by norm_num
