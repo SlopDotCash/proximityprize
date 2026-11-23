@@ -1,0 +1,93 @@
+name: Pair completion aggregate
+
+on:
+  push:
+    branches: [research/pair-completion-aggregate]
+  pull_request:
+    paths:
+      - ArkLib/Research/ProximityGap/Frontier/_PairCompletionAggregate.lean
+      - scripts/probes/probe_pair_completion_aggregate.py
+      - .github/workflows/pair-completion-aggregate.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  arithmetic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: python3 scripts/probes/probe_pair_completion_aggregate.py
+
+  kernel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      LEAN_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: leanprover/lean-action@v1.7.0
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          use-mathlib-cache: false
+      - uses: actions/cache/restore@v6
+        with:
+          path: |
+            .lake
+            !.lake/**/*.setup.json
+          key: pair-aggregate-kernel-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            completion-assembly-kernel-${{ runner.os }}-
+            third-moment-kernel-${{ runner.os }}-
+            completion-count-kernel-${{ runner.os }}-
+            pair-union-kernel-${{ runner.os }}-
+            incidence-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
+      - name: Fetch dependency cache
+        run: ./scripts/lake-locked.sh exe cache get
+      - name: Check the aggregate and audit axioms
+        run: |
+          set -o pipefail
+          ./scripts/lake-locked.sh build \
+            ArkLib.Research.ProximityGap.Frontier._CompletionCountAssembly
+          lake env lean ArkLib/Research/ProximityGap/Frontier/_PairCompletionAggregate.lean | tee aggregate-axioms.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          text = Path('aggregate-axioms.log').read_text()
+          results = re.findall(
+              r"'ProximityGap\.PairCompletionAggregate\.([^']+)' "
+              r"(?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)",
+              text)
+          expected = {
+              'mem_rest',
+              'card_rest',
+              'two_le_card',
+              'sum_ite_one_eq_card_finset',
+              'aggregate_pair_completions',
+              'first_sponsor_long_triple_fraction',
+              'first_sponsor_long_triples_lower',
+          }
+          assert {name for name, _ in results} == expected, sorted({name for name, _ in results} ^ expected)
+          assert len(results) == len(expected)
+          for name, axioms in results:
+              ax = {a.strip() for a in (axioms or '').split(',') if a.strip()}
+              assert ax <= {'propext', 'Classical.choice', 'Quot.sound'}, name
+          assert 'sorryAx' not in text
+          print('Seven aggregate declarations axiom-clean')
+          PY
+      - name: Stop Lean workers
+        if: always() && !cancelled()
+        run: bash scripts/ci-stop-lean.sh
+      - name: Preserve dependencies
+        if: always() && !cancelled()
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            .lake
+            !.lake/**/*.setup.json
+          key: pair-aggregate-kernel-${{ runner.os }}-${{ github.run_id }}
