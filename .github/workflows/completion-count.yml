@@ -1,0 +1,88 @@
+name: Completion count from a third-moment cap
+
+on:
+  push:
+    branches: [research/completion-count]
+  pull_request:
+    paths:
+      - ArkLib/Research/ProximityGap/Frontier/_CompletionCountThirdMoment.lean
+      - ArkLib/Research/ProximityGap/Frontier/_PairUnionMomentMean.lean
+      - scripts/probes/probe_completion_count.py
+      - docs/research/proximity-gap/first-sponsor-reciprocal-locators.md
+      - .github/workflows/completion-count.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  arithmetic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: python3 scripts/probes/probe_completion_count.py
+
+  kernel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      LEAN_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: leanprover/lean-action@v1.7.0
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          use-mathlib-cache: false
+      - uses: actions/cache/restore@v6
+        with:
+          path: |
+            .lake
+            !.lake/**/*.setup.json
+          key: completion-count-kernel-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            pair-union-kernel-${{ runner.os }}-
+            multiline-kernel-${{ runner.os }}-
+            incidence-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
+      - name: Fetch dependency cache
+        run: ./scripts/lake-locked.sh exe cache get
+      - name: Check the completion count and audit axioms
+        run: |
+          set -o pipefail
+          lake env lean ArkLib/Research/ProximityGap/Frontier/_CompletionCountThirdMoment.lean | tee completion-count-axioms.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          text = Path('completion-count-axioms.log').read_text()
+          results = re.findall(
+              r"'ProximityGap\.CompletionCount\.([^']+)' "
+              r"(?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)",
+              text)
+          expected = {
+              'cube_sum_le_card_sq_mul_sum_cube_int',
+              'completion_count_bound',
+              'first_sponsor_completion_margin',
+              'first_sponsor_completion_count',
+          }
+          assert {name for name, _ in results} == expected, sorted({name for name, _ in results} ^ expected)
+          assert len(results) == len(expected)
+          for name, axioms in results:
+              ax = {a.strip() for a in (axioms or '').split(',') if a.strip()}
+              assert ax <= {'propext', 'Classical.choice', 'Quot.sound'}, name
+          assert 'sorryAx' not in text
+          print('Four completion-count declarations axiom-clean')
+          PY
+      - name: Stop Lean workers
+        if: always() && !cancelled()
+        run: bash scripts/ci-stop-lean.sh
+      - name: Preserve dependencies
+        if: always() && !cancelled()
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            .lake
+            !.lake/**/*.setup.json
+          key: completion-count-kernel-${{ runner.os }}-${{ github.run_id }}

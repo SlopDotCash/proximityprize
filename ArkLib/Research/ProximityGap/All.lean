@@ -1857,6 +1857,7 @@ import ArkLib.Research.ProximityGap.Frontier._CoherenceIdentity
 import ArkLib.Research.ProximityGap.Frontier._CollisionExcessPartition
 import ArkLib.Research.ProximityGap.Frontier._CompleteHomogeneousReadout
 import ArkLib.Research.ProximityGap.Frontier._CompletedSumCancellation
+import ArkLib.Research.ProximityGap.Frontier._CompletionCountThirdMoment
 import ArkLib.Research.ProximityGap.Frontier._Conj41CapNondegReducesToSZ
 import ArkLib.Research.ProximityGap.Frontier._Conj41CliqueCapTwoPower
 import ArkLib.Research.ProximityGap.Frontier._Conj41CliquePartialFraction
