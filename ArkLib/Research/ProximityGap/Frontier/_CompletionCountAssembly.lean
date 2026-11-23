@@ -83,10 +83,11 @@ theorem first_sponsor_completion_from_lines {I X : Type} [Fintype I] [DecidableE
     exact hmass
   have hmain := completion_count_from_lines T ln 159450661 62061713 hkL
     hrefl hline hnoncol hmass' hm
-  have hA : (249754043 : ℤ) ^ 3 - 159450661 * 311815756 ^ 2 =
-      75689626096007542452211 := by norm_num
-  rw [hcardX, hLsub, hA] at hmain
-  exact ProximityGap.CompletionCount.first_sponsor_completion_count _ hmain
+  rw [hcardX, hLsub] at hmain
+  have hgoal : (Fintype.card I : ℤ) * 75689626096007542452211 ≤ 12 * 311815756 ^ 3 := by
+    norm_num at hmain ⊢
+    exact hmain
+  exact ProximityGap.CompletionCount.first_sponsor_completion_count _ hgoal
 
 end ProximityGap.CompletionCountAssembly
 
