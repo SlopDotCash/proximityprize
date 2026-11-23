@@ -38,12 +38,13 @@ namespace ProximityGap.PairUnionMoment
 open scoped BigOperators
 
 /-- The agreement degree of a coordinate: how many heads agree there. -/
-def degree {I X : Type*} [DecidableEq X] (T : I → Finset X) (x : X) : ℤ :=
+def degree {I X : Type*} [Fintype I] [DecidableEq X] (T : I → Finset X) (x : X) : ℤ :=
   ∑ i, (if x ∈ T i then (1 : ℤ) else 0)
 
 /-- The agreement degree is nonnegative. -/
-theorem degree_nonneg {I X : Type*} [DecidableEq X] (T : I → Finset X) (x : X) :
+theorem degree_nonneg {I X : Type*} [Fintype I] [DecidableEq X] (T : I → Finset X) (x : X) :
     0 ≤ degree T x := by
+  rw [degree]
   apply Finset.sum_nonneg
   intro i _
   by_cases h : x ∈ T i <;> simp [h]
@@ -91,7 +92,14 @@ theorem sum_card_inter_eq_sum_degree_sq {I X : Type*} [Fintype I] [Fintype X]
         intro i _
         exact Finset.sum_comm
       _ = _ := Finset.sum_comm
-  simp only [hterm, hswap, degree, pow_two, Finset.sum_mul_sum]
+  simp only [hterm, hswap]
+  apply Finset.sum_congr rfl
+  intro x _
+  simp only [degree, pow_two]
+  rw [Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [Finset.mul_sum]
 
 /-- Distinct ordered pairs: the falling square of the agreement degree. -/
 theorem sum_card_inter_erase_eq_sum_degree_mul_pred {I X : Type*}
@@ -109,8 +117,9 @@ theorem sum_card_inter_erase_eq_sum_degree_mul_pred {I X : Type*}
     apply Finset.sum_congr rfl
     intro x _
     ring
-  simp only [hsplit, Finset.sum_sub_distrib, sum_card_inter_eq_sum_degree_sq,
-    sum_card_eq_sum_degree, hfalling]
+  simp only [hsplit]
+  rw [Finset.sum_sub_distrib, sum_card_inter_eq_sum_degree_sq, sum_card_eq_sum_degree,
+    hfalling]
 
 /-- Pointwise form of the third-moment slack used by the mean bound. -/
 theorem three_mul_sq_le (m q : ℤ) (hm : 0 ≤ m) (hq : 0 < q) :
