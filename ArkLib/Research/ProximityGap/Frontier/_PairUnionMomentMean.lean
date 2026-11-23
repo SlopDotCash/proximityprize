@@ -37,91 +37,80 @@ namespace ProximityGap.PairUnionMoment
 
 open scoped BigOperators
 
-variable {I X : Type*} [Fintype I] [DecidableEq I] [Fintype X] [DecidableEq X]
-
 /-- The agreement degree of a coordinate: how many heads agree there. -/
-def degree (T : I → Finset X) (x : X) : ℕ :=
-  (Finset.univ.filter fun i => x ∈ T i).card
+def degree {I X : Type*} [DecidableEq X] (T : I → Finset X) (x : X) : ℤ :=
+  ∑ i, (if x ∈ T i then (1 : ℤ) else 0)
 
-/-- The agreement degree is the sum of the coordinate indicators. -/
-theorem degree_eq_sum (T : I → Finset X) (x : X) :
-    (degree T x : ℤ) = ∑ i, (if x ∈ T i then (1 : ℤ) else 0) := by
-  simp only [degree, Finset.card_filter]
-  push_cast
-  apply Finset.sum_congr rfl
+/-- The agreement degree is nonnegative. -/
+theorem degree_nonneg {I X : Type*} [DecidableEq X] (T : I → Finset X) (x : X) :
+    0 ≤ degree T x := by
+  apply Finset.sum_nonneg
   intro i _
   by_cases h : x ∈ T i <;> simp [h]
 
 /-- Total agreement mass equals the sum of the agreement degrees. -/
-theorem sum_card_eq_sum_degree (T : I → Finset X) :
-    (∑ i, ((T i).card : ℤ)) = ∑ x, (degree T x : ℤ) := by
+theorem sum_card_eq_sum_degree {I X : Type*} [Fintype I] [Fintype X] [DecidableEq X]
+    (T : I → Finset X) :
+    (∑ i, ((T i).card : ℤ)) = ∑ x, degree T x := by
+  classical
   have hterm : ∀ i, ((T i).card : ℤ) = ∑ x, (if x ∈ T i then (1 : ℤ) else 0) := by
     intro i
     have hfilter : (Finset.univ.filter (fun x => x ∈ T i)) = T i := by
       ext x
       simp
-    rw [← hfilter, Finset.card_filter]
-    push_cast
+    rw [← hfilter, Finset.card_filter, Nat.cast_sum]
     apply Finset.sum_congr rfl
     intro x _
     by_cases h : x ∈ T i <;> simp [h]
-  simp_rw [hterm, degree_eq_sum]
+  simp only [hterm, degree]
   exact Finset.sum_comm
 
 /-- The ordered pair-intersection mass is the sum of squared agreement degrees. -/
-theorem sum_card_inter_eq_sum_degree_sq (T : I → Finset X) :
-    (∑ i, ∑ j, ((T i ∩ T j).card : ℤ)) = ∑ x, (degree T x : ℤ) ^ 2 := by
+theorem sum_card_inter_eq_sum_degree_sq {I X : Type*} [Fintype I] [Fintype X]
+    [DecidableEq X] (T : I → Finset X) :
+    (∑ i, ∑ j, ((T i ∩ T j).card : ℤ)) = ∑ x, (degree T x) ^ 2 := by
   classical
-  let v : I → X → ℤ := fun i x => if x ∈ T i then 1 else 0
-  have hcard : ∀ i j, ((T i ∩ T j).card : ℤ) = ∑ x, v i x * v j x := by
+  have hterm : ∀ i j, ((T i ∩ T j).card : ℤ) =
+      ∑ x, (if x ∈ T i then (1 : ℤ) else 0) * (if x ∈ T j then (1 : ℤ) else 0) := by
     intro i j
+    have hfilter : (Finset.univ.filter (fun x => x ∈ T i ∩ T j)) = T i ∩ T j := by
+      ext x
+      simp
+    rw [← hfilter, Finset.card_filter, Nat.cast_sum]
+    apply Finset.sum_congr rfl
+    intro x _
+    by_cases hi : x ∈ T i <;> by_cases hj : x ∈ T j <;> simp [hi, hj]
+  have hswap : (∑ i, ∑ j, ∑ x,
+        (if x ∈ T i then (1 : ℤ) else 0) * (if x ∈ T j then (1 : ℤ) else 0)) =
+      ∑ x, ∑ i, ∑ j,
+        (if x ∈ T i then (1 : ℤ) else 0) * (if x ∈ T j then (1 : ℤ) else 0) := by
     calc
-      ((T i ∩ T j).card : ℤ) =
-          ((Finset.univ.filter (fun x => x ∈ T i ∩ T j)).card : ℤ) := by
-        congr 1
-        ext x
-        simp
-      _ = ∑ x, (if x ∈ T i ∩ T j then (1 : ℤ) else 0) := by
-        rw [Finset.card_filter]
-        push_cast
-        apply Finset.sum_congr rfl
-        intro x _
-        by_cases h : x ∈ T i ∩ T j <;> simp [h]
-      _ = ∑ x, v i x * v j x := by
-        apply Finset.sum_congr rfl
-        intro x _
-        dsimp only [v]
-        by_cases hi : x ∈ T i <;> by_cases hj : x ∈ T j <;> simp [hi, hj]
-  have hswap : (∑ i, ∑ j, ∑ x, v i x * v j x) = ∑ x, ∑ i, ∑ j, v i x * v j x := by
-    calc
-      _ = ∑ i, ∑ x, ∑ j, v i x * v j x := by
+      _ = ∑ i, ∑ x, ∑ j,
+            (if x ∈ T i then (1 : ℤ) else 0) * (if x ∈ T j then (1 : ℤ) else 0) := by
         apply Finset.sum_congr rfl
         intro i _
         exact Finset.sum_comm
       _ = _ := Finset.sum_comm
-  simp_rw [hcard, hswap, degree_eq_sum]
-  apply Finset.sum_congr rfl
-  intro x _
-  simp only [← Finset.mul_sum, ← Finset.sum_mul]
-  ring
+  simp only [hterm, hswap, degree, pow_two, Finset.sum_mul_sum]
 
 /-- Distinct ordered pairs: the falling square of the agreement degree. -/
-theorem sum_card_inter_erase_eq_sum_degree_mul_pred (T : I → Finset X) :
-    (∑ i, ∑ j in (Finset.univ : Finset I).erase i, ((T i ∩ T j).card : ℤ)) =
-      ∑ x, (degree T x : ℤ) * ((degree T x : ℤ) - 1) := by
+theorem sum_card_inter_erase_eq_sum_degree_mul_pred {I X : Type*}
+    [Fintype I] [DecidableEq I] [Fintype X] [DecidableEq X] (T : I → Finset X) :
+    (∑ i, ∑ j ∈ (Finset.univ : Finset I).erase i, ((T i ∩ T j).card : ℤ)) =
+      ∑ x, degree T x * (degree T x - 1) := by
   classical
-  have hsplit : ∀ i, (∑ j in (Finset.univ : Finset I).erase i, ((T i ∩ T j).card : ℤ)) =
+  have hsplit : ∀ i, (∑ j ∈ (Finset.univ : Finset I).erase i, ((T i ∩ T j).card : ℤ)) =
       (∑ j, ((T i ∩ T j).card : ℤ)) - ((T i).card : ℤ) := by
     intro i
     rw [Finset.sum_erase_eq_sub (Finset.mem_univ i), Finset.inter_self]
-  have hfalling : (∑ x, (degree T x : ℤ) * ((degree T x : ℤ) - 1)) =
-      ∑ x, (degree T x : ℤ) ^ 2 - ∑ x, (degree T x : ℤ) := by
+  have hfalling : (∑ x, degree T x * (degree T x - 1)) =
+      ∑ x, (degree T x) ^ 2 - ∑ x, degree T x := by
     rw [← Finset.sum_sub_distrib]
     apply Finset.sum_congr rfl
     intro x _
     ring
-  simp_rw [hsplit]
-  rw [Finset.sum_sub_distrib, sum_card_inter_eq_sum_degree_sq, sum_card_eq_sum_degree, hfalling]
+  simp only [hsplit, Finset.sum_sub_distrib, sum_card_inter_eq_sum_degree_sq,
+    sum_card_eq_sum_degree, hfalling]
 
 /-- Pointwise form of the third-moment slack used by the mean bound. -/
 theorem three_mul_sq_le (m q : ℤ) (hm : 0 ≤ m) (hq : 0 < q) :
@@ -134,22 +123,28 @@ theorem three_mul_sq_le (m q : ℤ) (hm : 0 ≤ m) (hq : 0 < q) :
   linarith
 
 /-- Summed third-moment slack: the squared mass is charged to the cube mass. -/
-theorem sum_three_mul_sq_le (M : X → ℤ) (q U : ℤ) (hM : ∀ x, 0 ≤ M x) (hq : 0 < q)
-    (h3 : ∑ x, M x ^ 3 ≤ U) :
+theorem sum_three_mul_sq_le {X : Type*} [Fintype X] (M : X → ℤ) (q U : ℤ)
+    (hM : ∀ x, 0 ≤ M x) (hq : 0 < q) (h3 : ∑ x, M x ^ 3 ≤ U) :
     3 * q * ∑ x, M x ^ 2 ≤ 2 * U + (Fintype.card X : ℤ) * q ^ 3 := by
   have hpoint : ∀ x ∈ (Finset.univ : Finset X), 3 * q * M x ^ 2 ≤ 2 * M x ^ 3 + q ^ 3 :=
     fun x _ => three_mul_sq_le (M x) q (hM x) hq
   have hsum := Finset.sum_le_sum hpoint
-  simp only [Finset.sum_add_distrib, ← Finset.mul_sum, Finset.sum_const,
-    Finset.card_univ, nsmul_eq_mul] at hsum
+  have hleft : (∑ x, (3 * q * M x ^ 2)) = 3 * q * ∑ x, M x ^ 2 := by
+    rw [Finset.mul_sum]
+  have hright : (∑ x, (2 * M x ^ 3 + q ^ 3)) =
+      2 * ∑ x, M x ^ 3 + (Fintype.card X : ℤ) * q ^ 3 := by
+    rw [Finset.sum_add_distrib, Finset.mul_sum, Finset.sum_const, Finset.card_univ,
+      nsmul_eq_mul]
+  rw [hleft, hright] at hsum
   nlinarith [h3, hsum]
 
 /-- The ordered pair-union mass is the total pair count minus the falling square. -/
-theorem ordered_pair_union_deficit (T : I → Finset X) :
+theorem ordered_pair_union_deficit {I X : Type*} [Fintype I] [DecidableEq I]
+    [Fintype X] [DecidableEq X] (T : I → Finset X) :
     (Fintype.card I : ℤ) * ((Fintype.card I : ℤ) - 1) * (Fintype.card X : ℤ) -
-        (∑ i, ∑ j in (Finset.univ : Finset I).erase i,
+        (∑ i, ∑ j ∈ (Finset.univ : Finset I).erase i,
           (((Finset.univ : Finset X) \ (T i ∩ T j)).card : ℤ)) =
-      ∑ x, (degree T x : ℤ) * ((degree T x : ℤ) - 1) := by
+      ∑ x, degree T x * (degree T x - 1) := by
   classical
   have hcard : ∀ i j, (((Finset.univ : Finset X) \ (T i ∩ T j)).card : ℤ) =
       (Fintype.card X : ℤ) - ((T i ∩ T j).card : ℤ) := by
@@ -160,47 +155,49 @@ theorem ordered_pair_union_deficit (T : I → Finset X) :
         ((T i ∩ T j).card : ℤ) = (Fintype.card X : ℤ) := by
       rw [← Nat.cast_add, h, Finset.card_univ]
     linarith
-  have hinner : ∀ i, (∑ j in (Finset.univ : Finset I).erase i,
+  have hinner : ∀ i, (∑ j ∈ (Finset.univ : Finset I).erase i,
         ((Fintype.card X : ℤ) - ((T i ∩ T j).card : ℤ))) =
       ((Fintype.card I : ℤ) - 1) * (Fintype.card X : ℤ) -
-        ∑ j in (Finset.univ : Finset I).erase i, ((T i ∩ T j).card : ℤ) := by
+        ∑ j ∈ (Finset.univ : Finset I).erase i, ((T i ∩ T j).card : ℤ) := by
     intro i
     have hpos : 1 ≤ Fintype.card I := Finset.card_pos.mpr ⟨i, Finset.mem_univ i⟩
     rw [Finset.sum_sub_distrib, Finset.sum_const,
       Finset.card_erase_of_mem (Finset.mem_univ i), Finset.card_univ, nsmul_eq_mul,
       Nat.cast_sub hpos]
     ring
-  simp_rw [hcard, hinner]
+  simp only [hcard, hinner]
   rw [Finset.sum_sub_distrib, Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
     sum_card_inter_erase_eq_sum_degree_mul_pred]
   ring
 
 /-- Mean pair-union ledger: an upper third moment and a lower agreement mass
 bound the falling square, hence the ordered pair-union total. -/
-theorem mean_pair_union_moment (T : I → Finset X) (q g U : ℤ) (hq : 0 < q)
-    (h3 : ∑ x, (degree T x : ℤ) ^ 3 ≤ U) (hg : g ≤ ∑ x, (degree T x : ℤ)) :
+theorem mean_pair_union_moment {I X : Type*} [Fintype I] [DecidableEq I]
+    [Fintype X] [DecidableEq X] (T : I → Finset X) (q g U : ℤ) (hq : 0 < q)
+    (h3 : ∑ x, (degree T x) ^ 3 ≤ U) (hg : g ≤ ∑ x, degree T x) :
     3 * q * ((Fintype.card I : ℤ) * ((Fintype.card I : ℤ) - 1) * (Fintype.card X : ℤ) -
-        (∑ i, ∑ j in (Finset.univ : Finset I).erase i,
+        (∑ i, ∑ j ∈ (Finset.univ : Finset I).erase i,
           (((Finset.univ : Finset X) \ (T i ∩ T j)).card : ℤ)) + g) ≤
       2 * U + (Fintype.card X : ℤ) * q ^ 3 := by
-  have hfalling : (∑ x, (degree T x : ℤ) * ((degree T x : ℤ) - 1)) =
-      ∑ x, (degree T x : ℤ) ^ 2 - ∑ x, (degree T x : ℤ) := by
+  classical
+  have hfalling : (∑ x, degree T x * (degree T x - 1)) =
+      ∑ x, (degree T x) ^ 2 - ∑ x, degree T x := by
     rw [← Finset.sum_sub_distrib]
     apply Finset.sum_congr rfl
     intro x _
     ring
   rw [ordered_pair_union_deficit, hfalling]
-  have hsq := sum_three_mul_sq_le (fun x => (degree T x : ℤ)) q U
-    (fun x => by positivity) hq h3
-  have hle : ∑ x, (degree T x : ℤ) ^ 2 - ∑ x, (degree T x : ℤ) + g ≤
-      ∑ x, (degree T x : ℤ) ^ 2 := by linarith
+  have hsq := sum_three_mul_sq_le (fun x => degree T x) q U
+    (fun x => degree_nonneg T x) hq h3
+  have hle : ∑ x, (degree T x) ^ 2 - ∑ x, degree T x + g ≤ ∑ x, (degree T x) ^ 2 := by
+    linarith
   have hmul := mul_le_mul_of_nonneg_left hle (by linarith : (0 : ℤ) ≤ 3 * q)
   linarith
 
 /-- Exact arithmetic for the pair-weighted locator certificate at the successor
 radius `223580000`. The mean surplus per unordered triple is compared with the
 *exact* ledger gap `3898096` instead of the round `3800000` used at the
-published radius, so the two round bounds `3900000` still separate the surplus
+published radius, so a single round bound `3900000` still separates the surplus
 from the gap. -/
 theorem first_sponsor_weighted_locator_margins_successor :
     let n : ℤ := 1073741824
@@ -229,7 +226,7 @@ theorem first_sponsor_weighted_locator_margins_successor :
 
 end ProximityGap.PairUnionMoment
 
-#print axioms ProximityGap.PairUnionMoment.degree_eq_sum
+#print axioms ProximityGap.PairUnionMoment.degree_nonneg
 #print axioms ProximityGap.PairUnionMoment.sum_card_eq_sum_degree
 #print axioms ProximityGap.PairUnionMoment.sum_card_inter_eq_sum_degree_sq
 #print axioms ProximityGap.PairUnionMoment.sum_card_inter_erase_eq_sum_degree_mul_pred

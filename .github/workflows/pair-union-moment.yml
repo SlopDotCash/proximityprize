@@ -61,7 +61,7 @@ jobs:
               r"(?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)",
               text)
           expected = {
-              'degree_eq_sum',
+              'degree_nonneg',
               'sum_card_eq_sum_degree',
               'sum_card_inter_eq_sum_degree_sq',
               'sum_card_inter_erase_eq_sum_degree_mul_pred',
@@ -77,7 +77,7 @@ jobs:
               ax = {a.strip() for a in (axioms or '').split(',') if a.strip()}
               assert ax <= {'propext', 'Classical.choice', 'Quot.sound'}, name
           assert 'sorryAx' not in text
-          print('Nine pair-union declarations axiom-clean')
+          print('Ten pair-union declarations axiom-clean')
           PY
       - name: Stop Lean workers
         if: always() && !cancelled()
