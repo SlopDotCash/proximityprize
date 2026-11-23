@@ -68,7 +68,7 @@ theorem sum_ite_one_eq_card_finset (s : Finset I) (p : I → Prop) [DecidablePre
 
 /-- Summing the per-pair completion count over all ordered high pairs. -/
 theorem aggregate_pair_completions (hi : I → I → Prop) [DecidableRel hi]
-    (long : I → I → I → Prop) [DecidableRel long] (K : ℕ)
+    (long : I → I → I → Prop) [∀ i j l, Decidable (long i j l)] (K : ℕ)
     (hcap : ∀ i j, i ≠ j → hi i j → ((rest i j).filter (fun l => ¬ long i j l)).card ≤ K) :
     (∑ i, ∑ j ∈ (Finset.univ : Finset I).erase i, (if hi i j then (1 : ℤ) else 0)) *
         ((Fintype.card I : ℤ) - 2 - (K : ℤ)) ≤
