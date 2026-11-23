@@ -27,7 +27,13 @@ the two endpoints occupy two of the eleven line slots. Only distinct
 non-collinear triples may contribute `k`, and there are at most `m^3` of them.
 
 `third_moment_cap` states the result with the constant `12`, which is what
-`_CompletionCountThirdMoment` consumes.
+`_CompletionCountThirdMoment` consumes. `_CompletionCountAssembly` then applies
+the two together, so that the completion bound needs no assumed moment input:
+the line hypotheses plus the mass bound already give the count.
+
+The eleven-head line cap is not derived here. It is the hypothesis
+`hline : (ln i j).card <= 11`, supplied by the rich-pencil disjointness and
+locator-line results this module does not restate.
 -/
 
 set_option autoImplicit false
