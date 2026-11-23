@@ -111,9 +111,10 @@ in [`_PairUnionMomentMean.lean`](../../../ArkLib/Research/ProximityGap/Frontier/
   `3 q (b (b-1) n - pairUnionTotal + g) <= 2 U + n q^3`.
 
 That last inequality is exactly the `meanNum`/`denom` comparison the weighted
-certificate consumes, so the mean bound `mu` is no longer an assumed step. The
-local completion count, the sum of the local counts over pairs, and the
-transfer to a sponsor-facing floor are still written arguments.
+certificate consumes. Its rearrangement is `mean_pair_union_ge`, the
+division-free form of `mu <= |E_i union E_j|` averaged over ordered pairs, so
+the mean bound `mu` is no longer an assumed step. The local completion count and
+the transfer to a sponsor-facing floor are still written arguments.
 
 ## Successor radius at the exact ledger gap
 

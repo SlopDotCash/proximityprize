@@ -203,6 +203,20 @@ theorem mean_pair_union_moment {I X : Type*} [Fintype I] [DecidableEq I]
   have hmul := mul_le_mul_of_nonneg_left hle (by linarith : (0 : ℤ) ≤ 3 * q)
   linarith
 
+/-- The mean pair-union bound in the division-free form the weighted locator
+certificate consumes: the total pair-union mass is at least
+`n + (g - (2 U + n q^3)/(3 q)) / (b (b-1))` pairs, written as one integer
+inequality. -/
+theorem mean_pair_union_ge {I X : Type*} [Fintype I] [DecidableEq I]
+    [Fintype X] [DecidableEq X] (T : I → Finset X) (q g U : ℤ) (hq : 0 < q)
+    (h3 : ∑ x, (degree T x) ^ 3 ≤ U) (hg : g ≤ ∑ x, degree T x) :
+    3 * q * (Fintype.card I : ℤ) * ((Fintype.card I : ℤ) - 1) * (Fintype.card X : ℤ) -
+        (2 * U + (Fintype.card X : ℤ) * q ^ 3) + 3 * q * g ≤
+      3 * q * (∑ i, ∑ j ∈ (Finset.univ : Finset I).erase i,
+        (((Finset.univ : Finset X) \ (T i ∩ T j)).card : ℤ)) := by
+  have h := mean_pair_union_moment T q g U hq h3 hg
+  nlinarith [h]
+
 /-- Exact arithmetic for the pair-weighted locator certificate at the successor
 radius `223580000`. The mean surplus per unordered triple is compared with the
 *exact* ledger gap `3898096` instead of the round `3800000` used at the
@@ -243,4 +257,5 @@ end ProximityGap.PairUnionMoment
 #print axioms ProximityGap.PairUnionMoment.sum_three_mul_sq_le
 #print axioms ProximityGap.PairUnionMoment.ordered_pair_union_deficit
 #print axioms ProximityGap.PairUnionMoment.mean_pair_union_moment
+#print axioms ProximityGap.PairUnionMoment.mean_pair_union_ge
 #print axioms ProximityGap.PairUnionMoment.first_sponsor_weighted_locator_margins_successor

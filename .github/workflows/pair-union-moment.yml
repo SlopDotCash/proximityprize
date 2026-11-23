@@ -70,6 +70,7 @@ jobs:
               'sum_three_mul_sq_le',
               'ordered_pair_union_deficit',
               'mean_pair_union_moment',
+              'mean_pair_union_ge',
               'first_sponsor_weighted_locator_margins_successor',
           }
           assert {name for name, _ in results} == expected, sorted({name for name, _ in results} ^ expected)
@@ -78,7 +79,7 @@ jobs:
               ax = {a.strip() for a in (axioms or '').split(',') if a.strip()}
               assert ax <= {'propext', 'Classical.choice', 'Quot.sound'}, name
           assert 'sorryAx' not in text
-          print('Ten pair-union declarations axiom-clean')
+          print('Eleven pair-union declarations axiom-clean')
           PY
       - name: Stop Lean workers
         if: always() && !cancelled()
