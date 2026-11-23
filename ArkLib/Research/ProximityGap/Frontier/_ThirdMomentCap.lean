@@ -105,7 +105,8 @@ theorem bad_indicator_le (ln : I → I → Finset I) (i j l : I) :
         · have h4 : l ∈ ln i j := by
             by_contra h
             exact hbad ⟨h1, h2, h3, h⟩
-          rw [if_neg h1, if_neg h2, if_neg h3, if_pos h4]
+          have hconj : i ≠ j ∧ j ≠ l ∧ i ≠ l ∧ l ∈ ln i j := ⟨h1, h2, h3, h4⟩
+          rw [if_neg h1, if_neg h2, if_neg h3, if_pos hconj]
           norm_num
 
 /-- The first coordinate equality summed over the triple product. -/
