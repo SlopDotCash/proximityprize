@@ -617,6 +617,8 @@ private inductive RawPolicyMode where
   | code
   | lineComment
   | blockComment (depth : Nat)
+  | quoted
+  | raw (hashes : Nat)
 
 /-- Mask comments, but preserve all literal bodies and line structure.
 
@@ -630,6 +632,16 @@ private partial def sanitizeRawPolicyChars (chars : List Char) (mode : RawPolicy
   | '-' :: '-' :: rest, .code => ' ' :: ' ' :: sanitizeRawPolicyChars rest .lineComment
   | '/' :: '-' :: rest, .code =>
       ' ' :: ' ' :: sanitizeRawPolicyChars rest (.blockComment 1)
+  | '\'' :: '"' :: '\'' :: rest, .code =>
+      '\'' :: '"' :: '\'' :: sanitizeRawPolicyChars rest .code
+  | '\'' :: '\\' :: c :: '\'' :: rest, .code =>
+      '\'' :: '\\' :: c :: '\'' :: sanitizeRawPolicyChars rest .code
+  | '"' :: rest, .code => '"' :: sanitizeRawPolicyChars rest .quoted
+  | 'r' :: rest, .code =>
+      match countHashes rest with
+      | (hashes, '"' :: tail) =>
+          ('r' :: List.replicate hashes '#') ++ '"' :: sanitizeRawPolicyChars tail (.raw hashes)
+      | _ => 'r' :: sanitizeRawPolicyChars rest .code
   | c :: rest, .code => c :: sanitizeRawPolicyChars rest .code
   | '\n' :: rest, .lineComment => '\n' :: sanitizeRawPolicyChars rest .code
   | _ :: rest, .lineComment => ' ' :: sanitizeRawPolicyChars rest .lineComment
@@ -642,6 +654,14 @@ private partial def sanitizeRawPolicyChars (chars : List Char) (mode : RawPolicy
   | '\n' :: rest, .blockComment depth =>
       '\n' :: sanitizeRawPolicyChars rest (.blockComment depth)
   | _ :: rest, .blockComment depth => ' ' :: sanitizeRawPolicyChars rest (.blockComment depth)
+  | '\\' :: c :: rest, .quoted => '\\' :: c :: sanitizeRawPolicyChars rest .quoted
+  | '"' :: rest, .quoted => '"' :: sanitizeRawPolicyChars rest .code
+  | c :: rest, .quoted => c :: sanitizeRawPolicyChars rest .quoted
+  | '"' :: rest, .raw hashes =>
+      match dropHashes hashes rest with
+      | some tail => ('"' :: List.replicate hashes '#') ++ sanitizeRawPolicyChars tail .code
+      | none => '"' :: sanitizeRawPolicyChars rest (.raw hashes)
+  | c :: rest, .raw hashes => c :: sanitizeRawPolicyChars rest (.raw hashes)
 
 private def rawNoLintAttributeLine? (lines : Array String) : Option Nat :=
   let chars := sanitizeRawPolicyChars ("\n".intercalate lines.toList).toList .code
@@ -821,6 +841,22 @@ def runSelfTests : IO Unit := do
   assertSelfTest (hasCode "ERR_NOLINT" #[
     "def inertDocumentation := \"@[nolint unusedArguments]\""])
     "production literals use the conservative fail-closed nolint-spelling policy"
+  -- Regression: comment markers inside literals must not blind the raw nolint scan.
+  assertSelfTest (hasCode "ERR_NOLINT" #["def s := \"-- @[nolint unusedArguments]\""])
+    "a line-comment marker inside a literal must not mask nolint"
+  assertSelfTest (hasCode "ERR_NOLINT" #["def pad := \"/-\"",
+    "wrapcmd \"{@[nolint unusedArguments] def f (x : Nat) := 1}\""])
+    "a block-comment opener inside a literal must not mask later nolint"
+  assertSelfTest (hasCode "ERR_NOLINT" #["def r := r#\"-- @[nolint unusedArguments]\"#"])
+    "a line-comment marker inside a raw literal must not mask nolint"
+  -- Literal tracking must not drift: real comments after tricky literals stay masked.
+  assertSelfTest (!hasCode "ERR_NOLINT" #["def c := '\"'", "-- @[nolint unusedArguments]"])
+    "a quote character literal must not flip literal tracking"
+  assertSelfTest (!hasCode "ERR_NOLINT" #["def e := '\\\"'", "-- @[nolint unusedArguments]"])
+    "an escaped quote character literal must not flip literal tracking"
+  assertSelfTest (!hasCode "ERR_NOLINT" #["def r := r#\"say \"hi\"\"#",
+    "-- @[nolint unusedArguments]"])
+    "quotes inside a raw literal must not flip literal tracking"
   let unmatchedAttributeOpeners := "-- " ++
     String.ofList (List.flatten (List.replicate 48 ['@', '[']))
   assertSelfTest (!hasCode "ERR_NOLINT" (Array.replicate 1500 unmatchedAttributeOpeners))
