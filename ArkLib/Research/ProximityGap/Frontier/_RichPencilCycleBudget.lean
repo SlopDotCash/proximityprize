@@ -134,9 +134,203 @@ theorem distance_le_twice_radius_of_affine_cycle {F I X : Type*} [Field F]
   all_goals by_cases hI : x ∈ H (σ.symm i)
   all_goals simp [bit, hP, hH, hI] at h01 h02 h12 ⊢
 
+
+/-- A path is represented by omitting the last-to-first distance constraint.
+The bridge row on that edge can combine the two extra private endpoint rows,
+so its budget is twice the radius. -/
+theorem path_distance_budget {I X : Type*} [Fintype I] [Fintype X] [DecidableEq X]
+    (σ : Equiv.Perm I) (S P H : I → Finset X) (last : I) (D t : ℕ)
+    (hlocal : ∀ i x, x ∈ S i → 2 ≤
+      bit (x ∈ P i) + bit (x ∈ H i) + bit (x ∈ H (σ.symm i)))
+    (hpair : ∀ i, i ≠ last → D ≤ (S i ∪ S (σ i)).card)
+    (hP : ∀ i, (P i).card ≤ t)
+    (hH : ∀ i, i ≠ last → (H i).card ≤ t)
+    (hLast : (H last).card ≤ 2 * t) :
+    (Fintype.card I - 1) * D ≤ (2 * Fintype.card I + 1) * t := by
+  classical
+  let rest := (Finset.univ : Finset I).erase last
+  let pairSize (i : I) := (S i ∪ S (σ i)).card
+  have restCard : rest.card = Fintype.card I - 1 := by
+    simp [rest]
+  have lower : (Fintype.card I - 1) * D ≤ ∑ i ∈ rest, pairSize i := by
+    calc
+      _ = ∑ _i ∈ rest, D := by simp [restCard]
+      _ ≤ _ := Finset.sum_le_sum fun i hi ↦ hpair i (Finset.mem_erase.mp hi).1
+  have extend : (∑ i ∈ rest, pairSize i) ≤ ∑ i, pairSize i := by
+    rw [← Finset.sum_erase_add Finset.univ pairSize (Finset.mem_univ last)]
+    exact Nat.le_add_right _ _
+  have privateUpper : (∑ i, (P i).card) ≤ Fintype.card I * t := by
+    calc
+      _ ≤ ∑ _i : I, t := Finset.sum_le_sum fun i _ ↦ hP i
+      _ = _ := by simp
+  have sharedUpper : (∑ i, (H i).card) ≤ (Fintype.card I - 1) * t + 2 * t := by
+    rw [← Finset.sum_erase_add Finset.univ (fun i ↦ (H i).card) (Finset.mem_univ last)]
+    apply Nat.add_le_add _ hLast
+    calc
+      _ ≤ ∑ _i ∈ rest, t :=
+        Finset.sum_le_sum fun i hi ↦ hH i (Finset.mem_erase.mp hi).1
+      _ = _ := by simp [restCard]
+  have hpos : 0 < Fintype.card I := Fintype.card_pos_iff.mpr ⟨last⟩
+  have hcard : (Fintype.card I - 1) + 1 = Fintype.card I := by omega
+  have heq : Fintype.card I * t + ((Fintype.card I - 1) * t + 2 * t) =
+      (2 * Fintype.card I + 1) * t := by
+    have hm := congrArg (fun k : ℕ ↦ k * t) hcard
+    simp only [Nat.add_mul, one_mul, two_mul] at hm ⊢
+    omega
+  calc
+    _ ≤ ∑ i, pairSize i := lower.trans extend
+    _ ≤ (∑ i, (P i).card) + ∑ i, (H i).card :=
+      adjacent_exception_mass_le σ S P H hlocal
+    _ ≤ _ := by
+      rw [← heq]
+      exact Nat.add_le_add privateUpper sharedUpper
+
+/-- The path budget limits the number of rich pencils at the current first
+sponsor radius, once the path has been encoded with its two endpoint rows. -/
+theorem first_sponsor_path_card_le_eight (m : ℕ)
+    (h : (m - 1) * 536870913 ≤ (2 * m + 1) * 221512373) : m ≤ 8 := by
+  omega
+
+
+/-- For a path of affine triples, the endpoint evaluations are absorbed into the
+exceptional bridge row. Every other bridge joins equal evaluations. -/
+theorem affine_path_distance_budget {F I X : Type*} [Field F] [Fintype I]
+    [Fintype X] [DecidableEq X] (σ : Equiv.Perm I) (last : I)
+    (u₀ u₁ : X → F) (U V : I → X → F) (p a b : I → F) (D t : ℕ)
+    (hlabels : ∀ i, p i ≠ a i ∧ p i ≠ b i ∧ a i ≠ b i)
+    (hmeet : ∀ i, i ≠ last → ∀ x,
+      U i x + a i * V i x = U (σ i) x + b (σ i) * V (σ i) x)
+    (C : Submodule F (X → F))
+    (hU : ∀ i, U i ∈ C) (hV : ∀ i, V i ∈ C)
+    (hdistinct : ∀ i, i ≠ last → (U i, V i) ≠ (U (σ i), V (σ i)))
+    (hdistance : ∀ v ∈ C, ∀ E : Finset X, E.card < D →
+      (∀ x ∉ E, v x = 0) → v = 0)
+    (hscalar : ∀ i, i ≠ last → a i = b (σ i))
+    (hp : ∀ i, (affineHeadErrors u₀ u₁ (U i) (V i) (p i)).card ≤ t)
+    (ha : ∀ i, (affineHeadErrors u₀ u₁ (U i) (V i) (a i)).card ≤ t)
+    (hb : ∀ i, (affineHeadErrors u₀ u₁ (U i) (V i) (b i)).card ≤ t) :
+    (Fintype.card I - 1) * D ≤ (2 * Fintype.card I + 1) * t := by
+  classical
+  let S i := affineErrorSupport u₀ u₁ (U i) (V i)
+  let P i := affineHeadErrors u₀ u₁ (U i) (V i) (p i)
+  let A i := affineHeadErrors u₀ u₁ (U i) (V i) (a i)
+  let B i := affineHeadErrors u₀ u₁ (U i) (V i) (b i)
+  let H i := if i = last then A i ∪ B (σ i) else A i
+  have outgoing (i : I) : A i ⊆ H i := by
+    by_cases hi : i = last
+    · intro x hx
+      simpa only [H, if_pos hi] using (Finset.mem_union.mpr (Or.inl hx) :
+        x ∈ A i ∪ B (σ i))
+    · simp [H, hi]
+  have incoming (i : I) : B (σ i) ⊆ H i := by
+    by_cases hi : i = last
+    · intro x hx
+      simpa only [H, if_pos hi] using (Finset.mem_union.mpr (Or.inr hx) :
+        x ∈ A i ∪ B (σ i))
+    · have he : A i = B (σ i) := by
+        ext x
+        have h := hmeet i hi x
+        rw [hscalar i hi] at h
+        simp [A, B, affineHeadErrors, hscalar i hi, h]
+      simp [H, hi, he]
+  have agree (i : I) : ∀ x ∉ S i, U i x = u₀ x ∧ V i x = u₁ x := by
+    intro x hx
+    simpa [S, affineErrorSupport, not_or, eq_comm] using hx
+  have hpair (i : I) (hi : i ≠ last) : D ≤ (S i ∪ S (σ i)).card :=
+    le_union_card_of_distinct_code_pencils C u₀ u₁ (U i) (V i) (U (σ i)) (V (σ i))
+      (S i) (S (σ i)) D (hU i) (hV i) (hU (σ i)) (hV (σ i))
+      (agree i) (agree (σ i)) (hdistinct i hi) hdistance
+  refine path_distance_budget σ S P H last D t ?_ hpair hp ?_ ?_
+  · intro i x hx
+    obtain ⟨hpa, hpb, hab⟩ := hlabels i
+    have hin : B i ⊆ H (σ.symm i) := by
+      simpa only [Equiv.apply_symm_apply] using incoming (σ.symm i)
+    have pair (c d : F) (hne : c ≠ d) :
+        x ∈ affineHeadErrors u₀ u₁ (U i) (V i) c ∨
+          x ∈ affineHeadErrors u₀ u₁ (U i) (V i) d :=
+      Finset.mem_union.mp (affine_support_pair_cover u₀ u₁ (U i) (V i) c d hne hx)
+    have h01 : x ∈ P i ∨ x ∈ H i := (pair _ _ hpa).imp id (fun h ↦ outgoing i h)
+    have h02 : x ∈ P i ∨ x ∈ H (σ.symm i) := (pair _ _ hpb).imp id (fun h ↦ hin h)
+    have h12 : x ∈ H i ∨ x ∈ H (σ.symm i) := (pair _ _ hab).imp (fun h ↦ outgoing i h) (fun h ↦ hin h)
+    by_cases hP : x ∈ P i
+    all_goals by_cases hH : x ∈ H i
+    all_goals by_cases hI : x ∈ H (σ.symm i)
+    all_goals simp [bit, hP, hH, hI] at h01 h02 h12 ⊢
+  · intro i hi
+    simpa only [H, if_neg hi] using ha i
+  · simp only [H, if_pos rfl, two_mul]
+    exact (Finset.card_union_le _ _).trans (Nat.add_le_add (ha last) (hb (σ last)))
+
+
+/-- Nine ordered rich pencils with consecutive shared heads cannot occur at the
+first sponsor radius. The error rows may be supersets of the true error sets,
+as in canonical bad-witness data. -/
+theorem first_sponsor_no_nine_pencil_path {F J X : Type*} [Field F] [Fintype X]
+    [DecidableEq X] (C : Submodule F (X → F)) (u₀ u₁ : X → F)
+    (γ : J → F) (w : J → X → F) (Q : J → Finset X)
+    (U V : Fin 9 → X → F) (p a b : Fin 9 → J)
+    (hinj : Function.Injective γ)
+    (hlabels : ∀ i, p i ≠ a i ∧ p i ≠ b i ∧ a i ≠ b i)
+    (hshare : ∀ i : Fin 8, a i.castSucc = b i.succ)
+    (hdistinct : ∀ i : Fin 8, (U i.castSucc, V i.castSucc) ≠ (U i.succ, V i.succ))
+    (hU : ∀ i, U i ∈ C) (hV : ∀ i, V i ∈ C)
+    (hhead : ∀ i j, (j = p i ∨ j = a i ∨ j = b i) →
+      ∀ x, w j x = U i x + γ j * V i x)
+    (hagree : ∀ j x, x ∉ Q j → w j x = u₀ x + γ j * u₁ x)
+    (hbudget : ∀ j, (Q j).card ≤ 221512373)
+    (hdistance : ∀ v ∈ C, ∀ E : Finset X, E.card < 536870913 →
+      (∀ x ∉ E, v x = 0) → v = 0) : False := by
+  classical
+  have step (i : Fin 9) (hi : i ≠ Fin.last 8) :
+      ∃ j : Fin 8, i = j.castSucc ∧ finRotate 9 i = j.succ := by
+    have hval : i.val < 8 := by
+      have hne : i.val ≠ 8 := fun he ↦ hi (Fin.ext he)
+      omega
+    let j : Fin 8 := ⟨i.val, hval⟩
+    refine ⟨j, Fin.ext rfl, Fin.ext ?_⟩
+    exact coe_finRotate_of_ne_last hi
+  have shared (i : Fin 9) (hi : i ≠ Fin.last 8) : a i = b (finRotate 9 i) := by
+    obtain ⟨j, hj, hk⟩ := step i hi
+    calc
+      a i = a j.castSucc := congrArg a hj
+      _ = b j.succ := hshare j
+      _ = b (finRotate 9 i) := congrArg b hk.symm
+  have cost (i : Fin 9) (j : J) (hj : j = p i ∨ j = a i ∨ j = b i) :
+      (affineHeadErrors u₀ u₁ (U i) (V i) (γ j)).card ≤ 221512373 := by
+    refine (Finset.card_le_card ?_).trans (hbudget j)
+    intro x hx
+    by_contra hnot
+    have he := (hagree j x hnot).symm.trans (hhead i j hj x)
+    simpa [affineHeadErrors, he] using hx
+  have h := affine_path_distance_budget (finRotate 9) (Fin.last 8)
+    u₀ u₁ U V (γ ∘ p) (γ ∘ a) (γ ∘ b) 536870913 221512373
+    (fun i ↦ ⟨hinj.ne (hlabels i).1, hinj.ne (hlabels i).2.1, hinj.ne (hlabels i).2.2⟩)
+    (fun i hi x ↦ by
+      have left := hhead i (a i) (Or.inr (Or.inl rfl)) x
+      have right := hhead (finRotate 9 i) (b (finRotate 9 i)) (Or.inr (Or.inr rfl)) x
+      rw [← shared i hi] at right
+      have h := left.symm.trans right
+      simpa only [Function.comp_apply, ← shared i hi] using h)
+    C hU hV
+    (fun i hi ↦ by
+      obtain ⟨j, hj, hk⟩ := step i hi
+      rw [hk, hj]
+      exact hdistinct j)
+    hdistance
+    (fun i hi ↦ congrArg γ (shared i hi))
+    (fun i ↦ cost i (p i) (Or.inl rfl))
+    (fun i ↦ cost i (a i) (Or.inr (Or.inl rfl)))
+    (fun i ↦ cost i (b i) (Or.inr (Or.inr rfl)))
+  have impossible := first_sponsor_path_card_le_eight 9 (by simpa using h)
+  omega
+
 end ProximityGap.RichPencilCycleBudget
 
 #print axioms ProximityGap.RichPencilCycleBudget.adjacent_exception_mass_le
 #print axioms ProximityGap.RichPencilCycleBudget.distance_le_twice_radius_of_cycle
 
 #print axioms ProximityGap.RichPencilCycleBudget.distance_le_twice_radius_of_affine_cycle
+#print axioms ProximityGap.RichPencilCycleBudget.path_distance_budget
+#print axioms ProximityGap.RichPencilCycleBudget.first_sponsor_path_card_le_eight
+#print axioms ProximityGap.RichPencilCycleBudget.affine_path_distance_budget
+#print axioms ProximityGap.RichPencilCycleBudget.first_sponsor_no_nine_pencil_path
