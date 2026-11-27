@@ -8,11 +8,12 @@ Write $n=2^{30}$, $q=n/4$, $H=\mu_n\subset\mathbb F_p$, and let $k$ be the messa
 |---:|:---|---:|---:|---:|---:|
 | $1/2$ | first | 314,491,700 | 759,250,124 | 88,161,484 | 3 |
 | $1/2$ | second | 314,491,713 | 759,250,111 | 88,161,471 | 3 |
-| $1/4$ | both | 536,870,914 | 536,870,910 | 134,217,726 | 3 |
+| $1/4$ | first | 536,870,914 | 536,870,910 | 134,217,726 | 3 |
+| $1/4$ | second | 536,870,915 | 536,870,909 | 134,217,725 | 3 |
 | $1/8$ | first | 694,116,763 | 379,625,061 | 111,189,605 | 3 |
-| $1/8$ | second | 694,116,790 | 379,625,034 | 111,189,578 | 3 |
+| $1/8$ | second | 694,116,792 | 379,625,032 | 111,189,576 | 3 |
 | $1/16$ | first | 805,306,371 | 268,435,453 | 67,108,861 | 1 |
-| $1/16$ | second | 805,306,403 | 268,435,421 | 67,108,829 | 1 |
+| $1/16$ | second | 805,306,404 | 268,435,420 | 67,108,828 | 1 |
 
 The first unresolved errors and the unrestricted failure brackets come from the [prize review](full-prize-review.md). The determinant method below specializes the [integer norm bound](../../../ArkLib/Research/ProximityGap/Frontier/DyadicFoldedNorm.lean) already used for [small quotient locator families](dyadic-locator-degree-caps.md). The additional point at full length is to descend after each lift. The shorter vector still has entries in $\{-1,0,1\}$. Its energy bound decreases at each step.
 

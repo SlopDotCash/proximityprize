@@ -5,7 +5,7 @@ $$
  f_i+g_i=S_0+A U_i,\qquad f_i g_i=P_0+B U_i,\qquad
  (A f_i-B)(A g_i-B)=N.
 $$
-Here $\deg A\le d$, $\deg B\le 2d$ and the distinct polynomial parameters $U_i$ have degree **at most 1,538**. Over the second named prime this is a necessary condition for list failure at the first open quarter-rate count of 536,870,914 errors. All conclusions apply at positive interleaving width by identifying the alphabet with a scalar extension. The existence of such a list remains open. [Scalar extension](../../../ArkLib/Research/ProximityGap/Frontier/ListScalarExtension.lean)
+Here $\deg A\le d$, $\deg B\le 2d$ and the distinct polynomial parameters $U_i$ have degree **at most 1,538**. Over the second named prime this is a necessary condition for list failure at the quarter-rate count of 536,870,914 errors. All conclusions apply at positive interleaving width by identifying the alphabet with a scalar extension. The [moving-section proof](quarter-list-moving-jets.md) excludes this family on the second named prime. [Scalar extension](../../../ArkLib/Research/ProximityGap/Frontier/ListScalarExtension.lean)
 
 ## Extracting the pairs
 
@@ -58,3 +58,26 @@ $$
  rD\le 2(2g-2+2D)+3D-2g-2=7D+2g-6<9D.
 $$
 There are at most eight finite targets and one additional normalized parameter at infinity. Thus every ten parameters include a nonconstant cross ratio. The argument leaves open pencils with genuinely varying parameter cross ratios. The determinant and factorization identities above are machine-checked. The extraction, genus argument and rational-center estimate are written proofs.
+
+## Recovering the forced polynomials from a proposed received word
+
+There is a linear test on the received word alone. Solve $V(x)=U(x)y(x)$ on the whole domain with $\deg U\le d+3080$ and $\deg V\le2d+3080$. For a failing center the error locator multiplying $A,B$ supplies a nonzero solution. Any nonzero solution has $U\ne0$ by the root bound. On the at least $n-3080$ sites where $y=B/A$, the polynomial $AV-BU$ vanishes. Its degree is at most $3d+3080<n-3080$. Every nonzero solution therefore reduces to the *same* rational function $B/A$, even if the set of agreements was not supplied. Its poles on the grid and its discrepancies can now be counted directly. A trivial solution space, or more than 3080 discrepancies including poles, certifies safety for this center.
+
+The polynomial $N$ is also uniquely determined by the center on **every injective domain**, after making $A$ monic. The information at infinity matters when $A$ has small affine degree. Here is a homogeneous linear recovery test. Write $G$ for the degree-$n$ domain vanisher in homogeneous coordinates $(X,Z)$. For a nonzero polynomial $C$ of degree at most $v$, use $C^{[v]}=Z^v C(X/Z)$ and set $0^{[v]}=0$. Let $\ell$ be the common order at infinity of $A^{[d]}$ and $B^{[2d]}$, that is, the smaller of their two vanishing orders. Infinite order is allowed for the zero polynomial. Then
+$$
+ A_* = A^{[d]}/Z^\ell,\qquad B_* = B^{[2d]}/Z^\ell
+$$
+are coprime binary forms of degrees $d-\ell$ and $2d-\ell$. They have no common affine zero by construction. The binary form
+$$
+ N_* = B_*^2-S_0^{[d]}A_* B_*+P_0^{[2d]}A_*^2
+$$
+has degree $4d-2\ell$. Since it vanishes at at least $n-3080$ different physical sites, necessarily $\ell\le1538$.
+
+Remove the common factors of $G,N_*$ in the binary polynomial ring. Their remaining ratio gives $N_* K=G D$ with coprime homogeneous $K,D$, $\deg K=r\le3080$ and $\deg D=r-4-2\ell$. Padding both by $Z^{3080-r}$ produces a nonzero solution to the linear congruence
+$$
+       B_*^2 K\equiv G D\pmod {A_*},
+       \qquad \deg K=3080,\quad\deg D=3076-2\ell .
+$$
+The zero form is allowed in these homogeneous coefficient spaces. Any two solutions satisfy $A_*\mid B_*^2(K_1 D_2-K_2 D_1)$ by multiplying the two congruences by $D_2,D_1$ and subtracting. Coprimality removes $B_*^2$. The cross-difference has degree at most $6156-2\ell<d-\ell=\deg A_*$, so it vanishes. In comparison with the true solution, this forces every nonzero solution to have both entries nonzero and give the same ratio. Thus one recovers $N_*=G D/K$ uniquely, without knowing any list word, error locator, or partition. The test requires two homogeneous linear systems and polynomial arithmetic. An invalid degree, a missing solution, or failure of exact division certifies safety for this center.
+
+Every paired word yields a degree-$(2d-\ell)$ homogeneous divisor $A_* f_i^{[d]}-B_*$ of $N_*$. Its residue modulo $A_*$ is fixed. Since $A_*$ has positive degree and is coprime to $B_*$, at most one scalar multiple of any divisor can have that residue. Checking the complementary divisor and evaluating the resulting words uses only the candidate center and domain. Counting these divisors for arbitrary possible centers remains open. [Recovery controls](../../../scripts/probes/probe_complementary_list_pencil.py)

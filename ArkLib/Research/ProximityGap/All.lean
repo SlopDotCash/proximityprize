@@ -243,6 +243,7 @@ import ArkLib.Research.ProximityGap.Frontier.ConcreteTwoSidedBracket
 import ArkLib.Research.ProximityGap.Frontier.CongruenceSizeBlindNoGo
 import ArkLib.Research.ProximityGap.Frontier.ConstantIndexGaussBarrier
 import ArkLib.Research.ProximityGap.Frontier.CoordinatePencilFreshLabels
+import ArkLib.Research.ProximityGap.Frontier.CoreMultiplicityMCA
 import ArkLib.Research.ProximityGap.Frontier.CosetHeadSlopes
 import ArkLib.Research.ProximityGap.Frontier.CosetOddRedundancy
 import ArkLib.Research.ProximityGap.Frontier.CosetUnionVanishingLower
@@ -1196,6 +1197,7 @@ import ArkLib.Research.ProximityGap.Frontier.SplitPencilBlockVariance
 import ArkLib.Research.ProximityGap.Frontier.SplitPencilFiberData
 import ArkLib.Research.ProximityGap.Frontier.SplitPencilOddFiberObstructions
 import ArkLib.Research.ProximityGap.Frontier.SplitPencilRootProducts
+import ArkLib.Research.ProximityGap.Frontier.SplitPencilSquareCompletions
 import ArkLib.Research.ProximityGap.Frontier.SplitPrimeJointMoments
 import ArkLib.Research.ProximityGap.Frontier.SplitPrimeSixthDensity
 import ArkLib.Research.ProximityGap.Frontier.SpurBadPrimeCeiling
@@ -1218,6 +1220,7 @@ import ArkLib.Research.ProximityGap.Frontier.SumProductAsymmetrySubgroup
 import ArkLib.Research.ProximityGap.Frontier.SuperDiagonalEnergyLowerClosed
 import ArkLib.Research.ProximityGap.Frontier.SupplyExceedsBudgetUnconditional
 import ArkLib.Research.ProximityGap.Frontier.SupportDeficitFourthMoment
+import ArkLib.Research.ProximityGap.Frontier.SupportDeficitMatrix
 import ArkLib.Research.ProximityGap.Frontier.SupportObstruction
 import ArkLib.Research.ProximityGap.Frontier.Sweep_A02_AutocorrelationRecursion
 import ArkLib.Research.ProximityGap.Frontier.Sweep_A04_ConstantIndexGaussSumBound

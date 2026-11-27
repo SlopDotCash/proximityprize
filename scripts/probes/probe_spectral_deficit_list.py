@@ -27,6 +27,38 @@ def bounds(n, t, s, minimum_intersection=None):
     return kappa, limit, lower, upper
 
 
+def refined_bounds(n, t, s):
+    """Fourth trace after bounding the entrywise fourth powers with a cubic trace."""
+    cap, limit, _, upper = bounds(n, t, s)
+    require(cap < 1, "the refinement requires a strict entry cap")
+    m = 2*n + 1
+    cubic = (limit - 1) * (limit + 1)**2
+    radicand = cubic * (m - 1 + limit)
+    root = isqrt(radicand.numerator // radicand.denominator) + 1
+    cubic_absolute = limit * (limit**2 - 1) + cubic + root
+    negative_squared = (root + limit**2 - 1) / 2
+    entry_fourth = (cap * cubic_absolute + 2*cap**2 * negative_squared) / (1 - cap**2)
+    return m - entry_fourth, upper
+
+
+def check_cubic_weights(matrix):
+    """Check the normalized cubic entry witness directly, including unequal row masses."""
+    m = len(matrix)
+    squared = [[sum(a*b for a,b in zip(row, column, strict=True))
+                for column in matrix] for row in matrix]
+    cubed = [[sum(a*b for a,b in zip(row, column, strict=True))
+              for column in matrix] for row in squared]
+    cap = max(map(max, matrix))
+    rows = [squared[i][i] for i in range(m)]
+    weights = [[matrix[i][j]**3 / max(1, rows[i], rows[j]) for j in range(m)]
+               for i in range(m)]
+    require(all(sum(row) <= cap for row in weights), "weighted row mass")
+    witness = sum(weights[i][j]*(cubed[i][j] - matrix[i][j]) for i in range(m) for j in range(m))
+    fourth = sum(sum(x**4 for x in row) for row in matrix)
+    require((1-cap**2)*fourth <= witness + 2*cap**2*sum(max(0,1-r) for r in rows),
+            "normalized cubic lower bound")
+
+
 def exact_matrix_control():
     """The triples through the origin-lines in F₂⁴ give more than twice 15 blocks."""
     n, t, s = 15, 3, 1
@@ -45,6 +77,7 @@ def exact_matrix_control():
                          for i in range(m) for j in range(m)), a**4)
         _, _, lower, upper = bounds(n, t, s)
         require(second >= m and lower <= q <= upper, "actual matrix violates moment bounds")
+        check_cubic_weights([[Fraction(x, a) for x in row] for row in numerators])
 
     # A separate elementary packing check verifies a strictly post-Johnson toy exclusion.
     _, _, lower, upper = bounds(17, 4, 1)
@@ -70,6 +103,15 @@ def main():
         print(f"Rate 1/{den}, all centers safe through {last_safe:,} errors at budget 2n. "
               f"The fourth trace is at least {lower.numerator // lower.denominator:,} "
               f"and at most {-(-upper.numerator // upper.denominator):,} if 2n+1 words exist.")
+
+    for den, last_safe in ((2, 314_491_712), (8, 694_116_791), (16, 805_306_403)):
+        t, s = n - last_safe, n // den - 1
+        lower, upper = refined_bounds(n, t, s)
+        next_lower, next_upper = refined_bounds(n, t - 1, s)
+        require(lower > upper and next_lower <= next_upper, "refined comparison endpoints")
+        print(f"Weighted cubic estimate at rate 1/{den}: {last_safe:,} safe errors, "
+              f"fourth trace at least {lower.numerator // lower.denominator:,} "
+              f"and at most {-(-upper.numerator // upper.denominator):,} for an oversized list.")
 
     s, t = n // 4 - 1, n // 2 - 2
     _, _, lower900, upper = bounds(n, t, s, 900)

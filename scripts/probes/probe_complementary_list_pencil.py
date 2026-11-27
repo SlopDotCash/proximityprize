@@ -2,7 +2,8 @@
 from fractions import Fraction
 from itertools import combinations, product
 
-from probe_quarter_coset_lists import require
+from probe_quarter_coset_lists import evaluate, fiber_polynomial, poly_mul, require
+from probe_quarter_sixteen_splines import nullspace
 
 
 def named_bounds():
@@ -73,6 +74,74 @@ def field_control():
     print('Two finite-field controls passed.')
 
 
+def recovery_controls():
+    # In the second linear system the columns represent homogeneous forms, by
+    # storing their coefficient of X^j Z^(weight-j) in position j.
+    p, d, cap = 12097, 32, 9
+    n = 4*d+4
+    for degree, large_denominator in ((64, True), (64, False), (63, False)):
+        u = 1
+        v = next(w for b in range(2, p) if (w := pow(b, degree, p)) != u)
+        zeros = [x for x in range(p) if pow(x, degree, p) in (u, v)]
+        require(len(zeros) == 2*degree, 'fully split product')
+        scale = 1
+        if large_denominator:
+            anchor = next(pow(b, d, p) for b in range(1, p)
+                          if pow(b, 2*d, p) not in (u, v))
+            A = [-anchor % p] + [0]*(d-1) + [1]
+            B = [(u-anchor**2) % p]
+            scale = (anchor**2-u) * pow(anchor**2-v, -1, p) % p
+        else:
+            A = [1]
+            B = [u]+[0]*(degree-1)+[p-1]
+        ell = min(d+1-len(A), 2*d+1-len(B))
+        first = [-u]+[0]*(degree-1)+[1]
+        second = [-scale*v]+[0]*(degree-1)+[scale]
+        N = poly_mul(first, second, p)
+        # Omit two roots of N and insert other sites. Include a pole if available.
+        sites = zeros[2:]
+        poles = [x for x in range(p) if evaluate(A, x, p) == 0]
+        fillers = [x for x in range(p) if x not in zeros and x not in poles]
+        sites = sites + (poles[:1]+fillers)[:n-len(sites)]
+        received = []
+        for i, x in enumerate(sites):
+            a, b = evaluate(A, x, p), evaluate(B, x, p)
+            received.append((b*pow(a, -1, p) + (i == 0)) % p if a else 0)
+        weights = (d+cap, 2*d+cap)
+        rows = [[-y*pow(x, j, p) % p for j in range(weights[0]+1)] +
+                [pow(x, j, p) for j in range(weights[1]+1)]
+                for x, y in zip(sites, received)]
+        first_space = nullspace(rows, p)
+        require(first_space, 'a rational recovery solution')
+        for vec in first_space:
+            U, V = vec[:weights[0]+1], vec[weights[0]+1:]
+            for x in range(150):
+                require((evaluate(A, x, p)*evaluate(V, x, p)
+                         - evaluate(B, x, p)*evaluate(U, x, p)) % p == 0,
+                        'unique reduced rational function')
+
+        G = fiber_polynomial(sites, p)
+        families = [(poly_mul(B, B, p), cap),
+                    ([-v for v in G], cap-4-2*ell),
+                    ([-v for v in A], 3*d-ell+cap)]
+        columns = [([0]*shift + factor) for factor, weight in families
+                   for shift in range(weight+1)]
+        total = 4*d-2*ell+cap
+        eqs = [[col[j] % p if j < len(col) else 0 for col in columns]
+               for j in range(total+1)]
+        kernel = nullspace(eqs, p)
+        require(kernel, 'a homogeneous recovery solution')
+        for vec in kernel:
+            K = vec[:cap+1]
+            D = vec[cap+1:cap+1+(cap-4-2*ell)+1]
+            require(any(K) and any(D), 'nonzero ratio')
+            lhs, rhs = poly_mul(N, K, p), poly_mul(G, D, p)
+            require(all((lhs[j] if j < len(lhs) else 0) == (rhs[j] if j < len(rhs) else 0)
+                        for j in range(total+1)), 'every solution recovers the true product')
+    print('Three homogeneous recovery systems passed, including a pole and a common zero at infinity.')
+
+
 if __name__ == '__main__':
     field_control()
     named_bounds()
+    recovery_controls()
