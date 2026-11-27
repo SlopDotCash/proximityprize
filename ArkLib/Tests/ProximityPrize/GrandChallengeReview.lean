@@ -159,6 +159,19 @@ run_cmd do
   unless (RankExecutable.listBoundary [0, 1] orderTwo 2 0 3 1 1).isNone do
     throwError "Dimension zero has a single possible codeword"
 
+/- The constant-code formula handles zero width and the exact all-safe alphabet budget.
+Both evaluators must return before asking for any coordinates. -/
+run_cmd do
+  let points (_ : Unit) : List (Fin 8) := panic! "Unexpected constant-code support search"
+  let cases : List (ℕ × ℕ × Option ℕ) :=
+    [(0, 0, some 0), (0, 1, none), (1, 16, some 8), (1, 17, none),
+      (2, 2, some 6), (2, 288, some 8), (2, 289, none)]
+  for (m, B, want) in cases do
+    let plain := RankExecutable.listBoundaryWith points powersOfTwo 8 1 17 m B
+    let smooth := RankExecutable.smoothListBoundary points powersOfTwo 8 1 17 m B
+    unless plain.map Fin.val == want && smooth.map Fin.val == want do
+      throwError "Wrong dimension-one boundary for width {m} and list budget {B}"
+
 /-- All three sites over the field of order three. -/
 private def threeSites : Fin 3 ↪ ZMod 3 where
   toFun := ![0, 1, 2]
@@ -245,6 +258,20 @@ run_cmd do
   unless [get (n / 2), get (n / 4), get (n / 8), get (n / 16)] ==
       [some 268435457, some 402653185, some 469762049, some 503316481] do
     throwError "The distance certificate disagrees with a production list boundary"
+
+/- The constant alphabet can itself be too large to materialize, even when a
+small budget makes the first failing error count inexpensive to compute. -/
+run_cmd do
+  let n := 2 ^ 30
+  let q := BudgetOneProduction.p
+  let points (_ : Unit) : List (Fin (2 ^ 30)) := panic! "Unexpected production support search"
+  let cases : List (ℕ × ℕ × Option ℕ) :=
+    [(n, 0, some 0), (n, 3, some 805306368), (1, q, none)]
+  for (m, B, want) in cases do
+    let plain := RankExecutable.listBoundaryWith points BudgetOneProduction.domain n 1 q m B
+    let smooth := RankExecutable.smoothListBoundary points BudgetOneProduction.domain n 1 q m B
+    unless plain.map Fin.val == want && smooth.map Fin.val == want do
+      throwError "Wrong production constant-code boundary for width {m} and list budget {B}"
 
 /- The universal classification, the production evaluator and the theorems stated in this file
 may use only the three standard axioms. The check follows every dependency, so an axiom or an

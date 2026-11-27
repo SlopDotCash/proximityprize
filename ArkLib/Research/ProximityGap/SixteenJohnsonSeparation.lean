@@ -35,13 +35,23 @@ theorem safe_grid_iff {n e : ℕ} {a : Boundary n} {safe : ℝ≥0 → Prop}
 
 variable {F I : Type} [Field F] [Fintype F] [Fintype I] [Nonempty I]
 
-/-- On sixteen distinct sites at dimension two, every field either fails MCA by eleven
-errors or keeps the interleaved list safe through twelve, at the 128-bit tolerance. -/
-theorem separate (D : I ↪ F) (hn : Fintype.card I = 16) (m : ℕ) :
-    cutoff (RankReview.mcaAnswer D (prizeThreshold : ℝ≥0) 2) ≤ 11 ∨
-      12 < cutoff (RankReview.listAnswer D (prizeThreshold : ℝ≥0) 2 m) := by
+omit [Nonempty I] in
+/-- If the integer tolerance covers the whole field, no oversized family of bad
+scalars can exist and the MCA answer is all-safe in every dimension. -/
+theorem all_safe_of_field_budget (D : I ↪ F) (ε : ℝ≥0) (k : ℕ)
+    (full : Fintype.card F ≤ RankReview.budget F ε) : RankReview.mcaAnswer D ε k = none := by
+  apply (RankBoundary.firstFailure_eq_none_iff _).mpr
+  rintro e ⟨G, count, _⟩
+  have bound := Finset.card_le_univ G
+  omega
+
+/-- When the integer budget is smaller than the field, either MCA has failed
+by eleven errors or the interleaved list remains safe through twelve. -/
+theorem separate_of_budget_lt (D : I ↪ F) (hn : Fintype.card I = 16) (ε : ℝ≥0) (m : ℕ)
+    (tiny : RankReview.budget F ε < Fintype.card F) :
+    cutoff (RankReview.mcaAnswer D ε 2) ≤ 11 ∨
+      12 < cutoff (RankReview.listAnswer D ε 2 m) := by
   classical
-  let ε : ℝ≥0 := prizeThreshold
   by_cases budget : 20 ≤ RankReview.budget F ε
   · right
     have spec := RankReview.listAnswer_correct D ε 2 m (by omega)
@@ -68,9 +78,14 @@ theorem separate (D : I ↪ F) (hn : Fintype.card I = 16) (m : ℕ) :
       ENNReal.div_mul_cancel (by simp [Fintype.card_ne_zero]) (ENNReal.natCast_ne_top _)]
       at combined
     have natural : min (Fintype.card F) 24 ≤ RankReview.budget F ε := by exact_mod_cast combined
-    have tiny : RankReview.budget F ε < Fintype.card F := by
-      rw [show ε = (prizeThreshold : ℝ≥0) from rfl, RankExecutable.prizeBudget]
-      exact Nat.div_lt_self Fintype.card_pos (by decide)
     omega
+
+/-- The 128-bit tolerance always has an integer budget smaller than the field. -/
+theorem separate (D : I ↪ F) (hn : Fintype.card I = 16) (m : ℕ) :
+    cutoff (RankReview.mcaAnswer D (prizeThreshold : ℝ≥0) 2) ≤ 11 ∨
+      12 < cutoff (RankReview.listAnswer D (prizeThreshold : ℝ≥0) 2 m) := by
+  apply separate_of_budget_lt D hn
+  rw [RankExecutable.prizeBudget]
+  exact Nat.div_lt_self Fintype.card_pos (by decide)
 
 end ProximityPrize.SixteenJohnsonSeparation
