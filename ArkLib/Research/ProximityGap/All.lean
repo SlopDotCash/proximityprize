@@ -1243,6 +1243,7 @@ import ArkLib.Research.ProximityGap.Frontier.ThreeHeadRootScore
 import ArkLib.Research.ProximityGap.Frontier.ThreeHeadSuccessorIncidence
 import ArkLib.Research.ProximityGap.Frontier.ThreeHeadThresholdCurve
 import ArkLib.Research.ProximityGap.Frontier.ThreeInvolutionPairs
+import ArkLib.Research.ProximityGap.Frontier.ThreeRatesTwoHeadCorollary
 import ArkLib.Research.ProximityGap.Frontier.ThreeRegimePrimeThreshold
 import ArkLib.Research.ProximityGap.Frontier.ThreeWordAgreement
 import ArkLib.Research.ProximityGap.Frontier.ToricGraphMinorTransfer
