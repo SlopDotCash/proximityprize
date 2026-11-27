@@ -815,6 +815,7 @@ import ArkLib.Research.ProximityGap.Frontier.PrimeFieldMultiplierHeight
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldPeriodAlignment
 import ArkLib.Research.ProximityGap.Frontier.PrimeHDOrder
 import ArkLib.Research.ProximityGap.Frontier.PrimeHDResultant
+import ArkLib.Research.ProximityGap.Frontier.PrimeHDTopHasse
 import ArkLib.Research.ProximityGap.Frontier.PrimeHeadDifferences
 import ArkLib.Research.ProximityGap.Frontier.PrimeManyLinePhase
 import ArkLib.Research.ProximityGap.Frontier.PrimeThreeLine255
@@ -1038,6 +1039,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicReceivedOrder
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicWeightBound
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicWindowCount
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicWitness
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCyclicCubics
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeDegreeSevenDimension
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeExceptionalCeilings
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeExceptionalHeadCeilings
