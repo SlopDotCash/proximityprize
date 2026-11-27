@@ -336,6 +336,10 @@ import ArkLib.Research.ProximityGap.Frontier.DoubleInterpolationCommonFactor
 import ArkLib.Research.ProximityGap.Frontier.DoubleQuadraticHeadCount
 import ArkLib.Research.ProximityGap.Frontier.DoubleQuadraticPhase
 import ArkLib.Research.ProximityGap.Frontier.DoubleQuadraticThreshold
+import ArkLib.Research.ProximityGap.Frontier.DrdosCapOneBarrier
+import ArkLib.Research.ProximityGap.Frontier.DrdosDiscriminantBarrier
+import ArkLib.Research.ProximityGap.Frontier.DrdosResultantDescent
+import ArkLib.Research.ProximityGap.Frontier.DrdosTightListBounds
 import ArkLib.Research.ProximityGap.Frontier.DyadicAntiperiodicReflection
 import ArkLib.Research.ProximityGap.Frontier.DyadicCharacterCirculant
 import ArkLib.Research.ProximityGap.Frontier.DyadicChordEnergy
