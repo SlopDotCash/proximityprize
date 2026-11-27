@@ -367,9 +367,8 @@ private def lineViolations (lines codeLines : Array String) : Array Violation :=
       let previous := lines[i - 1]!.trimAsciiEnd.toString
       if !previous.endsWith "," && !previous.endsWith "=>" && !previous.endsWith "↦" then
         result := result.push <| violation "ERR_IBY" (i + 1) "Line is an isolated `by`"
-    let originalTrimmed := line.trimAscii.toString
-    if originalTrimmed == "." || originalTrimmed == "·" ||
-        line.trimAsciiStart.toString.startsWith ". " then
+    if trimmed == "." || trimmed == "·" ||
+        code.trimAsciiStart.toString.startsWith ". " then
       result := result.push <| violation "ERR_DOT" (i + 1)
         "Isolated focusing dot, or `.` used instead of `·`"
     if code.trimAsciiStart.toString.startsWith ":" then
@@ -495,7 +494,13 @@ private partial def stripCommentDeclarationPrefix (chars : List Char) : List Cha
           modifier.toList.isPrefixOf chars &&
             (chars.drop modifier.length).head?.any Char.isWhitespace) with
       | some modifier => stripCommentDeclarationPrefix (chars.drop modifier.length)
-      | none => chars
+      | none =>
+          let rest := chars.drop "class".length
+          if "class".toList.isPrefixOf chars && rest.head?.any Char.isWhitespace &&
+              (startsToken "inductive" (dropCommentWhitespace rest) ||
+                startsToken "abbrev" (dropCommentWhitespace rest)) then
+            stripCommentDeclarationPrefix rest
+          else chars
 
 /-- Recognise a declaration header, while allowing keyword-led prose such as instance-search notes.
 
@@ -763,6 +768,23 @@ def runSelfTests : IO Unit := do
       "-- theorem visible : True"]
   assertSelfTest (positioned.map (·.line) == #[3])
     "commented declaration diagnostics must retain source line numbers"
+  -- Regression: `class inductive` and `class abbrev` headers must be recognised.
+  assertSelfTest (hasCode "ERR_COMMENT_DECL" #["-- class inductive Foo : Type"])
+    "a commented `class inductive` header must be rejected"
+  assertSelfTest (hasCode "ERR_COMMENT_DECL" #["-- class abbrev Foo := Bar"])
+    "a commented `class abbrev` header must be rejected"
+  assertSelfTest (!hasCode "ERR_COMMENT_DECL" #["-- class inductive types are slow here",
+    "-- class instances are cached"])
+    "class-led prose must remain valid"
+  -- Regression: docstring and literal lines starting with `. ` are not focusing dots.
+  assertSelfTest (!hasCode "ERR_DOT" #["/-- text", ". continued sentence", "-/"])
+    "a docstring line starting with a dot must not look like a focusing dot"
+  assertSelfTest (!hasCode "ERR_DOT" #["def s := \"text", ". continued\""])
+    "a string literal line starting with a dot must not look like a focusing dot"
+  assertSelfTest (hasCode "ERR_DOT" #["  . exact h"])
+    "a real `. ` focusing dot must still be rejected"
+  assertSelfTest (hasCode "ERR_DOT" #["  ·"])
+    "an isolated `·` must still be rejected"
   -- Regression: stacked line-comment markers must not hide a commented declaration.
   assertSelfTest (hasCode "ERR_COMMENT_DECL" #["--- theorem hidden : True := trivial"])
     "triple-dash comments must still be checked"
