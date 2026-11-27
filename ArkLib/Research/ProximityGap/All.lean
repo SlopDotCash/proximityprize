@@ -184,6 +184,7 @@ import ArkLib.Research.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ64
 import ArkLib.Research.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ8192
 import ArkLib.Research.ProximityGap.Frontier.CarbonAlgDyadicComplexDihedral
 import ArkLib.Research.ProximityGap.Frontier.CarbonBGKCoreOrbitAndPeriodLaws
+import ArkLib.Research.ProximityGap.Frontier.CarbonBGKM4ConfluentStepanovAndMoments
 import ArkLib.Research.ProximityGap.Frontier.CarbonBGKPrizeBridgeResolution
 import ArkLib.Research.ProximityGap.Frontier.CarbonBGKSixthMomentAndRecurrence
 import ArkLib.Research.ProximityGap.Frontier.CarbonListSmoothFoldedRigidity
