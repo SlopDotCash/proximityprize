@@ -860,6 +860,7 @@ import ArkLib.Research.ProximityGap.Frontier.PrimeHDOrder
 import ArkLib.Research.ProximityGap.Frontier.PrimeHDQuadraticDiscriminant
 import ArkLib.Research.ProximityGap.Frontier.PrimeHDQuotientContact
 import ArkLib.Research.ProximityGap.Frontier.PrimeHDResultant
+import ArkLib.Research.ProximityGap.Frontier.PrimeHDSyzygyResultant
 import ArkLib.Research.ProximityGap.Frontier.PrimeHDTopHasse
 import ArkLib.Research.ProximityGap.Frontier.PrimeHeadDifferences
 import ArkLib.Research.ProximityGap.Frontier.PrimeManyLinePhase
