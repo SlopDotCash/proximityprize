@@ -401,6 +401,7 @@ import ArkLib.Research.ProximityGap.Frontier.E3RouteBridge
 import ArkLib.Research.ProximityGap.Frontier.E3StrataCharZero
 import ArkLib.Research.ProximityGap.Frontier.EffKatzConductorBarrier
 import ArkLib.Research.ProximityGap.Frontier.EighthCollinearOutlier
+import ArkLib.Research.ProximityGap.Frontier.EighthDihedralHeadDirections
 import ArkLib.Research.ProximityGap.Frontier.EighthDyadicHeadDirections
 import ArkLib.Research.ProximityGap.Frontier.EighthFiveRichSafety
 import ArkLib.Research.ProximityGap.Frontier.EighthFourPlusOne
@@ -410,6 +411,7 @@ import ArkLib.Research.ProximityGap.Frontier.EighthNearSaturatedPowers
 import ArkLib.Research.ProximityGap.Frontier.EighthOutlierArithmetic
 import ArkLib.Research.ProximityGap.Frontier.EighthQuotientCoreCap
 import ArkLib.Research.ProximityGap.Frontier.EighthRatePrime159
+import ArkLib.Research.ProximityGap.Frontier.EighthRationalCoverObstructions
 import ArkLib.Research.ProximityGap.Frontier.EighthRichDeficits
 import ArkLib.Research.ProximityGap.Frontier.EighthRichHeadSafety
 import ArkLib.Research.ProximityGap.Frontier.EighthSaturatedOppositeDirections
