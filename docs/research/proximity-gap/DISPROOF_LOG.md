@@ -1,5 +1,9 @@
 # Disproof Log — ABF26 Proximity Prize Grand Challenge 1 (Issue #232)
 
+## [164-second-prime-johnson-pivot-mixed-hasse-room] 2026-11-27
+
+At the two second-prime Johnson pivots on length-$2^{30}$ codes (**314,491,699** half-rate errors, $t^2-nd=1{,}082{,}833{,}961$, and **536,870,913** quarter-rate errors, $t^2-nd=1$), an ordinary uniform-order mixed-Hasse shape $(r,v,s)$ has no dimension surplus whenever $v\le r$ or $4r^2\delta+d^2+4rd^2\le 4rdt$ ($\delta=t^2-nd$). Any positive-surplus interpolant requires $r>110{,}255{,}990$ at half rate and $r>72{,}057{,}593{,}769{,}492{,}479$ at quarter rate, with $v>r$. Under constructibility ($r\le s+1$), a single quarter-rate surface has scalar degree $s>2^{31}$ and any two half-rate surfaces have single-resultant allowance $s_1 v_2>2^{31}$, exceeding the 128-bit budget $2^{31}$. Ordinary uniform-order two-surface mixed-Hasse interpolation and value resultants therefore cannot certify safety at either second-prime Johnson pivot; variable-order or non-uniform mechanisms remain outside this obstruction. [Pivot rank room](carbon-mcap2-pivot-rank.md) · [Lean no-go](../../../ArkLib/Research/ProximityGap/Frontier/CarbonMCAP2PivotRank.lean) · [Integer probe](../../../scripts/probes/probe_carbon_mcap2_pivot_rank.py)
+
 ## [164-quarter-split-pencil-ramification] 2026-11-21
 
 Every first-prime quarter-rate successor pencil needs a lowest-degree member of degree at least **167,908,203**. More generally its combined ramification index at zero and infinity is at most **100,527,252**, or **97,129,336** for a map factoring through squaring. These exclusions use two successive negacyclic determinant bounds and the odd cardinality of the once-quotiented fibers. [Proof](quarter-successor-split-pencil.md#ramification-at-zero-and-infinity)
