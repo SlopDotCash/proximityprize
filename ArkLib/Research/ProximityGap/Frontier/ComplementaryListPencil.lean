@@ -52,6 +52,56 @@ theorem cross_product {R : Type*} [CommRing R] (A B U f g h i : R)
     _ = ((f - h) * (g - h)) * ((f - i) * (g - i)) := by ring
     _ = _ := by rw [hh, hi]; ring
 
+/-- When both pairs have the same double agreement, their parameter difference has
+a double root at any site where the specialization coefficient is nonzero. -/
+theorem square_dvd_parameter_difference {A B U V f g h i : F[X]} {x y : F}
+    (sum_eq : f + g - (h + i) = A * (U - V))
+    (product_eq : f * g - h * i = B * (U - V))
+    (hf : f.eval x = y) (hg : g.eval x = y) (hh : h.eval x = y) (hi : i.eval x = y)
+    (unit_at_site : B.eval x - y * A.eval x ≠ 0) :
+    (X - C x) ^ 2 ∣ U - V := by
+  have factor (q : F[X]) (hq : q.eval x = y) : X - C x ∣ q - C y :=
+    dvd_iff_isRoot.mpr (by simp [IsRoot, hq])
+  have diff : (f - C y) * (g - C y) - (h - C y) * (i - C y) =
+      (B - C y * A) * (U - V) := by
+    linear_combination product_eq - C y * sum_eq
+  have cop : IsCoprime (X - C x) (B - C y * A) := by
+    apply (irreducible_X_sub_C _).coprime_iff_not_dvd.mpr
+    intro hd
+    exact unit_at_site (by simpa [IsRoot] using dvd_iff_isRoot.mp hd)
+  apply cop.pow_left.dvd_of_dvd_mul_left
+  rw [← diff, pow_two]
+  exact dvd_sub (mul_dvd_mul (factor f hf) (factor g hg))
+    (mul_dvd_mul (factor h hh) (factor i hi))
+
+/-- Each common agreement costs one degree of the parameter difference. A shared
+double agreement with nonzero specialization coefficient costs two. -/
+theorem weighted_common_agreement_le [DecidableEq F] (sites double : Finset F)
+    (center : F → F) {A B U V f g h i : F[X]} (distinct : U ≠ V)
+    (sum_eq : f + g - (h + i) = A * (U - V))
+    (product_eq : f * g - h * i = B * (U - V))
+    (single : ∀ x ∈ sites, x ∉ double → U.eval x = V.eval x)
+    (both : ∀ x ∈ sites, x ∈ double →
+      f.eval x = center x ∧ g.eval x = center x ∧ h.eval x = center x ∧ i.eval x = center x ∧
+      B.eval x - center x * A.eval x ≠ 0) :
+    (∑ x ∈ sites, if x ∈ double then 2 else 1) ≤ (U - V).natDegree := by
+  let weight (x : F) : ℕ := if x ∈ double then 2 else 1
+  have divides : ∏ x ∈ sites, (X - C x) ^ weight x ∣ U - V := by
+    apply Finset.prod_dvd_of_coprime
+    · intro x _ y _ hxy
+      exact (pairwise_coprime_X_sub_C Function.injective_id hxy).pow
+    · intro x hx
+      by_cases hd : x ∈ double
+      · obtain ⟨hf, hg, hh, hi, hunit⟩ := both x hx hd
+        simpa [weight, hd] using square_dvd_parameter_difference sum_eq product_eq hf hg hh hi hunit
+      · simp only [weight, hd, ↓reduceIte, pow_one]
+        exact dvd_iff_isRoot.mpr (by simp [IsRoot, single x hx hd])
+  have bound := natDegree_le_of_dvd divides (sub_ne_zero.mpr distinct)
+  rw [natDegree_prod_of_monic _ _ (fun x _ => (monic_X_sub_C x).pow (weight x))] at bound
+  simpa only [natDegree_pow, natDegree_X_sub_C, mul_one, one_mul] using bound
+
+#print axioms square_dvd_parameter_difference
+#print axioms weighted_common_agreement_le
 #print axioms determinant_zero
 #print axioms common_product
 #print axioms cross_product
