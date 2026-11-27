@@ -857,6 +857,7 @@ import ArkLib.Research.ProximityGap.Frontier.PrimeFieldLimitSet
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldMultiplierHeight
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldPeriodAlignment
 import ArkLib.Research.ProximityGap.Frontier.PrimeHDOrder
+import ArkLib.Research.ProximityGap.Frontier.PrimeHDQuadraticDiscriminant
 import ArkLib.Research.ProximityGap.Frontier.PrimeHDQuotientContact
 import ArkLib.Research.ProximityGap.Frontier.PrimeHDResultant
 import ArkLib.Research.ProximityGap.Frontier.PrimeHDTopHasse
@@ -1090,6 +1091,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicWindowCount
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicWitness
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCyclicCubics
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeDegreeSevenDimension
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeEighthAssembly
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeExceptionalCeilings
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeExceptionalHeadCeilings
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeFieldWindow
@@ -1123,6 +1125,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeQuadraticScalarClass
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeQuarticInterpolation
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeQuarticReceivedOrders
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeQuarticWeightBound
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeRatesAssembly
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeReceivedJetColumns
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeReverseChart
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeScalarChart
@@ -1321,7 +1324,9 @@ import ArkLib.Research.ProximityGap.Frontier.ThreeHeadMarkedFibers
 import ArkLib.Research.ProximityGap.Frontier.ThreeHeadPrime38
 import ArkLib.Research.ProximityGap.Frontier.ThreeHeadResidualSecant
 import ArkLib.Research.ProximityGap.Frontier.ThreeHeadRootScore
+import ArkLib.Research.ProximityGap.Frontier.ThreeHeadSuccessorAssembly
 import ArkLib.Research.ProximityGap.Frontier.ThreeHeadSuccessorIncidence
+import ArkLib.Research.ProximityGap.Frontier.ThreeHeadSuccessorReduction
 import ArkLib.Research.ProximityGap.Frontier.ThreeHeadThresholdCurve
 import ArkLib.Research.ProximityGap.Frontier.ThreeInvolutionPairs
 import ArkLib.Research.ProximityGap.Frontier.ThreeRatesTwoHeadCorollary
