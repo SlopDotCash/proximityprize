@@ -521,6 +521,7 @@ import ArkLib.Research.ProximityGap.Frontier.GeometricIncompleteSumNoGo
 import ArkLib.Research.ProximityGap.Frontier.GeometricWordLocator
 import ArkLib.Research.ProximityGap.Frontier.GoldilocksMixedTrace
 import ArkLib.Research.ProximityGap.Frontier.GradedAntipodalVanishingLower
+import ArkLib.Research.ProximityGap.Frontier.HalfBlowupGaussWindow
 import ArkLib.Research.ProximityGap.Frontier.HalfCoreWeightedJets
 import ArkLib.Research.ProximityGap.Frontier.HalfFourFiberParity
 import ArkLib.Research.ProximityGap.Frontier.HalfListSplitDifferences
@@ -847,6 +848,7 @@ import ArkLib.Research.ProximityGap.Frontier.QuadraticPairObstruction
 import ArkLib.Research.ProximityGap.Frontier.QuadraticPrimePhase
 import ArkLib.Research.ProximityGap.Frontier.QuadraticTwoHeadCount
 import ArkLib.Research.ProximityGap.Frontier.QuadraticTwoHeadThreshold
+import ArkLib.Research.ProximityGap.Frontier.QuarterBlowupGaussWindow
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetFourRates
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetTwoThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarterCollinearInterval
