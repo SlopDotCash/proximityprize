@@ -881,6 +881,7 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterCommonFactorDegrees
 import ArkLib.Research.ProximityGap.Frontier.QuarterCoreWeightedJets
 import ArkLib.Research.ProximityGap.Frontier.QuarterDyadicEigenspaceExclusion
 import ArkLib.Research.ProximityGap.Frontier.QuarterDyadicParity
+import ArkLib.Research.ProximityGap.Frontier.QuarterFourHeadCrossRatioBarrier
 import ArkLib.Research.ProximityGap.Frontier.QuarterIntervalWronskianPullbacks
 import ArkLib.Research.ProximityGap.Frontier.QuarterMu64DihedralExclusion
 import ArkLib.Research.ProximityGap.Frontier.QuarterMu64Mu128CyclicExclusion
