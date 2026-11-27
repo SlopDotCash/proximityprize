@@ -495,7 +495,13 @@ private partial def stripCommentDeclarationPrefix (chars : List Char) : List Cha
           modifier.toList.isPrefixOf chars &&
             (chars.drop modifier.length).head?.any Char.isWhitespace) with
       | some modifier => stripCommentDeclarationPrefix (chars.drop modifier.length)
-      | none => chars
+      | none =>
+          let rest := chars.drop "class".length
+          if "class".toList.isPrefixOf chars && rest.head?.any Char.isWhitespace &&
+              (startsToken "inductive" (dropCommentWhitespace rest) ||
+                startsToken "abbrev" (dropCommentWhitespace rest)) then
+            stripCommentDeclarationPrefix rest
+          else chars
 
 /-- Recognise a declaration header, while allowing keyword-led prose such as instance-search notes.
 
@@ -763,6 +769,14 @@ def runSelfTests : IO Unit := do
       "-- theorem visible : True"]
   assertSelfTest (positioned.map (·.line) == #[3])
     "commented declaration diagnostics must retain source line numbers"
+  -- Regression: `class inductive` and `class abbrev` headers must be recognised.
+  assertSelfTest (hasCode "ERR_COMMENT_DECL" #["-- class inductive Foo : Type"])
+    "a commented `class inductive` header must be rejected"
+  assertSelfTest (hasCode "ERR_COMMENT_DECL" #["-- class abbrev Foo := Bar"])
+    "a commented `class abbrev` header must be rejected"
+  assertSelfTest (!hasCode "ERR_COMMENT_DECL" #["-- class inductive types are slow here",
+    "-- class instances are cached"])
+    "class-led prose must remain valid"
   -- Regression: stacked line-comment markers must not hide a commented declaration.
   assertSelfTest (hasCode "ERR_COMMENT_DECL" #["--- theorem hidden : True := trivial"])
     "triple-dash comments must still be checked"
