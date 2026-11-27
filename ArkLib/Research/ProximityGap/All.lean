@@ -186,6 +186,7 @@ import ArkLib.Research.ProximityGap.Frontier.CarbonAlgDyadicComplexDihedral
 import ArkLib.Research.ProximityGap.Frontier.CarbonBGKCoreOrbitAndPeriodLaws
 import ArkLib.Research.ProximityGap.Frontier.CarbonBGKPrizeBridgeResolution
 import ArkLib.Research.ProximityGap.Frontier.CarbonBGKSixthMomentAndRecurrence
+import ArkLib.Research.ProximityGap.Frontier.CarbonListSmoothFoldedRigidity
 import ArkLib.Research.ProximityGap.Frontier.CarbonListTightFirstOrder
 import ArkLib.Research.ProximityGap.Frontier.CarbonMCAP2PivotRank
 import ArkLib.Research.ProximityGap.Frontier.CarbonSYZMiddleSlotLiftGate
