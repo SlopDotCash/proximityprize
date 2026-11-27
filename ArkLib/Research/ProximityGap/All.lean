@@ -465,6 +465,7 @@ import ArkLib.Research.ProximityGap.Frontier.ExplainableAmalgamation
 import ArkLib.Research.ProximityGap.Frontier.ExplicitFirstOrderCutBudgets
 import ArkLib.Research.ProximityGap.Frontier.F6CliffInstantiationJohnson
 import ArkLib.Research.ProximityGap.Frontier.Face1JohnsonRadiusCap
+import ArkLib.Research.ProximityGap.Frontier.FanoMaskRigidity
 import ArkLib.Research.ProximityGap.Frontier.FarCosetCardDvd
 import ArkLib.Research.ProximityGap.Frontier.FarCosetCardLower
 import ArkLib.Research.ProximityGap.Frontier.FarLineProxyBelowJohnson
@@ -515,6 +516,7 @@ import ArkLib.Research.ProximityGap.Frontier.FourHeadCommonRootObstruction
 import ArkLib.Research.ProximityGap.Frontier.FourHeadCoreDeterminant
 import ArkLib.Research.ProximityGap.Frontier.FourHeadCrossRatio
 import ArkLib.Research.ProximityGap.Frontier.FourHeadExtensionSharpness
+import ArkLib.Research.ProximityGap.Frontier.FourHeadPartitionAllocation
 import ArkLib.Research.ProximityGap.Frontier.FourHeadQuotient
 import ArkLib.Research.ProximityGap.Frontier.FourHeadWitness
 import ArkLib.Research.ProximityGap.Frontier.FourInvolutionPairs
