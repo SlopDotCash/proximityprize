@@ -247,6 +247,7 @@ import ArkLib.Research.ProximityGap.Frontier.ConcreteTrivialCeiling
 import ArkLib.Research.ProximityGap.Frontier.ConcreteTwoSidedBracket
 import ArkLib.Research.ProximityGap.Frontier.CongruenceSizeBlindNoGo
 import ArkLib.Research.ProximityGap.Frontier.ConstantIndexGaussBarrier
+import ArkLib.Research.ProximityGap.Frontier.CoordinateChartAndHeightSum
 import ArkLib.Research.ProximityGap.Frontier.CoordinatePencilFreshLabels
 import ArkLib.Research.ProximityGap.Frontier.CoreMultiplicityMCA
 import ArkLib.Research.ProximityGap.Frontier.CosetHeadSlopes
@@ -335,6 +336,7 @@ import ArkLib.Research.ProximityGap.Frontier.DimensionThreeInvolution
 import ArkLib.Research.ProximityGap.Frontier.DimensionThreePairCriterion
 import ArkLib.Research.ProximityGap.Frontier.DimensionThreePrime37
 import ArkLib.Research.ProximityGap.Frontier.DirectionalJetObstruction
+import ArkLib.Research.ProximityGap.Frontier.DiscriminantFactorSplit
 import ArkLib.Research.ProximityGap.Frontier.DiscriminantSquareClass
 import ArkLib.Research.ProximityGap.Frontier.DistinctPeriodMomentLaw
 import ArkLib.Research.ProximityGap.Frontier.DistinctPeriodSecondMoment
@@ -671,6 +673,7 @@ import ArkLib.Research.ProximityGap.Frontier.LocatorShortening
 import ArkLib.Research.ProximityGap.Frontier.LocatorSignedPacking
 import ArkLib.Research.ProximityGap.Frontier.LogRatioTowerBoundedIncrement
 import ArkLib.Research.ProximityGap.Frontier.LogRatioTowerExpForm
+import ArkLib.Research.ProximityGap.Frontier.LogarithmicComponentCap
 import ArkLib.Research.ProximityGap.Frontier.LogarithmicSectionHeights
 import ArkLib.Research.ProximityGap.Frontier.LowDegreeCenterListRigidity
 import ArkLib.Research.ProximityGap.Frontier.LowDimensionCubicPlateau
@@ -816,6 +819,7 @@ import ArkLib.Research.ProximityGap.Frontier.PivotFactoredObstruction
 import ArkLib.Research.ProximityGap.Frontier.PlanarQuartetMass
 import ArkLib.Research.ProximityGap.Frontier.PlanarSharpnessAndBarriers
 import ArkLib.Research.ProximityGap.Frontier.PlaneBezoutWithMultiplicity
+import ArkLib.Research.ProximityGap.Frontier.PlaneBranchRegularity
 import ArkLib.Research.ProximityGap.Frontier.PlaneCurveFunctionField
 import ArkLib.Research.ProximityGap.Frontier.PlaneCurveLinearAlgebra
 import ArkLib.Research.ProximityGap.Frontier.PlaneCurveReflexivity
