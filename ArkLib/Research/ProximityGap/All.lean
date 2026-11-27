@@ -186,6 +186,8 @@ import ArkLib.Research.ProximityGap.Frontier.CarbonAlgDyadicComplexDihedral
 import ArkLib.Research.ProximityGap.Frontier.CarbonBGKPrizeBridgeResolution
 import ArkLib.Research.ProximityGap.Frontier.CarbonListTightFirstOrder
 import ArkLib.Research.ProximityGap.Frontier.CarbonMCAP2PivotRank
+import ArkLib.Research.ProximityGap.Frontier.CarbonSYZMiddleSlotLiftGate
+import ArkLib.Research.ProximityGap.Frontier.CarbonSYZMultiplicityThreeHrank
 import ArkLib.Research.ProximityGap.Frontier.CensusBudgetInfeasibleDeepBand
 import ArkLib.Research.ProximityGap.Frontier.CensusCapForbidsLargeAligned
 import ArkLib.Research.ProximityGap.Frontier.CensusCapForcedBelow
