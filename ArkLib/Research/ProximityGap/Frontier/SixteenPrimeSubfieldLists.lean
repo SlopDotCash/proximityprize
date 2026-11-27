@@ -81,9 +81,7 @@ private theorem from_table {s k e : ℕ} (hk : 0 < k)
   exact Lambda_le_of_injective_comp (e := rep)
     (fun _ _ eq => congrFun eq (Classical.arbitrary κ)) maps _
 
-set_option maxRecDepth 16000
-set_option maxHeartbeats 1200000
-
+set_option maxRecDepth 16000 in
 /-- Ten half-rate words meet a single six-error ball over every extension. -/
 theorem half_ten {F : Type*} [Field F] (f : ZMod 17 →+* F) (κ : Type*) [Nonempty κ] :
     (10 : ℕ∞) ≤ Lambda (interleavedCodeSet (κ := κ)
@@ -91,6 +89,7 @@ theorem half_ten {F : Type*} [Field F] (f : ZMod 17 →+* F) (κ : Type*) [Nonem
   apply from_table (e := 6) (by decide) halfCenter half (by decide +kernel)
     (by decide +kernel) f κ
 
+set_option maxRecDepth 16000 in
 /-- Eight quarter-rate words meet a single nine-error ball over every extension. -/
 theorem quarter_eight {F : Type*} [Field F] (f : ZMod 17 →+* F) (κ : Type*) [Nonempty κ] :
     (8 : ℕ∞) ≤ Lambda (interleavedCodeSet (κ := κ)
@@ -123,6 +122,7 @@ theorem half_cap {F : Type*} [Field F] (D : Fin 16 ↪ F) (m : ℕ)
       Set (Fin 16 → F))) δ ≤ 6 := by
   apply cap_of_incidence D 8 11 m 6 4 δ (by push_cast; linarith) (by decide)
 
+set_option maxRecDepth 16000 in
 /-- Exactly six words are possible in a worst five-error ball over every extension. -/
 theorem half_five_errors {F : Type*} [Field F] (f : ZMod 17 →+* F) (m : ℕ) [NeZero m] :
     Lambda (interleavedCodeSet (κ := Fin m) (ReedSolomon.code

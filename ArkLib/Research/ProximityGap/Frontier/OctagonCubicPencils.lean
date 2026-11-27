@@ -50,7 +50,7 @@ theorem eval_sub {F : Type*} [Field F] (z : F) (u v : Quartic) :
   simp only [eval, sub, Int.cast_sub]
   ring
 
-private theorem powers {F : Type*} [Field F] {z : F} (hz : z^4 = -1) :
+private theorem powers {F : Type*} [Field F] {z : F} (hz : z ^ 4 = -1) :
     z^5 = -z ∧ z^6 = -z^2 ∧ z^7 = -z^3 := by
   constructor
   · rw [pow_succ, hz, neg_one_mul]
@@ -58,14 +58,14 @@ private theorem powers {F : Type*} [Field F] {z : F} (hz : z^4 = -1) :
   · rw [show 6 = 4+2 by decide, pow_add, hz, neg_one_mul]
   · rw [show 7 = 4+3 by decide, pow_add, hz, neg_one_mul]
 
-theorem eval_mul {F : Type*} [Field F] {z : F} (hz : z^4 = -1) (u v : Quartic) :
+theorem eval_mul {F : Type*} [Field F] {z : F} (hz : z ^ 4 = -1) (u v : Quartic) :
     eval z (mul u v) = eval z u * eval z v := by
   simp only [eval, mul, Int.cast_sub, Int.cast_add, Int.cast_mul]
   ring_nf
   rw [hz, (powers hz).1, (powers hz).2.1]
   ring
 
-private theorem paired {F : Type*} [Field F] {z : F} (hz : z^4 = -1) (u : Quartic) :
+private theorem paired {F : Type*} [Field F] {z : F} (hz : z ^ 4 = -1) (u : Quartic) :
     eval z u * eval (-z) u =
       ((u.a:F)^2-u.c^2+2*u.b*u.d) + (2*(u.a:F)*u.c-u.b^2+u.d^2)*z^2 := by
   simp only [eval]
@@ -74,7 +74,7 @@ private theorem paired {F : Type*} [Field F] {z : F} (hz : z^4 = -1) (u : Quarti
   ring
 
 /-- The four conjugate determinants multiply to the computed integer norm. -/
-theorem norm_eq {F : Type*} [Field F] {z : F} (hz : z^4 = -1) (u : Quartic) :
+theorem norm_eq {F : Type*} [Field F] {z : F} (hz : z ^ 4 = -1) (u : Quartic) :
     (u.norm : F) = (eval z u * eval (-z) u) * (eval (z^3) u * eval (-(z^3)) u) := by
   have hc : (z^3)^4 = -1 := by
     rw [← pow_mul, show 3*4=4*3 by decide, pow_mul, hz]
@@ -98,7 +98,7 @@ def root (i : ℕ) : Quartic :=
   | 6 => ⟨0,0,-1,0⟩
   | _ => ⟨0,0,0,-1⟩
 
-theorem eval_root {F : Type*} [Field F] {z : F} (hz : z^4 = -1) (i : ℕ) (hi : i < 8) :
+theorem eval_root {F : Type*} [Field F] {z : F} (hz : z ^ 4 = -1) (i : ℕ) (hi : i < 8) :
     Quartic.eval z (root i) = z^i := by
   obtain ⟨h₅, h₆, h₇⟩ := Quartic.powers hz
   interval_cases i <;> simp [root, Quartic.eval, hz, h₅, h₆, h₇]
@@ -108,7 +108,7 @@ def atSite (i : ℕ) : List ℕ → Quartic
   | [] => ⟨1,0,0,0⟩
   | j :: js => ((root i).sub (root j)).mul (atSite i js)
 
-theorem eval_atSite {F : Type*} [Field F] {z : F} (hz : z^4 = -1)
+theorem eval_atSite {F : Type*} [Field F] {z : F} (hz : z ^ 4 = -1)
     (i : ℕ) (hi : i < 8) (sites : List ℕ) (hs : ∀ j ∈ sites, j < 8) :
     Quartic.eval z (atSite i sites) = (sites.map (fun j => z^i-z^j)).prod := by
   induction sites with
@@ -131,12 +131,13 @@ def norms : Finset ℤ :=
 
 set_option maxRecDepth 10000 in
 set_option maxHeartbeats 2000000 in
+-- Evaluate the integral norms of all normalized octagon partitions.
 theorem norm_values : norms = {256,1024,4096,16384,18496,20736,65536,73984,246016,331776} := by
   decide +kernel
 
 /-- A normalized partition has zero determinant for one of the four primitive
 root choices exactly in the three exceptional odd characteristics. -/
-theorem exceptional {F : Type*} [Field F] {z : F} (hz : z^4 = -1) (h2 : (2:F) ≠ 0) :
+theorem exceptional {F : Type*} [Field F] {z : F} (hz : z ^ 4 = -1) (h2 : (2 : F) ≠ 0) :
     (∃ d ∈ (range 8).erase 0, ∃ A ∈ (remaining d).powersetCard 3,
       Quartic.eval z (det d A) = 0 ∨ Quartic.eval (-z) (det d A) = 0 ∨
       Quartic.eval (z^3) (det d A) = 0 ∨ Quartic.eval (-(z^3)) (det d A) = 0) ↔

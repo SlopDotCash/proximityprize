@@ -196,6 +196,7 @@ def allocationSummary (half : Bool) : ℕ × Bool :=
 
 set_option maxRecDepth 200000 in
 set_option maxHeartbeats 16000000 in
+-- Check every head count and residual ordinate degree in both production windows.
 /-- Every empty case and every possible maximum ordinate degree of an active common nonlinear
 factor satisfies the residual slope condition and the two stated production bounds. -/
 theorem allocation : allocationSummary true = (2145566228, true) ∧

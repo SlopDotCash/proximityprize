@@ -40,11 +40,11 @@ private theorem half_power {p m : ℕ} [Fact p.Prime] {g : ZMod p}
 
 /-- One dyadic descent step. Enough odd tests force the integer halves to agree. -/
 theorem equal_halves {p k c : ℕ} [Fact p.Prime] (b : ℕ → ℤ) {g : ZMod p}
-    (hg : IsPrimitiveRoot g (2^k + 2^k))
-    (bounds : ∀ i < 2^k + 2^k, -1 ≤ b i ∧ b i ≤ 1)
-    (hc : 0 < c) (hcm : c ≤ 2^k) (cover : 2^k ≤ 8*c)
-    (large : (4 * 2^k)^4 < p)
-    (tests : ∀ j < c, eval b (2^k + 2^k) (g^(2*j+1)) = 0) :
+    (hg : IsPrimitiveRoot g (2 ^ k + 2 ^ k))
+    (bounds : ∀ i < 2 ^ k + 2 ^ k, -1 ≤ b i ∧ b i ≤ 1)
+    (hc : 0 < c) (hcm : c ≤ 2 ^ k) (cover : 2 ^ k ≤ 8 * c)
+    (large : (4 * 2 ^ k) ^ 4 < p)
+    (tests : ∀ j < c, eval b (2 ^ k + 2 ^ k) (g ^ (2 * j + 1)) = 0) :
     ∀ j < 2^k, b j = b (j + 2^k) := by
   let m := 2^k
   let a (j : Fin m) : ℤ := b j.val - b (j.val + m)
@@ -91,7 +91,7 @@ theorem equal_halves {p k c : ℕ} [Fact p.Prime] (b : ℕ → ℤ) {g : ZMod p}
   exact sub_eq_zero.mp (congrFun zero ⟨j,hj⟩)
 
 private theorem descend_eval {m p : ℕ} [Fact p.Prime] (b : ℕ → ℤ) {z : ZMod p}
-    (half : ∀ i < m, b i = b (i+m)) (hz : z^m = 1) :
+    (half : ∀ i < m, b i = b (i + m)) (hz : z ^ m = 1) :
     eval b (m+m) z = 2 * eval b m z := by
   rw [split_eval, eval, ← Fin.sum_univ_eq_sum_range, mul_sum]
   apply sum_congr rfl
@@ -101,10 +101,10 @@ private theorem descend_eval {m p : ℕ} [Fact p.Prime] (b : ℕ → ℤ) {z : Z
 /-- On every dyadic domain of length at least four, the first eighth of the
 positive moments determines a signed vector up to period four. -/
 theorem period_four {p : ℕ} [Fact p.Prime] (r : ℕ) (b : ℕ → ℤ) (g : ZMod p)
-    (hg : IsPrimitiveRoot g (2^(r+2)))
-    (bounds : ∀ i < 2^(r+2), -1 ≤ b i ∧ b i ≤ 1)
-    (large : (2 * 2^(r+2))^4 < p)
-    (tests : ∀ u, 0 < u → u ≤ (2^(r+2))/8 → eval b (2^(r+2)) (g^u) = 0) :
+    (hg : IsPrimitiveRoot g (2 ^ (r + 2)))
+    (bounds : ∀ i < 2 ^ (r + 2), -1 ≤ b i ∧ b i ≤ 1)
+    (large : (2 * 2 ^ (r + 2)) ^ 4 < p)
+    (tests : ∀ u, 0 < u → u ≤ (2 ^ (r + 2)) / 8 → eval b (2 ^ (r + 2)) (g ^ u) = 0) :
     ∀ i < 2^(r+2), b i = b (i%4) := by
   induction r generalizing g with
   | zero =>
@@ -163,11 +163,12 @@ theorem period_four {p : ℕ} [Fact p.Prime] (r : ℕ) (b : ℕ → ℤ) (g : ZM
            _ = b ((m+j)%4) := by rw [Nat.add_mod, Nat.mod_eq_zero_of_dvd mult]; simp
 
 /-- Counting the choices of whole full blocks in the exchangeable coordinates. -/
-theorem exchange_bound {α β : Type*} [DecidableEq α] [DecidableEq β] (L : Finset α)
+theorem exchange_bound {α β : Type*} (L : Finset α)
     (blocks : Finset β) (full : α → Finset β) {f e F E : ℕ}
     (classes : ∀ x ∈ L, full x ⊆ blocks ∧ (full x).card = f)
-    (inj : Set.InjOn full (↑L : Set α)) (size : blocks.card = f+e)
-    (hf : f ≤ F) (he : e ≤ E) : L.card ≤ (F+E).choose F := by
+    (inj : Set.InjOn full (↑L : Set α)) (size : blocks.card = f + e)
+    (hf : f ≤ F) (he : e ≤ E) : L.card ≤ (F + E).choose F := by
+  classical
   calc L.card = (L.image full).card := (card_image_of_injOn inj).symm
        _ ≤ (blocks.powersetCard f).card := by
          apply card_le_card
@@ -197,10 +198,12 @@ def residueMaximum (labels : Finset (Fin 8)) (j : ℕ) : ℕ :=
 
 set_option maxRecDepth 8000 in
 set_option maxHeartbeats 3000000 in
+-- Enumerate every subset of the eight residue labels at each cardinality.
 /-- The two exact finite tables governing shifted rational centers. -/
 theorem eighth_residue_census :
     (List.range 9).map (residueMaximum univ) = [1,1,4,7,10,7,4,1,1] ∧
-    (List.range 8).map (residueMaximum (univ.erase 0)) = [1,1,3,5,5,3,1,1] := by decide
+    (List.range 8).map (residueMaximum (univ.erase 0)) = [1,1,3,5,5,3,1,1] := by
+  exact ⟨by decide +kernel, by decide +kernel⟩
 
 #print axioms equal_halves
 #print axioms period_four

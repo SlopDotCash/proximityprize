@@ -40,19 +40,19 @@ theorem common_degree {ι : Type*} (S : Finset ι) (g excess total : ι → ℕ)
 /-- The number of sites owned by exactly two heads differs from `4*d` by at most the indicated
 one-sided allowance. -/
 theorem double_sites {d s x₀ x₂ x₃ x₄ : ℕ}
-    (hinc : x₂ + 2*x₃ + 3*x₄ + s = 4*d + x₀)
-    (htri : 2*x₀ + x₃ + 2*x₄ ≤ 2*s) : 4*d ≤ x₂ + 5*s := by omega
+    (hinc : x₂ + 2 * x₃ + 3 * x₄ + s = 4 * d + x₀)
+    (htri : 2 * x₀ + x₃ + 2 * x₄ ≤ 2 * s) : 4 * d ≤ x₂ + 5 * s := by omega
 
 /-- Removing rank-drop sites leaves nearly full fibers. The common degree cancels from the
 lower bound on protected ordered sheet pairs per component valency. -/
 theorem protected_slots {d s h x₂ e cap : ℕ}
-    (hd : 4*d ≤ x₂ + 5*s) (he : x₂ ≤ e + h) (hc : cap + 2*h ≤ 4*d) :
+    (hd : 4 * d ≤ x₂ + 5 * s) (he : x₂ ≤ e + h) (hc : cap + 2 * h ≤ 4 * d) :
     cap + h ≤ e + 5*s ∧ 4*d + cap ≤ 2*e + 10*s := by omega
 
 /-- A degree-`q` pullback of a plane map of degree `m`. The degree of any nonzero row syzygy
 upstairs is at least `d-h`, in particular for one pulled up from degree `m/2` downstairs. -/
-theorem cover_remainder {q m d h : ℕ} (hdegree : q*m + h = 2*d)
-    (hsyz : d ≤ q*(m/2) + h) : 2 * (d % q) ≤ h := by
+theorem cover_remainder {q m d h : ℕ} (hdegree : q * m + h = 2 * d)
+    (hsyz : d ≤ q * (m / 2) + h) : 2 * (d % q) ≤ h := by
   let k := m - m/2
   have hkadd : k + m/2 = m := by dsimp [k]; omega
   have htwok : m ≤ 2*k := by dsimp [k]; omega
@@ -69,8 +69,8 @@ theorem cover_remainder {q m d h : ℕ} (hdegree : q*m + h = 2*d)
   omega
 
 /-- A large right factor forces even outer degree and the exact homogeneous common degree. -/
-theorem balanced_large_cover {q m d h : ℕ} (hdegree : q*m + h = 2*d)
-    (hsyz : d ≤ q*(m/2) + h) (hlarge : h < q) :
+theorem balanced_large_cover {q m d h : ℕ} (hdegree : q * m + h = 2 * d)
+    (hsyz : d ≤ q * (m / 2) + h) (hlarge : h < q) :
     m % 2 = 0 ∧ h = 2 * (d % q) := by
   have hp : m = 2*(m/2) + m%2 := by omega
   have hsplit : q*m = 2*(q*(m/2)) + q*(m%2) := by
@@ -96,14 +96,15 @@ theorem field_guards : 12*n^2*(2*d)^2 < n*(2^129+13)+1 ∧
 
 /-- The two geometric component estimates force these valency floors at the worst allowed slack. -/
 theorem correspondence_floors {r P : ℕ} (hp : 536870868 ≤ P)
-    (hcubic : P^3 ≤ 108*n^2*r) (hlinear : 74*P ≤ 26*n + 74*73*r) :
+    (hcubic : P ^ 3 ≤ 108 * n ^ 2 * r) (hlinear : 74 * P ≤ 26 * n + 74 * 73 * r) :
     1242757 ≤ r ∧ 2186442 ≤ r := by
   have hpow : (536870868:ℕ)^3 ≤ P^3 := Nat.pow_le_pow_left hp 3
-  norm_num [n] at hcubic hlinear hpow
+  have hboth := hpow.trans hcubic
+  norm_num [n] at hboth hlinear
   omega
 
 /-- The half outer degree fits in sixty-one for a nontoric cover. -/
-theorem short_outer {q t a : ℕ} (hq : 2186443 ≤ q) (hdiv : q*t + a = d) :
+theorem short_outer {q t a : ℕ} (hq : 2186443 ≤ q) (hdiv : q * t + a = d) :
     t ≤ 61 := by
   by_contra! h
   have hh := Nat.mul_le_mul hq h
@@ -117,14 +118,14 @@ def largeRow (a : ℕ) : List ℕ :=
     fun t => (d-a)/t
 
 /-- Every possible large degree is represented by its half outer degree in the finite list. -/
-theorem mem_largeRow {q t a : ℕ} (hq : 2186443 ≤ q) (ht : 0 < t) (hdiv : q*t+a=d) :
+theorem mem_largeRow {q t a : ℕ} (hq : 2186443 ≤ q) (ht : 0 < t) (hdiv : q * t + a = d) :
     q ∈ largeRow a := by
   have hshort := short_outer hq hdiv
   have heq : d-a = q*t := by omega
   have hquot : (d-a)/t = q := by rw [heq, Nat.mul_div_cancel _ ht]
   apply List.mem_map.mpr
   refine ⟨t, ?_, hquot⟩
-  simp [heq, hquot, Nat.mul_div_cancel _ ht, ht, hq, show t < 62 by omega]
+  simp [heq, Nat.mul_div_cancel _ ht, ht, hq, show t < 62 by omega]
 
 /-- Enumerating physical-degree residues 1 through 4 leaves fourteen possible large degrees. -/
 theorem large_rows :
