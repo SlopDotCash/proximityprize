@@ -180,8 +180,8 @@ def main():
 # Each entry fixes a root-product exponent, agreements per selected mode, total modes,
 # and the expected (single occurrences, pair intersections, union lower bound, errors).
 QUARTER = (
-    (8, 23200, 2169, (1093058296, 16504368, 1076553928, 771728737)),
-    (15, 10520, 4784, (2172404176, 19691380, 2152712796, 771741417)),
+    (12, 23269, 2163, (1090462734, 16704778, 1073757956, 771728668)),
+    (15, 10549, 4771, (2167292585, 19647448, 2147645137, 771741388)),
 )
 EIGHTH = (
     (8, 1677721, 34, (1092217628, 310704, 1091906924, 921069160)),

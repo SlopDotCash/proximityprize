@@ -919,6 +919,7 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterSupportPackingBarrier
 import ArkLib.Research.ProximityGap.Frontier.QuarterTransverseKeys
 import ArkLib.Research.ProximityGap.Frontier.QuarterTransverseSurfaces
 import ArkLib.Research.ProximityGap.Frontier.QuarterTransverseTangentBudget
+import ArkLib.Research.ProximityGap.Frontier.QuarterTripleSheetRamification
 import ArkLib.Research.ProximityGap.Frontier.QuarticFieldProductionThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarticIntrinsicAuxiliary
 import ArkLib.Research.ProximityGap.Frontier.QuotientAnchorAllocation

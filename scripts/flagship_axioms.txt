@@ -4,6 +4,12 @@
 # All names verified against source namespaces — a rename or deletion here is a
 # hard CI failure, not a skip (update this list in the same PR as the rename).
 
+# Ordered-triple restrictions on the first-prime quarter-rate pencil
+ArkLib.Research.ProximityGap.Frontier.QuarterTripleSheetRamification ArkLib.ProximityGap.Frontier.QuarterTripleSheetRamification.stage_cut
+ArkLib.Research.ProximityGap.Frontier.QuarterTripleSheetRamification ArkLib.ProximityGap.Frontier.QuarterTripleSheetRamification.outer_one_floor
+ArkLib.Research.ProximityGap.Frontier.QuarterTripleSheetRamification ArkLib.ProximityGap.Frontier.QuarterTripleSheetRamification.outer_two_floor
+ArkLib.Research.ProximityGap.Frontier.QuarterTripleSheetRamification ArkLib.ProximityGap.Frontier.QuarterTripleSheetRamification.inertia_moved
+
 # Period and finite class counts for degree-restricted production list centers
 ArkLib.Research.ProximityGap.Frontier.LowDegreeCenterListRigidity ProximityGap.LowDegreeCenterListRigidity.period_four
 ArkLib.Research.ProximityGap.Frontier.LowDegreeCenterListRigidity ProximityGap.LowDegreeCenterListRigidity.exchange_bound
