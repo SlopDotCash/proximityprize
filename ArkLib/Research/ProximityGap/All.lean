@@ -468,6 +468,7 @@ import ArkLib.Research.ProximityGap.Frontier.FirstInteriorLevelDirectionBlind
 import ArkLib.Research.ProximityGap.Frontier.FirstOrderChargeFloor
 import ArkLib.Research.ProximityGap.Frontier.FirstOrderDegreeOneBoundary
 import ArkLib.Research.ProximityGap.Frontier.FirstOrderZeroCapJohnson
+import ArkLib.Research.ProximityGap.Frontier.FirstPrimeHalfBlowupClimb
 import ArkLib.Research.ProximityGap.Frontier.FirstPrimeHyperbolaGrid
 import ArkLib.Research.ProximityGap.Frontier.FirstPrimeQuarterSuccessor
 import ArkLib.Research.ProximityGap.Frontier.FirstPrimeSepticCores
@@ -792,6 +793,7 @@ import ArkLib.Research.ProximityGap.Frontier.PinnedScalarMultDivision
 import ArkLib.Research.ProximityGap.Frontier.PinnedScalarRatioImage
 import ArkLib.Research.ProximityGap.Frontier.PivotFactoredObstruction
 import ArkLib.Research.ProximityGap.Frontier.PlanarQuartetMass
+import ArkLib.Research.ProximityGap.Frontier.PlanarSharpnessAndBarriers
 import ArkLib.Research.ProximityGap.Frontier.PlasticDyadicPeriod
 import ArkLib.Research.ProximityGap.Frontier.PlateauThreeHeadPredecessor
 import ArkLib.Research.ProximityGap.Frontier.PoissonAveragedMGF
