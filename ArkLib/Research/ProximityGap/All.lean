@@ -2948,6 +2948,7 @@ import ArkLib.Research.ProximityGap.Frontier._PencilAutocorrLambdaRootBound
 import ArkLib.Research.ProximityGap.Frontier._PencilAutocorrRMoment
 import ArkLib.Research.ProximityGap.Frontier._PencilCycleShortening
 import ArkLib.Research.ProximityGap.Frontier._PencilSunflowerCore
+import ArkLib.Research.ProximityGap.Frontier._PencilTreeRank
 import ArkLib.Research.ProximityGap.Frontier._PerCosetDichotomy
 import ArkLib.Research.ProximityGap.Frontier._PerLineOverlapMultiplicityConsumer
 import ArkLib.Research.ProximityGap.Frontier._PerLineUnionCountBarrier

@@ -5,6 +5,7 @@ on:
   pull_request:
     paths:
       - ArkLib/Research/ProximityGap/Frontier/_IncidenceDependencyArithmetic.lean
+      - ArkLib/Research/ProximityGap/Frontier/_PencilTreeRank.lean
       - ArkLib/Research/ProximityGap/Frontier/_PencilCycleShortening.lean
       - ArkLib/Research/ProximityGap/Frontier/_RichPencilCycleBudget.lean
       - ArkLib/Research/ProximityGap/Frontier/_ActiveErrorAffineCollapse.lean
@@ -137,4 +138,18 @@ jobs:
           assert len(results) == 7
           for name, axioms in results:
               assert {axiom.strip() for axiom in axioms.split(',') if axiom.strip()} <= {'propext', 'Classical.choice', 'Quot.sound'}, name
+          PY
+      - name: Check pencil tree rank and audit axioms
+        run: |
+          set -o pipefail
+          lake env lean ArkLib/Research/ProximityGap/Frontier/_PencilTreeRank.lean | tee pencil-tree-axioms.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          text = Path('pencil-tree-axioms.log').read_text()
+          results = re.findall(r"'ProximityGap\.PencilTreeRank\.([^']+)' depends on axioms:\s*\[([^\]]*)\]", text)
+          assert {name for name, _ in results} == {'coefficients_mem_of_parent_jumps', 'finrank_coefficients_le', 'span_coefficient_differences_eq_span_jumps', 'coefficient_difference_rank_add_distance_le'}
+          assert len(results) == 4
+          for name, axioms in results:
+              assert {axiom.strip() for axiom in axioms.split(',')} <= {'propext', 'Classical.choice', 'Quot.sound'}, name
           PY
