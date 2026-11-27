@@ -916,6 +916,7 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetFourRates
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetTwoThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarterCollinearInterval
 import ArkLib.Research.ProximityGap.Frontier.QuarterCommonFactorDegrees
+import ArkLib.Research.ProximityGap.Frontier.QuarterComplementaryContactClosure
 import ArkLib.Research.ProximityGap.Frontier.QuarterCoreWeightedJets
 import ArkLib.Research.ProximityGap.Frontier.QuarterDyadicEigenspaceExclusion
 import ArkLib.Research.ProximityGap.Frontier.QuarterDyadicParity
