@@ -552,6 +552,7 @@ import ArkLib.Research.ProximityGap.Frontier.HorizontalJetObstruction
 import ArkLib.Research.ProximityGap.Frontier.HorizontalSectionDeviation
 import ArkLib.Research.ProximityGap.Frontier.HyperbolaGridObstruction
 import ArkLib.Research.ProximityGap.Frontier.HyperbolaRulings
+import ArkLib.Research.ProximityGap.Frontier.HyperellipticStepanov
 import ArkLib.Research.ProximityGap.Frontier.I031ChainingBrick
 import ArkLib.Research.ProximityGap.Frontier.I031DilationOrbitReduction
 import ArkLib.Research.ProximityGap.Frontier.I031DistinctPeriodCount
@@ -723,14 +724,18 @@ import ArkLib.Research.ProximityGap.Frontier.PaleyDefectDiscrepancy
 import ArkLib.Research.ProximityGap.Frontier.PaleyDefectMinor
 import ArkLib.Research.ProximityGap.Frontier.PaleyDenseCutTransfer
 import ArkLib.Research.ProximityGap.Frontier.PaleyDyadicMasks
+import ArkLib.Research.ProximityGap.Frontier.PaleyDyadicTower
 import ArkLib.Research.ProximityGap.Frontier.PaleyGramFourthMoment
+import ArkLib.Research.ProximityGap.Frontier.PaleyGramHigherMoment
 import ArkLib.Research.ProximityGap.Frontier.PaleyHankelDegree
+import ArkLib.Research.ProximityGap.Frontier.PaleyHigherMoments
 import ArkLib.Research.ProximityGap.Frontier.PaleyInterpolationContact
 import ArkLib.Research.ProximityGap.Frontier.PaleyIntervalCriterion
 import ArkLib.Research.ProximityGap.Frontier.PaleyIntervalSpectrum
 import ArkLib.Research.ProximityGap.Frontier.PaleyInversionTrace
 import ArkLib.Research.ProximityGap.Frontier.PaleyListInterpolation
 import ArkLib.Research.ProximityGap.Frontier.PaleyMaskedStrata
+import ArkLib.Research.ProximityGap.Frontier.PaleyMellinJacobi
 import ArkLib.Research.ProximityGap.Frontier.PaleyMixedProductTraces
 import ArkLib.Research.ProximityGap.Frontier.PaleyMixedTraceSaving
 import ArkLib.Research.ProximityGap.Frontier.PaleyPairDeterminants
@@ -750,6 +755,7 @@ import ArkLib.Research.ProximityGap.Frontier.PaleyShiftRank
 import ArkLib.Research.ProximityGap.Frontier.PaleySignedFactorization
 import ArkLib.Research.ProximityGap.Frontier.PaleySingleSizeQuadratic
 import ArkLib.Research.ProximityGap.Frontier.PaleySliceSampling
+import ArkLib.Research.ProximityGap.Frontier.PaleySubgroupHigherMoment
 import ArkLib.Research.ProximityGap.Frontier.PaleySubgroupSignedEnergy
 import ArkLib.Research.ProximityGap.Frontier.PaleySubgroupTransversal
 import ArkLib.Research.ProximityGap.Frontier.PaleyTorusPencil
