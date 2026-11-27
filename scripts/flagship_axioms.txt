@@ -4,6 +4,11 @@
 # All names verified against source namespaces — a rename or deletion here is a
 # hard CI failure, not a skip (update this list in the same PR as the rename).
 
+# Period and finite class counts for degree-restricted production list centers
+ArkLib.Research.ProximityGap.Frontier.LowDegreeCenterListRigidity ProximityGap.LowDegreeCenterListRigidity.period_four
+ArkLib.Research.ProximityGap.Frontier.LowDegreeCenterListRigidity ProximityGap.LowDegreeCenterListRigidity.exchange_bound
+ArkLib.Research.ProximityGap.Frontier.LowDegreeCenterListRigidity ProximityGap.LowDegreeCenterListRigidity.eighth_residue_census
+
 # Exact half- and quarter-rate budget-six list thresholds on the sixteen-point prime subgroup
 ArkLib.Research.ProximityGap.Frontier.SixteenPrimeSubfieldLists ProximityGap.SixteenPrimeSubfieldLists.half_good_iff
 ArkLib.Research.ProximityGap.Frontier.SixteenPrimeSubfieldLists ProximityGap.SixteenPrimeSubfieldLists.half_five_errors
