@@ -440,6 +440,7 @@ import ArkLib.Research.ProximityGap.Frontier.EvenDirectionDescent
 import ArkLib.Research.ProximityGap.Frontier.EvenWitnessReverseCollapse
 import ArkLib.Research.ProximityGap.Frontier.EveryRateJohnsonGain
 import ArkLib.Research.ProximityGap.Frontier.ExactHistogramSquares
+import ArkLib.Research.ProximityGap.Frontier.ExactRepetitionMassUpper
 import ArkLib.Research.ProximityGap.Frontier.ExactSizeMcaSupport
 import ArkLib.Research.ProximityGap.Frontier.ExceptionalDyadicTriple
 import ArkLib.Research.ProximityGap.Frontier.ExceptionalHeadLayout
