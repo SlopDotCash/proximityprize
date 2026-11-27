@@ -271,6 +271,7 @@ import ArkLib.Research.ProximityGap.Frontier.CubicApolarAttainment
 import ArkLib.Research.ProximityGap.Frontier.CubicApolarEvent
 import ArkLib.Research.ProximityGap.Frontier.CubicApolarExtremum
 import ArkLib.Research.ProximityGap.Frontier.CubicApolarWitness
+import ArkLib.Research.ProximityGap.Frontier.CubicHahnJohnson
 import ArkLib.Research.ProximityGap.Frontier.CubicHalfDistancePlateau
 import ArkLib.Research.ProximityGap.Frontier.CubicPolarDescent
 import ArkLib.Research.ProximityGap.Frontier.CubicPolarSiteBudget
@@ -509,6 +510,7 @@ import ArkLib.Research.ProximityGap.Frontier.GeneralManyLineSafety
 import ArkLib.Research.ProximityGap.Frontier.GeneralOverlapPacking
 import ArkLib.Research.ProximityGap.Frontier.GeneralTwoLineArithmetic
 import ArkLib.Research.ProximityGap.Frontier.GeneralTwoLineSafety
+import ArkLib.Research.ProximityGap.Frontier.GeneralizedFiberRigidity
 import ArkLib.Research.ProximityGap.Frontier.GenericCountSigmaUniform
 import ArkLib.Research.ProximityGap.Frontier.GenericCountTransversal
 import ArkLib.Research.ProximityGap.Frontier.GenericDifferentialFunctionField
@@ -540,6 +542,7 @@ import ArkLib.Research.ProximityGap.Frontier.HeightOneNormalization
 import ArkLib.Research.ProximityGap.Frontier.HiddenDerivativeSurfaceSeparation
 import ArkLib.Research.ProximityGap.Frontier.HigherJetBigrading
 import ArkLib.Research.ProximityGap.Frontier.HigherOrderFieldBudget
+import ArkLib.Research.ProximityGap.Frontier.HintBoundaryShell
 import ArkLib.Research.ProximityGap.Frontier.HodgeSectionIncidence
 import ArkLib.Research.ProximityGap.Frontier.HodgeSectionLattice
 import ArkLib.Research.ProximityGap.Frontier.HodgeSectionVariance
@@ -646,6 +649,7 @@ import ArkLib.Research.ProximityGap.Frontier.MGFToConvergenceHub
 import ArkLib.Research.ProximityGap.Frontier.ManyHeadLocatorMass
 import ArkLib.Research.ProximityGap.Frontier.ManyLineGridPhase
 import ArkLib.Research.ProximityGap.Frontier.MaximalSecantCore
+import ArkLib.Research.ProximityGap.Frontier.MixedInclusionOmissionJohnson
 import ArkLib.Research.ProximityGap.Frontier.MixedTopFitBudgetIncompatibility
 import ArkLib.Research.ProximityGap.Frontier.MobiusSeamCoordinateSupply
 import ArkLib.Research.ProximityGap.Frontier.MobiusStepanov
