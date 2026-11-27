@@ -27,9 +27,9 @@
  },
  "summary": {
   "total": 90,
-  "open": 44,
+  "open": 42,
   "instance_only": 9,
-  "discharged": 23,
+  "discharged": 25,
   "refuted": 14,
   "by_top_dir": {
    "(root)": {
@@ -41,9 +41,9 @@
    },
    "Data": {
     "total": 24,
-    "open": 8,
+    "open": 6,
     "instance_only": 3,
-    "discharged": 0,
+    "discharged": 2,
     "refuted": 13
    },
    "OracleReduction": {
@@ -74,9 +74,27 @@
    "name": "FrankUncrossingResidual",
    "fq_name": "AGL24.FrankUncrossingResidual",
    "file": "ArkLib/Data/CodingTheory/AGL24FrankDescent.lean",
-   "line": 264,
-   "providers": [],
-   "status": "open"
+   "line": 269,
+   "providers": [
+    {
+     "name": "AGL24.frankUncrossingResidual_holds",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/AGL24FrankOrientationTheorem.lean",
+     "line": 458,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [],
+     "ambiguous_name_match": false,
+     "equivalence": false,
+     "reduction_only": false,
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
+    }
+   ],
+   "status": "discharged"
   },
   {
    "name": "FrankOrientationResidual",
@@ -88,7 +106,7 @@
      "name": "AGL24.frankOrientationResidual_of_uncrossingResidual",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/AGL24FrankDescent.lean",
-     "line": 298,
+     "line": 303,
      "conditional_on_residuals": [
       "FrankUncrossingResidual"
      ],
@@ -123,9 +141,26 @@
      "extra_instance_assumptions": [],
      "specialised_parameter_types": [],
      "verdict": "conditional"
+    },
+    {
+     "name": "AGL24.frankOrientationResidual_holds",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/AGL24FrankOrientationTheorem.lean",
+     "line": 469,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [],
+     "ambiguous_name_match": false,
+     "equivalence": false,
+     "reduction_only": false,
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     }
    ],
-   "status": "open"
+   "status": "discharged"
   },
   {
    "name": "GMMDSResidual",

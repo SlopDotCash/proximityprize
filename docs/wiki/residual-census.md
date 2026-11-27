@@ -72,24 +72,22 @@ summary, which follows the addenda.
 ## Summary
 
 - **Total strict production residuals (`ArkLib/`):** 90
-- **Open:** 44
+- **Open:** 42
 - **Instance-only:** 9
-- **Discharged (syntactic candidates):** 23
+- **Discharged (syntactic candidates):** 25
 - **Refuted:** 14
 - **Residual-like near misses:** 54 (listed below and in `scripts/residual_census.json`)
 
 | top-level directory | total | open | instance-only | discharged | refuted |
 |---|---:|---:|---:|---:|---:|
 | `(root)` | 2 | 1 | 0 | 1 | 0 |
-| `Data` | 24 | 8 | 3 | 0 | 13 |
+| `Data` | 24 | 6 | 3 | 2 | 13 |
 | `OracleReduction` | 39 | 25 | 3 | 11 | 0 |
 | `ProofSystem` | 14 | 10 | 2 | 2 | 0 |
 | `ToMathlib` | 11 | 0 | 1 | 9 | 1 |
 
 ## Open Residuals
 
-- `AGL24.FrankUncrossingResidual` — `ArkLib/Data/CodingTheory/AGL24FrankDescent.lean:264`
-- `AGL24.FrankOrientationResidual` — `ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean:42` — conditional providers only (residual deps: `FrankUncrossingResidual`; extra assumptions: `hfrank`, `hres`)
 - `AGL24.SymbolicFullRankResidual` — `ArkLib/Data/CodingTheory/AGL24SymbolicRank.lean:45` — conditional providers only (residual deps: `FrankOrientationResidual`, `GMMDSResidual`, `SymbolicFullRankResidual`; extra assumptions: `h`, `h'`, `hdual`, `hfield`, `hfrank`, `hgm`, `hgmmds`, `hk`, `hminor`, `hnonempty`, `hrc`, `hwitness`; instance assumptions: `[Algebra F F']`, `[Field F']`, `[Finite F]`, `[Fintype F]`, `[Nonempty ι]`)
 - `AGL24.RIMFullRankFailureProbResidual` — `ArkLib/Data/CodingTheory/AGL24UnionBound.lean:100` — conditional providers only (residual deps: `SymbolicFullRankResidual`; extra assumptions: `hfrank`, `hgm`, `hsym`, `ht`, `hwpc`; instance assumptions: `[Nonempty ι]`)
 - `CodingTheory.randomLinearLambdaLowerFirstMomentResidual` — `ArkLib/Data/CodingTheory/ListDecoding/Bounds/RandomAndReedSolomon.lean:143` — conditional providers only (extra assumptions: `h`, `hG`)
@@ -226,6 +224,8 @@ drift.
 
 ## Discharged Residuals (syntactic candidates)
 
+- `AGL24.FrankUncrossingResidual` — `ArkLib/Data/CodingTheory/AGL24FrankDescent.lean:269` — candidate provider: `AGL24.frankUncrossingResidual_holds` (ArkLib/Data/CodingTheory/AGL24FrankOrientationTheorem.lean:458)
+- `AGL24.FrankOrientationResidual` — `ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean:42` — candidate provider: `AGL24.frankOrientationResidual_holds` (ArkLib/Data/CodingTheory/AGL24FrankOrientationTheorem.lean:469)
 - `Reduction.fiatShamir_runCollapseResidual` — `ArkLib/Extensions/OracleReduction/FiatShamir/Basic.lean:222` — candidate provider: `Reduction.fiatShamir_runCollapse` (ArkLib/OracleReduction/FiatShamir/BasicCompleteness.lean:145), `Reduction.fiatShamir_runCollapseResidual_holds` (ArkLib/OracleReduction/FiatShamir/RunEqHonestExecution.lean:155)
 - `OracleReduction.appendToReductionResidual` — `ArkLib/OracleReduction/Composition/Sequential/AppendPerfectCompletenessOracle.lean:67` — candidate provider: `OracleReduction.appendToReductionResidual_proof` (ArkLib/OracleReduction/Composition/Sequential/AppendOracleAdapters.lean:82)
 - `Prover.appendRunRightDistResidual` — `ArkLib/OracleReduction/Composition/Sequential/AppendRun.lean:87` — candidate provider: `Prover.appendRunRightDistResidual_holds` (ArkLib/OracleReduction/Composition/Sequential/AppendRun.lean:520)
