@@ -850,6 +850,7 @@ import ArkLib.Research.ProximityGap.Frontier.PrimeFieldLimitSet
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldMultiplierHeight
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldPeriodAlignment
 import ArkLib.Research.ProximityGap.Frontier.PrimeHDOrder
+import ArkLib.Research.ProximityGap.Frontier.PrimeHDQuotientContact
 import ArkLib.Research.ProximityGap.Frontier.PrimeHDResultant
 import ArkLib.Research.ProximityGap.Frontier.PrimeHDTopHasse
 import ArkLib.Research.ProximityGap.Frontier.PrimeHeadDifferences
