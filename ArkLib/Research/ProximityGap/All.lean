@@ -531,6 +531,7 @@ import ArkLib.Research.ProximityGap.Frontier.GenericDifferentialFunctionField
 import ArkLib.Research.ProximityGap.Frontier.GenericProjectivePolarGcd
 import ArkLib.Research.ProximityGap.Frontier.GenericSuperDiagonalLower
 import ArkLib.Research.ProximityGap.Frontier.GeometricIncompleteSumNoGo
+import ArkLib.Research.ProximityGap.Frontier.GeometricIrreducibilitySmoothPoint
 import ArkLib.Research.ProximityGap.Frontier.GeometricWordLocator
 import ArkLib.Research.ProximityGap.Frontier.GoldilocksMixedTrace
 import ArkLib.Research.ProximityGap.Frontier.GradedAntipodalVanishingLower
@@ -796,6 +797,11 @@ import ArkLib.Research.ProximityGap.Frontier.PinnedScalarRatioImage
 import ArkLib.Research.ProximityGap.Frontier.PivotFactoredObstruction
 import ArkLib.Research.ProximityGap.Frontier.PlanarQuartetMass
 import ArkLib.Research.ProximityGap.Frontier.PlanarSharpnessAndBarriers
+import ArkLib.Research.ProximityGap.Frontier.PlaneBezoutWithMultiplicity
+import ArkLib.Research.ProximityGap.Frontier.PlaneCurveFunctionField
+import ArkLib.Research.ProximityGap.Frontier.PlaneCurveLinearAlgebra
+import ArkLib.Research.ProximityGap.Frontier.PlaneCurveReflexivity
+import ArkLib.Research.ProximityGap.Frontier.PlanePolarCap
 import ArkLib.Research.ProximityGap.Frontier.PlasticDyadicPeriod
 import ArkLib.Research.ProximityGap.Frontier.PlateauThreeHeadPredecessor
 import ArkLib.Research.ProximityGap.Frontier.PoissonAveragedMGF
