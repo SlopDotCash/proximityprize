@@ -2,8 +2,8 @@
 """Verify the ordered-triple ramification arithmetic and finite permutation checks."""
 
 from fractions import Fraction as Q
-from itertools import permutations
-from math import lcm
+from itertools import permutations, product
+from math import isqrt, lcm
 
 
 N = 2**30
@@ -113,6 +113,40 @@ def check_inertia_support():
         require(minimum_moved == moved, (minimum_moved, moved))
 
 
+def check_branch_example():
+    def cycle(degree, entries):
+        mapping = list(range(degree))
+        for source, target in zip(entries, entries[1:] + entries[:1]):
+            mapping[source] = target
+        return mapping
+
+    for k, left, right in product(range(1, 5), repeat=3):
+        degree = k + left + right
+        common = list(range(k))
+        sigma = cycle(degree, common + list(range(k, k + left)))
+        tau = cycle(degree, common[::-1] + list(range(k + left, degree)))
+        composite = [sigma[j] for j in tau]
+        require(composite == cycle(degree, [0] + list(range(k + left, degree)) +
+                                   list(range(k, k + left))), (k, left, right))
+
+    k, left, right = 89478484, 89478499, 89478471
+    require(k + left + right == D, "example degree")
+    lengths = (k + left, k + right, left + right + 1)
+    require(all(length % 2 for length in lengths), "even generators")
+    prime = lengths[0]
+    require(all(prime % divisor for divisor in range(2, isqrt(prime) + 1)), prime)
+    require(D // 2 < prime <= D - 3, "primitive action and Jordan cycle")
+    require(sum(length - 1 for length in lengths) == 2 * D - 2, "genus zero")
+    excess = sum(1 - Q(1, length) for length in lengths) - 2
+    a = (D - 1) * (D - 2)
+    third = sum((1 - Q(1, length)) * falling_three(D - length) for length in lengths)
+    genus_term = D * a * excess - third
+    require(genus_term == 17193610840088566682587812, genus_term)
+    require(genus_term > Q(88, 100) * D * a, "triple genus")
+    require(min(lengths) > 178956950 and excess > FLOOR, "admissible branch data")
+    print(f"Verified the production alternating triple with cycle lengths {lengths}.")
+
+
 def main():
     for fixed in range(101):
         for b in range(1, 101):
@@ -138,6 +172,7 @@ def main():
         require(genus_term == 4 * a * (m - 3), genus_term)
         require(genus_term / Q(a) > Q(6 * m, 7), "transposition example")
     print("Verified moved-sheet floors 45679662, 128108138, and 77980500.")
+    check_branch_example()
 
 
 if __name__ == "__main__":
