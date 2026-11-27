@@ -4,6 +4,9 @@
 # All names verified against source namespaces — a rename or deletion here is a
 # hard CI failure, not a skip (update this list in the same PR as the rename).
 
+# Three fibers of sizes 3, 3 and 2 for the half-rate octagon MCA count
+ArkLib.Research.ProximityGap.Frontier.OctagonCubicPencils ProximityGap.OctagonCubicPencils.exceptional
+
 # Closed answers for both grand challenges on supplied sufficiently large fields
 ArkLib.Research.ProximityGap.JointLargeFieldReview ProximityPrize.JointLargeFieldReview.classification
 ArkLib.Research.ProximityGap.JointLargeFieldReview ProximityPrize.JointLargeFieldReview.rank_answers

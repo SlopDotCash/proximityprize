@@ -683,6 +683,7 @@ import ArkLib.Research.ProximityGap.Frontier.NormalizedSectionSpecialization
 import ArkLib.Research.ProximityGap.Frontier.NormalizedTraceRecurrenceWidth
 import ArkLib.Research.ProximityGap.Frontier.NormalizedTripleEnergy
 import ArkLib.Research.ProximityGap.Frontier.NvIReconcile
+import ArkLib.Research.ProximityGap.Frontier.OctagonCubicPencils
 import ArkLib.Research.ProximityGap.Frontier.OctagonTripleTorsion
 import ArkLib.Research.ProximityGap.Frontier.OddExcessLaw
 import ArkLib.Research.ProximityGap.Frontier.OddRedundancyApolar
