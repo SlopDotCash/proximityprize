@@ -520,12 +520,20 @@ private def isCommentedDeclaration (text : String) : Bool :=
                   startsToken "where" afterName || startsToken "extends" afterName)
         | [] => false
 
+/-- Drop the dashes and whitespace that follow a line-comment opener, so that stacked markers such
+as `--- theorem ...` or `-- -- theorem ...` are inspected like a plain `-- theorem ...`. -/
+private def dropCommentMarkers : List Char → List Char
+  | '-' :: rest => dropCommentMarkers rest
+  | c :: rest => if c.isWhitespace then dropCommentMarkers rest else c :: rest
+  | [] => []
+
 private def commentedDeclarationViolations (lines : Array String) : Array Violation := Id.run do
   let commentLines := sanitizeLinesWith lines false true
   let mut result := #[]
   for h : i in [:commentLines.size] do
     let pieces := commentLines[i].splitOn "--"
-    if pieces.length > 1 && isCommentedDeclaration ("--".intercalate pieces.tail) then
+    let tail := String.ofList (dropCommentMarkers ("--".intercalate pieces.tail).toList)
+    if pieces.length > 1 && isCommentedDeclaration tail then
       result := result.push <| violation "ERR_COMMENT_DECL" (i + 1)
         "Commented-out declarations are not allowed: delete the code or restore it"
   return result
@@ -735,6 +743,14 @@ def runSelfTests : IO Unit := do
       "-- theorem visible : True"]
   assertSelfTest (positioned.map (·.line) == #[3])
     "commented declaration diagnostics must retain source line numbers"
+  -- Regression: stacked line-comment markers must not hide a commented declaration.
+  assertSelfTest (hasCode "ERR_COMMENT_DECL" #["--- theorem hidden : True := trivial"])
+    "triple-dash comments must still be checked"
+  assertSelfTest (hasCode "ERR_COMMENT_DECL" #["-- -- theorem hidden : True := trivial"])
+    "doubled line comments must still be checked"
+  assertSelfTest (!hasCode "ERR_COMMENT_DECL" #["-- ----------",
+    "--- instance search is slow here", "-- note -- theorem hidden : True"])
+    "stacked markers must not turn separators or prose into violations"
   let sample := #["def ok := \"@[nolint] set_option linter.foo true\"",
     "/- outer /- @[nolint] -/ set_option pp.foo true -/"]
   let masked := sanitizeLines sample
