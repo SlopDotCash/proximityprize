@@ -367,7 +367,8 @@ private def lineViolations (lines codeLines : Array String) : Array Violation :=
       let previous := lines[i - 1]!.trimAsciiEnd.toString
       if !previous.endsWith "," && !previous.endsWith "=>" && !previous.endsWith "↦" then
         result := result.push <| violation "ERR_IBY" (i + 1) "Line is an isolated `by`"
-    if trimmed == "." || trimmed == "·" ||
+    let originalTrimmed := line.trimAscii.toString
+    if trimmed == "." || (originalTrimmed == "·" && trimmed == "·") ||
         code.trimAsciiStart.toString.startsWith ". " then
       result := result.push <| violation "ERR_DOT" (i + 1)
         "Isolated focusing dot, or `.` used instead of `·`"
@@ -785,6 +786,12 @@ def runSelfTests : IO Unit := do
     "a real `. ` focusing dot must still be rejected"
   assertSelfTest (hasCode "ERR_DOT" #["  ·"])
     "an isolated `·` must still be rejected"
+  assertSelfTest (!hasCode "ERR_DOT" #["  · -- branch comment"])
+    "a focusing `·` followed by a comment must remain valid"
+  assertSelfTest (!hasCode "ERR_DOT" #["/-- text", "·", "-/"])
+    "a docstring line containing only `·` must not look like an isolated focusing dot"
+  assertSelfTest (hasCode "ERR_DOT" #["  . -- branch comment"])
+    "a `.` focusing dot followed by a comment must still be rejected"
   -- Regression: stacked line-comment markers must not hide a commented declaration.
   assertSelfTest (hasCode "ERR_COMMENT_DECL" #["--- theorem hidden : True := trivial"])
     "triple-dash comments must still be checked"
