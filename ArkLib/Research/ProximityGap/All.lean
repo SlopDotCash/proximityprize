@@ -541,6 +541,7 @@ import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorJetInterpolation
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorJetRank
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorListEquivalence
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorNonlinearPopulation
+import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorPencilMonodromy
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorPuncturedList
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorSectionBudget
 import ArkLib.Research.ProximityGap.Frontier.HeightGateNormBound

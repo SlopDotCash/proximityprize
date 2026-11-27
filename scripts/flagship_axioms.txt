@@ -4,6 +4,11 @@
 # All names verified against source namespaces — a rename or deletion here is a
 # hard CI failure, not a skip (update this list in the same PR as the rename).
 
+# Degrees of two marked pencils at the first-prime half-rate successor
+ArkLib.Research.ProximityGap.Frontier.HalfSuccessorPencilMonodromy ProximityGap.HalfSuccessorPencilMonodromy.named_subdegree_floors
+ArkLib.Research.ProximityGap.Frontier.HalfSuccessorPencilMonodromy ProximityGap.HalfSuccessorPencilMonodromy.joint_adjunction_lower
+ArkLib.Research.ProximityGap.Frontier.HalfSuccessorPencilMonodromy ProximityGap.HalfSuccessorPencilMonodromy.quotient_degree_floors
+
 # Second-prime half- and quarter-rate interpolation and shared factor accounting
 ArkLib.Research.ProximityGap.Frontier.SharedFactorDegrees ArkLib.ProximityGap.Frontier.SharedFactorDegrees.surfaces
 ArkLib.Research.ProximityGap.Frontier.SharedFactorDegrees ArkLib.ProximityGap.Frontier.SharedFactorDegrees.residual_charge_le
