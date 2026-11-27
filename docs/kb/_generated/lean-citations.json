@@ -1,8 +1,8 @@
 {
   "counts": {
-    "files_with_citations": 1392,
+    "files_with_citations": 1397,
     "keys_cited": 83,
-    "total_citation_edges": 1809
+    "total_citation_edges": 1817
   },
   "files": {
     "ArkLib/AGM/Basic.lean": [
@@ -2811,6 +2811,12 @@
       "BCIKS20",
       "DG25"
     ],
+    "ArkLib/Extensions/Data/CodingTheory/ProximityGap/CapacityBounds/UniqueDecoding/Curves.lean": [
+      "BCHKS25"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/ProximityGap/CapacityBounds/UniqueDecoding/LossyCurves.lean": [
+      "BCHKS25"
+    ],
     "ArkLib/Extensions/Data/CodingTheory/ProximityGap/Errors.lean": [
       "ABF26",
       "ACFY24",
@@ -2822,8 +2828,20 @@
       "ABF26",
       "GG25"
     ],
+    "ArkLib/Extensions/Data/CodingTheory/ProximityGenerator/LossyMca.lean": [
+      "BCHKS25"
+    ],
     "ArkLib/Extensions/Data/CodingTheory/ReedSolomon.lean": [
       "ACFY24"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Johnson/Curve.lean": [
+      "BCHKS25",
+      "DKT26"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Johnson/CurveProbability.lean": [
+      "BCHKS25",
+      "DKT26",
+      "Jo26"
     ],
     "ArkLib/Extensions/Data/CodingTheory/SubspaceDesign.lean": [
       "ABF26",
@@ -5235,6 +5253,11 @@
       "ArkLib/Data/Polynomial/SymbolicInterpolationSupport.lean",
       "ArkLib/Data/Polynomial/SymbolicInterpolationSurplus.lean",
       "ArkLib/Extensions/Data/CodingTheory/Connections/ListDecodingAndCA.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ProximityGap/CapacityBounds/UniqueDecoding/Curves.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ProximityGap/CapacityBounds/UniqueDecoding/LossyCurves.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ProximityGenerator/LossyMca.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Johnson/Curve.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Johnson/CurveProbability.lean",
       "ArkLib/ProofSystem/ToyProblem/Impl/IRS.lean",
       "ArkLib/ProofSystem/ToyProblem/Leaderboard.lean",
       "ArkLib/ProofSystem/ToyProblem/Spec/General.lean",
@@ -5932,6 +5955,8 @@
       "ArkLib/Data/Polynomial/Differential/TaylorIndexWeight.lean",
       "ArkLib/Data/Polynomial/Differential/TaylorResidual.lean",
       "ArkLib/Data/Polynomial/Differential/TotalJetDegreeCount.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Johnson/Curve.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Johnson/CurveProbability.lean",
       "ArkLib/ProofSystem/ToyProblem/Impl/IRS.lean",
       "ArkLib/ProofSystem/ToyProblem/Leaderboard.lean",
       "ArkLib/ProofSystem/ToyProblem/Spec/General.lean",
@@ -6250,6 +6275,7 @@
       "ArkLib/Data/CodingTheory/ProximityGap/MarkedCurveDecodableMonotone.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/SubspaceAvoidance.lean",
       "ArkLib/Data/CodingTheory/ProximityGenerator/Interleaving.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Johnson/CurveProbability.lean",
       "ArkLib/Research/ProximityGap/Frontier/CurveDecodability.lean",
       "ArkLib/Research/ProximityGap/Frontier/Sweep_A27_CondLDtoMCA.lean",
       "ArkLib/Research/ProximityGap/Frontier/WF407_B2Curve.lean",
