@@ -184,6 +184,7 @@ import ArkLib.Research.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ64
 import ArkLib.Research.ProximityGap.Frontier.CanonicalWidthFourConcreteTZ8192
 import ArkLib.Research.ProximityGap.Frontier.CarbonAlgDyadicComplexDihedral
 import ArkLib.Research.ProximityGap.Frontier.CarbonBGKPrizeBridgeResolution
+import ArkLib.Research.ProximityGap.Frontier.CarbonListTightFirstOrder
 import ArkLib.Research.ProximityGap.Frontier.CarbonMCAP2PivotRank
 import ArkLib.Research.ProximityGap.Frontier.CensusBudgetInfeasibleDeepBand
 import ArkLib.Research.ProximityGap.Frontier.CensusCapForbidsLargeAligned
