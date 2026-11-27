@@ -810,6 +810,8 @@ import ArkLib.Research.ProximityGap.Frontier.PrimeFieldEntropyPhase
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldLimitSet
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldMultiplierHeight
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldPeriodAlignment
+import ArkLib.Research.ProximityGap.Frontier.PrimeHDOrder
+import ArkLib.Research.ProximityGap.Frontier.PrimeHDResultant
 import ArkLib.Research.ProximityGap.Frontier.PrimeHeadDifferences
 import ArkLib.Research.ProximityGap.Frontier.PrimeManyLinePhase
 import ArkLib.Research.ProximityGap.Frontier.PrimeThreeLine255
@@ -863,9 +865,11 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetTwoThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarterCollinearInterval
 import ArkLib.Research.ProximityGap.Frontier.QuarterCommonFactorDegrees
 import ArkLib.Research.ProximityGap.Frontier.QuarterCoreWeightedJets
+import ArkLib.Research.ProximityGap.Frontier.QuarterDyadicEigenspaceExclusion
 import ArkLib.Research.ProximityGap.Frontier.QuarterDyadicParity
 import ArkLib.Research.ProximityGap.Frontier.QuarterIntervalWronskianPullbacks
 import ArkLib.Research.ProximityGap.Frontier.QuarterMu64DihedralExclusion
+import ArkLib.Research.ProximityGap.Frontier.QuarterMu64Mu128CyclicExclusion
 import ArkLib.Research.ProximityGap.Frontier.QuarterOppositeEdgeCharacters
 import ArkLib.Research.ProximityGap.Frontier.QuarterPairTripleSignatures
 import ArkLib.Research.ProximityGap.Frontier.QuarterQuarticPrym
@@ -1170,6 +1174,7 @@ import ArkLib.Research.ProximityGap.Frontier.SplitCoefficientSecants
 import ArkLib.Research.ProximityGap.Frontier.SplitFiberNewton
 import ArkLib.Research.ProximityGap.Frontier.SplitPencilBlockVariance
 import ArkLib.Research.ProximityGap.Frontier.SplitPencilFiberData
+import ArkLib.Research.ProximityGap.Frontier.SplitPencilOddFiberObstructions
 import ArkLib.Research.ProximityGap.Frontier.SplitPencilRootProducts
 import ArkLib.Research.ProximityGap.Frontier.SplitPrimeJointMoments
 import ArkLib.Research.ProximityGap.Frontier.SplitPrimeSixthDensity
