@@ -394,6 +394,7 @@ import ArkLib.Research.ProximityGap.Frontier.DyadicSevenField
 import ArkLib.Research.ProximityGap.Frontier.DyadicSevenPrime
 import ArkLib.Research.ProximityGap.Frontier.DyadicSevenProjectivities
 import ArkLib.Research.ProximityGap.Frontier.DyadicSidonTriple
+import ArkLib.Research.ProximityGap.Frontier.DyadicSplitPencilSqrtBound
 import ArkLib.Research.ProximityGap.Frontier.DyadicSquareOrbit
 import ArkLib.Research.ProximityGap.Frontier.DyadicTwoCenterReflection
 import ArkLib.Research.ProximityGap.Frontier.DyadicUnitEllipsoid
@@ -407,8 +408,10 @@ import ArkLib.Research.ProximityGap.Frontier.E2W4ModSignNonCollisionFp
 import ArkLib.Research.ProximityGap.Frontier.E3RouteBridge
 import ArkLib.Research.ProximityGap.Frontier.E3StrataCharZero
 import ArkLib.Research.ProximityGap.Frontier.EffKatzConductorBarrier
+import ArkLib.Research.ProximityGap.Frontier.EighthBlowupDualWindow
 import ArkLib.Research.ProximityGap.Frontier.EighthCollinearOutlier
 import ArkLib.Research.ProximityGap.Frontier.EighthDihedralHeadDirections
+import ArkLib.Research.ProximityGap.Frontier.EighthDirectionImageFloors
 import ArkLib.Research.ProximityGap.Frontier.EighthDyadicHeadDirections
 import ArkLib.Research.ProximityGap.Frontier.EighthFiveRichSafety
 import ArkLib.Research.ProximityGap.Frontier.EighthFourPlusOne
@@ -423,6 +426,7 @@ import ArkLib.Research.ProximityGap.Frontier.EighthRationalCoverObstructions
 import ArkLib.Research.ProximityGap.Frontier.EighthRichDeficits
 import ArkLib.Research.ProximityGap.Frontier.EighthRichHeadSafety
 import ArkLib.Research.ProximityGap.Frontier.EighthSaturatedOppositeDirections
+import ArkLib.Research.ProximityGap.Frontier.EighthSuccessorTightWindow
 import ArkLib.Research.ProximityGap.Frontier.EighthThreePlusOne
 import ArkLib.Research.ProximityGap.Frontier.EighthTransverseAttack
 import ArkLib.Research.ProximityGap.Frontier.EighthTransverseCollisions
