@@ -1,4 +1,5 @@
 """Exact contact, interpolation and derivative-degree checks on the second field."""
+from fractions import Fraction
 from math import comb
 
 from probe_quarter_coset_lists import require
@@ -22,6 +23,26 @@ def verify(n, exceptional, sections, subset, rank, z_degree, w_degree):
     return D, twice_margin, bezout, component
 
 
+def verify_uniform_constants():
+    # h = 2**20 (j+1)**4 and n/h >= 2**26 throughout this argument.
+    length_per_h = 2**26
+    require(2 * 25**2 * 26**2 < 2**20, 'quarter-rate fourth-moment cap')
+    contact_loss = 157 * 8 + 24 * comb(159, 2) + 16 * 159 + 4 * 160 * 38 * 4
+    require(10 * length_per_h > contact_loss, 'uniform contact count')
+    require(3 * 15 * 160 * 38 * 4 < length_per_h, 'uniform resultant')
+    require(100 * 38**3 * 9 < length_per_h, 'uniform isolated jets')
+    for q, agreement in ((2, Fraction(7, 10)), (8, Fraction(1, 3)), (16, Fraction(1, 5))):
+        rate = Fraction(1, q)
+        require((agreement + Fraction(1, 1000))**2 <= rate - Fraction(1, 2**46),
+                'uniform agreement floor')
+        gap = agreement - rate
+        require(gap >= Fraction(1, 8), 'uniform diagonal gap')
+        require((rate - max(0, 2 * agreement - 1)) / gap <= Fraction(3, 4),
+                'uniform support entry bound')
+    require(2 * 49**2 * 50**2 < 7 * 2**46 // 16, 'uniform fourth-moment contradiction')
+
+
 if __name__ == '__main__':
+    verify_uniform_constants()
     result = verify(2**30, 3080, 1_072_766_345, 159, 160, 30, 8)
     print('Degree floor, doubled contact surplus, isolated-jet ceiling, forced jets:', *result)

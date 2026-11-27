@@ -28,7 +28,7 @@ theorem square_member_forward (U V : K[X]) :
     (U-V)^2 + 4*(U*V) = (U+V)^2 := by ring
 
 /-- A square member splits back into complementary factors. -/
-theorem square_member_reverse {A F W : K[X]} {s : K} (hw : W^2 + C s*F = A^2) :
+theorem square_member_reverse {A F W : K[X]} {s : K} (hw : W ^ 2 + C s * F = A ^ 2) :
     (A-W)*(A+W) = C s*F := by linear_combination -hw
 
 /-- Remove the known simple-pole locator from the derivative numerator of the rational
@@ -37,7 +37,7 @@ noncomputable def critical (A F : K[X]) : K[X] := A*F.derivative - 2*(A.derivati
 
 /-- Every square root in the pencil divides the common critical polynomial. -/
 theorem square_root_dvd_critical {A F W : K[X]} {s : K} (hs : s ≠ 0)
-    (hw : W^2 + C s*F = A^2) : W ∣ critical A F := by
+    (hw : W ^ 2 + C s * F = A ^ 2) : W ∣ critical A F := by
   have hd := congrArg derivative hw
   simp only [derivative_add, derivative_mul, derivative_C, zero_mul, zero_add,
     pow_two] at hd
@@ -55,11 +55,11 @@ theorem critical_ne_zero {A F : K[X]} {x : K} (hA : A.eval x ≠ 0)
     (hF : F.eval x = 0) (hd : F.derivative.eval x ≠ 0) : critical A F ≠ 0 := by
   intro he
   have hv := congrArg (eval x) he
-  simpa [critical, hF, hA, hd] using hv
+  simp [critical, hF, hA, hd] at hv
 
 /-- Square roots at distinct parameters are pairwise coprime. -/
 theorem square_roots_coprime {A F U V : K[X]} {s t : K} (hst : s ≠ t)
-    (hAF : IsCoprime A F) (hu : U^2+C s*F=A^2) (hv : V^2+C t*F=A^2) :
+    (hAF : IsCoprime A F) (hu : U ^ 2 + C s * F = A ^ 2) (hv : V ^ 2 + C t * F = A ^ 2) :
     IsCoprime U V := by
   have hpow : IsCoprime (A^2) F := hAF.pow_left
   obtain ⟨a, b, hab⟩ := hpow
@@ -74,7 +74,7 @@ theorem square_roots_coprime {A F U V : K[X]} {s t : K} (hst : s ≠ t)
 /-- The critical polynomial has degree strictly below three full fiber degrees after moving
 a root of the fixed fiber to infinity. -/
 theorem critical_degree {A F : K[X]} {d : ℕ} (hA : A.natDegree < d)
-    (hF : F.natDegree = 2*d) : (critical A F).natDegree < 3*d := by
+    (hF : F.natDegree = 2 * d) : (critical A F).natDegree < 3 * d := by
   have h₁ := natDegree_mul_le (p := A) (q := F.derivative)
   have h₂ := natDegree_mul_le (p := A.derivative) (q := F)
   have h₃ := natDegree_derivative_le A
@@ -86,8 +86,8 @@ theorem critical_degree {A F : K[X]} {d : ℕ} (hA : A.natDegree < d)
 
 /-- Three pairwise coprime full-degree square roots would exceed the critical degree. -/
 theorem no_three_full_roots {A F U V W : K[X]} {d : ℕ}
-    (hA : A.natDegree < d) (hF : F.natDegree = 2*d) (hcrit : critical A F ≠ 0)
-    (hU : U.natDegree=d) (hV : V.natDegree=d) (hW : W.natDegree=d)
+    (hA : A.natDegree < d) (hF : F.natDegree = 2 * d) (hcrit : critical A F ≠ 0)
+    (hU : U.natDegree = d) (hV : V.natDegree = d) (hW : W.natDegree = d)
     (hUV : IsCoprime U V) (hUW : IsCoprime U W) (hVW : IsCoprime V W)
     (du : U ∣ critical A F) (dv : V ∣ critical A F) (dw : W ∣ critical A F) : False := by
   have hd : 0 < d := by omega
@@ -102,11 +102,12 @@ theorem no_three_full_roots {A F U V W : K[X]} {d : ℕ}
 
 /-- The full two-completion cap, stated after the displayed change of source coordinate. -/
 theorem no_three_square_members {A F U V W : K[X]} {d : ℕ} {x s t r : K}
-    (hA : A.natDegree < d) (hF : F.natDegree=2*d) (hAF : IsCoprime A F)
-    (hax : A.eval x ≠ 0) (hfx : F.eval x=0) (hdf : F.derivative.eval x ≠ 0)
-    (hU : U.natDegree=d) (hV : V.natDegree=d) (hW : W.natDegree=d)
+    (hA : A.natDegree < d) (hF : F.natDegree = 2 * d) (hAF : IsCoprime A F)
+    (hax : A.eval x ≠ 0) (hfx : F.eval x = 0) (hdf : F.derivative.eval x ≠ 0)
+    (hU : U.natDegree = d) (hV : V.natDegree = d) (hW : W.natDegree = d)
     (hs : s ≠ 0) (ht : t ≠ 0) (hr : r ≠ 0) (hst : s ≠ t) (hsr : s ≠ r) (htr : t ≠ r)
-    (hu : U^2+C s*F=A^2) (hv : V^2+C t*F=A^2) (hw : W^2+C r*F=A^2) : False :=
+    (hu : U ^ 2 + C s * F = A ^ 2) (hv : V ^ 2 + C t * F = A ^ 2)
+    (hw : W ^ 2 + C r * F = A ^ 2) : False :=
   no_three_full_roots hA hF (critical_ne_zero hax hfx hdf) hU hV hW
     (square_roots_coprime hst hAF hu hv) (square_roots_coprime hsr hAF hu hw)
     (square_roots_coprime htr hAF hv hw) (square_root_dvd_critical hs hu)
@@ -115,11 +116,11 @@ theorem no_three_square_members {A F U V W : K[X]} {d : ℕ} {x s t r : K}
 /-- Two distinct scaled square members give a pair of reciprocal functions on the
 conic. This identity constructs the common right factor. -/
 theorem conic_product {L : Type*} [Field L] {u v r f s : L}
-    (hu : u^2=1-(r^2*s)*f) (hv : v^2=1-s*f) :
+    (hu : u ^ 2 = 1 - (r ^ 2 * s) * f) (hv : v ^ 2 = 1 - s * f) :
     (u+r*v)*(u-r*v)=1-r^2 := by linear_combination hu - r^2*hv
 
 /-- A square and its image under an involution differ by one of the two signs. -/
-theorem square_sign {L : Type*} [Field L] {u v : L} (h : u^2=v^2) :
+theorem square_sign {L : Type*} [Field L] {u v : L} (h : u ^ 2 = v ^ 2) :
     u=v ∨ u = -v := by
   have he : (u-v)*(u+v)=0 := by linear_combination h
   rcases mul_eq_zero.mp he with he | he
@@ -129,7 +130,7 @@ theorem square_sign {L : Type*} [Field L] {u v : L} (h : u^2=v^2) :
 /-- Clearing denominators in the two elliptic quotients of the genus-two curve gives
 these identities. The coefficient of the middle term is arbitrary. -/
 theorem two_elliptic_quotients {L : Type*} [Field L] {u y c a : L}
-    (hy : y^2=c*(u^5+a*u^3+u)) :
+    (hy : y ^ 2 = c * (u ^ 5 + a * u ^ 3 + u)) :
     (y*(u+1))^2 = c*u*((u^2+1)^2+(a-2)*u^2)*(u^2+1+2*u) ∧
     (y*(u-1))^2 = c*u*((u^2+1)^2+(a-2)*u^2)*(u^2+1-2*u) := by
   constructor

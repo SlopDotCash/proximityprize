@@ -93,7 +93,7 @@ def height_bound(w, primary, h, peeled, b, t, d, auxiliary=None):
     height = ((6 * b + 2) * max_weight - 3 * b**2 * d
               - (3 * excess**2) // t - 2 * excess)
     deficit = (primary.v * (N - d) - primary.r * w.errors
-               + h * primary.drop * (t - 1 - d) - 1 - peeled * (w.errors + 1))
+               + h * primary.drop * (t - 1 - d) - 1)
     if auxiliary is not None:
         deficit = min(deficit, auxiliary.v * (N - d) + auxiliary.weight - 1
                       - N * auxiliary.r + h * auxiliary.drop * (t - 1))

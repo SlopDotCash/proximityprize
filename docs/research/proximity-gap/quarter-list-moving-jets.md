@@ -40,3 +40,30 @@ Take a maximal independent set of columns and adjoin one dependent column. Crame
 Moreover $G_W(X,H,V)\ne0$. Over $k(X,Z)$, $G$ is irreducible of positive $W$-degree less than the characteristic; its resultant with $G_W$ is nonzero. This resultant has $X$-degree at most $15e<D$. Any nonzero polynomial relation in $X,H$ must have $X$-degree at least $D$, because $k(X,H)=k(C)$ and $[k(C):k(H)]=D$. The resultant cannot vanish at $H$.
 
 The differential argument now bounds the number of low-degree parameter jets on this one factor by 4,443,188, less than $\lceil M/38\rceil$. This contradicts the assumed list. [Differentiating on the irreducible factor](quarter-list-jet-derivation.md)
+
+## A length-uniform window beyond the quarter-rate Johnson radius
+
+Let $4\mid n$, $d=n/4-1$, and $j\ge0$ be an integer. If $n\ge2^{46}(j+1)^4$ and the field has characteristic $p>2n$, every closed ball at $n/2+2+j$ errors has at most $2n$ words, on **every injective domain** and at every positive width. For an arbitrary alphabet field, one can scalarize a width-$w$ word by mapping a column to $\sum_{i<w}y_i T^i$ over the rational-function extension. Equality at a site and message degrees are preserved. The length-$2^{30}$ result above uses its sharper direct constants.
+
+Here are uniform estimates for the needed inputs. Write $z=j+1$, $h=2^{20}z^4$, $t=2d-j$, $a=t-d$, and let $m=2n+1$. Then $d\ge n/5$, $h\le n/2^{26}$, $a\ge d/2$, and $nd-t^2=4dz-j^2$. The matrix proof with $D_{ik}=(d-|S_i\cap S_k|)/a$ off the diagonal gives $S=\operatorname{tr}D^2\ge m$ and $Q=\operatorname{tr}(D^2-I)^2\le2L(L-1)(L+1)^2$, where $L=1+m(nd-t^2)/(na)\le25z$. In particular $Q<2\cdot25^2\cdot26^2 z^4<h$. Writing $M_4=\sum D_{ik}^4$, the repeated-index trace bound gives $M_4\ge S-Q$. These estimates allow entries greater than one. [Matrix argument](spectral-deficit-list.md)
+
+Set $\kappa=d/a$ and $\mu=(d-h)/a<1$. If $S_H$ is the total ordered square mass of entries exceeding $\mu$, then $M_4\le\mu^2 S+(\kappa^2-\mu^2)S_H$. Thus
+$$
+ S_H\ge\frac{(1-\mu^2)m-Q}{\kappa^2-\mu^2}.
+$$
+One has $1-\mu^2\ge3h/(4d)$, $\kappa^2-\mu^2\le8h/d$, $m\ge8d$, and $\kappa\le2$. There are at least $S_H/(2\kappa^2)\ge5d/64\ge n/100$ unordered strong pairs. They form a matching: if two $t$-sets each meet a third in fewer than $h$ sites, their mutual overlap outside it is at least $3t-n-2h+2>d$. Each pair misses at most $s=4+2j+h-1\le2h$ sites.
+
+The determinant extraction applies verbatim since $n-3s>3d$. Two pairs give $e\le4s-4\le8h$ exceptional sites by the cross-product bound $4d=n-4$, independent of $j$. Hence we obtain at least $n/100$ parameters of degrees at most $u=4h$, at most $8h$ distinct multiple roots, and a pole degree $D\ge(n-16h)/2\ge n/3$. The contact estimate at $r=159$ now has doubled surplus at least
+$$
+ 30n/3-157(8h)-3(8h)\binom{159}{2}-2(8h)159-4(160)(38)(4h)>0.
+$$
+The resultant bound $15(160)(38)(4h)<n/3$ suffices for the nonsingular differential chart. The allowed number $38^2(1+8h)$ of isolated jets is below $n/(100\cdot38)$, and $p>2n>2(u+1)$ ensures that the first odd branch term survives differentiation $u+1$ times. The contradiction follows as above. This yields a uniform window proportional to $n^{1/4}$ beyond the Johnson grid step at budget $2n$.
+
+The same length condition gives a common statement for **all four prize rates**. Take an integral dimension $k=n/q$ for $q=2,4,8,16$ and set $d=k-1$. With the field and budget above, every ball with at least $t=\lfloor\sqrt{nd}\rfloor-j$ required agreements has at most $2n$ words. At quarter rate, $nd=(n/2-1)^2-1$, giving precisely the agreement count just proved. For the other three rates, the support argument alone works in every characteristic.
+
+Indeed $z\le n/1000$ and $t>\sqrt{nd}-z$. At half, eighth and sixteenth rate respectively this gives $t\ge 7n/10,n/3,n/5$. The three comparisons follow by squaring after adding $n/1000$ to each lower bound and using $n\ge 2^{46}$. In each case $a=t-d\ge n/8$. At half rate the overlap is at least $2t-n\ge 2n/5$, whereas at eighth and sixteenth rate it suffices to use zero. Hence $\kappa=(d-\max(0,2t-n))/a\le3/4$ in all three cases. We also have $0\le nd-t^2<2nz$ and $m\le 3n$, so $L\le 1+48z\le49z$. The necessary fourth-moment inequality would give
+$$
+  7m/16\le m(1-\kappa^2)\le 2L(L-1)(L+1)^2
+     \le 2\cdot 49^2\cdot 50^2 z^4 < 7n/16,
+$$
+a contradiction. This is a lower bound on the first failing error count for list budget $2n$. The two named primes have different budgets.
