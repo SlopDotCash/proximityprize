@@ -4,6 +4,11 @@
 # All names verified against source namespaces — a rename or deletion here is a
 # hard CI failure, not a skip (update this list in the same PR as the rename).
 
+# Exact half- and quarter-rate budget-six list thresholds on the sixteen-point prime subgroup
+ArkLib.Research.ProximityGap.Frontier.SixteenPrimeSubfieldLists ProximityGap.SixteenPrimeSubfieldLists.half_good_iff
+ArkLib.Research.ProximityGap.Frontier.SixteenPrimeSubfieldLists ProximityGap.SixteenPrimeSubfieldLists.half_five_errors
+ArkLib.Research.ProximityGap.Frontier.SixteenPrimeSubfieldLists ProximityGap.SixteenPrimeSubfieldLists.quarter_good_iff
+
 # Degrees of two marked pencils at the first-prime half-rate successor
 ArkLib.Research.ProximityGap.Frontier.HalfSuccessorPencilMonodromy ProximityGap.HalfSuccessorPencilMonodromy.named_subdegree_floors
 ArkLib.Research.ProximityGap.Frontier.HalfSuccessorPencilMonodromy ProximityGap.HalfSuccessorPencilMonodromy.joint_adjunction_lower
