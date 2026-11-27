@@ -504,6 +504,7 @@ import ArkLib.Research.ProximityGap.Frontier.GaussPeriodR2CeilingGap
 import ArkLib.Research.ProximityGap.Frontier.GaussPolarSectionHeights
 import ArkLib.Research.ProximityGap.Frontier.GaussianEnergyBoundMuNDepthThree
 import ArkLib.Research.ProximityGap.Frontier.GaussianEnergyBoundMuNDepthTwo
+import ArkLib.Research.ProximityGap.Frontier.GeneralLinearFactorExtraction
 import ArkLib.Research.ProximityGap.Frontier.GeneralManyLineSafety
 import ArkLib.Research.ProximityGap.Frontier.GeneralOverlapPacking
 import ArkLib.Research.ProximityGap.Frontier.GeneralTwoLineArithmetic
