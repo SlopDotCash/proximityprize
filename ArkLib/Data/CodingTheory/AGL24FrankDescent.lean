@@ -44,6 +44,11 @@ accounting of a single reorientation against the supermodular uncrossing corolla
 (`AGL24CutSupply`); closing it in full requires the secondary lexicographic potential of
 the classical proof (to control reorientations that retighten an exactly-tight non-maximal
 cut), which is left as the precisely-localized open core.
+
+Status: `FrankUncrossingResidual` is now discharged unconditionally by
+`AGL24.frankUncrossingResidual_holds` in `AGL24FrankOrientationTheorem`, which bypasses the
+single-move descent: it builds a zero-potential orientation directly (maximal feasible
+in-degree vector, tight-set partition, Hall's theorem).
 -/
 
 open Finset

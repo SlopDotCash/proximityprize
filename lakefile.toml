@@ -189,6 +189,7 @@ globs = [
   "ArkLib.Data.CodingTheory.AGL24FailureProbGuard",
   "ArkLib.Data.CodingTheory.AGL24FrankDescent",
   "ArkLib.Data.CodingTheory.AGL24FrankInterface",
+  "ArkLib.Data.CodingTheory.AGL24FrankOrientationTheorem",
   "ArkLib.Data.CodingTheory.AGL24FrankUncrossingStep",
   "ArkLib.Data.CodingTheory.AGL24FrontDoorBridge",
   "ArkLib.Data.CodingTheory.AGL24GMMDSInterface",

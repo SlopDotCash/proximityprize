@@ -65,6 +65,7 @@ import ArkLib.Extensions.Data.MvPolynomial.SchwartzZippelCounting
 import ArkLib.Extensions.Data.Polynomial.Bivariate
 import ArkLib.Extensions.Data.Polynomial.Indicator
 import ArkLib.Extensions.Data.Polynomial.RationalFunctions
+import ArkLib.Extensions.Data.Polynomial.RootsOfUnitySum
 import ArkLib.Extensions.Data.Polynomial.SplitFold
 import ArkLib.Extensions.Data.Polynomial.Trivariate
 import ArkLib.Extensions.Data.Probability.Combinatorial

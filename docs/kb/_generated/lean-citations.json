@@ -1,8 +1,8 @@
 {
   "counts": {
-    "files_with_citations": 1391,
+    "files_with_citations": 1392,
     "keys_cited": 83,
-    "total_citation_edges": 1808
+    "total_citation_edges": 1809
   },
   "files": {
     "ArkLib/AGM/Basic.lean": [
@@ -290,6 +290,9 @@
       "AGL24"
     ],
     "ArkLib/Data/CodingTheory/AGL24FrankInterface.lean": [
+      "AGL24"
+    ],
+    "ArkLib/Data/CodingTheory/AGL24FrankOrientationTheorem.lean": [
       "AGL24"
     ],
     "ArkLib/Data/CodingTheory/AGL24FrankUncrossingStep.lean": [
@@ -5122,6 +5125,7 @@
       "ArkLib/Data/CodingTheory/AGL24FailureProbGuard.lean",
       "ArkLib/Data/CodingTheory/AGL24FrankDescent.lean",
       "ArkLib/Data/CodingTheory/AGL24FrankInterface.lean",
+      "ArkLib/Data/CodingTheory/AGL24FrankOrientationTheorem.lean",
       "ArkLib/Data/CodingTheory/AGL24FrankUncrossingStep.lean",
       "ArkLib/Data/CodingTheory/AGL24FrontDoorBridge.lean",
       "ArkLib/Data/CodingTheory/AGL24GMMDSInterface.lean",

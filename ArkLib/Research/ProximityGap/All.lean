@@ -1170,6 +1170,7 @@ import ArkLib.Research.ProximityGap.Frontier.SubexpMomentToConvergenceHub
 import ArkLib.Research.ProximityGap.Frontier.SubfieldQuarterListThreshold
 import ArkLib.Research.ProximityGap.Frontier.SubsetProductSpectrum
 import ArkLib.Research.ProximityGap.Frontier.SubsetProductSpectrumSubgroup
+import ArkLib.Research.ProximityGap.Frontier.SubspaceDesignMcaFour
 import ArkLib.Research.ProximityGap.Frontier.SumProductAsymmetrySubgroup
 import ArkLib.Research.ProximityGap.Frontier.SuperDiagonalEnergyLowerClosed
 import ArkLib.Research.ProximityGap.Frontier.SupplyExceedsBudgetUnconditional
