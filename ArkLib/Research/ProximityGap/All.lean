@@ -278,6 +278,7 @@ import ArkLib.Research.ProximityGap.Frontier.CubicApolarExtremum
 import ArkLib.Research.ProximityGap.Frontier.CubicApolarWitness
 import ArkLib.Research.ProximityGap.Frontier.CubicHahnJohnson
 import ArkLib.Research.ProximityGap.Frontier.CubicHalfDistancePlateau
+import ArkLib.Research.ProximityGap.Frontier.CubicHintBoundaryShell
 import ArkLib.Research.ProximityGap.Frontier.CubicPolarDescent
 import ArkLib.Research.ProximityGap.Frontier.CubicPolarSiteBudget
 import ArkLib.Research.ProximityGap.Frontier.CubicSectionDiscriminant
@@ -881,6 +882,7 @@ import ArkLib.Research.ProximityGap.Frontier.PuncturedFourWordProfile
 import ArkLib.Research.ProximityGap.Frontier.PuncturedSmoothMca
 import ArkLib.Research.ProximityGap.Frontier.Q1ArisingFamilyDescent
 import ArkLib.Research.ProximityGap.Frontier.QuadraticCubicWindowExample
+import ArkLib.Research.ProximityGap.Frontier.QuadraticHahnCliques
 import ArkLib.Research.ProximityGap.Frontier.QuadraticListIncidences
 import ArkLib.Research.ProximityGap.Frontier.QuadraticPairObstruction
 import ArkLib.Research.ProximityGap.Frontier.QuadraticPrimePhase
@@ -1345,6 +1347,7 @@ import ArkLib.Research.ProximityGap.Frontier.UncertaintyTwoPowerJohnsonRefuted
 import ArkLib.Research.ProximityGap.Frontier.UncertaintyTwoPowerSparseFloor
 import ArkLib.Research.ProximityGap.Frontier.UncertaintyTwoPowerTrinomialFloor
 import ArkLib.Research.ProximityGap.Frontier.UnconditionalCubicPopulation
+import ArkLib.Research.ProximityGap.Frontier.UniformCubicHahnBracket
 import ArkLib.Research.ProximityGap.Frontier.UnifyBDemandSupplyNormConsolidation
 import ArkLib.Research.ProximityGap.Frontier.UniversalCubicBudgetWindow
 import ArkLib.Research.ProximityGap.Frontier.UniversalCubicThreshold
