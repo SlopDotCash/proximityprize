@@ -913,6 +913,7 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterMu64DihedralExclusion
 import ArkLib.Research.ProximityGap.Frontier.QuarterMu64Mu128CyclicExclusion
 import ArkLib.Research.ProximityGap.Frontier.QuarterOppositeEdgeCharacters
 import ArkLib.Research.ProximityGap.Frontier.QuarterPairTripleSignatures
+import ArkLib.Research.ProximityGap.Frontier.QuarterPivotDomainIndependentBarrier
 import ArkLib.Research.ProximityGap.Frontier.QuarterQuarticPrym
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateApolarBracket
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateCommonPopulation
@@ -1367,6 +1368,7 @@ import ArkLib.Research.ProximityGap.Frontier.UniversalSignedListNorms
 import ArkLib.Research.ProximityGap.Frontier.UniversalTwoHeadBudget
 import ArkLib.Research.ProximityGap.Frontier.UnramifiedDerivationDVR
 import ArkLib.Research.ProximityGap.Frontier.UnrestrictedSectionPopulation
+import ArkLib.Research.ProximityGap.Frontier.VeroneseCheapRowPolarCap
 import ArkLib.Research.ProximityGap.Frontier.WF407W2_D2gspec
 import ArkLib.Research.ProximityGap.Frontier.WF407W2_D4_PerPeriodMGFWall
 import ArkLib.Research.ProximityGap.Frontier.WF407W2_L2nover4
