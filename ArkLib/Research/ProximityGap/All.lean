@@ -1859,6 +1859,8 @@ import ArkLib.Research.ProximityGap.Frontier._CoherenceIdentity
 import ArkLib.Research.ProximityGap.Frontier._CollisionExcessPartition
 import ArkLib.Research.ProximityGap.Frontier._CompleteHomogeneousReadout
 import ArkLib.Research.ProximityGap.Frontier._CompletedSumCancellation
+import ArkLib.Research.ProximityGap.Frontier._CompletionCountAssembly
+import ArkLib.Research.ProximityGap.Frontier._CompletionCountThirdMoment
 import ArkLib.Research.ProximityGap.Frontier._Conj41CapNondegReducesToSZ
 import ArkLib.Research.ProximityGap.Frontier._Conj41CliqueCapTwoPower
 import ArkLib.Research.ProximityGap.Frontier._Conj41CliquePartialFraction
@@ -2761,6 +2763,7 @@ import ArkLib.Research.ProximityGap.Frontier._MaxL1ShellMassNoGo
 import ArkLib.Research.ProximityGap.Frontier._MaximalMinorIdealCertificate
 import ArkLib.Research.ProximityGap.Frontier._MaximizerCarryingReduction
 import ArkLib.Research.ProximityGap.Frontier._MetaTheoremSecondOrderFloor
+import ArkLib.Research.ProximityGap.Frontier._MinimumSupportHeadPlane
 import ArkLib.Research.ProximityGap.Frontier._MixedMomentPhaseBlind
 import ArkLib.Research.ProximityGap.Frontier._MixingTimeCanonicalPathsCeiling
 import ArkLib.Research.ProximityGap.Frontier._MomentBoundFlooredAtN
@@ -2943,6 +2946,8 @@ import ArkLib.Research.ProximityGap.Frontier._PPC10OrbitCensusCertificate
 import ArkLib.Research.ProximityGap.Frontier._PackingBudgetFirstJump
 import ArkLib.Research.ProximityGap.Frontier._PackingPrizeP30Ceilings
 import ArkLib.Research.ProximityGap.Frontier._PadicBakerDefectCeiling
+import ArkLib.Research.ProximityGap.Frontier._PairCompletionAggregate
+import ArkLib.Research.ProximityGap.Frontier._PairUnionMomentMean
 import ArkLib.Research.ProximityGap.Frontier._PaleyCayleyEigenvalue
 import ArkLib.Research.ProximityGap.Frontier._PaleyDoubleSumSingletonGate
 import ArkLib.Research.ProximityGap.Frontier._PencilAutocorrLambdaRootBound
@@ -3595,6 +3600,7 @@ import ArkLib.Research.ProximityGap.Frontier._RhoAntitoneFailsThinPrime
 import ArkLib.Research.ProximityGap.Frontier._RhoCharZeroSlackVacuousAtPrize
 import ArkLib.Research.ProximityGap.Frontier._RhoDecomposition
 import ArkLib.Research.ProximityGap.Frontier._RichPencilCycleBudget
+import ArkLib.Research.ProximityGap.Frontier._RichPencilDisjoint
 import ArkLib.Research.ProximityGap.Frontier._RingHomBadScalarMono
 import ArkLib.Research.ProximityGap.Frontier._RudnevDilutionFixedSavingStall
 import ArkLib.Research.ProximityGap.Frontier._RungListBridge
@@ -3777,6 +3783,7 @@ import ArkLib.Research.ProximityGap.Frontier._TensorRowSpanCriterion
 import ArkLib.Research.ProximityGap.Frontier._ThesisCapstone
 import ArkLib.Research.ProximityGap.Frontier._ThesisCapstoneGoodPrimeVacuousAtPrize
 import ArkLib.Research.ProximityGap.Frontier._ThetaPoissonNormMismatchNoGo
+import ArkLib.Research.ProximityGap.Frontier._ThirdMomentCap
 import ArkLib.Research.ProximityGap.Frontier._ThirdMomentJensenGeneral
 import ArkLib.Research.ProximityGap.Frontier._ThirdMomentUpperLineCap
 import ArkLib.Research.ProximityGap.Frontier._ThornerZamanPNTStatement

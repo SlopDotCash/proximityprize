@@ -1,0 +1,84 @@
+name: Completion count from the line structure
+
+on:
+  push:
+    branches: [research/completion-assembly]
+  pull_request:
+    paths:
+      - ArkLib/Research/ProximityGap/Frontier/_CompletionCountAssembly.lean
+      - ArkLib/Research/ProximityGap/Frontier/_CompletionCountThirdMoment.lean
+      - ArkLib/Research/ProximityGap/Frontier/_ThirdMomentCap.lean
+      - .github/workflows/completion-assembly.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  kernel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      LEAN_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: leanprover/lean-action@v1.7.0
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          use-mathlib-cache: false
+      - uses: actions/cache/restore@v6
+        with:
+          path: |
+            .lake
+            !.lake/**/*.setup.json
+          key: completion-assembly-kernel-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            third-moment-kernel-${{ runner.os }}-
+            completion-count-kernel-${{ runner.os }}-
+            pair-union-kernel-${{ runner.os }}-
+            incidence-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
+      - name: Fetch dependency cache
+        run: ./scripts/lake-locked.sh exe cache get
+      - name: Check the assembly and audit axioms
+        run: |
+          set -o pipefail
+          ./scripts/lake-locked.sh build \
+            ArkLib.Research.ProximityGap.Frontier._ThirdMomentCap \
+            ArkLib.Research.ProximityGap.Frontier._CompletionCountThirdMoment
+          lake env lean ArkLib/Research/ProximityGap/Frontier/_CompletionCountAssembly.lean | tee assembly-axioms.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          text = Path('assembly-axioms.log').read_text()
+          results = re.findall(
+              r"'ProximityGap\.CompletionCountAssembly\.([^']+)' "
+              r"(?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)",
+              text)
+          expected = {
+              'completion_count_from_lines',
+              'first_sponsor_cutoff_values',
+              'first_sponsor_completion_from_lines',
+          }
+          assert {name for name, _ in results} == expected, sorted({name for name, _ in results} ^ expected)
+          assert len(results) == len(expected)
+          for name, axioms in results:
+              ax = {a.strip() for a in (axioms or '').split(',') if a.strip()}
+              assert ax <= {'propext', 'Classical.choice', 'Quot.sound'}, name
+          assert 'sorryAx' not in text
+          print('Three assembly declarations axiom-clean')
+          PY
+      - name: Stop Lean workers
+        if: always() && !cancelled()
+        run: bash scripts/ci-stop-lean.sh
+      - name: Preserve dependencies
+        if: always() && !cancelled()
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            .lake
+            !.lake/**/*.setup.json
+          key: completion-assembly-kernel-${{ runner.os }}-${{ github.run_id }}

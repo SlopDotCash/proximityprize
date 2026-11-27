@@ -1,0 +1,94 @@
+name: Pair-union moment and weighted radius
+
+on:
+  push:
+    branches: [research/pair-union-moment]
+  pull_request:
+    paths:
+      - ArkLib/Research/ProximityGap/Frontier/_PairUnionMomentMean.lean
+      - scripts/probes/probe_weighted_locator_certificate.py
+      - docs/research/proximity-gap/first-sponsor-reciprocal-locators.md
+      - .github/workflows/pair-union-moment.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  arithmetic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: python3 scripts/probes/probe_weighted_locator_certificate.py
+      - run: python3 scripts/probes/probe_weighted_locator_certificate.py --frontier
+
+  kernel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      LEAN_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: leanprover/lean-action@v1.7.0
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          use-mathlib-cache: false
+      - uses: actions/cache/restore@v6
+        with:
+          path: |
+            .lake
+            !.lake/**/*.setup.json
+          key: pair-union-kernel-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            multiline-kernel-${{ runner.os }}-
+            incidence-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
+            incidence-dependencies-${{ runner.os }}-
+      - name: Fetch dependency cache
+        run: ./scripts/lake-locked.sh exe cache get
+      - name: Check pair-union moment and audit axioms
+        run: |
+          set -o pipefail
+          lake env lean ArkLib/Research/ProximityGap/Frontier/_PairUnionMomentMean.lean | tee pair-union-axioms.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          text = Path('pair-union-axioms.log').read_text()
+          results = re.findall(
+              r"'ProximityGap\.PairUnionMoment\.([^']+)' "
+              r"(?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)",
+              text)
+          expected = {
+              'degree_nonneg',
+              'sum_card_eq_sum_degree',
+              'sum_card_inter_eq_sum_degree_sq',
+              'sum_card_inter_erase_eq_sum_degree_mul_pred',
+              'three_mul_sq_le',
+              'sum_three_mul_sq_le',
+              'ordered_pair_union_deficit',
+              'mean_pair_union_moment',
+              'mean_pair_union_ge',
+              'first_sponsor_weighted_locator_margins_successor',
+          }
+          assert {name for name, _ in results} == expected, sorted({name for name, _ in results} ^ expected)
+          assert len(results) == len(expected)
+          for name, axioms in results:
+              ax = {a.strip() for a in (axioms or '').split(',') if a.strip()}
+              assert ax <= {'propext', 'Classical.choice', 'Quot.sound'}, name
+          assert 'sorryAx' not in text
+          print('Eleven pair-union declarations axiom-clean')
+          PY
+      - name: Stop Lean workers
+        if: always() && !cancelled()
+        run: bash scripts/ci-stop-lean.sh
+      - name: Preserve dependencies
+        if: always() && !cancelled()
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            .lake
+            !.lake/**/*.setup.json
+          key: pair-union-kernel-${{ runner.os }}-${{ github.run_id }}

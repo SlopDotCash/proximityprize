@@ -8,6 +8,8 @@ on:
       - ArkLib/Research/ProximityGap/Frontier/_IncidenceDependencyArithmetic.lean
       - ArkLib/Research/ProximityGap/Frontier/_PencilTreeRank.lean
       - ArkLib/Research/ProximityGap/Frontier/_PencilCycleShortening.lean
+      - ArkLib/Research/ProximityGap/Frontier/_MinimumSupportHeadPlane.lean
+      - ArkLib/Research/ProximityGap/Frontier/_RichPencilDisjoint.lean
       - ArkLib/Research/ProximityGap/Frontier/_RichPencilCycleBudget.lean
       - ArkLib/Research/ProximityGap/Frontier/_ActiveErrorAffineCollapse.lean
       - docs/research/proximity-gap/multiline-relation-shortening.md
@@ -51,6 +53,21 @@ jobs:
             incidence-dependencies-${{ runner.os }}-
       - name: Fetch dependency cache
         run: ./scripts/lake-locked.sh exe cache get
+      - name: Check minimum support and audit axioms
+        run: |
+          set -o pipefail
+          ./scripts/lake-locked.sh build CompPoly.ToMathlib.Polynomial.Roots
+          lake env lean ArkLib/Research/ProximityGap/Frontier/_MinimumSupportHeadPlane.lean | tee minimum-support-axioms.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          text = Path('minimum-support-axioms.log').read_text()
+          results = re.findall(r"'ProximityGap\.MinimumSupportHeadPlane\.([^']+)' (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)", text)
+          assert {name for name, _ in results} == {'residual_on_minimum_support', 'agreement_on_residual_line', 'affine_heads_on_minimum_support', 'tight_support_separation', 'first_sponsor_reciprocal_locator_margins', 'residual_mul_nodal_complement', 'reciprocal_locator_evaluation', 'first_sponsor_near_minimal_locator_margins', 'support_symmetric_difference_bound', 'near_minimal_support_separation', 'first_sponsor_weighted_locator_margins', 'residual_mul_nodal_complement_of_degree_band', 'locator_cross_numerator_degree', 'locator_common_agreement_bound', 'locator_collinear_numerator_root', 'locator_margin_tangent'}
+          assert len(results) == 16
+          for name, axioms in results:
+              assert {axiom.strip() for axiom in axioms.split(',') if axiom.strip()} <= {'propext', 'Classical.choice', 'Quot.sound'}, name
+          PY
       - name: Check relation arithmetic declarations and audit axioms
         run: |
           set -o pipefail
@@ -167,4 +184,20 @@ jobs:
           assert len(results) == 3
           for name, axioms in results:
               assert {axiom.strip() for axiom in axioms.split(',') if axiom.strip()} <= {'propext', 'Classical.choice', 'Quot.sound'}, name
+          PY
+      - name: Check rich pencil disjointness and audit axioms
+        run: |
+          set -o pipefail
+          ./scripts/lake-locked.sh build ArkLib.Research.ProximityGap.Frontier._IncidenceAffineLines
+          lake env lean ArkLib/Research/ProximityGap/Frontier/_RichPencilDisjoint.lean | tee rich-pencil-disjoint-axioms.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          text = Path('rich-pencil-disjoint-axioms.log').read_text()
+          result = re.search(r"'ProximityGap\.RichPencilDisjoint\.distance_le_twice_radius_of_meeting_rich_pencils' depends on axioms:\s*\[([^\]]*)\]", text)
+          assert result is not None
+          assert {axiom.strip() for axiom in result[1].split(',')} <= {'propext', 'Classical.choice', 'Quot.sound'}
+          witness = re.search(r"'ProximityGap\.RichPencilDisjoint\.other_heads_eq_of_collinear_triples' depends on axioms:\s*\[([^\]]*)\]", text)
+          assert witness is not None
+          assert {axiom.strip() for axiom in witness[1].split(',')} <= {'propext', 'Classical.choice', 'Quot.sound'}
           PY
