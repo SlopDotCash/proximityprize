@@ -38,10 +38,16 @@ NT = N - T
 P_ = K - 1  # pairwise aligned-intersection cap
 
 
+def _require(condition, detail):
+    """Keep the layer-cake certificate checks active under Python optimization."""
+    if not condition:
+        raise AssertionError(detail)
+
+
 def J(a: int) -> int:
     """Exact subtracted Johnson count at alignment level a (requires gap)."""
     den = a * a - N * P_
-    assert den > 0, a
+    _require(den > 0, f"Johnson denominator is not positive at alignment {a}")
     return (N * (a - P_)) // den
 
 
@@ -52,7 +58,10 @@ def ladder_floor(phi: int) -> int:
 
 def main() -> None:
     thr = math.isqrt(N * P_)
-    assert thr == 536870910 and thr * thr <= N * P_ < (thr + 1) * (thr + 1)
+    _require(
+        thr == 536870910 and thr * thr <= N * P_ < (thr + 1) * (thr + 1),
+        "Johnson threshold is not 536870910",
+    )
     print(f"Johnson threshold isqrt(N(k-1)) = {thr}")
 
     # ladder table
@@ -62,13 +71,19 @@ def main() -> None:
         above = a > thr
         extra = f"  J(A_phi) = {J(a)}" if above else ""
         print(f"  {phi:3d} : {a}  above={above}{extra}")
-    assert ladder_floor(10) == 539356427 > thr
-    assert ladder_floor(9) == 532676609 <= thr
+    _require(
+        ladder_floor(10) == 539356427 > thr,
+        "10-rider alignment floor is not 539356427",
+    )
+    _require(
+        ladder_floor(9) == 532676609 <= thr,
+        "9-rider alignment floor is not 532676609",
+    )
 
     # light side: fiber cap below the threshold
     light_fiber = NT // (T - thr)
-    assert T - thr == 55924056
-    assert light_fiber == 8
+    _require(T - thr == 55924056, "sub-Johnson gap T - threshold is not 55924056")
+    _require(light_fiber == 8, "sub-Johnson fiber cap is not 8")
     print(f"sub-Johnson pencils: fiber <= {light_fiber} (riders <= 9); "
           "count unbounded by the assembled constraints")
 
@@ -77,17 +92,26 @@ def main() -> None:
     jT1 = J(T - 1)
     print(f"heavy-pencil count at the ten-rider floor: J = {j10}")
     print(f"pencil count at alignment T-1: J = {jT1}")
-    assert jT1 >= 3
+    _require(jT1 >= 3, "Johnson count at alignment T-1 is below 3")
 
     # the killer admissibility check: three pencils at alignment T-1
     # (1) Johnson admits three
-    assert 3 * ((T - 1) ** 2 - N * P_) <= N * ((T - 1) - P_)
+    _require(
+        3 * ((T - 1) ** 2 - N * P_) <= N * ((T - 1) - P_),
+        "Johnson does not admit three pencils at alignment T-1",
+    )
     # (2) aligned-region packing feasible (Bonferroni with pairwise < k)
-    assert 3 * (T - 1) <= N + 3 * P_
+    _require(
+        3 * (T - 1) <= N + 3 * P_,
+        "aligned-region packing rejects three pencils at alignment T-1",
+    )
     # (3) full fibers allowed by the vote bound at T-A = 1
-    assert NT * (T - (T - 1)) <= NT
+    _require(
+        NT * (T - (T - 1)) <= NT,
+        "vote bound rejects a full fiber at alignment T-1",
+    )
     # (4) over-budget
-    assert N < 1 + 3 * NT
+    _require(N < 1 + 3 * NT, "three full fibers at alignment T-1 do not exceed N")
     print("ADMISSIBLE: three pencils at alignment T-1 with fibers N-T "
           f"give 1 + 3*(N-T) = {1 + 3 * NT} > N = {N}")
 
@@ -108,7 +132,7 @@ def main() -> None:
         total += NT // (T - a_i)
     print(f"greedy heavy-side layer-cake maximum (info only): {total} "
           f"(>> N = {N})")
-    assert total > N
+    _require(total > N, "greedy heavy-side total does not exceed N")
 
     print("VERDICT: pure counting cannot close the predecessor budget; "
           "minimal open statement = RS exclusion of >= 3 near-threshold "

@@ -173,18 +173,22 @@ the `J`-budget are simply unused).  The remaining axis is `m`: at `d = 32`,
 **`δ_∞ ≈ 0.357 ± 0.004`** — 22 % beyond Johnson in absolute radius, ~31 % of the
 Johnson→capacity window, and decisively NOT capacity.
 
-**Window-fraction law (measured, `n = 2¹⁸`, best certified):** the face crosses a bounded,
-slowly-growing fraction of the Johnson→capacity window at every prize rate —
+**Window-fraction law (measured, `n = 2¹⁸`, best certified):** the registered face
+occupies the following share of the Johnson-to-capacity window at each prize rate —
 
 | rate | Johnson | face (best) | capacity | window fraction (lower bound) |
 |---|---|---|---|---|
-| 1/2 | 0.29289 | **0.35498** (d=32, m=384; bignum-verified, tight) | 0.5 | 30 % (near-converged; limit ≈ 31–32 %) |
-| 1/4 | 0.5 | **0.57140** (d=8, m=192; bignum-verified, tight) | 0.75 | 29 % (unconverged in (d,m)) |
-| 1/8 | 0.64645 | **0.72106** (d=8, m=128 refined; wedge 0.72004 verified) | 0.875 | 33 % (unconverged) |
-| 1/16 | 0.75 | **0.84377** (d=32, m=256; bignum-verified, tight) | 0.9375 | 50 % (still growing) |
+| 1/2 | 0.29289 | **0.35498** (d=32, m=384; bignum-verified, tight) | 0.5 | 29 % (near-converged; limit ≈ 31–32 %) |
+| 1/4 | 0.5 | **0.57140** (d=8, m=192; bignum-verified, tight) | 0.75 | 28 % (unconverged in (d,m)) |
+| 1/8 | 0.64645 | **0.72004** (d=8, m=128; bignum-verified, tight) | 0.875 | 32 % (unconverged) |
+| 1/16 | 0.75 | **0.84377** (d=32, m=256; feasible, not tight) | 0.9375 | 50 % (still growing) |
 
-The fractions are LOWER BOUNDS increasing along the (d,m) frontier, and they grow as the
-rate falls — the finite-parameter shadow of the ρ→0 capacity phenomenon.  Only rate 1/2 is
+Each integer in the last column is the greatest whole percent that does not exceed
+`(face - Johnson) / (capacity - Johnson)` on the radii printed in that row. The
+rate-1/4 share is smaller than the rate-1/2 share. The rate-1/16 face is the loose
+registry record `A = 40956`: it is feasible, and `A - 1` is feasible too, so the row
+is not a tight threshold. The rate-1/8 face is the registered wedge `A = 73389`
+(`δ = 0.72004`); an unregistered refinement `0.72106` is not a certificate. Only rate 1/2 is
 near its (d,m)-limit (`δ_∞ ≈ 0.357`, §above).  n-STABILITY: at `(d,m) = (32,128)`, rate 1/2,
 `δ = 0.34608 / 0.34605 / 0.34604` at `n = 2^16 / 2^18 / 2^20` — the face is n-independent to
 `~10^-5` in the ratio, so these charts describe production `n = 2^30` directly.

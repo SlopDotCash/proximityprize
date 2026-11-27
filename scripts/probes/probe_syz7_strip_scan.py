@@ -6,7 +6,7 @@ Context (issues #466/#507).  The SYZ degenerate-subset channel (SYZ1..SYZ6)
 gives unconditional production rate-1/2 ceilings approaching the channel infimum
 `(1-rho)/(2-rho) = 1/3` at `rho = 1/2`, but PROVABLY cannot cross it: each
 degenerate subset of agreement size `t` costs `2(t-k)` syndrome rank out of the
-`2(n-k)` budget, so `D <= (n-k)/(t-k)` subsets carry at most `D*(n-t)` bad
+`2(n-k)` budget, so `D < (n-k)/(t-k)` subsets carry at most `D*(n-t)` bad
 scalars, and `D*(n-t) > (budget ~ n)` forces `delta = (n-t)/n > (1-rho)/(2-rho)`.
 The open strip `[Johnson = 1 - sqrt(rho) ~ 0.2929, 1/3]` lies strictly BELOW that
 infimum -- the channel starves there.
@@ -44,6 +44,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from probe_syzygy_configuration_bad_counts import (  # noqa: E402
     Domain, next_prime_1_mod, witness_rows, solve_stack,
     analyze_stack, agrees_with_code_on, batch_inverse,
+    degenerate_subset_cap,
 )
 
 MASTER_SEED = "syz7-strip"
@@ -105,7 +106,7 @@ def scan_threshold(dom, rng, families):
     """Return dict family -> max certified bad-count over attempts at this t."""
     n, k, t = dom.n, dom.k, dom.t
     m = t - k
-    dmax = max(1, (n - k) // m - 1)
+    dmax = degenerate_subset_cap(n, k, m)
     best = {f: 0 for f in families}
 
     def try_stack(fam, u0, u1, subsets):
@@ -189,7 +190,7 @@ def run():
     print("SYZ7 strip scan: certified max-bad-count vs radius across (Johnson, 1/3)")
     print(f"rate 1/2; Johnson = 1 - sqrt(1/2) = {JOHNSON:.5f}; "
           f"channel infimum 1/3 = {THIRD:.5f}; budget analogue = n")
-    print("channel yield bound: D*(n-t) with D <= (n-k)/(t-k)")
+    print("channel yield bound: D*(n-t) with D < (n-k)/(t-k)")
     families = ["A", "NEAR", "MIX", "RAND"]
     all_rows = []
     for n, k, tag, tgt in ((32, 16, "2^30", 1 << 30), (64, 32, "2^60", 1 << 60)):

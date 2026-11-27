@@ -4301,5 +4301,6 @@ import ArkLib.Research.ProximityGap.Support.GG25RandomRSMCAProof
 import ArkLib.Research.ProximityGap.Support.KK25NearCapacityProof
 import ArkLib.Research.ProximityGap.Support.RateEliasCapacity
 import ArkLib.Research.ProximityGap.Support.UnifiedProducerWindowGlue
+import ArkLib.Research.ProximityGap.T3CeilingColumnCount
 import ArkLib.Research.ProximityGap.T3CeilingColumnZeroLaw
 import ArkLib.Research.ProximityGap.ToleranceCircuitCriterion

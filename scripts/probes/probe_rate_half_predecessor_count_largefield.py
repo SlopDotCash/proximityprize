@@ -88,13 +88,23 @@ def require(condition, message):
 
 
 # ------------------------------------------------------------------ primality
+# Sorenson–Webster 2015, Thm 1.1: the first twelve prime bases accept the
+# composite 318665857834031151167461. The first thirteen prime bases (2..41)
+# decide every n below _MR13_DET_LIMIT. The published 2^80 cell of this sweep
+# sits strictly between those two bounds, so the shorter set is not a
+# certificate for it.
 
-_MR_BASES = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37)  # deterministic < 3.3e24
+_MR_BASES = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41)
+_MR13_DET_LIMIT = 3317044064679887385961981
 
 
 def is_prime(x):
     if x < 2:
         return False
+    if x >= _MR13_DET_LIMIT:
+        raise ValueError(
+            f"13-base Miller-Rabin is only proven exact below {_MR13_DET_LIMIT}"
+        )
     for q in _MR_BASES:
         if x % q == 0:
             return x == q
@@ -618,7 +628,9 @@ def run():
     targets64 = [("p*/8", ps64 // 8), ("p*/2", ps64 // 2), ("p*", ps64),
                  ("2p*", 2 * ps64), ("8p*", 8 * ps64),
                  ("2^54", 1 << 54), ("p_count", C64 // 64),
-                 ("2^57", 1 << 57), ("2^80", 1 << 80)]
+                 ("2^57", 1 << 57),
+                 # Above the twelve-base proof and below _MR13_DET_LIMIT.
+                 ("2^80", 1 << 80)]
     for tag, tgt in targets64:
         p = next_prime_1_mod(n, max(tgt, n + 1))
         M = 1_000_000 if (HAVE_NUMPY and p <= NUMPY_P_MAX) else 20_000

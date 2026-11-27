@@ -89,6 +89,32 @@ class ResearchCoverage(unittest.TestCase):
             [(1, 'ArkLib.Research.ProximityGap.All'), (2, 'ArkLib.Research'),
              (3, 'Research.Other')])
 
+    def test_boundary_rejects_a_module_name_on_the_next_line(self):
+        # Lean's `"import "` symbol consumes the newline, so these are real imports.
+        cases = {
+            'bare import': ('import\n  ArkLib.Research.Secret\n',
+                            [(2, 'ArkLib.Research.Secret')]),
+            'import all': ('module\nimport all\n  ArkLib.Research.Secret\n',
+                           [(3, 'ArkLib.Research.Secret')]),
+            'all on its own line': ('module\nimport\nall\nArkLib.Research.Secret\n',
+                                    [(4, 'ArkLib.Research.Secret')]),
+            'modifiers then name': ('module\npublic meta import\n  ArkLib.Research.Secret\n',
+                                    [(3, 'ArkLib.Research.Secret')]),
+            'legacy root': ('import\n  «Research».Secret\n',
+                            [(2, '«Research».Secret')]),
+        }
+        for name, (source, expected) in cases.items():
+            with self.subTest(name=name):
+                self.assertEqual(boundary.research_imports(source), expected)
+
+    def test_boundary_does_not_read_the_next_command_as_a_module(self):
+        self.assertEqual(boundary.research_imports(
+            'import ArkLib.Basic\ntheorem t : True := trivial\n'), [])
+        self.assertEqual(boundary.research_imports(
+            'import\ntheorem usesResearch : True := trivial\n'), [])
+        self.assertEqual(boundary.research_imports(
+            'def s := "import\n  ArkLib.Research.Secret"\nimport ArkLib.Basic\n'), [])
+
     def test_boundary_rejects_meta_and_public_meta_imports(self):
         # Lean 4.30 module files accept `meta import` and `public meta import`;
         # both bring Research declarations into the importing module.

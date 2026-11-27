@@ -46,13 +46,22 @@ def isqrt(x):
 
 
 def johnson_count(a, n_dom, k):
-    """Exact-diagonal Johnson: max family size at agreement level >= a with
-    pairwise <= k-1, domain n_dom: L <= n_dom*(a-(k-1)) / (a^2 - n_dom*(k-1)),
-    valid when denominator > 0."""
+    """Largest nonnegative family size at agreement >= a with pairwise <= k-1.
+
+    The diagonal Johnson inequality is
+    `L * (a^2 - n*(k-1)) <= n*(a-(k-1))` when the denominator is positive.
+    Floor division of a negative ratio is not that largest L: agreement longer
+    than the domain makes the right-hand side negative, so no positive family
+    fits, and the empty family is the cap. Returning the negative floor let a
+    ledger `1 + cap * riders` drop below the budget on that edge.
+    """
     den = a * a - n_dom * (k - 1)
     if den <= 0:
         return None  # unbounded by Johnson
-    return (n_dom * (a - (k - 1))) // den
+    num = n_dom * (a - (k - 1))
+    if num < 0:
+        return 0
+    return num // den
 
 
 def main():

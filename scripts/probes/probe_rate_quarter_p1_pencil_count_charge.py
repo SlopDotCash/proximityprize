@@ -48,6 +48,12 @@ K = 2**28
 T = 592794966
 
 
+def _require(condition, detail):
+    """Keep the pencil-count certificate checks active under Python optimization."""
+    if not condition:
+        raise AssertionError(detail)
+
+
 def inv(a: int, p: int = P_SMALL) -> int:
     return pow(a, p - 2, p)
 
@@ -95,10 +101,15 @@ def check_pencil_bounds(u0, u1, riders, n, t_thresh, dom, tag):
     w1 = [(pb[e] - pa[e]) * inv(g_b - g_a) % P_SMALL for e in range(n)]
     w0 = [(pa[e] - g_a * w1[e]) % P_SMALL for e in range(n)]
     for g, (S, pf) in riders.items():
-        assert all(pf[e] == (w0[e] + g * w1[e]) % P_SMALL for e in range(n)), \
-            f"{tag}: rider {g} not on the common pencil"
-        assert len(S) >= t_thresh
-        assert all(pf[e] == (u0[e] + g * u1[e]) % P_SMALL for e in S)
+        _require(
+            all(pf[e] == (w0[e] + g * w1[e]) % P_SMALL for e in range(n)),
+            f"{tag}: rider {g} not on the common pencil",
+        )
+        _require(len(S) >= t_thresh, f"{tag}: rider {g} witness shorter than threshold")
+        _require(
+            all(pf[e] == (u0[e] + g * u1[e]) % P_SMALL for e in S),
+            f"{tag}: rider {g} disagrees with u0 + gamma*u1",
+        )
     aligned = [e for e in range(n) if w0[e] == u0[e] and w1[e] == u1[e]]
     A = len(aligned)
     R = len(riders)
@@ -113,12 +124,21 @@ def check_pencil_bounds(u0, u1, riders, n, t_thresh, dom, tag):
     # witness coverage and disjointness
     for g, (S, _) in riders.items():
         for e in S:
-            assert e in aligned or e in votes.get(g, []), (tag, g, e)
+            _require(
+                e in aligned or e in votes.get(g, []),
+                f"{tag}: coordinate {e} of rider {g} is neither aligned nor a vote",
+            )
     # exact bounds
     if A <= t_thresh:
-        assert R * (t_thresh - A) <= n - A, tag
-    assert R <= n - A, tag
-    assert R * t_thresh <= n + (R - 1) * A, tag
+        _require(
+            R * (t_thresh - A) <= n - A,
+            f"{tag}: riders*(T-A) exceeds N-A",
+        )
+    _require(R <= n - A, f"{tag}: rider count exceeds N-A")
+    _require(
+        R * t_thresh <= n + (R - 1) * A,
+        f"{tag}: alignment ladder fails",
+    )
     print(f"  {tag}: riders={R}, aligned={A}: vote bounds verified")
     return A
 
@@ -140,7 +160,7 @@ def part1_one_pencil():
         riders[gg] = (S, pf)
     A = check_pencil_bounds(u0, u1, riders, n, T_SMALL,
                             [pow(g, e, p) for e in range(n)], "one-pencil")
-    assert A == 7 * m == 112
+    _require(A == 7 * m == 112, "one-pencil alignment is not 112")
     print("part 1 verified")
 
 
@@ -190,15 +210,21 @@ def part2_two_pencils():
     S = []
     for j in range(3):
         Sj = [e for e in range(n) if e % 32 in Scl[j]]
-        assert len(Sj) == 18 * m == 144 >= T_SMALL
+        _require(
+            len(Sj) == 18 * m == 144 >= T_SMALL,
+            f"witness {j} does not have 144 coordinates at or above the threshold",
+        )
         for e in Sj:
-            assert pfun[j][e] == (u0[e] + gammas[j] * u1[e]) % p, (j, e)
+            _require(
+                pfun[j][e] == (u0[e] + gammas[j] * u1[e]) % p,
+                f"witness {j} coordinate {e} is off the received word",
+            )
         S.append(Sj)
     # non-jointness: some row unexplainable on each witness
     for j in range(3):
         e0 = not explainable(u0, S[j], dom, K_SMALL)
         e1 = not explainable(u1, S[j], dom, K_SMALL)
-        assert e0 or e1, f"witness {j} jointly explainable"
+        _require(e0 or e1, f"witness {j} jointly explainable")
     # pencil image through base gamma0
     pencils = set()
     for j in (1, 2):
@@ -206,7 +232,7 @@ def part2_two_pencils():
               for e in range(n)]
         w0 = [(pfun[0][e] - g0 * w1[e]) % p for e in range(n)]
         pencils.add((tuple(w0), tuple(w1)))
-    assert len(pencils) == 2, "expected exactly two pencils through the base"
+    _require(len(pencils) == 2, "expected exactly two pencils through the base")
     # per-pencil rider bounds
     check_pencil_bounds(u0, u1, {g0: (S[0], pfun[0]), g1: (S[1], pfun[1])},
                         n, T_SMALL, dom, "pencil-A")
@@ -218,23 +244,23 @@ def part2_two_pencils():
 
 def part3_literal_p1():
     NT = N - T
-    assert NT == 480946858
+    _require(NT == 480946858, "N - T is not 480946858")
     # uniform rider cap
-    assert NT + 1 == 480946859
+    _require(NT + 1 == 480946859, "uniform rider cap is not 480946859")
     # consumer: image cap 2 closes the budget
-    assert 1 + 2 * NT == 961893717 <= N
-    assert 1 + 3 * NT == 1442840575 > N        # 3 pencils no longer close
+    _require(1 + 2 * NT == 961893717 <= N, "two-pencil image cap does not close the budget")
+    _require(1 + 3 * NT == 1442840575 > N, "three pencils still close the budget")
     # alignment ladder crossover
     m10_floor = T - (N - T) // 9               # 9*(T-A) <= N-T
-    assert (N - T) // 9 == 53438539
-    assert m10_floor == 539356427
-    assert m10_floor ** 2 > N * (K - 1), "10-rider floor must beat Johnson"
+    _require((N - T) // 9 == 53438539, "(N - T) // 9 is not 53438539")
+    _require(m10_floor == 539356427, "10-rider alignment floor is not 539356427")
+    _require(m10_floor ** 2 > N * (K - 1), "10-rider floor must beat Johnson")
     m9_floor = T - (N - T) // 8
-    assert m9_floor == 532676609
-    assert m9_floor ** 2 <= N * (K - 1), "9-rider floor stays below Johnson"
+    _require(m9_floor == 532676609, "9-rider alignment floor is not 532676609")
+    _require(m9_floor ** 2 <= N * (K - 1), "9-rider floor stays below Johnson")
     # four-witness pigeonhole
-    assert 4 * T > 2 * N
-    assert 3 * T <= 2 * N                      # three witnesses do not force
+    _require(4 * T > 2 * N, "four witnesses do not share a coordinate")
+    _require(3 * T <= 2 * N, "three witnesses force a shared coordinate")
     print("part 3 verified: literal P1 constants")
     print(f"  N*(K-1) = {N * (K - 1)}")
     print(f"  10-rider floor {m10_floor}, square {m10_floor**2}")

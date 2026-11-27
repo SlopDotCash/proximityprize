@@ -34,7 +34,8 @@ consumer can reach.
 **Certificate technology (mirrors `_ZTZBetaThreeLadderExtension.lean` /
 `_W16TZPrizeScaleP30.lean`).**  The window primes here are 40–43 bits, sieved
 deterministically by `scripts/probes/probe_ztz_beta3_high_ladder.py`
-(Miller–Rabin, exact below `3.3·10^24`) in the two-factor Lucas shape
+(twelve-base Miller–Rabin, exact below `318665857834031151167461`;
+these windows are below `2^44`) in the two-factor Lucas shape
 
   `p − 1 = 2^e · c`,  `c` an odd prime,
 

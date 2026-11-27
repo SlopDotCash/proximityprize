@@ -103,12 +103,44 @@ def _require(condition: bool, message: str) -> None:
         raise ValueError(message)
 
 
+def _require_prime_factor(q: object, *, nested: bool) -> None:
+    """Reject a Pocklington factor that has not been proved prime.
+
+    The criterion applies to the prime factors of ``n - 1``. Grouping those
+    primes into a composite, or supplying a boolean, makes the gcd condition
+    check the wrong exponent. Factors below ``2^64`` use ``is_prime_u64``.
+    The one larger factor in this contract is accepted only by re-running its
+    own certificate. ``nested`` stops that re-run from calling itself.
+    """
+    if type(q) is int and 1 < q < (1 << 64) and is_prime_u64(q):
+        return
+    if not nested and q == LARGE_Q_FACTOR:
+        verify_pocklington_prime(
+            LARGE_Q_FACTOR,
+            LARGE_Q_FACTOR_FACTORS,
+            LARGE_Q_FACTOR_POCKLINGTON_WITNESSES,
+            nested=True,
+        )
+        return
+    _require(False, f"Pocklington factor {q} is not a proven prime")
+
+
 def verify_pocklington_prime(
-    n: int, factors: tuple[int, ...], witnesses: dict[int, int]
+    n: int,
+    factors: tuple[int, ...],
+    witnesses: dict[int, int],
+    *,
+    nested: bool = False,
 ) -> None:
-    """Verify primality from a complete factorization of n - 1."""
+    """Verify primality from a complete prime factorization of n - 1.
+
+    Every distinct factor has to be a proven prime. Composite factors are
+    rejected in every optimization mode, even when a witness makes both
+    Pocklington congruences hold.
+    """
     _require(prod(factors) == n - 1, "factorization does not multiply to n - 1")
     for q in set(factors):
+        _require_prime_factor(q, nested=nested)
         _require(q in witnesses, f"missing Pocklington witness for factor {q}")
         a = witnesses[q]
         _require(pow(a, n - 1, n) == 1, f"Fermat witness failed for factor {q}")

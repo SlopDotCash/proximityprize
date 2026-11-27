@@ -112,6 +112,52 @@ class ConsolidationTests(unittest.TestCase):
                     "Missing local import: ArkLib/Research/ProximityGap/Client.lean -> " + module,
                     errors)
 
+    def test_escaped_arklib_root_is_the_same_local_module(self):
+        # Lean resolves «ArkLib».Foo to ArkLib.Foo. A canonical file must not
+        # reach a downstream module by quoting the root, on one line or split.
+        cases = (
+            "public meta import all «ArkLib».Research.ProximityGap.Client\n",
+            "import «ArkLib».«Research».«ProximityGap».Client\n",
+            "public import\n  «ArkLib».Research.ProximityGap.Client\n",
+        )
+        expected = ("Canonical module imports downstream/test source: "
+                    "ArkLib/Base.lean -> ArkLib.Research.ProximityGap.Client")
+        for source in cases:
+            with self.subTest(source=source.strip()):
+                self.write("ArkLib/Base.lean", "module\n" + source)
+                errors, _ = self.run_check()
+                self.assertIn(expected, errors)
+
+    def test_escaped_obsolete_roots_are_missing_imports(self):
+        for module, token in (
+            ("Research.Client", "«Research».Client"),
+            ("ProximityPrize.Extensions.Proof", "«ProximityPrize».Extensions.Proof"),
+            ("ArkLibTest.Client", "«ArkLibTest».Client"),
+        ):
+            with self.subTest(module=module):
+                self.write("ArkLib/Research/ProximityGap/Client.lean", f"import {token}\n")
+                errors, _ = self.run_check()
+                self.assertIn(
+                    "Missing local import: ArkLib/Research/ProximityGap/Client.lean -> " + module,
+                    errors)
+
+    def test_quoted_dotted_component_is_not_a_flattened_local_path(self):
+        # «ArkLib.Research».Client is one atomic first component, not ArkLib.Research.
+        self.write("ArkLib/Base.lean", "module\nimport «ArkLib.Research».Client\n")
+        errors, _ = self.run_check()
+        self.assertFalse(any("ArkLib.Research.Client" in error for error in errors))
+        self.assertFalse(any("Missing local import" in error for error in errors))
+
+    def test_escaped_umbrella_reexport_names_the_canonical_module(self):
+        self.write("ArkLib.lean", "module\npublic import «ArkLib».Base\n")
+        errors, _ = self.run_check()
+        self.assertEqual(errors, [])
+
+    def test_downstream_escaped_import_of_canonical_module_is_allowed(self):
+        self.write("ArkLib/Research/ProximityGap/Client.lean", "import «ArkLib».Base\n")
+        errors, _ = self.run_check()
+        self.assertEqual(errors, [])
+
     def test_cycle_in_downstream_extensions_is_reported(self):
         self.write("ArkLib/Research/ProximityGap/Client.lean",
                    "import ArkLib.Research.ProximityGap.Other\n")

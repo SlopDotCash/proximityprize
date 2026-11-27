@@ -7,6 +7,7 @@ import unittest
 
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "integration"))
+import check_consolidation
 import extract_downstream_extensions as extractor
 
 
@@ -29,6 +30,26 @@ class ExtensionExtractorTests(unittest.TestCase):
 
     def test_source_preservation_and_ambiguous_command_regressions(self):
         extractor.self_test()
+
+    def test_doc_comment_body_starts_after_the_opener_token(self):
+        """`/--` and `/-!` are tokens, so `/--/` does not close the comment.
+
+        Lean starts the body after that token (`finishCommentBlock`). Closing at
+        the slash reads the rest of a real doc comment as imports and commands.
+        """
+        for source in (
+            "/--/ import ArkLib.Research.Fake -/\nimport ArkLib.Base\n",
+            "/--/\nimport ArkLib.Research.Fake\n-/\nimport ArkLib.Base\n",
+            "/-!/\nimport ArkLib.Research.Fake\n-/\nimport ArkLib.Base\n",
+        ):
+            with self.subTest(source=source):
+                self.assertEqual(check_consolidation.imports(source), ["ArkLib.Base"])
+        hidden = ("/--/\ntheorem ghost : False := by sorry\n"
+                  "-/\ntheorem real : True := trivial\n")
+        self.assertEqual(extractor.declaration_names(hidden), {"real"})
+        attached = "/-- Kept. -/\ntheorem kept : True := trivial\n"
+        command = next(c for c in extractor.parse_commands(attached) if c.kind == "theorem")
+        self.assertIn("Kept.", attached[command.start:command.end])
 
     def promotion(self, downstream, upstream):
         old = next(c for c in extractor.parse_commands(downstream) if c.name == "interpolate")

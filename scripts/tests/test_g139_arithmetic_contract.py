@@ -30,6 +30,52 @@ class ArithmeticContractPrimality(unittest.TestCase):
     def test_complete_arithmetic_contract(self):
         self.assertEqual(contract.verify_arithmetic(), (True, True, True))
 
+    def test_composite_factors_are_not_a_primality_certificate(self):
+        # Each product equals n - 1 and the witnesses meet the Fermat and gcd
+        # conditions. The factors are not all prime, so this is not a
+        # Pocklington certificate. 91, 49, 85, and the sixth Fermat number
+        # 2^64 + 1 are composite; 13 is prime, but 4 is still not a prime
+        # factor of 12. True is not an integer prime factor of 6.
+        fermat_six = (1 << 64) + 1
+        self.assertEqual(274177 * 67280421310721, fermat_six)
+        cases = (
+            (91, (9, 10), {9: 10, 10: 10}),
+            (49, (3, 16), {3: 19, 16: 19}),
+            (85, (6, 14), {6: 13, 14: 13}),
+            (13, (4, 3), {4: 2, 3: 2}),
+            (7, (True, 2, 3), {True: 3, 2: 3, 3: 3}),
+            (fermat_six, (1 << 64,), {(1 << 64): 2}),
+        )
+        for n, factors, witnesses in cases:
+            with self.subTest(n=n, factors=factors):
+                with self.assertRaises(ValueError) as caught:
+                    contract.verify_pocklington_prime(n, factors, witnesses)
+                self.assertIn("not a proven prime", str(caught.exception))
+
+    def test_prime_factor_certificate_still_verifies(self):
+        contract.verify_pocklington_prime(13, (2, 2, 3), {2: 2, 3: 2})
+
+    def test_composite_factor_certificate_is_rejected_with_optimization(self):
+        code = (
+            "import verify_g139_n2e30_arithmetic_contract as contract\n"
+            "contract.verify_pocklington_prime(91, (9, 10), {9: 10, 10: 10})\n"
+        )
+        modes = (
+            ((), None),
+            (("-O",), None),
+            ((), {**os.environ, "PYTHONOPTIMIZE": "1"}),
+        )
+        for python_flags, env in modes:
+            with self.subTest(python_flags=python_flags, environment=env is not None):
+                completed = subprocess.run(
+                    [sys.executable, *python_flags, "-B", "-c", code],
+                    cwd=Path(contract.__file__).parent, env=env,
+                    capture_output=True, text=True, encoding="utf-8", timeout=10,
+                )
+                self.assertNotEqual(completed.returncode, 0, completed.stderr)
+                self.assertEqual(completed.stdout, "")
+                self.assertIn("not a proven prime", completed.stderr)
+
 
 class ArithmeticContractJsonCLI(unittest.TestCase):
     """Use synthetic JSON documents, not retained release artifacts."""
