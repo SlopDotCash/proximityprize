@@ -1091,6 +1091,7 @@ import ArkLib.Research.ProximityGap.Frontier.SelfConsistencyCeiling
 import ArkLib.Research.ProximityGap.Frontier.SeparableScalarDifferential
 import ArkLib.Research.ProximityGap.Frontier.SevenSiteTransfer
 import ArkLib.Research.ProximityGap.Frontier.ShallowDiagonalRouteNonReach
+import ArkLib.Research.ProximityGap.Frontier.SharedFactorDegrees
 import ArkLib.Research.ProximityGap.Frontier.SharedLocatorListIncidences
 import ArkLib.Research.ProximityGap.Frontier.SharedSiteListBound
 import ArkLib.Research.ProximityGap.Frontier.SharpApolarMCA

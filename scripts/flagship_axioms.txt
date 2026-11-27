@@ -4,6 +4,12 @@
 # All names verified against source namespaces — a rename or deletion here is a
 # hard CI failure, not a skip (update this list in the same PR as the rename).
 
+# Second-prime half- and quarter-rate interpolation and shared factor accounting
+ArkLib.Research.ProximityGap.Frontier.SharedFactorDegrees ArkLib.ProximityGap.Frontier.SharedFactorDegrees.surfaces
+ArkLib.Research.ProximityGap.Frontier.SharedFactorDegrees ArkLib.ProximityGap.Frontier.SharedFactorDegrees.residual_charge_le
+ArkLib.Research.ProximityGap.Frontier.SharedFactorDegrees ArkLib.ProximityGap.Frontier.SharedFactorDegrees.linear_residual_le
+ArkLib.Research.ProximityGap.Frontier.SharedFactorDegrees ArkLib.ProximityGap.Frontier.SharedFactorDegrees.allocation
+
 # Three fibers of sizes 3, 3 and 2 for the half-rate octagon MCA count
 ArkLib.Research.ProximityGap.Frontier.OctagonCubicPencils ProximityGap.OctagonCubicPencils.exceptional
 
