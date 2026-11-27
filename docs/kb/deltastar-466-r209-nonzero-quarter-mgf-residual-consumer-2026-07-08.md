@@ -2,6 +2,14 @@
 
 Status: landed as a checked interface cleanup.
 
+Update 2026-11-11: the named residual is formally refuted at prize scale.
+`not_nonzeroQuarterMGFResidual` (same file) proves `¬ NonzeroQuarterMGFResidual ψ G` for every
+primitive `ψ` and every `G` with `128 ≤ |G|` and `2|G| ≤ |F|`, by instantiating
+`_DyadicRawQuarterMGFRefuted.not_rawQuarterMGFBound_of_parseval_scale` with
+`GaussPeriodParsevalFloor.sum_sq_erase_zero`. See
+`deltastar-466-dyadic-raw-mgf-normalization-audit-2026-07-09.md`; the normalized-square residual
+of R211/R213 is unaffected.
+
 Artifact:
 
 - `ArkLib/Research/ProximityGap/Frontier/_R209NonzeroQuarterMGFResidualConsumer.lean`

@@ -36,12 +36,22 @@ We work with an explicit list `T : List F` of nodes and:
   `ddiff (·^a) [x, y] = hsym (a-1) [x, y]` for `x ≠ y`, i.e.
   `(x^a - y^a)/(x - y) = ∑_{i<a} x^i y^{a-1-i}`  (Mathlib `geom_sum₂_mul`).
 
-* **`ddiff_pow`** — the general identity `ddiff (·^a) T = hsym (a - k) T` for `T` a list of
-  `k+1` distinct nodes with `k ≤ a`, **modulo** one explicitly-named recursion bridge
-  `DividedDifferenceFrontRecursion` (the Newton/Hermite step that the Lagrange form satisfies).
+* **`ddiff_pow_succ`** — the one-node recursion of the Lagrange form,
+  `DD_s(x^{a+1}) = DD_{s∖{i₀}}(x^a) + t_{i₀}·DD_s(x^a)`, the exact mirror of
+  `hsym_front_recursion`.
 
-The two-node case is axiom-clean and unconditional; the general case is an honest reduction to
-the single named divided-difference recursion Prop.
+* **`ddiff_pow_eq_hsym_list`** — the general identity over any duplicate-free node list `l`:
+  `ddiff (·^a) l = 0` when `a + 1 < |l|`, and `= hsym (a + 1 - |l|) l` otherwise.
+
+* **`dividedDifferenceEqCompleteHomog`** — the named Prop `DividedDifferenceEqCompleteHomog F`
+  holds over every field `F`: `DD_k(x^a) = h_{a-k}` for `k + 1` distinct nodes and `a ≥ k`.
+
+Everything here is axiom-clean and unconditional.  The Newton two-sided recursion
+`DD_s = (DD_{s∖last} − DD_{s∖first})/(t_first − t_last)` is not needed: the one-node recursion,
+applied at two different nodes, already gives `DD_s(1) = 0` for `|s| ≥ 2`.
+
+This is the classical symmetric-function identity only.  It says nothing about the size of the
+cascade values over a finite field, and the E4 decay analysis that consumes it is untouched.
 -/
 
 open Finset
@@ -254,26 +264,164 @@ theorem hsym_newton_three (d : ℕ) (t₀ t₁ t₂ : F) :
       -- substitute ih: (t₀-t₂)·h_n = h_{n+1}(t₀,t₁) - h_{n+1}(t₁,t₂) and nt2.
       linear_combination t₀ * ih + nt2
 
-/-! ## The general identity (`DD_k(x^a) = h_{a-k}`) as a named open statement
+/-! ## The general identity (`DD_k(x^a) = h_{a-k}`) as a named statement
 
-The two-node case `ddiff_pow_two` is the proven base case of B18.  The general statement —
-that the explicit Lagrange divided difference of `x^a` over `k+1` distinct nodes equals the
-complete homogeneous symmetric value `h_{a-k}` of the nodes — is stated here as a named
-`Prop` (NOT proved), so that downstream consumers (the E4 cascade-decay analysis) can name it
-as a hypothesis.  Proving it requires the Newton/Hermite one-step recursion for the Lagrange
-divided difference (`ddiff s = (ddiff (s.erase first) - ddiff (s.erase last))/(t last - t first)`)
-combined with `hsym_front_recursion`; that recursion lemma is the genuine remaining work and is
-deliberately not asserted as proved. -/
+The two-node case `ddiff_pow_two` is the base case of B18.  The general statement — that the
+explicit Lagrange divided difference of `x^a` over `k+1` distinct nodes equals the complete
+homogeneous symmetric value `h_{a-k}` of the nodes — is kept as a named `Prop`, so that
+downstream consumers (the E4 cascade-decay analysis) can name it.  It is PROVED below as
+`dividedDifferenceEqCompleteHomog`, from the one-node recursion `ddiff_pow_succ` and
+`hsym_front_recursion`. -/
 
-/-- **B18 general statement (named open Prop, NOT a theorem).** For every list `T` of `k+1`
-distinct nodes (here indexed by a finite `s`, with `t` injective on `s`) and every `a ≥ k`,
-the explicit Lagrange divided difference of `x ↦ x^a` over the nodes equals the complete
-homogeneous symmetric value `h_{a-k}` of the nodes.  This is the conjectural general B18;
-it specialises to the proved `ddiff_pow_two` when `s.card = 2`. -/
+/-- **B18 general statement (PROVED: `dividedDifferenceEqCompleteHomog`).** For every list `T`
+of `k+1` distinct nodes (here indexed by a finite `s`, with `t` injective on `s`) and every
+`a ≥ k`, the explicit Lagrange divided difference of `x ↦ x^a` over the nodes equals the
+complete homogeneous symmetric value `h_{a-k}` of the nodes.  It specialises to
+`ddiff_pow_two` when `s.card = 2`. -/
 def DividedDifferenceEqCompleteHomog (F : Type*) [Field F] [DecidableEq F] : Prop :=
   ∀ (a : ℕ) {ι : Type*} [DecidableEq ι] (s : Finset ι) (t : ι → F),
     Set.InjOn t s → (s.card : ℕ) ≤ a + 1 → 1 ≤ s.card →
     ddiff s t (fun x => x ^ a) = hsym (a - (s.card - 1)) (s.toList.map t)
+
+/-! ## The general identity, proved
+
+The one-node recursion `DD_s(x^{a+1}) = DD_{s∖{i₀}}(x^a) + t_{i₀}·DD_s(x^a)` holds for the explicit
+Lagrange form and mirrors `hsym_front_recursion` exactly.  Applied at two different nodes it also
+yields the vanishing `DD_s(1) = 0` for `|s| ≥ 2`, so the Newton two-sided recursion is never
+needed. -/
+
+section General
+
+variable {ι : Type*} [DecidableEq ι]
+
+omit [DecidableEq F] in
+/-- The Lagrange divided difference over a single node is the value at that node. -/
+theorem ddiff_singleton (i : ι) (t : ι → F) (f : F → F) : ddiff {i} t f = f (t i) := by
+  simp [ddiff, nodalDenom]
+
+omit [DecidableEq F] in
+/-- **One-node recursion for the Lagrange divided difference of a monomial.**
+For any node `i₀ ∈ s`, `DD_s(x^{a+1}) = DD_{s∖{i₀}}(x^a) + t_{i₀}·DD_s(x^a)`: write
+`t_i^{a+1} = (t_i − t_{i₀})·t_i^a + t_{i₀}·t_i^a`; the factor `t_i − t_{i₀}` cancels the `i₀`
+factor of the denominator for `i ≠ i₀` and kills the term `i = i₀`. -/
+theorem ddiff_pow_succ (s : Finset ι) (t : ι → F) (ht : Set.InjOn t s) {i₀ : ι} (hi₀ : i₀ ∈ s)
+    (a : ℕ) :
+    ddiff s t (fun x => x ^ (a + 1))
+      = ddiff (s.erase i₀) t (fun x => x ^ a) + t i₀ * ddiff s t (fun x => x ^ a) := by
+  have key : ddiff (s.erase i₀) t (fun x => x ^ a)
+      = ∑ i ∈ s, (t i - t i₀) * (t i ^ a / nodalDenom s t i) := by
+    rw [← Finset.sum_erase s (f := fun i => (t i - t i₀) * (t i ^ a / nodalDenom s t i))
+      (a := i₀) (by simp)]
+    unfold ddiff
+    refine Finset.sum_congr rfl (fun i hi => ?_)
+    obtain ⟨hne, his⟩ := Finset.mem_erase.mp hi
+    have hsub : t i - t i₀ ≠ 0 := sub_ne_zero.mpr (fun h => hne (ht his hi₀ h))
+    have hmem : i₀ ∈ s.erase i := Finset.mem_erase.mpr ⟨Ne.symm hne, hi₀⟩
+    have hD : nodalDenom s t i = (t i - t i₀) * nodalDenom (s.erase i₀) t i := by
+      unfold nodalDenom
+      rw [Finset.erase_right_comm, Finset.mul_prod_erase (s.erase i) (fun j => t i - t j) hmem]
+    rw [hD, ← mul_div_assoc, mul_div_mul_left _ _ hsub]
+  rw [key]
+  unfold ddiff
+  rw [Finset.mul_sum, ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  simp only [pow_succ]
+  ring
+
+/-- **The divided difference of the constant `1` over at least two nodes vanishes.**
+Apply `ddiff_pow_succ` at two different nodes and subtract. -/
+theorem ddiff_pow_zero_eq_zero (t : ι → F) :
+    ∀ (n : ℕ) (s : Finset ι), s.card = n + 2 → Set.InjOn t s →
+      ddiff s t (fun x => x ^ 0) = 0 := by
+  intro n
+  induction n with
+  | zero =>
+    intro s hs ht
+    obtain ⟨i₀, i₁, hne, rfl⟩ := Finset.card_eq_two.mp hs
+    have htne : t i₀ ≠ t i₁ := fun h => hne (ht (by simp) (by simp) h)
+    rw [ddiff_pair i₀ i₁ hne t htne]
+    simp
+  | succ n ih =>
+    intro s hs ht
+    obtain ⟨i₀, hi₀, i₁, hi₁, hne⟩ := Finset.one_lt_card.mp (by omega : 1 < s.card)
+    have htne : t i₀ ≠ t i₁ := fun h => hne (ht hi₀ hi₁ h)
+    have e₀ := ddiff_pow_succ s t ht hi₀ 0
+    have e₁ := ddiff_pow_succ s t ht hi₁ 0
+    rw [ih (s.erase i₀) (by rw [Finset.card_erase_of_mem hi₀]; omega)
+      (ht.mono (Finset.coe_subset.mpr (Finset.erase_subset _ _)))] at e₀
+    rw [ih (s.erase i₁) (by rw [Finset.card_erase_of_mem hi₁]; omega)
+      (ht.mono (Finset.coe_subset.mpr (Finset.erase_subset _ _)))] at e₁
+    have hmul : (t i₀ - t i₁) * ddiff s t (fun x => x ^ 0) = 0 := by
+      linear_combination e₁ - e₀
+    rcases mul_eq_zero.mp hmul with h | h
+    · exact absurd (sub_eq_zero.mp h) htne
+    · exact h
+
+/-- **B18 in list form, for every exponent.** Over a duplicate-free list `l` of node indices on
+which `t` is injective, the Lagrange divided difference of `x ↦ x^a` is `0` when `a + 1 < |l|`
+and `h_{a+1-|l|}` of the nodes otherwise.  Induction on `a`, matching `ddiff_pow_succ` against
+`hsym_front_recursion`. -/
+theorem ddiff_pow_eq_hsym_list (t : ι → F) (a : ℕ) :
+    ∀ l : List ι, l.Nodup → Set.InjOn t (l.toFinset : Set ι) →
+      ddiff l.toFinset t (fun x => x ^ a)
+        = if a + 1 < l.length then 0 else hsym (a + 1 - l.length) (l.map t) := by
+  induction a with
+  | zero =>
+    intro l hl ht
+    rcases l with _ | ⟨i, _ | ⟨j, l⟩⟩
+    · simp [ddiff]
+    · simp [ddiff_singleton, hsym_deg_zero]
+    · have hcard : (i :: j :: l).toFinset.card = l.length + 2 := by
+        rw [List.toFinset_card_of_nodup hl]; simp
+      rw [ddiff_pow_zero_eq_zero t l.length _ hcard ht]
+      simp
+  | succ a ih =>
+    intro l hl ht
+    rcases l with _ | ⟨i₀, l⟩
+    · simp [ddiff]
+    · have hi₀ : i₀ ∉ l := (List.nodup_cons.mp hl).1
+      have hl' : l.Nodup := (List.nodup_cons.mp hl).2
+      have hmem : i₀ ∈ (i₀ :: l).toFinset := by simp
+      have herase : (i₀ :: l).toFinset.erase i₀ = l.toFinset := by
+        rw [List.toFinset_cons, Finset.erase_insert (by simpa using hi₀)]
+      have ht' : Set.InjOn t (l.toFinset : Set ι) :=
+        ht.mono (by rw [← herase]; exact Finset.coe_subset.mpr (Finset.erase_subset _ _))
+      rw [ddiff_pow_succ _ t ht hmem a, herase, ih l hl' ht', ih (i₀ :: l) hl ht]
+      simp only [List.length_cons, List.map_cons]
+      rcases lt_trichotomy (a + 1) l.length with h | h | h
+      · have h1 : a + 1 < l.length + 1 := by omega
+        have h2 : a + 1 + 1 < l.length + 1 := by omega
+        simp only [h, h1, h2, ↓reduceIte, mul_zero, add_zero]
+      · have h0 : ¬ a + 1 < l.length := by omega
+        have h1 : a + 1 < l.length + 1 := by omega
+        have h2 : ¬ a + 1 + 1 < l.length + 1 := by omega
+        have e1 : a + 1 - l.length = 0 := by omega
+        have e2 : a + 1 + 1 - (l.length + 1) = 0 := by omega
+        simp only [h0, h1, h2, ↓reduceIte, e1, e2, hsym_deg_zero, mul_zero, add_zero]
+      · have h0 : ¬ a + 1 < l.length := by omega
+        have h1 : ¬ a + 1 < l.length + 1 := by omega
+        have h2 : ¬ a + 1 + 1 < l.length + 1 := by omega
+        obtain ⟨d, hd⟩ : ∃ d, a = l.length + d := ⟨a - l.length, by omega⟩
+        have e1 : a + 1 - l.length = d + 1 := by omega
+        have e2 : a + 1 - (l.length + 1) = d := by omega
+        have e3 : a + 1 + 1 - (l.length + 1) = d + 1 := by omega
+        simp only [h0, h1, h2, ↓reduceIte, e1, e2, e3]
+        rw [hsym_front_recursion]
+
+end General
+
+/-- **B18, proved.** `DividedDifferenceEqCompleteHomog` holds over every field: the explicit
+Lagrange divided difference of `x ↦ x^a` over `k + 1` distinct nodes is `h_{a-k}` of the
+nodes. -/
+theorem dividedDifferenceEqCompleteHomog (K : Type*) [Field K] [DecidableEq K] :
+    DividedDifferenceEqCompleteHomog K := by
+  intro a ι _ s t ht hcard hpos
+  have h := ddiff_pow_eq_hsym_list t a s.toList (Finset.nodup_toList s) (by simpa using ht)
+  have hlt : ¬ a + 1 < s.card := by omega
+  simp only [Finset.toList_toFinset, Finset.length_toList, hlt, ↓reduceIte] at h
+  rw [h]
+  congr 1
+  omega
 
 end ArkLib.ProximityGap.BridgeB18
 
@@ -285,3 +433,7 @@ end ArkLib.ProximityGap.BridgeB18
 #print axioms ArkLib.ProximityGap.BridgeB18.ddiff_triple
 #print axioms ArkLib.ProximityGap.BridgeB18.hsym_newton_three
 #print axioms ArkLib.ProximityGap.BridgeB18.ddiff_pow_pair
+#print axioms ArkLib.ProximityGap.BridgeB18.ddiff_pow_succ
+#print axioms ArkLib.ProximityGap.BridgeB18.ddiff_pow_zero_eq_zero
+#print axioms ArkLib.ProximityGap.BridgeB18.ddiff_pow_eq_hsym_list
+#print axioms ArkLib.ProximityGap.BridgeB18.dividedDifferenceEqCompleteHomog

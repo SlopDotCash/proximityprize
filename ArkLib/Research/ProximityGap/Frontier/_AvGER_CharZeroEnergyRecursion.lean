@@ -54,8 +54,10 @@ reduces to.
 The convolution split is an *exact identity*; the recursion is here discharged only on the finite
 ladder `r ≤ 5` (extensible to every in-tree closed form `r ≤ 33` by the same `nlinarith`). The
 **general-`r`** recursion = the off-diagonal kernel bound uniform in `r`, recorded as the named
-obligation `OffDiagonalKernelBound`, NOT proved — and the part this project's char-`p` exact
-computation *refutes* at the prize at depth `r ≈ ln q`. This file closes none of #444.
+obligation `OffDiagonalKernelBound`, NOT proved here — and the part this project's char-`p` exact
+computation *refutes* at the prize at depth `r ≈ ln q`. This file closes none of #444. For the
+genuine char-0 energy of `μ_n` the general-`r` recursion is proved in `_CharZeroStepLawAllDepth`
+(`energy_succ_le_halfBasis`) from the Bessel log-derivative bound, not through this obligation.
 
 Issue #444.
 -/

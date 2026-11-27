@@ -158,6 +158,9 @@ regime `r ≤ rMax ≈ 2β ≈ 8`). Untouched:
    rung above. K_eff saturation (b) localizes the ENTIRE residual risk here without reducing it.
 2. **General-n `MatchableCountClosedForm`** (E₃) — finite & field-independent, but a Lean
    `decide`-overflow gap above n=4; only a formalization-effort gap, not the deep wall.
+   **Update 2026-11-11:** proved for every even n as `matchableCountClosedForm` in
+   `_E3ClosedForm2Power.lean` (axiom-clean); the E₃ bridge now carries only the Lam–Leung
+   transport (`E3_closed_form_of_lamLeung`).
 3. **`LamLeungAntipodalMatchable`** — the standing Mathlib-absent char-0 Lam–Leung transport,
    FALSE for 3|n, correctly named only for 2-power n.
 4. **Wiring** — `M3CrossStepBound` / `CrossStepRungOne` / `CrossStepCeilingInsufficient` /

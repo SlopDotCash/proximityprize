@@ -73,6 +73,12 @@ So C07a status: **REDUCED** to `FoldImageHyp` — concretely to the carrier-symm
 since the explicit fold maps (carrier `Φ` and value `foldVal`), their injectivity, the full
 arithmetic correspondence, and the carrier-to-value intertwiner (V) are all axiom-clean.
 
+**Status correction.** `FoldImageHyp` is false as stated: it quantifies over every `k` and
+truncates `k/2`, and `Close07d.not_foldImageHyp` (in `_Close07d_DoublingGuardedClosure`) refutes
+it at `n = 2`, `k = 1`, `m' = 1`, so `doublingBijection_of_foldImage` is vacuous. With the guards
+`n > 0` even, `k` even and `m' ≥ 1`, the fold-image identity, including (S), is proved there as
+`Close07d.badVals_double_eq_image`, and the count identity follows as `Close07d.cf_double`.
+
 Issue #444. Target C07a / E6.
 -/
 
@@ -290,23 +296,26 @@ theorem fhat_foldSubset (n : ℕ) (hn : Even n) (_hpos : 0 < n) (A' : Finset ℕ
 
 /-! ## The named structural residual and the bijection it yields -/
 
-/-- **The fold-image residual (the named gap).** At level `2n`, even grade `2m'`, the bad-value
-set is exactly the `foldVal`-image of the level-`n` grade-`m'` bad-value set.
+/-- **(FALSE as stated; see `Close07d.not_foldImageHyp`.)** The fold-image residual: at level
+`2n`, even grade `2m'`, the bad-value set is exactly the `foldVal`-image of the level-`n`
+grade-`m'` bad-value set.
 
-With the value-fold engine `fhat_foldSubset` (V) and `foldVal_injective` now both proven
-axiom-clean, the *only* content this residual still carries is the **carrier-symmetry forcing
+With the value-fold engine `fhat_foldSubset` (V) and `foldVal_injective` both proven
+axiom-clean, the content this residual was meant to carry is the **carrier-symmetry forcing
 (S)**: that every bad carrier at level `2n` is `Φ A' = foldSubset n A'` for an admissible,
 lower-grade-vanishing carrier `A'` at level `n` of the correct cardinality, and conversely that
-`Φ` sends such `A'` to a bad carrier at level `2n`. That is the genuine open combinatorial input
-(the antipodal `−1 ∈ μ_{2n}` forcing of the bad locus); it is left as this named `Prop`. -/
+`Φ` sends such `A'` to a bad carrier at level `2n`. As stated it omits the parity guard on `k`,
+which makes it false; with the guards `n > 0`, `k` even and `m' ≥ 1`, the identity, including
+(S), is proved as `Close07d.badVals_double_eq_image`. -/
 def FoldImageHyp : Prop :=
   ∀ (n k m' : ℕ) (hn : Even n),
     badVals (2 * n) k (2 * m') = (badVals n (k / 2) m').image (foldVal n hn)
 
 /-- **The doubling cardinality identity from the fold-image residual.** Given `FoldImageHyp` (the
 named gap), the even-fold count identity `cf(2n,k,2m') = cf(n,k/2,m')` follows immediately from
-the injectivity of the explicit fold map `foldVal` (`Finset.card_image_of_injective`). This is
-the honest, minimal-gap proof of `B07.DoublingBijection`'s content. -/
+the injectivity of the explicit fold map `foldVal` (`Finset.card_image_of_injective`). Its
+hypothesis is false (`Close07d.not_foldImageHyp`), so this theorem is vacuous; the unconditional
+guarded identity is `Close07d.cf_double`. -/
 theorem doublingBijection_of_foldImage (h : FoldImageHyp)
     (n k m' : ℕ) (hn : Even n) (hpos : 0 < n) :
     cf (2 * n) k (2 * m') = cf n (k / 2) m' := by

@@ -391,12 +391,15 @@ domain; self-contained here so this lane stays frontier-import-free). -/
 def torsionSet (F : Type*) [Fintype F] [DecidableEq F] [Monoid F] (d : ℕ) : Finset F :=
   Finset.univ.filter (fun y => y ^ d = 1)
 
-/-- **Recorded uniform input — obstructed by proper subfields (paper argument).** One absolute
+/-- **Recorded uniform input — FALSE for every `C`
+(`R389UniformWickBudgetRefuted.not_uniformSubgroupWickBudget`, kernel-checked subfield
+obstruction; the prime-field target below is not decided by it).** One absolute
 inflation constant `C` such that the DC-subtracted Wick budget holds for every finite
 field and every torsion subgroup at the calibrated depth `k* = ⌈(log q)/2⌉₊`.
 For `F = GF(s²)` and `μ_(s-1) = GF(s)ˣ`, exact energy gives DC numerator
 `(s-1)^(2k*+1) + s(s-1)`. Any nonnegative budget constant must satisfy
-`C ≥ (s-1)/(16k*)`, unbounded as primes `s` grow (written argument, not kernel-checked).
+`C ≥ (s-1)/(16k*)`, unbounded as primes `s` grow (written argument; the kernel-checked version
+in `_R389UniformWickBudgetRefuted.lean` goes through the sup bound instead of the exact energy).
 The reproducible probe
 `probe_r389_subfield_wick_budget.py` certifies the finite cases and the two sponsor
 subgroups in quadratic extensions; it does not refute the original prime-field target.

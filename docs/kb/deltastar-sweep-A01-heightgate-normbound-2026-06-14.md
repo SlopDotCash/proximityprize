@@ -39,6 +39,9 @@ vanishes in char 0, hence (Lam–Leung for `2`-powers) is *antipodal*.
 The antipodal conclusion uses the named `Prop` `Char0VanishImpliesAntipodal` (the elementary
 Lam–Leung structure theorem for `N = 2^a`; Mathlib has no Lam–Leung, so it is a named obligation,
 NOT a vacuous placebo — its char-0 input is honestly true).
+**Update 2026-11-11:** proved at every 2-power as `char0VanishImpliesAntipodal_two_pow`
+(wiring of `LamLeungTwoPow.vanishing_iff_antipodal_coeffs`); the `Prop` is false at `n = 6`
+(`not_char0VanishImpliesAntipodal_six`), so the 2-power restriction is necessary.
 
 **Crucially, §4 contains NO `:True` placebo.** The "norm bound rescues the gate" hope is encoded
 as a genuine inequality `Prop` `HeightBoundRescuesGate L n p` (every nonzero sum of distinct

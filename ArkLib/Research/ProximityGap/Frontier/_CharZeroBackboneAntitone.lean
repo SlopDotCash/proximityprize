@@ -34,6 +34,9 @@ the Wick ratio, the value the char-p moment ratio `S_{r+1}/S_r → M²` must sta
   is antitone given the backbone (`n^{2r}/E_r` increasing), i.e. the char-0 half of the prize is unconditional modulo
   the deficit-antitone anchor.
 
+The anchor `d_{r+1} ≤ d_r` itself is proved for the char-0 energy of `μ_{2m}` at every depth in
+`_CharZeroStepLawAllDepth` (`mNorm_succ_le`, instantiated here by `charZero_backbone`).
+
 This proves the **char-0 backbone** of the antitone lemma. The remaining open content is the char-p correction
 `S_r − (p−1)E_r = p·W_r` staying within the backbone room at the saddle (= the prize). Issue #444.
 -/

@@ -5,6 +5,11 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
 import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.Analysis.SpecialFunctions.Complex.CircleAddChar
+import Mathlib.Algebra.Polynomial.Roots
+import Mathlib.GroupTheory.OrderOfElement
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.LinearCombination
 
 /-!
 # LANE S4 — the GF-ceiling brick at the generalized-Fermat prime p = 65537
@@ -54,10 +59,13 @@ composite). CEILING tool, β ≈ 3.2 only; touches no floor and makes NO in-wind
 ## Character-sum bridge
 
 `etaGF` is the explicit cosine sum. Its identification with the genuine additive-character
-sum `η₁ = Re Σ_{x∈μ₃₂} exp(2πi x/p)` is the standard `e_p` negation-pairing, recorded here
-as `GFCharSumBridge` (a hypothesis, verified numerically in the probe); `eta1_ceiling`
-consumes it to transport the ceiling to the genuine character sum. The analytic content —
-the `≥ 18` bound — is proven unconditionally.
+sum `η₁ = Σ_{x∈μ₃₂} exp(2πi x/p)` is the standard `e_p` negation-pairing. It is named
+`GFCharSumBridge` and is now PROVED for the genuine sum: with `mu32 = {x : ZMod 65537 | x³² = 1}`
+and `eta1 = Σ_{x ∈ mu32} ZMod.stdAddChar x`, `eta1_eq_etaGF : eta1 = etaGF` (so `η₁` is real),
+`gfCharSumBridge_eta1 : GFCharSumBridge eta1.re`, and `eta1_re_ceiling` is the ceiling for the
+genuine character sum with no hypothesis. The proof identifies `μ₃₂` with `{2^k : k < 32}`
+(`2` has order `32`, and `X³² − 1` has at most `32` roots) and pairs `2^(16+k) = −2^k`.
+The scope warning above is unchanged: this is an out-of-window instance.
 -/
 
 namespace ArkLib.ProximityGap.Frontier.GFCeiling65537
@@ -176,10 +184,10 @@ theorem C_gt_134 : etaGF > 1.34 * (2 * Real.sqrt 32) := by
   -- 1.34 * (2√32) ≤ 1.34 * 12 = 16.08 < 18 ≤ etaGF
   nlinarith [h1, h2, Real.sqrt_nonneg (32 : ℝ)]
 
-/-- The `e_p` negation-pairing bridge (verified numerically in the probe): the real part of
-the genuine additive-character sum `η₁ = Σ_{x∈μ₃₂} exp(2πi x/p)` equals `etaGF`.
-Recorded as a hypothesis so `eta1_ceiling` transports the (unconditionally proven) ceiling
-to the genuine character sum. -/
+/-- The `e_p` negation-pairing bridge: the real part of the genuine additive-character sum
+`η₁ = Σ_{x∈μ₃₂} exp(2πi x/p)` equals `etaGF`. Stated for an arbitrary real so that
+`eta1_ceiling` can transport the ceiling; PROVED for the genuine sum as
+`gfCharSumBridge_eta1` below. -/
 def GFCharSumBridge (eta1re : ℝ) : Prop := eta1re = etaGF
 
 /-- **Transport to the genuine character sum.** Given the standard `e_p` pairing bridge,
@@ -205,6 +213,132 @@ theorem eta1_ramanujan_ratio_gt_three_halves {eta1re : ℝ} (h : GFCharSumBridge
   subst h
   exact etaGF_ramanujan_ratio_gt_three_halves
 
+/-! ## The bridge, proved: the genuine `μ₃₂` character sum equals `etaGF` -/
+
+section Bridge
+
+/-- `65537` is prime (local instance, for the field structure on `ZMod 65537`). -/
+local instance fact_prime_65537 : Fact (Nat.Prime 65537) := ⟨by norm_num⟩
+
+/-- The order-`32` subgroup `μ₃₂ = {x : x³² = 1}` of `𝔽_65537^×`, as a finset. -/
+def mu32 : Finset (ZMod 65537) := Finset.univ.filter (fun x => x ^ 32 = 1)
+
+/-- The genuine character sum `η₁ = Σ_{x ∈ μ₃₂} e_p(x)`, with `e_p = ZMod.stdAddChar`
+(`x ↦ exp(2πi x/p)`). -/
+noncomputable def eta1 : ℂ := ∑ x ∈ mu32, ZMod.stdAddChar x
+
+/-- `2¹⁶ = −1` in `𝔽_65537`. -/
+theorem two_pow_sixteen : (2 : ZMod 65537) ^ 16 = -1 := by
+  have h0 : ((65537 : ℕ) : ZMod 65537) = 0 := ZMod.natCast_self 65537
+  push_cast at h0
+  linear_combination h0
+
+/-- `2³² = 1` in `𝔽_65537`. -/
+theorem two_pow_thirtyTwo : (2 : ZMod 65537) ^ 32 = 1 := by
+  have h : (2 : ZMod 65537) ^ 32 = ((2 : ZMod 65537) ^ 16) ^ 2 := by ring
+  rw [h, two_pow_sixteen]
+  ring
+
+/-- `2` has order exactly `32` in `𝔽_65537^×`. -/
+theorem orderOf_two : orderOf (2 : ZMod 65537) = 32 := by
+  have h := orderOf_eq_prime_pow (x := (2 : ZMod 65537)) (p := 2) (n := 4)
+    (by
+      rw [show (2 : ℕ) ^ 4 = 16 by norm_num, two_pow_sixteen]
+      decide)
+    (by
+      rw [show (2 : ℕ) ^ (4 + 1) = 32 by norm_num]
+      exact two_pow_thirtyTwo)
+  simpa using h
+
+/-- The powers `2^k`, `k < 32`, are pairwise distinct. -/
+theorem two_pow_injOn :
+    Set.InjOn (fun k : ℕ => (2 : ZMod 65537) ^ k) (Finset.range 32 : Set ℕ) := by
+  intro a ha b hb hab
+  have h := pow_injOn_Iio_orderOf (x := (2 : ZMod 65537))
+  rw [orderOf_two] at h
+  exact h (by simpa using ha) (by simpa using hb) hab
+
+/-- `μ₃₂ = {2^k : k < 32}`: the powers of `2` are `32` distinct roots of `X³² − 1`, which has
+at most `32` roots in a field. -/
+theorem mu32_eq_image :
+    mu32 = (Finset.range 32).image (fun k : ℕ => (2 : ZMod 65537) ^ k) := by
+  symm
+  apply Finset.eq_of_subset_of_card_le
+  · intro x hx
+    obtain ⟨k, -, rfl⟩ := Finset.mem_image.mp hx
+    simp only [mu32, Finset.mem_filter, Finset.mem_univ, true_and]
+    rw [← pow_mul, mul_comm, pow_mul, two_pow_thirtyTwo, one_pow]
+  · rw [Finset.card_image_of_injOn two_pow_injOn, Finset.card_range]
+    calc mu32.card ≤ (Polynomial.nthRoots 32 (1 : ZMod 65537)).toFinset.card := by
+          apply Finset.card_le_card
+          intro x hx
+          simp only [mu32, Finset.mem_filter, Finset.mem_univ, true_and] at hx
+          simp [Polynomial.mem_nthRoots, hx]
+      _ ≤ (Polynomial.nthRoots 32 (1 : ZMod 65537)).card := Multiset.toFinset_card_le _
+      _ ≤ 32 := Polynomial.card_nthRoots 32 1
+
+/-- `exp(ix) + exp(−ix) = 2 cos x`. -/
+theorem exp_add_exp_neg (x : ℝ) :
+    Complex.exp (x * Complex.I) + Complex.exp ((-x : ℝ) * Complex.I)
+      = ((2 * Real.cos x : ℝ) : ℂ) := by
+  apply Complex.ext
+  · rw [Complex.add_re, Complex.exp_ofReal_mul_I_re, Complex.exp_ofReal_mul_I_re,
+      Real.cos_neg, Complex.ofReal_re]
+    ring
+  · rw [Complex.add_im, Complex.exp_ofReal_mul_I_im, Complex.exp_ofReal_mul_I_im,
+      Real.sin_neg, Complex.ofReal_im]
+    ring
+
+/-- **The genuine character sum is `etaGF`.** `η₁ = Σ_{x ∈ μ₃₂} exp(2πi x/p)` is real and equals
+`2·Σ_{k<16} cos(2π·2^k/p)`: `μ₃₂ = {2^k : k < 32}` and `2^(16+k) = −2^k`. -/
+theorem eta1_eq_etaGF : eta1 = (etaGF : ℂ) := by
+  have h1 : ∀ k : ℕ, ZMod.stdAddChar ((2 : ZMod 65537) ^ k)
+      = Complex.exp ((2 * Real.pi * 2 ^ k / 65537 : ℝ) * Complex.I) := by
+    intro k
+    have h := ZMod.stdAddChar_coe (N := 65537) ((2 : ℤ) ^ k)
+    push_cast at h
+    rw [h]
+    congr 1
+    push_cast
+    ring
+  have h2 : ∀ k : ℕ, ZMod.stdAddChar ((2 : ZMod 65537) ^ (16 + k))
+      = Complex.exp ((-(2 * Real.pi * 2 ^ k / 65537) : ℝ) * Complex.I) := by
+    intro k
+    have e : (2 : ZMod 65537) ^ (16 + k) = ((-(2 : ℤ) ^ k : ℤ) : ZMod 65537) := by
+      rw [pow_add, two_pow_sixteen]
+      push_cast
+      ring
+    have h := ZMod.stdAddChar_coe (N := 65537) (-(2 : ℤ) ^ k)
+    rw [e, h]
+    congr 1
+    push_cast
+    ring
+  unfold eta1 etaGF p
+  rw [mu32_eq_image, Finset.sum_image two_pow_injOn, show (32 : ℕ) = 16 + 16 from rfl,
+    Finset.sum_range_add, ← Finset.sum_add_distrib]
+  rw [Complex.ofReal_mul, Complex.ofReal_sum, Finset.mul_sum]
+  refine Finset.sum_congr rfl (fun k _ => ?_)
+  rw [h1, h2, exp_add_exp_neg]
+  push_cast
+  ring
+
+/-- **`GFCharSumBridge` holds for the genuine character sum.** -/
+theorem gfCharSumBridge_eta1 : GFCharSumBridge eta1.re := by
+  unfold GFCharSumBridge
+  rw [eta1_eq_etaGF, Complex.ofReal_re]
+
+/-- **Unconditional ceiling for the genuine character sum.** The real part of
+`η₁ = Σ_{x ∈ μ₃₂} exp(2πi x/65537)` exceeds the Ramanujan value `2√32` and `1.34·(2√32)`. -/
+theorem eta1_re_ceiling :
+    eta1.re > 2 * Real.sqrt 32 ∧ eta1.re > 1.34 * (2 * Real.sqrt 32) :=
+  eta1_ceiling gfCharSumBridge_eta1
+
+/-- `η₁` is real. -/
+theorem eta1_im : eta1.im = 0 := by
+  rw [eta1_eq_etaGF, Complex.ofReal_im]
+
+end Bridge
+
 end ArkLib.ProximityGap.Frontier.GFCeiling65537
 
 -- Axiom audit (frontier convention: keep these so pg-iterate reports the audit).
@@ -216,3 +350,17 @@ end ArkLib.ProximityGap.Frontier.GFCeiling65537
 #print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.eta1_ceiling
 #print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.eta1_ramanujan_ratio_ge_three_halves
 #print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.eta1_ramanujan_ratio_gt_three_halves
+
+-- Axiom audit (frontier convention: keep these so pg-iterate reports the audit).
+#print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.etaGF_ge
+#print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.etaGF_gt_ramanujan
+#print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.etaGF_ramanujan_ratio_ge_three_halves
+#print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.etaGF_ramanujan_ratio_gt_three_halves
+#print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.C_gt_134
+#print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.eta1_ceiling
+#print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.eta1_ramanujan_ratio_ge_three_halves
+#print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.eta1_ramanujan_ratio_gt_three_halves
+#print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.mu32_eq_image
+#print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.eta1_eq_etaGF
+#print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.gfCharSumBridge_eta1
+#print axioms ArkLib.ProximityGap.Frontier.GFCeiling65537.eta1_re_ceiling

@@ -8,6 +8,7 @@ import Mathlib.NumberTheory.JacobiSum.Basic
 import Mathlib.NumberTheory.MulChar.Lemmas
 import Mathlib.FieldTheory.Separable
 import ArkLib.Data.CodingTheory.ProximityGap.ConstantIndexGaussSumBound
+import ArkLib.Research.ProximityGap.Frontier.PowMapFiberCard
 
 /-!
 # PROVE-attempt (#444) — `[weil-on-A]` SHARPENED: the L²/Parseval ceiling of the descent object,
@@ -97,10 +98,30 @@ exactly `m` distinct roots. The prior `_JAC_4` left this as `≈`; here it is th
 Mathlib carries no Weil curve bound, so the bound is supplied as the named hypothesis `WeilSum`,
 but the DEGREE/distinct-root count `d = m` (the load-bearing constant) is proved, not assumed. -/
 
-/-- The complete-sum lift (named, `_JAC_4` `CompleteSumLift`): `m·T(s) = ∑_{u∈F^*} χ^s(u^m-1)`. -/
+/-- The complete-sum lift (named, `_JAC_4` `CompleteSumLift`): `m·T(s) = ∑_{u∈F^*} χ^s(u^m-1)`.
+PROVED below for `G = μ_n`, `n = (q-1)/m` (`completeSumLift_rootsOfUnity`); it is false for a
+general finset `G`. -/
 def CompleteSumLift (χ : MulChar F ℂ) (s : ℕ) (G : Finset F) : Prop :=
   (orderOf χ : ℂ) * Tsum χ s G
     = ∑ u ∈ (univ : Finset F).erase 0, (χ ^ s) (u ^ orderOf χ - 1)
+
+/-- **The complete-sum lift holds on the image of the `m`-th power map**, `m = orderOf χ`:
+`u ↦ u^m` is `m`-to-one from `F^*` onto its image because `m ∣ q - 1`. -/
+theorem completeSumLift_powImage (χ : MulChar F ℂ) (s : ℕ) :
+    CompleteSumLift χ s (((univ : Finset F).erase 0).image (fun u => u ^ orderOf χ)) := by
+  unfold CompleteSumLift Tsum
+  rw [ProximityGap.Frontier.PowMapFiberCard.sum_erase_zero_pow_eq_nsmul_sum_image
+    (orderOf χ) χ.orderOf_dvd_card_sub_one (fun t => (χ ^ s) (t - 1)), nsmul_eq_mul]
+
+/-- **The complete-sum lift holds for `G = μ_n`**, the `n`-th roots of unity with
+`n = (q - 1) / m`, `m = orderOf χ`.  This is the intended instance of `CompleteSumLift`: the
+image of the `m`-th power map on `F^*` is exactly `μ_n`. -/
+theorem completeSumLift_rootsOfUnity (χ : MulChar F ℂ) (s : ℕ) :
+    CompleteSumLift χ s
+      ((univ : Finset F).filter (fun t => t ^ ((Fintype.card F - 1) / orderOf χ) = 1)) := by
+  rw [← ProximityGap.Frontier.PowMapFiberCard.image_pow_erase_zero_eq_filter (orderOf χ)
+    χ.orderOf_pos χ.orderOf_dvd_card_sub_one]
+  exact completeSumLift_powImage χ s
 
 /-- **Brick A (separability ⟹ `m` distinct roots): `Polynomial.X^m - 1` is separable over `F` when
 `char F ∤ m`, hence has EXACTLY `m` distinct roots in the algebraic closure.** This is the
@@ -127,6 +148,16 @@ theorem Tsum_le_weil_distinctRoots (χ : MulChar F ℂ) (s : ℕ) (G : Finset F)
       ≤ ((orderOf χ : ℝ) - 1) * Real.sqrt (Fintype.card F : ℝ) := by
     rw [hlift]; exact hweil
   rwa [norm_mul, Complex.norm_natCast] at hnorm
+
+/-- **Brick B on `μ_n`, lift discharged.** For `G = μ_n` (`n = (q-1)/m`) the complete-sum lift is
+a theorem, so the Weil hypothesis alone gives `m·‖T(s)‖ ≤ (m-1)·√q`. -/
+theorem Tsum_rootsOfUnity_le_weil_distinctRoots (χ : MulChar F ℂ) (s : ℕ)
+    (hweil : ‖∑ u ∈ (univ : Finset F).erase 0, (χ ^ s) (u ^ orderOf χ - 1)‖
+      ≤ ((orderOf χ : ℝ) - 1) * Real.sqrt (Fintype.card F : ℝ)) :
+    (orderOf χ : ℝ) * ‖Tsum χ s
+        ((univ : Finset F).filter (fun t => t ^ ((Fintype.card F - 1) / orderOf χ) = 1))‖
+      ≤ ((orderOf χ : ℝ) - 1) * Real.sqrt (Fintype.card F : ℝ) :=
+  Tsum_le_weil_distinctRoots χ s _ (completeSumLift_rootsOfUnity χ s) hweil
 
 /-- **Brick C (the EXACT `√m` deficit, with `q = n·m`): `‖T(s)‖ ≤ ((m-1)/m)·√(n·m) = √n · (m-1)/√m`.**
 Substituting `q = n·m` into Brick B and dividing by `m`: `‖T(s)‖ ≤ ((m-1)/m)·√(n·m)`. Since
@@ -248,3 +279,5 @@ end ArkLib.ProximityGap.Frontier.JAC0
 #print axioms ArkLib.ProximityGap.Frontier.JAC0.descent_orthogonality
 #print axioms ArkLib.ProximityGap.Frontier.JAC0.sum_sq_Tsum_descent
 #print axioms ArkLib.ProximityGap.Frontier.JAC0.autocorr_le_of_descent_residual
+#print axioms ArkLib.ProximityGap.Frontier.JAC0.completeSumLift_rootsOfUnity
+#print axioms ArkLib.ProximityGap.Frontier.JAC0.Tsum_rootsOfUnity_le_weil_distinctRoots

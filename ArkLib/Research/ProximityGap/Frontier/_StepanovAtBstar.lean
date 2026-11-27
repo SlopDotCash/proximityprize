@@ -169,7 +169,7 @@ theorem house_eq_count_no_saving {B B₀ : Finset F} {M : ℕ} :
     (∏ y ∈ B₀, (X ^ 2 - C y) ^ M).natDegree = M * (2 * B₀.card) :=
   ⟨(trivial_bstar_aux_house_eq_count).2.2, (even_aux_house_eq_count).2.2⟩
 
-/-- **The named past-Johnson obligation (pre-screened FALSE for the major arc).**
+/-- **The named past-Johnson obligation (FALSE for every `B` and `M`: `not_majorArcDegenerate`).**
 `MajorArcDegenerate B M` asserts the algebraic degeneracy a sub-trivial per-`b*` Stepanov bound
 needs: a nonzero auxiliary of degree STRICTLY LESS than `M·|B|` vanishing to order `M` on the
 major-arc set `B`.  Such an aux exists iff the confluent-Vandermonde block of `B` is rank-deficient
@@ -194,6 +194,21 @@ theorem bstar_saving_iff_degenerate {B : Finset F} {M : ℕ} :
   · rintro ⟨F', hne, hdeg, hv⟩; exact ⟨F', hne, hv, hdeg⟩
   · rintro ⟨F', hne, hv, hdeg⟩; exact ⟨F', hne, hdeg, hv⟩
 
+/-- **`MajorArcDegenerate` is false for every set and every multiplicity.**  The counting engine
+`stepanov_bstar_bound` gives `M·|B| ≤ deg F'` for any nonzero `F'` vanishing to order `M` on `B`,
+so no such `F'` has degree `< M·|B|`.  The full-rank measurements quoted in the docstring of
+`MajorArcDegenerate` are instances of this inequality: no field, size or subgroup hypothesis is
+involved, and the statement is not specific to a major arc. -/
+theorem not_majorArcDegenerate (B : Finset F) (M : ℕ) : ¬ MajorArcDegenerate B M := by
+  rintro ⟨F', hne, hdeg, hv⟩
+  exact absurd (stepanov_bstar_bound hne hv) (Nat.not_le.mpr hdeg)
+
+/-- Consequently no strictly sub-trivial per-`b*` Stepanov output exists: the lane of
+`bstar_saving_iff_degenerate` is closed for every `B` and `M`, not only pre-screened. -/
+theorem no_bstar_saving (B : Finset F) (M : ℕ) :
+    ¬ ∃ F' : F[X], F' ≠ 0 ∧ (∀ x ∈ B, (X - C x) ^ M ∣ F') ∧ F'.natDegree < M * B.card :=
+  fun h => not_majorArcDegenerate B M (bstar_saving_iff_degenerate.mpr h)
+
 end ProximityGap.Frontier.StepanovAtBstar
 
 /-! ## Axiom audit (expected: `propext, Classical.choice, Quot.sound` only — no `sorryAx`). -/
@@ -202,3 +217,5 @@ end ProximityGap.Frontier.StepanovAtBstar
 #print axioms ProximityGap.Frontier.StepanovAtBstar.even_aux_house_eq_count
 #print axioms ProximityGap.Frontier.StepanovAtBstar.house_eq_count_no_saving
 #print axioms ProximityGap.Frontier.StepanovAtBstar.bstar_saving_iff_degenerate
+#print axioms ProximityGap.Frontier.StepanovAtBstar.not_majorArcDegenerate
+#print axioms ProximityGap.Frontier.StepanovAtBstar.no_bstar_saving

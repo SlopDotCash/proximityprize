@@ -5,6 +5,7 @@ Authors: ArkLib Agent
 -/
 import ArkLib.Research.ProximityGap.Frontier.CyclotomicNormDefectThreshold
 import Mathlib.NumberTheory.Cyclotomic.PrimitiveRoots
+import ArkLib.Data.CodingTheory.ProximityGap.LamLeungTwoPow
 
 /-!
 # The spurious-vanishing HEIGHT GATE and its prize no-go (Proximity Prize #407, actionable A01)
@@ -32,8 +33,10 @@ Hence `p ∣ N(α)`, `0 < |N(α)| ≤ n^{n/2}`, so `p ≤ n^{n/2}`. **Contraposi
 `p > n^{n/2}` then **every** `F_p`-spurious set `S` has `α = 0` in characteristic `0`, and (the
 elementary Lam–Leung fact for `n` a `2`-power) a vanishing sum of distinct `2^a`-th roots of
 unity is *antipodal*: `S` is a disjoint union of pairs `{i, i+n/2}`. So `NoSpuriousVanishing`
-holds. The `2`-power-vanishing ⟹ antipodal step is named `Antipodal` / `Char0VanishToAntipodal`
-(elementary cyclotomic, kept as a Prop — Mathlib has no Lam–Leung).
+holds. The `2`-power-vanishing ⟹ antipodal step is named `Antipodal` /
+`Char0VanishImpliesAntipodal`; it is proved at every 2-power in §5
+(`char0VanishImpliesAntipodal_two_pow`) from the in-tree `LamLeungTwoPow` kernel
+characterization.
 
 `prizePrimeLB n = n * 2^128` (a lower bound on the prize prime `p ~ n·2^128`). The gate FIRES
 exactly when `n^{n/2} < p`:
@@ -283,7 +286,8 @@ end BlockWitness
 /-! ## §4  The honest named statements at the prize point
 
 The gate route does NOT scale to the prize. We record honest named `Prop`s — no `:True`
-placebos. The antipodal-conclusion step is a named obligation (elementary, true, Mathlib gap);
+placebos. The antipodal-conclusion step is a named obligation, PROVED at every 2-power in §5
+(`char0VanishImpliesAntipodal_two_pow`);
 the "norm-bound rescues the gate" hope is a genuine inequality `Prop` that §3 REFUTES. -/
 
 /-- `Antipodal n S`: `S` is closed under the antipodal shift `i ↦ i + n/2` modulo `n` (so it is
@@ -291,12 +295,15 @@ a disjoint union of pairs `{i, i+n/2}`). The target conclusion of the gate. -/
 def Antipodal (n : ℕ) (S : Finset ℕ) : Prop :=
   ∀ i ∈ S, (i + n / 2) % n ∈ S
 
-/-- **Named obligation (elementary, true, Mathlib gap — NOT a placebo).** For `n = 2^a`, a
+/-- **Named obligation (PROVED at `n = 2^a`: `char0VanishImpliesAntipodal_two_pow`).**
+For `n = 2^a`, a
 vanishing sum of distinct `n`-th roots of unity is antipodal: if `Σ_{i∈S} z^i = 0` over `ℂ`
 (`z` primitive) then `Antipodal n S`. This is the Lam–Leung structure theorem for prime-power
 `N = 2^a` (the only vanishing relations are `ℤ`-spans of `1 + z^{n/2} = 0`). It supplies the last
 step of the gate (`p > n^{n/2}` + `F_p`-vanishing ⟹ char-0 vanishing ⟹ antipodal). Provable
-elementarily; Mathlib has no Lam–Leung, so it stays a named `Prop` with an honestly-true input. -/
+elementarily; Mathlib has no Lam–Leung, but the in-tree `LamLeungTwoPow` development does, and §5
+derives the 2-power case from it. The `Prop` is stated for arbitrary `n` and is false outside
+2-powers (`not_char0VanishImpliesAntipodal_six`). -/
 def Char0VanishImpliesAntipodal (n : ℕ) : Prop :=
   ∀ (z : ℂ) (_ : IsPrimitiveRoot z n) (S : Finset ℕ) (_ : S ⊆ range n),
     (∑ i ∈ S, z ^ i = 0) → Antipodal n S
@@ -335,6 +342,83 @@ theorem heightBoundRescuesGate_REFUTED {k : ℕ} (hk : 11 ≤ k) {ζ : L}
 
 end PrizeStatement
 
+/-! ## §5  The antipodal obligation, discharged at every 2-power
+
+`Char0VanishImpliesAntipodal (2 ^ a)` is a corollary of the in-tree 2-power Lam–Leung kernel
+characterization `LamLeungTwoPow.vanishing_iff_antipodal_coeffs` applied to the indicator of `S`.
+The restriction to 2-powers is necessary: at `n = 6` the three cube roots of unity sum to zero
+without being antipodal. -/
+
+/-- **The named obligation holds at every 2-power.** For `n = 2^a`, a vanishing sum of distinct
+`n`-th roots of unity over `ℂ` is antipodal.  Wiring of
+`LamLeungTwoPow.vanishing_iff_antipodal_coeffs` with the `0/1` indicator of `S` as coefficient
+function. -/
+theorem char0VanishImpliesAntipodal_two_pow (a : ℕ) : Char0VanishImpliesAntipodal (2 ^ a) := by
+  intro z hz S hS hsum
+  cases a with
+  | zero =>
+    intro i hi
+    have hi0 : i = 0 := by
+      have := hS hi
+      simpa using this
+    subst hi0
+    simpa using hi
+  | succ m =>
+    classical
+    have hsum' : ∑ e ∈ range (2 ^ (m + 1)),
+        (((if e ∈ S then (1 : ℚ) else 0 : ℚ)) : ℂ) * z ^ e = 0 := by
+      have hterm : ∀ e : ℕ, (((if e ∈ S then (1 : ℚ) else 0 : ℚ)) : ℂ) * z ^ e
+          = if e ∈ S then z ^ e else 0 := by
+        intro e
+        split_ifs <;> simp
+      simp only [hterm]
+      rw [Finset.sum_ite_mem, Finset.inter_eq_right.mpr hS]
+      exact hsum
+    have hkey := (LamLeungTwoPow.vanishing_iff_antipodal_coeffs (F := ℂ) hz
+      (fun e => if e ∈ S then (1 : ℚ) else 0)).mp hsum'
+    have hiff : ∀ s < 2 ^ m, (s ∈ S ↔ s + 2 ^ m ∈ S) := by
+      intro s hs
+      have h := hkey s hs
+      by_cases h1 : s ∈ S <;> by_cases h2 : s + 2 ^ m ∈ S <;> simp_all
+    have hpow : 2 ^ (m + 1) = 2 ^ m + 2 ^ m := by ring
+    have hhalf : 2 ^ (m + 1) / 2 = 2 ^ m := by
+      rw [hpow]
+      omega
+    intro i hi
+    have hilt : i < 2 ^ m + 2 ^ m := by
+      have := Finset.mem_range.mp (hS hi)
+      rwa [hpow] at this
+    rw [hhalf, hpow]
+    by_cases hlow : i < 2 ^ m
+    · rw [Nat.mod_eq_of_lt (by omega)]
+      exact (hiff i hlow).mp hi
+    · obtain ⟨s, rfl⟩ : ∃ s, i = s + 2 ^ m := ⟨i - 2 ^ m, by omega⟩
+      have hs : s < 2 ^ m := by omega
+      have hmod : (s + 2 ^ m + 2 ^ m) % (2 ^ m + 2 ^ m) = s := by
+        rw [add_assoc, Nat.add_mod_right]
+        exact Nat.mod_eq_of_lt (by omega)
+      rw [hmod]
+      exact (hiff s hs).mpr hi
+
+/-- **The 2-power restriction is necessary.** At `n = 6` the obligation fails: for a primitive
+sixth root `z`, `1 + z² + z⁴ = 0` (the three cube roots of unity), but `{0, 2, 4}` is not closed
+under `i ↦ i + 3`. -/
+theorem not_char0VanishImpliesAntipodal_six : ¬ Char0VanishImpliesAntipodal 6 := by
+  intro h
+  have hz : IsPrimitiveRoot (Complex.exp (2 * Real.pi * Complex.I / (6 : ℕ))) 6 :=
+    Complex.isPrimitiveRoot_exp 6 (by norm_num)
+  have hw : IsPrimitiveRoot ((Complex.exp (2 * Real.pi * Complex.I / (6 : ℕ))) ^ 2) 3 :=
+    hz.pow (by norm_num) (by norm_num)
+  have hgeom := hw.geom_sum_eq_zero (by norm_num : 1 < 3)
+  have hsum : ∑ i ∈ ({0, 2, 4} : Finset ℕ),
+      (Complex.exp (2 * Real.pi * Complex.I / (6 : ℕ))) ^ i = 0 := by
+    rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_one] at hgeom
+    rw [Finset.sum_insert (by decide), Finset.sum_insert (by decide), Finset.sum_singleton]
+    rw [← hgeom]
+    ring
+  have hanti := h _ hz {0, 2, 4} (by decide) hsum
+  exact absurd (hanti 0 (by decide)) (by decide)
+
 end ArkLib.ProximityGap.HeightGateNormBound
 
 /-! ## Axiom audit -/
@@ -351,4 +435,6 @@ open ArkLib.ProximityGap.HeightGateNormBound
 #print axioms block_sum_norm
 #print axioms block_norm_exceeds_prize
 #print axioms heightBoundRescuesGate_REFUTED
+#print axioms char0VanishImpliesAntipodal_two_pow
+#print axioms not_char0VanishImpliesAntipodal_six
 end AxiomAudit

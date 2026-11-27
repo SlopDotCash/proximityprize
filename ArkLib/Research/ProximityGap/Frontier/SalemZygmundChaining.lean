@@ -3,6 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
+import Mathlib.Analysis.Calculus.LocalExtr.Basic
+import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
@@ -14,6 +17,12 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 single **per-period sub-Gaussian MGF** hypothesis, and prove the chaining/union-bound consequence
 `B ≤ √(2σ² log m)` AXIOM-CLEAN. With proxy `σ² = O(n)` this is exactly the prize
 `B ≤ C√(n log m) = C√(n log((p−1)/n))`.
+
+**Caveat: the hypothesis only fits centred periods.** As stated, `SubGaussianMGF η σ²` forces
+`Σ_c η_c = 0` for every `σ²` (`sum_eq_zero_of_subGaussianMGF`). The raw periods do not sum to
+zero, so they satisfy it for no `σ²`: `not_subGaussianMGF_eta` proves this for the periods
+`η_b = Σ_{y∈G} ψ(b·y)` indexed by the nonzero frequencies `b` (their sum is `−|G|`). The bound
+`prize_floor_of_subGaussianMGF` therefore applies only to a centred family, not to the raw periods.
 
 **Why this route (vs the all-moments wall).** The campaign's open core is bounding **every** even
 moment `E_r(μ_n)` up to `r ≈ log p` (`GaussPeriodMomentBound.lean`, Bourgain–Shkredov wall). The
@@ -48,8 +57,19 @@ characters. That gap is the named obstruction.
 - **`chernoff_max_re_le`** (PROVEN): from a single MGF bound `Σ_c exp(λ Xc) ≤ M·exp(σ²λ²/2)`, the
   optimized Chernoff bound `max_c X_c ≤ √(2 σ² log M)` (for `M ≥ 1`, `σ² > 0`). This is the
   load-bearing chaining step; with `M = m` (union over cosets) and `X_c = Re(ζ̄ η_c)` it gives the
-  directional sup-norm. (The reduction from `max_c ‖η_c‖` to a finite net of directions `ζ` is
-  recorded as `SupNormFromDirectionalNet`, costing only a universal constant factor.)
+  directional sup-norm.
+- **`supNormFromDirectionalNet_of_subGaussianMGF`** (PROVEN): the passage from directions to the
+  modulus, recorded as `SupNormFromDirectionalNet`, holds with constant `C = 1`. Since
+  `SubGaussianMGF` covers every unit direction, aiming `ζ` at `η_c` itself gives `‖η_c‖`; no
+  finite net of directions is needed.
+- **`prize_floor_of_subGaussianMGF`** (PROVEN): `‖η_c‖ ≤ √(2 σ² log m)` for every coset `c`, from
+  `SubGaussianMGF` alone (for `σ² > 0`, `m ≥ 1`). It applies only to centred families (next item).
+- **`sum_eq_zero_of_subGaussianMGF`** (PROVEN): `SubGaussianMGF η σ² → Σ_c η_c = 0`, with no
+  condition on `σ²`. The MGF bound is an equality at `λ = 0`, so its derivative there vanishes:
+  the mean of every projection `Re(ζ̄ η_c)` is zero (`sum_eq_zero_of_mgf_le`).
+- **`not_subGaussianMGF_eta`** (PROVEN): for a primitive `ψ` and a nonempty `G ∌ 0`, the raw
+  periods `b ↦ η_b` over the nonzero frequencies satisfy `SubGaussianMGF` for no `σ²`, because
+  they sum to `−|G|` (`sum_eta_ne_zero_eq_neg_card`).
 
 The kernel `chernoff_max_re_le` is the classical "sub-Gaussian maximal inequality" — it is what
 makes the route *better-tooled* than the raw moment wall: it consumes ONE exponential moment, not
@@ -78,7 +98,11 @@ the `m` cosets dominated by a Gaussian of variance `σ²`:
 
 The prize is `σ² = O(n)` uniformly in `(n, m, ζ)`. Numerically `σ²/n ∈ [0.88, 1.21]`. This is the
 quantitative/effective form of Gauss-sum joint independence (Rojas–León 2207.12439) and is the ONLY
-open ingredient: everything below is proven from it. -/
+open ingredient: everything below is proven from it.
+
+As stated, the predicate forces `Σ_c η_c = 0` (`sum_eq_zero_of_subGaussianMGF`). It is therefore
+false for the raw, uncentred periods for every `σ²` (`not_subGaussianMGF_eta`), and can only hold
+for a centred family. -/
 def SubGaussianMGF {ι : Type*} [Fintype ι] (η : ι → ℂ) (σsq : ℝ) : Prop :=
   ∀ (ζ : ℂ), ‖ζ‖ = 1 → ∀ (lam : ℝ),
     (∑ c, Real.exp (lam * ((starRingEnd ℂ ζ * η c).re))) ≤
@@ -181,11 +205,11 @@ directional projection of every Gauss period is bounded by the Salem–Zygmund s
 `Re(ζ̄ · η_c) ≤ √(2 σ² log m)` for all unit `ζ`, all cosets `c`. This is the chaining kernel
 `chernoff_max_re_le` fed by the named MGF hypothesis with `M = m = card ι`.
 
-Taking a maximum over a finite `ε`-net of directions `ζ` (the standard reduction, costing a universal
-constant) upgrades this to `max_c ‖η_c‖ ≤ C·√(2 σ² log m)`; with the empirical `σ² = O(n)` this is the
-prize floor `B ≤ C'·√(n log m) = C'·√(n log((p−1)/n))`. The directional-net step is recorded as the
-named obligation `SupNormFromDirectionalNet` below (a routine but unproven-here constant-factor lemma);
-the genuine open mathematics is entirely inside `SubGaussianMGF`. -/
+Because the hypothesis covers every unit direction, the choice `ζ = η_c / ‖η_c‖` upgrades this to
+`max_c ‖η_c‖ ≤ √(2 σ² log m)` with no net and no constant loss
+(`supNormFromDirectionalNet_of_subGaussianMGF`, `prize_floor_of_subGaussianMGF` below). With a
+proxy `σ² = O(n)` this would be the prize floor `B ≤ C·√(n log m) = C·√(n log((p−1)/n))`; the
+genuine open mathematics is entirely inside `SubGaussianMGF`. -/
 theorem directional_period_bound {ι : Type*} [Fintype ι] [Nonempty ι] (η : ι → ℂ) (σsq : ℝ)
     (hσ : 0 < σsq) (hcard : 1 ≤ (Fintype.card ι : ℝ))
     (hSG : SubGaussianMGF η σsq) (ζ : ℂ) (hζ : ‖ζ‖ = 1) (c : ι) :
@@ -193,23 +217,153 @@ theorem directional_period_bound {ι : Type*} [Fintype ι] [Nonempty ι] (η : �
   chernoff_max_re_le (fun c => (starRingEnd ℂ ζ * η c).re) (Fintype.card ι) σsq hcard hσ
     (fun lam => hSG ζ hζ lam) c
 
-/-- **The remaining routine (non-open) obligation: directional net → sup-norm.** For a finite family
-`η`, the max magnitude `max_c ‖η_c‖` is controlled by the max over a finite net `D ⊆ {‖ζ‖ = 1}` of the
-directional projections, up to the net's covering constant: `‖η_c‖ ≤ (1/cos θ)·max_{ζ∈D} Re(ζ̄ η_c)`
-for a `θ`-net. This is elementary (compactness of the circle) and contributes only a universal
-constant `C = 1/cos θ → 1`; it carries NONE of the open core. Stated as a `Prop` so the assembly is
-explicit; proving it is a finite-net exercise, not the prize. -/
+/-- **The sup-norm obligation: directions → modulus.** The predicate that every period satisfies
+`‖η_c‖ ≤ C·√(2 σ² log m)`. It was introduced as the output of a finite `θ`-net reduction
+`‖η_c‖ ≤ (1/cos θ)·max_{ζ∈D} Re(ζ̄ η_c)`, costing a constant `C = 1/cos θ`. Under
+`SubGaussianMGF` no net is needed: `supNormFromDirectionalNet_of_subGaussianMGF` proves it with
+`C = 1`. It carries none of the open core. The `Prop` is kept so that `prize_floor_of_inputs`
+retains its general constant `C`. -/
 def SupNormFromDirectionalNet {ι : Type*} [Fintype ι] (η : ι → ℂ) (σsq C : ℝ) : Prop :=
   ∀ c : ι, ‖η c‖ ≤ C * Real.sqrt (2 * σsq * Real.log (Fintype.card ι))
 
-/-- **The prize floor, conditional on the two inputs.** If the open `SubGaussianMGF` holds with proxy
-`σ² = O(n)` AND the routine `SupNormFromDirectionalNet` net-reduction holds with constant `C`, then
-the worst-case Gauss period (the δ* floor `B`) satisfies `B = max_c ‖η_c‖ ≤ C·√(2 σ² log m)`. Trivial
-given the two named inputs — the content is that `SubGaussianMGF` is the *single* open ingredient and
-`σ² = O(n)` is the *single* open scale. -/
+/-- **The prize floor from the sup-norm obligation.** If `SupNormFromDirectionalNet` holds with
+constant `C`, the worst-case Gauss period (the δ* floor `B`) satisfies
+`B = max_c ‖η_c‖ ≤ C·√(2 σ² log m)`. This is the obligation itself, read pointwise;
+`prize_floor_of_subGaussianMGF` below removes `hnet` through
+`supNormFromDirectionalNet_of_subGaussianMGF` (`C = 1`). -/
 theorem prize_floor_of_inputs {ι : Type*} [Fintype ι] (η : ι → ℂ) (σsq C : ℝ)
     (hnet : SupNormFromDirectionalNet η σsq C) (c : ι) :
     ‖η c‖ ≤ C * Real.sqrt (2 * σsq * Real.log (Fintype.card ι)) := hnet c
+
+/-- **`SupNormFromDirectionalNet` holds with constant `C = 1` under `SubGaussianMGF`.** The
+hypothesis already quantifies over every unit direction, so aiming `ζ = η_c / ‖η_c‖` at the period
+itself turns the directional bound `directional_period_bound` into the modulus bound: no `θ`-net
+and no `1/cos θ` loss. -/
+theorem supNormFromDirectionalNet_of_subGaussianMGF {ι : Type*} [Fintype ι] [Nonempty ι]
+    (η : ι → ℂ) (σsq : ℝ) (hσ : 0 < σsq) (hcard : 1 ≤ (Fintype.card ι : ℝ))
+    (hSG : SubGaussianMGF η σsq) :
+    SupNormFromDirectionalNet η σsq 1 := by
+  intro c
+  rw [one_mul]
+  by_cases h0 : η c = 0
+  · rw [h0, norm_zero]
+    exact Real.sqrt_nonneg _
+  have hnorm : (0 : ℝ) < ‖η c‖ := norm_pos_iff.mpr h0
+  set ζ : ℂ := η c / (‖η c‖ : ℂ) with hζdef
+  have hζ : ‖ζ‖ = 1 := by
+    rw [hζdef, norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hnorm,
+      div_self hnorm.ne']
+  have hre : (starRingEnd ℂ ζ * η c).re = ‖η c‖ := by
+    have hne : (‖η c‖ : ℂ) ≠ 0 := by exact_mod_cast hnorm.ne'
+    have : starRingEnd ℂ ζ * η c = ((‖η c‖ : ℝ) : ℂ) := by
+      rw [hζdef, map_div₀, Complex.conj_ofReal, div_mul_eq_mul_div, mul_comm,
+        Complex.mul_conj, Complex.normSq_eq_norm_sq]
+      field_simp
+      push_cast
+      ring
+    rw [this, Complex.ofReal_re]
+  simpa [hre] using directional_period_bound η σsq hσ hcard hSG ζ hζ c
+
+/-- **The prize floor from the single open input.** If `SubGaussianMGF η σ²` holds (`σ² > 0`,
+`m = card ι ≥ 1`), every Gauss period satisfies `‖η_c‖ ≤ √(2 σ² log m)`. This is
+`prize_floor_of_inputs` with the sup-norm obligation discharged by
+`supNormFromDirectionalNet_of_subGaussianMGF`.
+
+It applies only to centred families: the hypothesis forces `Σ_c η_c = 0`
+(`sum_eq_zero_of_subGaussianMGF`), so it never holds for the raw periods
+(`not_subGaussianMGF_eta`). -/
+theorem prize_floor_of_subGaussianMGF {ι : Type*} [Fintype ι] [Nonempty ι]
+    (η : ι → ℂ) (σsq : ℝ) (hσ : 0 < σsq) (hcard : 1 ≤ (Fintype.card ι : ℝ))
+    (hSG : SubGaussianMGF η σsq) (c : ι) :
+    ‖η c‖ ≤ Real.sqrt (2 * σsq * Real.log (Fintype.card ι)) := by
+  simpa using prize_floor_of_inputs η σsq 1
+    (supNormFromDirectionalNet_of_subGaussianMGF η σsq hσ hcard hSG) c
+
+/-! ## The mean-zero constraint hidden in `SubGaussianMGF`
+
+The bound `Σ_c exp(λ X_c) ≤ m·exp(σ² λ²/2)` is an equality at `λ = 0`, and it is required for
+`λ` of both signs. The gap `λ ↦ m·exp(σ² λ²/2) − Σ_c exp(λ X_c)` therefore has a minimum at `0`,
+where its derivative `−Σ_c X_c` must vanish. Applied to the directions `ζ = 1` and `ζ = i`, this
+forces `Σ_c η_c = 0`. The raw Gauss periods violate it. -/
+
+/-- **A Gaussian-dominated empirical MGF has mean zero.** If
+`Σ_c exp(λ X_c) ≤ m·exp(σ² λ²/2)` for every real `λ` (with `m = card ι`), then `Σ_c X_c = 0`.
+No condition on `σ²` is needed. -/
+theorem sum_eq_zero_of_mgf_le {ι : Type*} [Fintype ι] (X : ι → ℝ) (σsq : ℝ)
+    (hMGF : ∀ lam : ℝ, (∑ c, Real.exp (lam * X c)) ≤
+      (Fintype.card ι : ℝ) * Real.exp (σsq * lam ^ 2 / 2)) :
+    ∑ c, X c = 0 := by
+  let g : ℝ → ℝ := fun lam =>
+    (Fintype.card ι : ℝ) * Real.exp (σsq * lam ^ 2 / 2) - ∑ c, Real.exp (lam * X c)
+  have hmin : IsLocalMin g 0 := by
+    refine Filter.Eventually.of_forall (fun lam => ?_)
+    have h0 : g 0 = 0 := by simp [g]
+    rw [h0]
+    exact sub_nonneg.mpr (hMGF lam)
+  have hderiv : HasDerivAt g (-∑ c, X c) 0 := by
+    have hq : HasDerivAt (fun lam : ℝ => σsq * lam ^ 2 / 2) 0 0 := by
+      simpa using ((hasDerivAt_pow 2 (0 : ℝ)).const_mul σsq).div_const 2
+    have hs : HasDerivAt (fun lam : ℝ => ∑ c, Real.exp (lam * X c)) (∑ c, X c) 0 := by
+      have := HasDerivAt.fun_sum (u := Finset.univ)
+        (fun c _ => (hasDerivAt_mul_const (X c) (x := (0 : ℝ))).exp)
+      simpa using this
+    have h := (hq.exp.const_mul (Fintype.card ι : ℝ)).sub hs
+    convert h using 1
+    simp
+  have := hmin.hasDerivAt_eq_zero hderiv
+  linarith
+
+/-- **`SubGaussianMGF` forces the periods to sum to zero.** For every `σ²` (no sign condition) and
+every finite index type, `SubGaussianMGF η σ²` implies `Σ_c η_c = 0`: the mean-zero constraint of
+`sum_eq_zero_of_mgf_le` in the directions `ζ = 1` and `ζ = i` kills the real and imaginary parts
+of the sum. -/
+theorem sum_eq_zero_of_subGaussianMGF {ι : Type*} [Fintype ι] {η : ι → ℂ} {σsq : ℝ}
+    (hSG : SubGaussianMGF η σsq) : ∑ c, η c = 0 := by
+  have hdir : ∀ ζ : ℂ, ‖ζ‖ = 1 → (starRingEnd ℂ ζ * ∑ c, η c).re = 0 := by
+    intro ζ hζ
+    rw [Finset.mul_sum, Complex.re_sum]
+    exact sum_eq_zero_of_mgf_le (fun c => (starRingEnd ℂ ζ * η c).re) σsq (hSG ζ hζ)
+  apply Complex.ext
+  · simpa using hdir 1 (by simp)
+  · simpa using hdir Complex.I (by simp)
+
+open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment in
+/-- **The raw periods over the nonzero frequencies sum to `−|G|`.** For a primitive additive
+character `ψ` and a finset `G` with `0 ∉ G`, `Σ_{b≠0} η_b = −|G|`, where
+`η_b = Σ_{y∈G} ψ(b·y)` is `SubgroupGaussSumSecondMoment.eta`. Orthogonality gives
+`Σ_{b∈F} η_b = 0`, and the `b = 0` term is `η_0 = |G|`. -/
+theorem sum_eta_ne_zero_eq_neg_card {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {G : Finset F} (h0 : (0 : F) ∉ G) :
+    ∑ b : {b : F // b ≠ 0}, eta ψ G b = -(G.card : ℂ) := by
+  have hall : ∑ b : F, eta ψ G b = 0 := by
+    simp only [eta]
+    rw [Finset.sum_comm]
+    refine Finset.sum_eq_zero (fun y hy => ?_)
+    have hy0 : y ≠ 0 := fun h => h0 (h ▸ hy)
+    simp [AddChar.sum_mulShift y hψ, hy0]
+  have heta0 : eta ψ G 0 = G.card := by
+    simp [eta]
+  have hsplit : ∑ b : {b : F // b ≠ 0}, eta ψ G b = ∑ b ∈ Finset.univ.erase 0, eta ψ G b :=
+    (Finset.sum_subtype _ (by simp) _).symm
+  rw [← Finset.add_sum_erase _ _ (Finset.mem_univ (0 : F)), heta0] at hall
+  rw [hsplit]
+  linear_combination hall
+
+open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment in
+/-- **The raw periods satisfy `SubGaussianMGF` for no `σ²`.** For a primitive additive character
+`ψ` and a nonempty finset `G` with `0 ∉ G` (e.g. a multiplicative subgroup `μ_n`), the family
+`b ↦ η_b = Σ_{y∈G} ψ(b·y)` indexed by the nonzero frequencies `b` sums to `−|G| ≠ 0`
+(`sum_eta_ne_zero_eq_neg_card`), so `sum_eq_zero_of_subGaussianMGF` rules out every proxy `σ²`.
+Hence `prize_floor_of_subGaussianMGF` cannot be applied to the uncentred periods; it needs a
+centred family. The coset-indexed family is not defined in this file. -/
+theorem not_subGaussianMGF_eta {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {G : Finset F} (hG : G.Nonempty)
+    (h0 : (0 : F) ∉ G) (σsq : ℝ) :
+    ¬ SubGaussianMGF (fun b : {b : F // b ≠ 0} => eta ψ G b) σsq := by
+  intro hSG
+  have hsum := sum_eq_zero_of_subGaussianMGF hSG
+  rw [sum_eta_ne_zero_eq_neg_card hψ h0, neg_eq_zero, Nat.cast_eq_zero] at hsum
+  exact hG.card_pos.ne' hsum
 
 end ArkLib.ProximityGap.SalemZygmundChaining
 
@@ -219,3 +373,9 @@ end ArkLib.ProximityGap.SalemZygmundChaining
 #print axioms ArkLib.ProximityGap.SalemZygmundChaining.chernoff_max_re_le
 #print axioms ArkLib.ProximityGap.SalemZygmundChaining.directional_period_bound
 #print axioms ArkLib.ProximityGap.SalemZygmundChaining.prize_floor_of_inputs
+#print axioms ArkLib.ProximityGap.SalemZygmundChaining.supNormFromDirectionalNet_of_subGaussianMGF
+#print axioms ArkLib.ProximityGap.SalemZygmundChaining.prize_floor_of_subGaussianMGF
+#print axioms ArkLib.ProximityGap.SalemZygmundChaining.sum_eq_zero_of_mgf_le
+#print axioms ArkLib.ProximityGap.SalemZygmundChaining.sum_eq_zero_of_subGaussianMGF
+#print axioms ArkLib.ProximityGap.SalemZygmundChaining.sum_eta_ne_zero_eq_neg_card
+#print axioms ArkLib.ProximityGap.SalemZygmundChaining.not_subGaussianMGF_eta

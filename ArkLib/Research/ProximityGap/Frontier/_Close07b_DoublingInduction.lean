@@ -51,6 +51,11 @@ antipodal structure (2) proved here (folding is well-defined and 2-to-1 exactly 
 domain is antipodal-closed). The arithmetic that the fold preserves values
 (`(2m'*a) % (2n) = 2*((m'*a) % n)`) is proved axiom-clean as `doubling_mod_eq`.
 
+**Status correction.** `FoldingBijection` is false as stated: it quantifies over every `k` and
+truncates `k/2`, and `Close07d.not_foldingBijection` (in `_Close07d_DoublingGuardedClosure`)
+refutes it at `nn = 2`, `k = 1`, `m' = 1`, so `E6_even_fold` is vacuous. With the guards
+`nn > 0` even, `k` even and `m' ≥ 1`, the count identity is proved there as `Close07d.cf_double`.
+
 Issue #444. Target E6, Approach B (induction / 2-adic descent).
 -/
 
@@ -400,18 +405,21 @@ theorem cf_odd_eq_zero {nn k m : ℕ} (hnn : 0 < nn) (hm : Odd m) (hm3 : 3 ≤ m
 
 /-! ## The remaining even-fold gap, named precisely (honest reduction) -/
 
-/-- **The folding bijection (the precise even-fold gap).** The fold `φ : a ↦ a mod nn` is a
+/-- **(FALSE as stated; see `Close07d.not_foldingBijection`.)** **The folding bijection (the
+even-fold gap as originally named).** The fold `φ : a ↦ a mod nn` is a
 *value-set bijection* from the grade-`2m'` bad values at level `2*nn` to the grade-`m'` bad values
 at level `nn`. By `grade_one_zero_iff_antipodalClosed`, the level-`2nn` domain consists of
 antipodal-closed sets, on which `φ` is exactly 2-to-1 (`a` and `a+nn` co-occur and share an
 image), so the `(k+2m')`-subset folds to a `(k/2+m')`-subset; `doubling_mod_eq` shows the graded
-value is preserved up to the bin-doubling reindex. This is the one genuine combinatorial content
-of E6's even half left open here — *sharper* than `_BridgeB07.DoublingBijection` because it names
-the explicit fold and is justified by the antipodal structure proven above. -/
+value is preserved up to the bin-doubling reindex. As stated it omits the parity guard on `k`,
+which makes it false; with the guards `nn > 0` even, `k` even and `m' ≥ 1`, the count identity
+is proved as `Close07d.cf_double`. -/
 def FoldingBijection : Prop :=
   ∀ nn k m' : ℕ, cf (2 * nn) k (2 * m') = cf nn (k / 2) m'
 
-/-- **E6 even half**, derived from the named `FoldingBijection` gap. -/
+/-- **E6 even half**, derived from the named `FoldingBijection` gap. Its hypothesis is false
+(`Close07d.not_foldingBijection`), so this theorem is vacuous; the unconditional guarded identity
+is `Close07d.cf_double`. -/
 theorem E6_even_fold (h : FoldingBijection) (nn k m' : ℕ) :
     cf (2 * nn) k (2 * m') = cf nn (k / 2) m' := h nn k m'
 

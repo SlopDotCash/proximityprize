@@ -24,7 +24,8 @@ THE CAPACITY (PRIME) SIDE — what this file pins.  For PRIME `n`, Tao's uncerta
 *sharp* and CONSTANT in `n`, so the far line lands exactly at capacity:
 
   **Tao (2005)** — *An uncertainty principle for cyclic groups of prime order*, Math. Res. Lett.
-  12(1):121–127.  For `p` prime and `f : Z/p → ℂ` (or any field) nonzero,
+  12(1):121–127.  For `p` prime and `f : Z/p → ℂ` nonzero (characteristic zero;
+  the statement can fail over a finite field, see `not_taoSparseZeroBound_dom23`),
   `|supp f| + |supp f̂| ≥ p + 1`.  Equivalently (the corollary we consume): a nonzero function on
   `Z_p` whose discrete-Fourier transform is supported on a set of size `≤ t` has `≤ t − 1` zeros.
   Hence with `t = k + 2` a far line agrees with any codeword on `≤ k + 1` points:
@@ -113,7 +114,9 @@ among the domain points `{dom i}`.  Here `t = k + 2` (`farFourierSparsity k`), s
 `≤ k + 1`.
 
 This is exactly the prime-order content of `|supp f| + |supp f̂| ≥ n + 1` (Tao, MRL 12, 2005),
-specialized to the genuine far-line polynomial.  We name it as a `Prop` because Tao's additive
+specialized to the genuine far-line polynomial.  CAUTION: Tao's theorem is over `ℂ`; over the
+finite field `F` of this file the hypothesis can fail (`not_taoSparseZeroBound_dom23`: `n = 11`,
+`F = 𝔽₂₃`, `k = 1`), so it is a genuine assumption on the pair `(n, char F)`.  We name it as a `Prop` because Tao's additive
 uncertainty is not in Mathlib (it requires Chebotarev's nonvanishing of cyclotomic DFT minors,
 valid only for prime order — which is precisely WHY the bound is constant in `n` and fails for
 `2^μ`).  The predicate is stated over the REAL objects: `dom`, the agreement set, `farLinePoly`. -/
@@ -188,9 +191,56 @@ theorem farLine_FarFromCode_capacity (dom : Fin n ↪ F) (hsmooth : ∀ i, (dom 
   have hSle : (S.card : ℝ≥0) ≤ ((k + 1 : ℕ) : ℝ≥0) := by exact_mod_cast hScard
   exact absurd (lt_of_le_of_lt (le_trans hSge hSle) hlt) (lt_irrefl _)
 
+/-! ## The hypothesis is not automatic over finite fields
+
+The file works over a finite field `F`, where Tao's uncertainty principle is not available in
+general.  The instance below shows `TaoSparseZeroBound` can fail on a smooth prime-order domain,
+so the capacity statements above are conditional on a hypothesis that depends on the prime. -/
+
+/-- `23` is prime (local instance, for the field structure on `ZMod 23`). -/
+local instance fact_prime_23 : Fact (Nat.Prime 23) := ⟨by decide⟩
+
+/-- The smooth domain `μ₁₁ = ⟨2⟩ ⊂ 𝔽₂₃`. -/
+def dom23 : Fin 11 ↪ ZMod 23 := ⟨fun i => 2 ^ (i : ℕ), by decide⟩
+
+/-- `dom23` is smooth: its points are `11`-th roots of unity. -/
+theorem dom23_smooth : ∀ i, dom23 i ^ 11 = 1 := by decide
+
+/-- **`TaoSparseZeroBound` fails over a finite field.**  On the smooth prime-order domain
+`μ₁₁ ⊂ 𝔽₂₃` with `k = 1`, the far-line polynomial `X³ + 2X − 3 = (X − 1)(X − 4)(X − 18)` is
+nonzero, `3 = k + 2`-sparse, and vanishes at the three domain points `2⁰, 2², 2⁶`, exceeding the
+bound `k + 1 = 2`.  Tao's theorem is a characteristic-zero statement: modulo `p` a Chebotarev
+minor of the order-`11` DFT can vanish, and `23` is such a prime.  This is a small-prime
+counterexample; it does not decide the hypothesis at large primes. -/
+theorem not_taoSparseZeroBound_dom23 : ¬ TaoSparseZeroBound dom23 1 := by
+  intro h
+  have hdeg : (C (3 : ZMod 23)).degree < ((1 : ℕ) : WithBot ℕ) :=
+    lt_of_le_of_lt degree_C_le (by exact_mod_cast Nat.zero_lt_one)
+  have hne : farLinePoly (n := 11) 3 1 (2 : ZMod 23) (C 3) ≠ 0 := by
+    intro h0
+    have h1 := congrArg (eval 0) h0
+    simp [farLinePoly] at h1
+    exact absurd h1 (by decide)
+  have hcard := h 3 1 2 (C 3) hdeg hne
+  have hsub : ({0, 2, 6} : Finset (Fin 11)) ⊆ Finset.univ.filter
+      (fun i => (farLinePoly (n := 11) 3 1 (2 : ZMod 23) (C 3)).IsRoot (dom23 i)) := by
+    intro i hi
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hi
+    refine Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_⟩
+    rcases hi with rfl | rfl | rfl <;>
+      · simp only [farLinePoly, IsRoot, eval_sub, eval_add, eval_mul, eval_pow, eval_X, eval_C,
+          dom23, Function.Embedding.coeFn_mk]
+        decide
+  have h3 : 3 ≤ (Finset.univ.filter
+      (fun i => (farLinePoly (n := 11) 3 1 (2 : ZMod 23) (C 3)).IsRoot (dom23 i))).card := by
+    calc 3 = ({0, 2, 6} : Finset (Fin 11)).card := by decide
+      _ ≤ _ := Finset.card_le_card hsub
+  omega
+
 end ProximityGap.CapacitySidePrime
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound only):
 #print axioms ProximityGap.CapacitySidePrime.farLine_agreement_isRoot
 #print axioms ProximityGap.CapacitySidePrime.farLine_agreement_card_le_capacity
 #print axioms ProximityGap.CapacitySidePrime.farLine_FarFromCode_capacity
+#print axioms ProximityGap.CapacitySidePrime.not_taoSparseZeroBound_dom23

@@ -1846,6 +1846,7 @@ import ArkLib.Research.ProximityGap.Frontier._CharZeroLamLeungSlackLower
 import ArkLib.Research.ProximityGap.Frontier._CharZeroMGFBesselBound
 import ArkLib.Research.ProximityGap.Frontier._CharZeroOpenCoreSmallR
 import ArkLib.Research.ProximityGap.Frontier._CharZeroRoomDominance
+import ArkLib.Research.ProximityGap.Frontier._CharZeroStepLawAllDepth
 import ArkLib.Research.ProximityGap.Frontier._CharZeroStepRatioMonotone
 import ArkLib.Research.ProximityGap.Frontier._CharZeroWickEnergy
 import ArkLib.Research.ProximityGap.Frontier._ChebotarevAlternantClosedForm
@@ -1859,6 +1860,7 @@ import ArkLib.Research.ProximityGap.Frontier._CirculantTraceEnergy
 import ArkLib.Research.ProximityGap.Frontier._Close07a_DoublingFoldMap
 import ArkLib.Research.ProximityGap.Frontier._Close07b_DoublingInduction
 import ArkLib.Research.ProximityGap.Frontier._Close07c_OddGradeVanishesFull
+import ArkLib.Research.ProximityGap.Frontier._Close07d_DoublingGuardedClosure
 import ArkLib.Research.ProximityGap.Frontier._Close25_LiftOneSided
 import ArkLib.Research.ProximityGap.Frontier._Close26_PrimitiveCleanRecursion
 import ArkLib.Research.ProximityGap.Frontier._Close27DecisionInputRegimeRestricted
@@ -3412,6 +3414,7 @@ import ArkLib.Research.ProximityGap.Frontier._R388FixedTailMatchingRigidity
 import ArkLib.Research.ProximityGap.Frontier._R388SectorRelationCountBound
 import ArkLib.Research.ProximityGap.Frontier._R389CensusIdentityExactFiber
 import ArkLib.Research.ProximityGap.Frontier._R389FixedTailMatchingCellBound
+import ArkLib.Research.ProximityGap.Frontier._R389UniformWickBudgetRefuted
 import ArkLib.Research.ProximityGap.Frontier._R389WickBudgetSupBound
 import ArkLib.Research.ProximityGap.Frontier._R38SexticVarietyInput
 import ArkLib.Research.ProximityGap.Frontier._R390CharZeroNonzeroRepFourBound

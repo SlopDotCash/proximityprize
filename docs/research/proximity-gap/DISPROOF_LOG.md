@@ -49309,3 +49309,118 @@ so its MCA bad-scalar event is empty. The outstanding classical input is an exce
 bound for these fixed arithmetic symbol lists over arbitrary sparse coordinate sets.
 [Affine-hull proof](../../../ArkLib/Research/ProximityGap/Frontier/PaleyTranslateInterpolation.lean) ·
 [Exact shift-list reduction](../../../ArkLib/Research/ProximityGap/Frontier/PaleyShiftListRecovery.lean)
+
+## [444-e6-doubling-guarded-closure] The guarded E6 doubling recursion is a theorem; its unguarded residuals are false
+
+Date: 2026-11-11. Target: `BridgeB07.DoublingBijectionGuarded`, the open even half of the E6
+graded recursion, and the residuals `Close07a.FoldImageHyp` and `Close07b.FoldingBijection`
+that were meant to imply it (historical issue #444).
+
+`Frontier/_Close07d_DoublingGuardedClosure.lean` proves that for even `n > 0`, even `k` and
+`m' ≥ 1` the level-`2n` grade-`2m'` bad-value set is the `foldVal`-image of the level-`n` set at
+`(k / 2, m')` (`badVals_double_eq_image`). The grade-`1` constraint forces antipodal closure,
+so every bad carrier is a fold `A' ∪ (A' + n)`. Hence `cf_double` and
+`doublingBijectionGuarded_holds`; `oddGradeVanishesGuarded_holds` transports
+`Close07c.cf_odd_eq_zero`.
+
+Refuted, with the reusable obstruction `badVals_double_odd_eq_empty` (at odd `k` the level-`2n`
+even-grade bad set is empty, because antipodally closed carriers have even size): `FoldImageHyp`,
+`FoldingBijection` and `BridgeB07.DoublingBijection` all fail at `n = 2, k = 1, m' = 1`, where
+`cf 4 1 2 = 0` but `cf 2 0 1 ≠ 0`. None of them guards the parity of `k`, so the consumers
+`Close07a.doublingBijection_of_foldImage` and `Close07b.E6_even_fold` are vacuous.
+`BridgeB07.OddGradeVanishes` fails at `n = 1, k = 0, m = 1`.
+
+Scope: `cf` is not the cascade count behind `m*` (KB
+`deltastar-444-empirical-formulas-and-bridges-2026-06-15.md`, §F), so this structural closure
+does not touch δ* or issue #164.
+
+`#print axioms` on every new declaration reports a subset of `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+```
+./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_Close07d_DoublingGuardedClosure.lean
+```
+
+## [164-r389-uniform-wick-budget-refuted] `UniformSubgroupWickBudget C` is false for every `C` (kernel-checked)
+
+Date: 2026-11-11. Target: `ArkLib.ProximityGap.R389WickBudgetSupBound.UniformSubgroupWickBudget`.
+Entry `[164-r389-subfield-wick-budget]` (2026-10-14) certified finite proper-subfield anchors
+and recorded the family argument as written, "not kernel-checked", without recording the
+predicate as refuted.
+
+`Frontier/_R389UniformWickBudgetRefuted.lean` proves `not_uniformSubgroupWickBudget (C : ℝ) :
+¬ UniformSubgroupWickBudget C`.
+
+- `C ≥ 0`: for a prime `p > (36·⌈C⌉₊)²` take `F = GF(p²)`, `d = p - 1`. The torsion set contains
+  `GF(p)^×` (`pred_le_card_torsionSet`) and lies in the proper additive subgroup `{x^p = x}`, so
+  a primitive additive character is trivial on it
+  (`FFModelW4.ffThin_prizeLaw_countermodel`). The R389 sup bound
+  `sup_le_three_sqrt_of_dcEnergyBudget` then gives `|μ_{p-1}| ≤ 9·C·log q`
+  (`card_torsionSet_le_of_budget`), which fails. The exact subfield energy is not needed.
+- `C < 0`: at `F = ZMod 2`, `d = 1` the depth is `1`, the budget is negative and the DC floor
+  (`R240GeneralRFoldVariance.dc_floor`) makes the left side nonnegative.
+
+Reusable obstruction: `card_torsionSet_le_of_budget` — in any finite field of characteristic `p`
+with more than `p` elements, a Wick budget at `μ_{p-1}` caps `|μ_{p-1}|` by `9·C·log q`.
+
+Scope: the witness is a subfield subgroup with no cancellation. Nothing is said about prime
+fields or about `μ_{2^k} ⊂ 𝔽_p`; the sponsor prime-field budget stays open in both directions.
+
+`#print axioms` on the five theorems reports `propext`, `Classical.choice`, `Quot.sound`.
+
+```
+./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_R389UniformWickBudgetRefuted.lean
+```
+
+## [164-stepanov-degeneracy-residuals-false] The three Stepanov degeneracy residuals are false for every set and multiplicity
+
+Date: 2026-11-11. Targets: `StepanovAtBstar.MajorArcDegenerate`
+(`Frontier/_StepanovAtBstar.lean`), `StepanovSupNorm.PhaseBadSetDegenerate`
+(`Frontier/_wf5G2_stepanov_supnorm.lean`) and `Wall5.DescentMultiplicityBeyondSeparable`
+(`Frontier/_WallStepanovSubgroupDescent.lean`). All three have the same body: a nonzero
+polynomial of degree `< M·|B|` vanishing to order `M` on `B`. They were recorded as
+"pre-screened FALSE" on the strength of full-rank measurements at `n ≤ 64`, `M ∈ {2, 3}`
+(see `[doorIV-stepanov-at-bstar-export]`).
+
+Each file already contains the counting inequality `M·|B| ≤ deg F'` for such a polynomial
+(`stepanov_bstar_bound`, `stepanov_bad_set_bound`, `Stepanov.card_le_natDegree_of_vanishing`).
+That inequality is the negation of the residual, for every finset `B` over every field and every
+`M`: `not_majorArcDegenerate`, `not_phaseBadSetDegenerate`,
+`not_descentMultiplicityBeyondSeparable`, and `no_bstar_saving` for the equivalent form of
+`bstar_saving_iff_degenerate`.
+
+Reading: the measurements were instances of a theorem. A past-Johnson Stepanov saving cannot be
+phrased as one of these three Props; it would need an auxiliary that is allowed to be reduced
+modulo `X^n - 1`, or vanishing imposed on a set larger than `B`. Nothing here bounds a bad set.
+
+`#print axioms` on the four new theorems reports `propext`, `Classical.choice`, `Quot.sound`.
+
+```
+./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_StepanovAtBstar.lean
+./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_wf5G2_stepanov_supnorm.lean
+./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_WallStepanovSubgroupDescent.lean
+```
+
+## [164-tao-sparse-zero-finite-field] `TaoSparseZeroBound` can fail over a finite field (small-prime instance)
+
+Date: 2026-11-11. Target: `ProximityGap.CapacitySidePrime.TaoSparseZeroBound`
+(`Frontier/UncertaintyCapacitySidePrime.lean`), the hypothesis of
+`farLine_agreement_card_le_capacity` and `farLine_FarFromCode_capacity`. The file header quoted
+Tao's uncertainty principle "for `f : Z/p → ℂ` (or any field)", while the file works over a
+finite field.
+
+`not_taoSparseZeroBound_dom23`: on the smooth domain `μ₁₁ = ⟨2⟩ ⊂ 𝔽₂₃` with `k = 1`,
+`X³ + 2X − 3 = (X − 1)(X − 4)(X − 18)` is a nonzero far-line polynomial with three roots on the
+domain, against the bound `k + 1 = 2`.
+
+Scope: a small-prime instance. Tao's theorem holds over `ℂ`; modulo `p` the relevant Chebotarev
+minors can vanish, and the set of such primes for a given prime order `n` is expected to be
+finite but is not determined here. A search at `k = 1` found failures only at `(n, p) = (11, 23)`
+and `(13, 53)`. Nothing is claimed at production primes: the capacity statements stay
+conditional, on a hypothesis that now visibly depends on `(n, char F)`.
+
+`#print axioms not_taoSparseZeroBound_dom23` reports `propext`, `Classical.choice`, `Quot.sound`.
+
+```
+./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/UncertaintyCapacitySidePrime.lean
+```

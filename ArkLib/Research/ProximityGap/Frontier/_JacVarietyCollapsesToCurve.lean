@@ -7,6 +7,7 @@ import Mathlib.NumberTheory.GaussSum
 import Mathlib.NumberTheory.JacobiSum.Basic
 import Mathlib.NumberTheory.MulChar.Lemmas
 import ArkLib.Data.CodingTheory.ProximityGap.ConstantIndexGaussSumBound
+import ArkLib.Research.ProximityGap.Frontier.PowMapFiberCard
 
 /-!
 # PROVE-attempt #444 — [jacobi-variety-langweil], SHARPENED to the SQUARED autocorrelation `A(s)`.
@@ -255,10 +256,30 @@ def WeilCurveCeiling (C : ℝ) (χ : MulChar F ℂ) (s : ℕ) : Prop :=
   ‖∑ u ∈ (univ : Finset F).erase 0, (χ ^ s) (u ^ orderOf χ - 1)‖
     ≤ C * Real.sqrt (Fintype.card F : ℝ)
 
-/-- The complete-sum lift (exact identity; named, its proof is the `m`-to-1 fibration). -/
+/-- The complete-sum lift (exact identity; named, its proof is the `m`-to-1 fibration).
+PROVED below for `G = μ_n`, `n = (q-1)/m` (`completeSumLift_rootsOfUnity`); it is false for a
+general finset `G`. -/
 def CompleteSumLift (χ : MulChar F ℂ) (s : ℕ) (G : Finset F) : Prop :=
   (orderOf χ : ℂ) * Tsum χ s G
     = ∑ u ∈ (univ : Finset F).erase 0, (χ ^ s) (u ^ orderOf χ - 1)
+
+/-- **The complete-sum lift holds on the image of the `m`-th power map**, `m = orderOf χ`:
+`u ↦ u^m` is `m`-to-one from `F^*` onto its image because `m ∣ q - 1`. -/
+theorem completeSumLift_powImage (χ : MulChar F ℂ) (s : ℕ) :
+    CompleteSumLift χ s (((univ : Finset F).erase 0).image (fun u => u ^ orderOf χ)) := by
+  unfold CompleteSumLift Tsum
+  rw [ProximityGap.Frontier.PowMapFiberCard.sum_erase_zero_pow_eq_nsmul_sum_image
+    (orderOf χ) χ.orderOf_dvd_card_sub_one (fun t => (χ ^ s) (t - 1)), nsmul_eq_mul]
+
+/-- **The complete-sum lift holds for `G = μ_n`**, the `n`-th roots of unity with
+`n = (q - 1) / m`, `m = orderOf χ`: the image of the `m`-th power map on `F^*` is exactly
+`μ_n`. -/
+theorem completeSumLift_rootsOfUnity (χ : MulChar F ℂ) (s : ℕ) :
+    CompleteSumLift χ s
+      ((univ : Finset F).filter (fun t => t ^ ((Fintype.card F - 1) / orderOf χ) = 1)) := by
+  rw [← ProximityGap.Frontier.PowMapFiberCard.image_pow_erase_zero_eq_filter (orderOf χ)
+    χ.orderOf_pos χ.orderOf_dvd_card_sub_one]
+  exact completeSumLift_powImage χ s
 
 /-- **★ The verdict theorem: the squared route yields only the `√q` curve ceiling, which is VACUOUS
 at `β=4`.** Given the lift and the Weil curve ceiling, the descent object satisfies `m·‖T(s)‖ ≤ C√q`,
@@ -275,6 +296,15 @@ theorem squared_yields_curve_ceiling (C : ℝ) (χ : MulChar F ℂ) (s : ℕ) (G
     rw [hlift]; exact hweil
   rwa [norm_mul, Complex.norm_natCast] at this
 
+/-- **The verdict on `μ_n`, lift discharged.** For `G = μ_n` (`n = (q-1)/m`) the complete-sum
+lift is a theorem, so the Weil curve ceiling alone gives `m·‖T(s)‖ ≤ C√q`. -/
+theorem squared_yields_curve_ceiling_rootsOfUnity (C : ℝ) (χ : MulChar F ℂ) (s : ℕ)
+    (hweil : WeilCurveCeiling C χ s) :
+    (orderOf χ : ℝ) * ‖Tsum χ s
+        ((univ : Finset F).filter (fun t => t ^ ((Fintype.card F - 1) / orderOf χ) = 1))‖
+      ≤ C * Real.sqrt (Fintype.card F : ℝ) :=
+  squared_yields_curve_ceiling C χ s _ χ.orderOf_pos (completeSumLift_rootsOfUnity χ s) hweil
+
 end ArkLib.ProximityGap.Frontier.JAC4
 
 /-! ## Axiom audit -/
@@ -286,3 +316,5 @@ end ArkLib.ProximityGap.Frontier.JAC4
 #print axioms ArkLib.ProximityGap.Frontier.JAC4.A_jSum_off
 #print axioms ArkLib.ProximityGap.Frontier.JAC4.support_pins_x
 #print axioms ArkLib.ProximityGap.Frontier.JAC4.squared_yields_curve_ceiling
+#print axioms ArkLib.ProximityGap.Frontier.JAC4.completeSumLift_rootsOfUnity
+#print axioms ArkLib.ProximityGap.Frontier.JAC4.squared_yields_curve_ceiling_rootsOfUnity

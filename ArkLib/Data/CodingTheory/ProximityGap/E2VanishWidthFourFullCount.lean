@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.E2VanishEnergy
+import ArkLib.Data.CodingTheory.ProximityGap.LamLeungMultisetAntipodal
 import Mathlib.Tactic
 
 /-!
@@ -21,19 +22,26 @@ sets, 192 of them antipodal-pair-free, against the formula value 232. Characteri
 vanishing-sum structure does not transfer to `𝔽_q` without an extra guard (e.g. a prime large
 enough relative to the relevant cyclotomic norms); no such guarded count is proved here.
 
+In **characteristic zero** the classification does hold for every dyadic `μ_{2^k}`:
+`widthFourDyadicClassified_charZero` (below) derives it from the in-tree Lam–Leung theorem
+`LamLeungMultisetAntipodal.count_antipodal_of_sum_eq_zero`. This proves the classification only;
+it is not a cardinality statement.
+
 The in-tree `E2VanishWidthFourLaw` treats the **one-antipodal-pair** shape: a quadruple
 `{x,−x,a,b}` with `a·b = x²`, `a+b ≠ 0`, all with `e₁ ≠ 0` (the genuine bad-scalar producers).
 That is only PART of the `e₂=0` locus at width 4.
 
 This file treats the **complementary shape** — the **two-antipodal-pair** quadruples. Together
-with a classification hypothesis these two shapes would give the full width-4 count; without one,
-the count below is a conjecture/probe readout, not a theorem.
+with the classification (proved here only in characteristic zero) and the two stratum counts (not
+proved), these two shapes would give the full width-4 count; the count below is a
+conjecture/probe readout, not a theorem.
 
 ## The cyclic-sieving readout (conjectural; NOT a theorem over finite fields)
 
 Identify `μ_n` (`n = 2^μ`) with `ℤ/n` by exponents. *If* every width-4 `e₂=0` subset of `μ_n`
 contains an antipodal pair (the hypothesis `WidthFourDyadicClassified`, false in general over
-`𝔽_q`; see the status note above), then such a subset has one of two structural shapes:
+`𝔽_q` but true in characteristic zero; see the status note above), then such a subset has one of
+two structural shapes:
 
 * **Stratum A (one antipodal pair, `e₁ ≠ 0`):** `{x,−x,a,b}` with `a·b = x²`, `a+b ≠ 0`.
   `e₂ = a·b − x²` (in-tree `e2_antipodal_quadruple`); count `n(n−4)/4`.
@@ -59,7 +67,7 @@ This file proves the **algebraic core** of stratum B — the `e₂` and `e₁` i
 antipodal quadruple. The two shapes are *algebraically disjoint*: stratum A has `e₁ = a+b ≠ 0`,
 stratum B has `e₁ = 0` (`e1_double_antipodal`), so they never overlap. Whether they *exhaust*
 the width-4 `e₂=0` locus is exactly the hypothesis `WidthFourDyadicClassified`, which this file
-refutes for `μ₃₂ ⊂ 𝔽₉₇`.
+refutes for `μ₃₂ ⊂ 𝔽₉₇` and proves for `μ_{2^k}` in characteristic zero.
 
 The shape identities are pure field algebra (`e₂ = (e₁² − p₂)/2` for the explicit 4-set),
 q-independent, no character sum. The statement "at width 4 every `e₂=0` set is one of the two
@@ -68,8 +76,10 @@ antipodal shapes" is **not** q-independent: it fails in `μ₃₂ ⊂ 𝔽₉₇
 ## Honest scope
 
 Proved here: the stratum-B identities, the stratum disjointness via `e₁`, the `Nat` identity
-`n(n−4)/4 + n/4 = n(n−3)/4`, and the refutation `not_widthFourDyadicClassified_zmod97`. Not proved:
-any cardinality statement for the width-4 `e₂=0` locus, in particular the formula `n(n−3)/4`.
+`n(n−4)/4 + n/4 = n(n−3)/4`, the refutation `not_widthFourDyadicClassified_zmod97`, and the
+characteristic-zero classification `widthFourDyadicClassified_charZero`. Not proved: any
+cardinality statement for the width-4 `e₂=0` locus, in particular the formula `n(n−3)/4`, and
+any guarded transfer of the classification to `𝔽_q`.
 Nothing here pins the δ* node `B = max|η_b|` either: the window interior needs width `w ≈ n/2`,
 where the analogous count is super-linear / open (the `K(n)` orbit census; see
 `E2DilationDirectCount` header).
@@ -224,14 +234,15 @@ strata with the advertised stratum counts, its size would be `n(n−4)/4 + n/4 =
 only the **arithmetic of the closed form** (`Nat`-level). No count theorem is proved: the
 exhaustiveness hypothesis `WidthFourDyadicClassified` is false in general over finite fields
 (`not_widthFourDyadicClassified_zmod97`), and the stratum counts themselves are not proved here.
-In characteristic zero, the analogous statement is expected from the structure of vanishing sums
-of `2`-power roots of unity, but that transfer is not formalized and needs a field guard. -/
+In characteristic zero the classification itself is proved (`widthFourDyadicClassified_charZero`),
+but the stratum counts are still missing there, and any transfer to `𝔽_q` needs a field guard. -/
 
 /-- **The closed-form arithmetic (unconditional `Nat` identity).** For `4 ∣ n` (the dyadic domain
 `n = 2^μ`, `μ ≥ 2`): `n(n−4)/4 + n/4 = n(n−3)/4`. Pure `Nat` arithmetic, fully proven. This is
-**not** a count of `e₂=0` sets: it would equal the width-4 `e₂=0` count only under a (here
-unproved, and over `𝔽_q` in general false) classification with stratum sizes `n(n−4)/4` and
-`n/4`; see `not_widthFourDyadicClassified_zmod97`. -/
+**not** a count of `e₂=0` sets: it would equal the width-4 `e₂=0` count only under the
+classification (proved here in characteristic zero, false in general over `𝔽_q`; see
+`not_widthFourDyadicClassified_zmod97`) together with the stratum sizes `n(n−4)/4` and `n/4`,
+which are not proved. -/
 theorem widthFour_e2zero_count_arith {n : ℕ} (hn : 4 ∣ n) (hn4 : 4 ≤ n) :
     n * (n - 4) / 4 + n / 4 = n * (n - 3) / 4 := by
   obtain ⟨k, rfl⟩ := hn
@@ -260,12 +271,11 @@ antipodal pair `{ζ, −ζ}`.
 Over a finite field this is **not** automatic for dyadic `μ_n`:
 `not_widthFourDyadicClassified_zmod97` refutes it for `μ₃₂ ⊂ 𝔽₉₇` with the set `{1, 8, 27, 55}`.
 The earlier probe (`probe_noantip.py`: 0 exceptions for `n = 8,16,32` in the probe's setting) is
-therefore not evidence for arbitrary fields. In characteristic zero the statement is the expected
-consequence of the structure of vanishing sums of `2`-power roots of unity (the minimal vanishing
-sums are antipodal pairs), and it can transfer to `𝔽_q` only under an additional guard (e.g. a
-prime large enough that no spurious cyclotomic-norm divisibility occurs). Neither the
-characteristic-zero statement nor a guarded transfer is proved here, and even with this
-hypothesis no count theorem is stated in this file. -/
+therefore not evidence for arbitrary fields. In characteristic zero the statement holds for every
+`μ_{2^k}` (`widthFourDyadicClassified_charZero`, from the structure of vanishing sums of `2`-power
+roots of unity), and it can transfer to `𝔽_q` only under an additional guard (e.g. a prime large
+enough that no spurious cyclotomic-norm divisibility occurs). A guarded transfer is not proved
+here, and no count theorem is stated in this file. -/
 def WidthFourDyadicClassified (μ_n : Finset F) : Prop :=
   ∀ S ⊆ μ_n, S.card = 4 → e2 S = 0 →
     (∃ ζ ∈ S, ζ ≠ 0 ∧ -ζ ∈ S)
@@ -313,6 +323,140 @@ theorem not_widthFourDyadicClassified_zmod97 :
 
 end Refutation
 
+/-! ## The classification in characteristic zero
+
+In characteristic zero, Lam–Leung for `2`-power roots of unity
+(`LamLeungMultisetAntipodal.count_antipodal_of_sum_eq_zero`: a vanishing multiset sum of `2^k`-th
+roots of unity is antipodally balanced) applies to the six pairwise products of an `e₂=0`
+four-subset of `μ_{2^k}`. A case analysis on two balance witnesses then yields an antipodal pair
+inside the set. The case analysis is the multiplicative analogue, with `h = −1`, of the
+exponent-side `WindowTwoLayer.antipodal_pair_of_balanced` (`BalancedFourLaw`). -/
+
+section CharZero
+
+variable {L : Type*} [Field L] [CharZero L] [DecidableEq L]
+
+/-- **Antipodal pair from balanced pairwise products.** Let `a, b, c, d` be nonzero elements of a
+field of characteristic zero with `b ≠ c`. If the multiset `{ab, ac, ad, bc, bd, cd}` of their
+pairwise products is antipodally balanced (`count z = count (−z)` for every `z`), then two of
+`a, b, c, d` are antipodal. -/
+theorem antipodal_pair_of_balanced_products {a b c d : L}
+    (ha : a ≠ 0) (hb : b ≠ 0) (hc : c ≠ 0) (hd : d ≠ 0) (hbc : b ≠ c)
+    (hbal : ∀ z : L, ({a * b, a * c, a * d, b * c, b * d, c * d} : Multiset L).count z
+      = ({a * b, a * c, a * d, b * c, b * d, c * d} : Multiset L).count (-z)) :
+    a = -b ∨ a = -c ∨ a = -d ∨ b = -c ∨ b = -d ∨ c = -d := by
+  set M : Multiset L := {a * b, a * c, a * d, b * c, b * d, c * d} with hM
+  have hneg_mem : ∀ z ∈ M, -z ∈ M := by
+    intro z hz
+    have h1 : 0 < M.count z := Multiset.count_pos.mpr hz
+    rw [hbal z] at h1
+    exact Multiset.count_pos.mp h1
+  have hne_self : ∀ z : L, z ≠ 0 → -z ≠ z := by
+    intro z hz h
+    have : (2 : L) * z = 0 := by linear_combination -h
+    rcases mul_eq_zero.mp this with h2 | h2
+    · exact two_ne_zero h2
+    · exact hz h2
+  have k_ab := hneg_mem (a * b) (by rw [hM]; simp)
+  have k_ac := hneg_mem (a * c) (by rw [hM]; simp)
+  simp only [hM, Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at k_ab k_ac
+  by_contra hG
+  simp only [not_or] at hG
+  obtain ⟨h1, h2, h3, h4, h5, h6⟩ := hG
+  -- `x * (y + w) = 0` with `x ≠ 0` forces `y = -w`
+  have cancel : ∀ x y w : L, x ≠ 0 → x * (y + w) = 0 → y = -w := by
+    intro x y w hx h
+    have := (mul_eq_zero.mp h).resolve_left hx
+    linear_combination this
+  rcases k_ab with h | h | h | h | h | hx1
+  · exact hne_self _ (mul_ne_zero ha hb) h
+  · exact h4 (cancel a b c ha (by linear_combination -h))
+  · exact h5 (cancel a b d ha (by linear_combination -h))
+  · exact h2 (cancel b a c hb (by linear_combination -h))
+  · exact h3 (cancel b a d hb (by linear_combination -h))
+  · rcases k_ac with h | h | h | h | h | hx2
+    · exact h4 (cancel a b c ha (by linear_combination -h))
+    · exact hne_self _ (mul_ne_zero ha hc) h
+    · exact h6 (cancel a c d ha (by linear_combination -h))
+    · exact h1 (cancel c a b hc (by linear_combination -h))
+    · -- `-ac = bd` and `-ab = cd` give `d·(c - b)·(c + b) = 0`, so `b = -c`
+      have e : d * ((c - b) * (c + b)) = 0 := by linear_combination b * h - c * hx1
+      have hcb := (mul_eq_zero.mp ((mul_eq_zero.mp e).resolve_left hd)).resolve_left
+        (sub_ne_zero.mpr (Ne.symm hbc))
+      exact h4 (by linear_combination hcb)
+    · exact h3 (cancel c a d hc (by linear_combination -hx2))
+
+/-- **`WidthFourDyadicClassified` holds for every dyadic `μ_{2^k}` in characteristic zero.** Every
+four-subset `S ⊆ μ_{2^k}` with `e₂(S) = 0` contains an antipodal pair `{ζ, −ζ}`. Since `2 ≠ 0`,
+`e₂(S) = 0` says that the six pairwise products, all `2^k`-th roots of unity, sum to zero;
+Lam–Leung (`LamLeungMultisetAntipodal.count_antipodal_of_sum_eq_zero`) makes that multiset
+antipodally balanced, and `antipodal_pair_of_balanced_products` extracts the pair. This is the
+characteristic-zero counterpart of `not_widthFourDyadicClassified_zmod97`; it says nothing about
+`𝔽_q` and proves no count. -/
+theorem widthFourDyadicClassified_charZero (k : ℕ) :
+    WidthFourDyadicClassified (Polynomial.nthRootsFinset (2 ^ k) (1 : L)) := by
+  intro S hS hcard he2
+  have hpos : 0 < 2 ^ k := pow_pos (by norm_num) k
+  have hroot : ∀ w ∈ S, w ^ (2 ^ k) = 1 := fun w hw =>
+    (Polynomial.mem_nthRootsFinset hpos (1 : L)).mp (hS hw)
+  have hnz : ∀ w ∈ S, w ≠ 0 := by
+    intro w hw h0
+    have := hroot w hw
+    rw [h0, zero_pow (Nat.pos_iff_ne_zero.mp hpos)] at this
+    exact zero_ne_one this
+  obtain ⟨a, t, hat, rfl, ht⟩ := Finset.card_eq_succ.mp hcard
+  obtain ⟨b, c, d, hbc, hbd, hcd, rfl⟩ := Finset.card_eq_three.mp ht
+  have ha := hnz a (by simp)
+  have hb := hnz b (by simp)
+  have hc := hnz c (by simp)
+  have hd := hnz d (by simp)
+  -- `e₂ = 0` ⇒ the six pairwise products sum to zero
+  have he1 : e1 (insert a {b, c, d}) = a + b + c + d := by
+    unfold e1
+    rw [Finset.sum_insert hat, Finset.sum_insert (by simp [hbc, hbd]),
+      Finset.sum_insert (by simp [hcd]), Finset.sum_singleton]
+    ring
+  have hp2 : p2 (insert a {b, c, d}) = a ^ 2 + b ^ 2 + c ^ 2 + d ^ 2 := by
+    unfold p2
+    rw [Finset.sum_insert hat, Finset.sum_insert (by simp [hbc, hbd]),
+      Finset.sum_insert (by simp [hcd]), Finset.sum_singleton]
+    ring
+  rw [e2_eq, he1, hp2] at he2
+  have hsum6 : a * b + a * c + a * d + b * c + b * d + c * d = 0 := by
+    have h2 : (a + b + c + d) ^ 2 - (a ^ 2 + b ^ 2 + c ^ 2 + d ^ 2) = 0 := by
+      rcases div_eq_zero_iff.mp he2 with h | h
+      · exact h
+      · exact absurd h two_ne_zero
+    have : (2 : L) * (a * b + a * c + a * d + b * c + b * d + c * d) = 0 := by
+      linear_combination h2
+    exact (mul_eq_zero.mp this).resolve_left two_ne_zero
+  set M : Multiset L := {a * b, a * c, a * d, b * c, b * d, c * d} with hM
+  have hMroot : ∀ z ∈ M, z ^ (2 ^ k) = 1 := by
+    have hr : ∀ x ∈ ({a, b, c, d} : Finset L), x ^ (2 ^ k) = 1 := by
+      intro x hx
+      exact hroot x (by simpa using hx)
+    have ra := hr a (by simp)
+    have rb := hr b (by simp)
+    have rc := hr c (by simp)
+    have rd := hr d (by simp)
+    intro z hz
+    simp only [hM, Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hz
+    rcases hz with rfl | rfl | rfl | rfl | rfl | rfl <;> simp [mul_pow, ra, rb, rc, rd]
+  have hMsum : M.sum = 0 := by
+    rw [hM]
+    simp only [Multiset.insert_eq_cons, Multiset.sum_cons, Multiset.sum_singleton]
+    linear_combination hsum6
+  have hbal := LamLeungMultisetAntipodal.count_antipodal_of_sum_eq_zero hMroot hMsum
+  rcases antipodal_pair_of_balanced_products ha hb hc hd hbc hbal with h | h | h | h | h | h
+  · exact ⟨b, by simp, hb, by simp [← h]⟩
+  · exact ⟨c, by simp, hc, by simp [← h]⟩
+  · exact ⟨d, by simp, hd, by simp [← h]⟩
+  · exact ⟨c, by simp, hc, by simp [← h]⟩
+  · exact ⟨d, by simp, hd, by simp [← h]⟩
+  · exact ⟨d, by simp, hd, by simp [← h]⟩
+
+end CharZero
+
 end ArkLib.ProximityGap.E2VanishWidthFourFullCount
 
 /-! ## Axiom audit (expected: `propext`, `Classical.choice`, `Quot.sound` only) -/
@@ -325,3 +469,5 @@ end ArkLib.ProximityGap.E2VanishWidthFourFullCount
 #print axioms ArkLib.ProximityGap.E2VanishWidthFourFullCount.stratum_disjoint_via_e1
 #print axioms ArkLib.ProximityGap.E2VanishWidthFourFullCount.widthFour_e2zero_count_arith
 #print axioms ArkLib.ProximityGap.E2VanishWidthFourFullCount.not_widthFourDyadicClassified_zmod97
+#print axioms ArkLib.ProximityGap.E2VanishWidthFourFullCount.antipodal_pair_of_balanced_products
+#print axioms ArkLib.ProximityGap.E2VanishWidthFourFullCount.widthFourDyadicClassified_charZero

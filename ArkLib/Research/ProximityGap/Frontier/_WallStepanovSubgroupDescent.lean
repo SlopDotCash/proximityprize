@@ -212,7 +212,8 @@ theorem descent_stepanov_vacuous {Sh : Finset F} {M : ℕ} :
 
 /-! ## 4. The exact residual + the wall-relocation equivalence. -/
 
-/-- **The named past-Johnson descent obligation** (pre-screened FALSE for `μ_n`): a sub-trivial
+/-- **The named past-Johnson descent obligation** (FALSE for every `Sh` and `M`:
+`not_descentMultiplicityBeyondSeparable`): a sub-trivial
 descent Stepanov bound exists iff there is a nonzero auxiliary of degree STRICTLY LESS than `M·|Sh|`
 vanishing to order `M` on the shifted orbit `Sh`.  Item 3 (`shiftedOrbit_separable`) shows the
 relation is separable, so the multiplicity must come from *coincidences among the shifts*, not the
@@ -232,6 +233,16 @@ theorem descent_saving_iff_degenerate {Sh : Finset F} {M : ℕ} :
   constructor
   · rintro ⟨Faux, hne, hdeg, hv⟩; exact ⟨Faux, hne, hv, hdeg⟩
   · rintro ⟨Faux, hne, hv, hdeg⟩; exact ⟨Faux, hne, hdeg, hv⟩
+
+/-- **`DescentMultiplicityBeyondSeparable` is false for every set and every multiplicity.**  The
+counting engine `Stepanov.card_le_natDegree_of_vanishing` gives `M·|Sh| ≤ deg Faux` for any
+nonzero `Faux` vanishing to order `M` on `Sh`, so no such `Faux` has degree `< M·|Sh|`.  Neither
+separability of the orbit nor any property of the shifts is used. -/
+theorem not_descentMultiplicityBeyondSeparable (Sh : Finset F) (M : ℕ) :
+    ¬ DescentMultiplicityBeyondSeparable Sh M := by
+  rintro ⟨Faux, hne, hdeg, hv⟩
+  exact absurd (ArkLib.ProximityGap.Stepanov.card_le_natDegree_of_vanishing hne hv)
+    (Nat.not_le.mpr hdeg)
 
 /-- **The wall-relocation consistency obstruction (proven).**  Any uniform upper bound
 `‖T s‖ ≤ B` on the *entire* descent spectrum (`B ≥ 0`) is forced by the exact L2 mass to satisfy
@@ -266,3 +277,4 @@ end ArkLib.ProximityGap.Frontier.Wall5
 #print axioms ArkLib.ProximityGap.Frontier.Wall5.descent_stepanov_vacuous
 #print axioms ArkLib.ProximityGap.Frontier.Wall5.descent_saving_iff_degenerate
 #print axioms ArkLib.ProximityGap.Frontier.Wall5.descent_wall_relocation
+#print axioms ArkLib.ProximityGap.Frontier.Wall5.not_descentMultiplicityBeyondSeparable

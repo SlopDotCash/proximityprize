@@ -33,9 +33,10 @@ So `E_3 ≤ 5n·E_2` (`= (2·2+1)·n·E_2`), the `r = 2` backbone, holds with sl
 * `backbone_rung_two_slack` — the exact slack identity `5n·E_2 − E_3 = 10n·(3n − 4)`.
 
 **Honest scope.** This is the `r = 2` rung of the deficit-antitone anchor, char-0 only, from the exact
-moments. It grounds the abstract hypothesis of the backbone chain at one concrete depth; the anchor at
-the saddle `r ≈ β·log₂n` (the full deficit-antitone) remains the open char-0 input, and the char-p
-correction beyond it is the prize. No CORE upper bound, no capacity/growth-law claim. Issue #444.
+moments. It grounds the abstract hypothesis of the backbone chain at one concrete depth. The full
+deficit-antitone, at every depth, is proved for the char-0 energy in `_CharZeroStepLawAllDepth`
+(`charZero_backbone`); the char-p correction beyond it is the prize. No CORE upper bound, no
+capacity/growth-law claim. Issue #444.
 -/
 
 namespace ProximityGap.Frontier.BackboneRungTwoExact

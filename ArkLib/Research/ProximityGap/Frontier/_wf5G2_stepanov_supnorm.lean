@@ -110,7 +110,7 @@ theorem trivial_auxiliary_is_vacuous {B : Finset F} {M : ℕ} (hM : 1 ≤ M) :
       intro x _; rw [Polynomial.natDegree_pow, Polynomial.natDegree_X_sub_C, mul_one]
     rw [Finset.sum_congr rfl h, Finset.sum_const, smul_eq_mul, mul_comm]
 
-/-- **The degree-saving dichotomy (the named OPEN step, pre-screened FALSE for the phase-bad set).**
+/-- **The degree-saving dichotomy (FALSE for every `B` and `M`: `not_phaseBadSetDegenerate`).**
 `PhaseBadSetDegenerate B M` asserts the algebraic degeneracy SL-G2 needs to be non-vacuous: a nonzero
 auxiliary of degree STRICTLY LESS than `M · |B|` vanishing to order `M` on `B`.  Such an auxiliary
 exists iff the `M·|B|` order-`M` vanishing conditions are linearly DEPENDENT (the Vandermonde /
@@ -139,6 +139,14 @@ theorem stepanov_saving_iff_degenerate {B : Finset F} {M : ℕ} (hM : 1 ≤ M) :
   · rintro ⟨F', hne, hv, _, hdeg⟩
     exact ⟨F', hne, hdeg, hv⟩
 
+/-- **`PhaseBadSetDegenerate` is false for every set and every multiplicity.**  The counting
+engine `stepanov_bad_set_bound` gives `M·|B| ≤ deg F'` for any nonzero `F'` vanishing to order `M`
+on `B`, so no such `F'` has degree `< M·|B|`.  The full-rank pre-screen is an instance of this
+inequality; nothing about the phase-bad set is used. -/
+theorem not_phaseBadSetDegenerate (B : Finset F) (M : ℕ) : ¬ PhaseBadSetDegenerate B M := by
+  rintro ⟨F', hne, hdeg, hv⟩
+  exact absurd (stepanov_bad_set_bound hne hv) (Nat.not_le.mpr hdeg)
+
 end ArkLib.ProximityGap.StepanovSupNorm
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound only)
@@ -146,3 +154,4 @@ end ArkLib.ProximityGap.StepanovSupNorm
 #print axioms ArkLib.ProximityGap.StepanovSupNorm.badset_bound_of_low_degree_auxiliary
 #print axioms ArkLib.ProximityGap.StepanovSupNorm.trivial_auxiliary_is_vacuous
 #print axioms ArkLib.ProximityGap.StepanovSupNorm.stepanov_saving_iff_degenerate
+#print axioms ArkLib.ProximityGap.StepanovSupNorm.not_phaseBadSetDegenerate

@@ -15,7 +15,10 @@ named inequality on the Bessel power coefficients `besselCoeff d r = [x^r] I₀(
 (`RungBesselEnergy.lean`).  That inequality is a classical literature result but is **not proven
 in Lean** in general: in-tree it is discharged only for `d = 1` (`_wfL2_sharpnewton_discharge`)
 and at the low rungs `r = 1` (`CharZeroSharpNewtonBase`) and `r = 2` (`CharZeroSharpNewtonR2`).
-So this file does NOT close char-0 W3-anti; it is closed exactly where `SharpNewtonBessel d` is.
+So this file does NOT close char-0 W3-anti, the antitonicity `R(r+1) ≤ R(r)`; that is closed
+exactly where `SharpNewtonBessel d` is. The headline's conclusion `R(r) ≤ 1` for all `r` no longer
+needs the hypothesis: `_CharZeroStepLawAllDepth.rstep_le_one` proves it for every `d ≥ 1` from the
+step law `(r+1)·c_{r+1} ≤ d·c_r`, without going through antitonicity.
 
 ## The object
 
@@ -290,7 +293,8 @@ theorem mNorm_logConcave_of_sharpNewton (hd : 1 ≤ d) (hSN : SharpNewtonBessel 
 
 /-- **Headline (char-0 W3-anti, conditional).** The sharp-Newton LP-I hypothesis
 `SharpNewtonBessel d` (not proven in Lean in general) gives the full telescope input
-`R d r ≤ 1 ∀ r`, hence (via the in-tree F1 telescope) `mNorm d r ≤ 1 ∀ r`. -/
+`R d r ≤ 1 ∀ r`, hence (via the in-tree F1 telescope) `mNorm d r ≤ 1 ∀ r`. The same conclusion
+holds without the hypothesis (`_CharZeroStepLawAllDepth.rstep_le_one`). -/
 theorem char0_W3anti_of_sharpNewton (hd : 1 ≤ d) (hSN : SharpNewtonBessel d) :
     ∀ r, Rstep d r ≤ 1 :=
   R_le_one_of_antitone (mNorm_logConcave_of_sharpNewton hd hSN) (le_of_eq (R_zero_eq_one hd))

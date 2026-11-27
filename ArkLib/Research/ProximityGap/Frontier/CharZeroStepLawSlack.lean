@@ -17,11 +17,11 @@ The in-tree reduction `WF6F1.gaussian_moment_bound_of_stepLaw` (the *telescope*)
 > **(STEP)**  `E_{r+1} ≤ (2r+1)·n·E_r`     (variance proxy `s = |μ_n| = n`),
 
 and `WF7W3` further pins its open content to the *base* `R(1) ≤ 1` (i.e. `E_2 ≤ 3·n·E_1`) plus a
-single cumulant-ratio *antitonicity*. **BUT no file has discharged (STEP) — not even the base — on the
-actual in-tree char-0 energies.** `WF6F1`/`WF7W3` leave `GaussianStepLaw` / `R(1) ≤ 1` as the *named
-open input*, stated abstractly. The exact char-0 closed forms `E_2 = 3n²−3n, …, E_6 = 10395n⁶−…`
-(`_CharZeroEnergyClosedForm`, proven) make (STEP) a *decidable polynomial inequality* at every landed
-rung — yet that discharge was missing.
+single cumulant-ratio *antitonicity*. `WF6F1`/`WF7W3` leave `GaussianStepLaw` / `R(1) ≤ 1` as the
+*named open input*, stated abstractly. In char 0, (STEP) holds for the genuine energy of `μ_n` at
+every depth (`_CharZeroStepLawAllDepth.energy_succ_le_halfBasis`). The exact char-0 closed forms
+`E_2 = 3n²−3n, …, E_6 = 10395n⁶−…` (`_CharZeroEnergyClosedForm`, proven) make (STEP) a *decidable
+polynomial inequality* at every landed rung, which also yields the exact slack there.
 
 This file supplies it: the char-0 step-law holds at **every landed rung `r = 1..5`** with an EXPLICIT
 positive step-slack `S_r(n) = (2r+1)·n·E_r − E_{r+1}`, whose leading coefficient is the clean uniform
