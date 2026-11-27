@@ -55,3 +55,27 @@ The verifier partitions $[2^{21},\lfloor2n/3\rfloor]$ into **863 disjoint intege
 For each $0\le h\le n/(a-c+1)$, substitute $a$ for $t$ in the upper bounds on light mass. The verifier either handles every $w$ with the weaker count, or checks the sharp weak-center bound against $M(b)$ for every $1\le w\le h$. For the latter check, twice the one-center contribution is a concave quadratic in $w$. Its maximum over integers in $[1,h]$ is bounded by checking the two clipped integers straddling the vertex. When a strong-center case remains possible the verifier checks $h(a-R_0+1)\ge R_0-1$, which proves the symbolic strong-center bound throughout the interval. Zero centers are checked directly. All tests use integer arithmetic. [Run the verifier](../../../scripts/probes/probe_repetition_mass_curve.py)
 
 For $3t>2n$, every two chosen lines share a point since $2t>n$. If at least three chosen lines were nonconcurrent, some triple would have no common point. Every coordinate could then count at most twice in that triple, contradicting $3t>2n$. Thus all chosen lines pass through one point whenever there are at least two. If its weight is $z$, their remaining point sets are disjoint and nonempty. The count is at most $(n-z)/\max(1,t-z)\le n-t+1$. A single center of weight $t-1$ with the rest on distinct directions attains this value. At most one center fits in the maximum for $3t>2n$ at this length, and its light-only contribution is zero. This also covers $t=n$.
+
+## A two-candidate formula uniform in length
+
+The same formula holds at **every** length $n$ and integer agreement count $2048\le t\le n$ with $t^2\ge256n$, over every finite field of order $q>4n^3$. It suffices to test the floor and ceiling of $(2n-1)/(4t-6)$, each clamped to the feasible range $1\le h\le n/(t-1)$. This strengthens the production range to **524,288 agreements**, where the exact maximum is **549,757,387,265 bad labels**. It also gives a two-candidate test at every larger length where these inequalities hold.
+
+The generic field construction above uses at most $n$ points regardless of length. The inequality $t^2\ge256n$ ensures $G(t-1)>n$, so $G(r)=rt-\binom r2$ has a first rejected integer and $r_h\le t-2$. For the two-candidate assertion, $hL_h+\binom h2$ is the concave quadratic $h(n-1/2)-h^2(t-3/2)$ with vertex $(2n-1)/(4t-6)$. Any integer outside the two candidates loses at least $t-3/2$ against the better candidate in this quadratic. The entire light-line contribution of any such integer is at most $t-2$, too small to close that loss. Clamping also covers a vertex below the first feasible integer.
+
+It remains to prove the upper bound independently of a length-specific certificate. The concurrence argument above applies when $3t>2n$, so take $3t\le2n$. Put $c=\lceil t/16\rceil$. The heavy-point threshold $t-c+1$ is at least $15t/16$, the weak weight deficit $d=c-2$ is at most $t/16$, and the number of light-only lines is at most
+\[
+ R\le 16n^2/t^2\le n/16.
+\]
+Zero centers give at most $R$ lines, while the candidate $h=1$ gives at least $n-t+1\ge n/3$.
+
+For $0<h<n/(4t)$ compare to $2h$ centers, which are feasible because $2ht<n/2$. The one-center contribution is at most $h(n-15ht/16)$. Its difference from $2h(n-2ht)$ is less than $-15hn/64$. Also $R\le hn/16$ and $\binom h2<hn/(8t)$. Adding both terms leaves the total below the candidate with $2h$ centers.
+
+For $h>3n/(4t)$ one has $h\ge2$. Set $j=\lceil h/2\rceil$ and $x=j/h\in[1/2,2/3]$. This $j$ is feasible since $15ht/16\le n$. The difference of $h(n-15ht/16)$ from $j(n-jt)$, divided by $h^2t$, is at most $4(1-x)/3-15/16+x^2\le-1/48$. Meanwhile $R+\binom h2\le(256/9+1/2)h^2<h^2t/48$. The total is therefore below the candidate with $j$ centers.
+
+In the remaining range $n/(4t)\le h\le3n/(4t)$, one has $L_h\ge n/4$ and $hd\le3n/64$. If at least one center is weak, then
+\[
+ (h-w/2)(L_h+wd)\le hL_h-w(L_h/2-hd)\le hL_h-5n/64.
+\]
+As $R\le n/16$, this is sufficient after adding the multi-center and light-only contributions.
+
+Suppose all centers are strong, and let $K$ be the actual number of light-only lines. If $K>r_h+hD$, then $D<R/h\le64n/t\le t/4$. Each of these lines has at least $t-D\ge3t/4$ distinct light points. Take exactly $T=\lceil3t/4\rceil$ on each line. Their pairwise overlaps have size at most one. The unweighted finite second moment gives $K(T^2-n)\le n(T-1)$. Since $T^2\ge144n$, this implies $K\le2n/T\le 8n/(3t)< t/2$. Thus $h(t-K+1)\ge K-1$. Applying the preceding light-deficit argument with the actual bound $K$ yields $K\le r_h+hD$, a contradiction. Lean verifies the weighted deficit inequality and the light-only second moment for arbitrary finite line families. [Weighted and unweighted line estimates](../../../ArkLib/Research/ProximityGap/Frontier/RepetitionLightLineDeficit.lean) · [Second-moment inequality](../../../ArkLib/Research/ProximityGap/Frontier/AgreementSlicePacking.lean)

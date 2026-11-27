@@ -19,12 +19,16 @@ def rich_light_lines(mass, agreements):
     return r
 
 
-def maximum(agreements):
-    """Maximum (bad directions, centers, additional lines)."""
+def maximum(agreements, length=N):
+    """Exact optimum in the proven range from the two integers at the quadratic vertex."""
+    vertex = (2*length-1) // (4*agreements-6)
+    last = length // (agreements-1)
     rows = []
-    for centers in range(1, N//(agreements-1) + 1):
-        mass = N - centers*(agreements-1)
+    for candidate in (vertex, vertex+1):
+        centers = min(last, max(1, candidate))
+        mass = length - centers*(agreements-1)
         lines = rich_light_lines(mass, agreements)
+        assert lines <= agreements-2
         rows.append((centers*mass + comb(centers, 2) + lines, centers, lines))
     return max(rows)
 
@@ -89,3 +93,5 @@ if __name__ == "__main__":
         assert actual == expected
         print(f"errors={errors} mass={actual} centers={centers} light_lines={lines}")
     print(f"t={FIRST} mass={maximum(FIRST)[0]}")
+    assert maximum(524288) == (549757387265, 1024, 1025)
+    print(f"uniform t=524288 mass={maximum(524288)[0]}")
