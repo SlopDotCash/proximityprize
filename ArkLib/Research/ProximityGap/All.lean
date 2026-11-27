@@ -938,6 +938,7 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorSplitCriterion
 import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorSplitPencil
 import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorThreeHeads
 import ArkLib.Research.ProximityGap.Frontier.QuarterSupportPackingBarrier
+import ArkLib.Research.ProximityGap.Frontier.QuarterToricPencilExclusion
 import ArkLib.Research.ProximityGap.Frontier.QuarterTransverseKeys
 import ArkLib.Research.ProximityGap.Frontier.QuarterTransverseSurfaces
 import ArkLib.Research.ProximityGap.Frontier.QuarterTransverseTangentBudget
