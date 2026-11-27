@@ -786,6 +786,7 @@ import ArkLib.Research.ProximityGap.Frontier.PeriodOrbitQuotientReduction
 import ArkLib.Research.ProximityGap.Frontier.PinnedBandReaching
 import ArkLib.Research.ProximityGap.Frontier.PinnedScalarMultDivision
 import ArkLib.Research.ProximityGap.Frontier.PinnedScalarRatioImage
+import ArkLib.Research.ProximityGap.Frontier.PivotFactoredObstruction
 import ArkLib.Research.ProximityGap.Frontier.PlanarQuartetMass
 import ArkLib.Research.ProximityGap.Frontier.PlasticDyadicPeriod
 import ArkLib.Research.ProximityGap.Frontier.PlateauThreeHeadPredecessor

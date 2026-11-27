@@ -8,7 +8,7 @@
   and consequently
   $$\operatorname{mcaDeltaStar}\!\left(\mathrm{RS}(\mathrm{dom}, 2^{29})^{\bowtie w},\; \frac{1}{2^{128}}\right) \le \frac{380{,}283{,}564}{2^{30}}.$$
 - **Bracket impact (second-prime half-rate MCA):**
-  Lowers the proven operational upper bound from `387,740,104` (`SecondPrimeTetrahedron.lean`, $13/36\,n$) down to **`380,283,564`** ($17/48\,n + 1$) — a **`-7,456,540`-error improvement** (cutting `10.0%` off the remaining `[313,215,001, 387,740,104]` bracket).
+  Lowers the proven operational upper bound from `387,740,104` (`SecondPrimeTetrahedron.lean`, $13/36\,n$) down to **`380,283,564`** ($17/48\,n + 4/3$ (exactly $\lceil 17n/48\rceil + 1$)) — a **`-7,456,540`-error improvement** (cutting `10.0%` off the remaining `[313,215,001, 387,740,104]` bracket).
 - **Discovery attribution:**
   The zero-face-collinearity threshold (`D = 3, V = 6, H = 6`) and exact Lagrange cubic parameters were discovered by Engine 2's global secant-hypergraph optimizer (swarm `@prize-mapper`, board `#156`) and independently verified and formalized here.
 
