@@ -33,6 +33,7 @@ one per distinct head value at each hole. -/
 def capacity : ℕ := (ordinary dom f choice).card +
   ∑ x : ↥(holes choice), (univ.image fun i => (f i).eval (dom x.val)).card
 
+omit [DecidableEq I] in
 /-- An assignment to equality classes reconstructs one received pair with the
 computed number of literal bad labels, for every injective domain. -/
 theorem realize (k : ℕ) (δ : ℝ≥0)
@@ -47,6 +48,7 @@ theorem realize (k : ℕ) (δ : ℝ≥0)
       G.card = capacity dom f choice ∧ ∀ γ ∈ G,
         mcaEvent ((ReedSolomon.code dom k : Submodule F (I → F)) : Set (I → F))
           δ (u 0) (u 1) γ := by
+  classical
   let A : FourHeadWitness.CoreAllocation dom k δ := {
     head := f
     background := background dom f choice
@@ -78,6 +80,7 @@ theorem repair_room (n labels price deficit vacant : ℕ) (hover : n < labels)
   have charge := Nat.mul_le_mul_left price h
   omega
 
+omit [Nonempty I] in
 /-- Six rich cores contradict the degree bound on all their pair intersections. -/
 theorem exclude_six (S : Fin 6 → Finset I) (hn : Fintype.card I = 2 ^ 30)
     (hsize : ∀ i, 787403671 ≤ (S i).card)
@@ -86,6 +89,7 @@ theorem exclude_six (S : Fin 6 → Finset I) (hn : Fintype.card I = 2 ^ 30)
   rw [hn] at h
   omega
 
+omit [Nonempty I] in
 /-- A fifth agreement set cannot be outside the four heads with the indicated
 core bounds. The six head-head intersections lose the primitive direction degree. -/
 theorem exclude_fifth (S : Fin 5 → Finset I) (hn : Fintype.card I = 2 ^ 30)

@@ -19,10 +19,10 @@ opposite lines concur with nonzero coordinates cannot themselves be collinear.
 The displayed equations are homogeneous coordinates for the seven Fano lines. -/
 theorem triangle_obstruction (h2 : (2 : K) ≠ 0)
     (a b c d e f x y z : K) (hb : b ≠ 0) (hc : c ≠ 0) (hf : f ≠ 0) (hx : x ≠ 0)
-    (hxy : a*y = b*x) (hxz : c*z = d*x) (hyz : e*z = f*y)
-    (hline : a*d*e + b*c*f = 0) : False := by
-  have heq : (a*d*e - b*c*f)*x = 0 := by
-    linear_combination c*f*hxy - a*e*hxz + a*c*hyz
+    (hxy : a * y = b * x) (hxz : c * z = d * x) (hyz : e * z = f * y)
+    (hline : a * d * e + b * c * f = 0) : False := by
+  have heq : (a * d * e - b * c * f) * x = 0 := by
+    linear_combination c * f * hxy - a * e * hxz + a * c * hyz
   have hzero := (mul_eq_zero.mp heq).resolve_right hx
   have : (2 : K) * b * c * f = 0 := by linear_combination hline - hzero
   exact (mul_ne_zero (mul_ne_zero (mul_ne_zero h2 hb) hc) hf) this
@@ -48,8 +48,8 @@ theorem roots_after_clearing [DecidableEq K] (S : Finset K) (P A B R : K[X])
 
 /-- Seven disjoint nonzero classes supply more roots than the residual degree
 after at most h deletions from each of the seven binary hyperplane masks. -/
-theorem seven_class_surplus (b h : ℕ) (hh : 1 ≤ h) (hlarge : 63*h < b+6) :
-    b+7*h-1 < 7*(b-3*h-5*(10*h-1)) := by omega
+theorem seven_class_surplus (b h : ℕ) (hh : 1 ≤ h) (hlarge : 63 * h < b + 6) :
+    b + 7 * h - 1 < 7 * (b - 3 * h - 5 * (10 * h - 1)) := by omega
 
 end ProximityGap.FanoMaskRigidity
 #print axioms ProximityGap.FanoMaskRigidity.triangle_obstruction

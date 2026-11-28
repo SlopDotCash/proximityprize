@@ -2,7 +2,7 @@
 """Check the saturated-neighbor and three-fiber counts at the first eighth-rate test."""
 from fractions import Fraction
 from itertools import combinations, product
-from math import ceil, comb, floor
+from math import ceil, comb, floor, prod
 
 
 def parameters(n, m, t, d):
@@ -39,6 +39,13 @@ def production():
             assert cap == 60 and ceil(Fraction(kept, cap)) == 7_499_432
         if width == 20_000:
             assert single_degree >= 1_727
+
+    density = Fraction(2 * edges, (n + 1)**2)
+    affine_ratio = Fraction(n - d, t - d)
+    for size, expected, independent in ((13, 13_131_286, 14), (16, 3_616_017, 13), (17, 704_446, 12)):
+        common_neighborhood = ceil((n + 1) * density * prod(
+            max(0, density - Fraction(floor(affine_ratio**j), n + 1)) for j in range(size - 1)))
+        assert common_neighborhood == expected and expected > affine_ratio**(independent - 2)
 
 
 def small_control():

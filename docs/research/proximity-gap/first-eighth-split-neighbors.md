@@ -46,3 +46,19 @@ $$
  \left\lfloor\frac{t-d}{rs}\right\rfloor .
 $$
 This also handles zero or pole target values at infinity on the intermediate projective line. In the $H=100{,}000$ interval, one $V$ can account for at most **60** of the maps with $\deg R\le2$. Indeed the degree intervals for $s$ when $r=1,2$ are disjoint. At $r=1$ the bound is four. At $r=2$ it is at most $\binom32\binom52\cdot2=60$. Consequently a representation of the retained family by maps of outer degree at most two requires at least **7,499,432** different inner maps up to projective changes of their target.
+
+## Simultaneous split differences on affinely independent words
+
+The same failing ball must contain two disjoint collections of **13 and 14 affinely independent words**, respectively, with all 182 cross-differences splitting completely on the grid. It also forces collections of sizes 16 and 13 with this property. The anchors in this statement need only be mutually independent on each side.
+
+For the proof put $R=(n-d)/(t-d)$. An affine subspace of coefficient dimension $j$ contains at most $R^j$ words of the list. At positive dimension there are at most $d$ physical sites where evaluation is constantly equal to the center, since two distinct words coincide at at most $d$ sites. On all other sites with any matches, evaluation at the center cuts the space by a proper affine hyperplane. Counting the remaining agreements of each word shows that some proper hyperplane retains at least $(t-d)/(n-d)$ of the words. Iterate to dimension zero.
+
+Let $p_0=2E/m^2$, with $E$ the edge bound above. At a vertex of degree $D$, the number of ordered, affinely independent $h$-tuples of its neighbors is at least
+$$
+ D\prod_{j=0}^{h-2}(D-\lfloor R^j\rfloor)_+ .
+$$
+After an independent prefix of $j+1$ choices only its $j$-dimensional span must be avoided. The product is a nonnegative increasing convex function of $D$ on the positive half-line, as each factor is nonnegative, increasing and convex. Average this lower bound over the vertices by Jensen and divide by at most $m^h$ ordered tuples. Some independent tuple has at least
+$$
+ \left\lceil mp_0\prod_{j=0}^{h-2}(p_0-\lfloor R^j\rfloor/m)_+\right\rceil
+$$
+common neighbors. For $h=13$ this is **13,131,286**, greater than $R^{12}$. They contain 14 affinely independent words. For $h=16$ there are at least **3,616,017** common neighbors, greater than $R^{11}$, giving 13 independent words. Every cross-pair is an edge by construction. The same proof gives 17 independent anchors with 704,446 common neighbors. This requires any proposed first-prime witness to satisfy simultaneous full splitting on each of many differences, with no assumption on the order or structure of the chosen sites.

@@ -1,0 +1,89 @@
+#!/usr/bin/env python3
+"""Verify folded first-derivative interpolation and its two-polar degree prices."""
+from math import comb
+
+
+N = 2**30
+BOARDS = (
+    # Rate denominator, errors, order, derivative cap, plane cap, reserved weight, surplus.
+    (2, 314_491_699, 19, 6, 99, False, 4_128_454_092),
+    (4, 536_870_913, 11, 5, 63, False, 17_888),
+    (2, 314_491_699, 15, 2, 292, False, 1_603_007_627),
+    (4, 536_870_913, 9, 2, 167, False, 1_610_623_611),
+    (2, 314_491_699, 73, 24, 359, True, 459_712_885_250),
+    (4, 536_870_913, 55, 26, 269, True, 729_614_679_390),
+    (2, 314_491_699, 57, 15, 453, True, 193_772_302_476),
+    (4, 536_870_913, 44, 17, 333, True, 285_082_020_609),
+)
+
+
+def board(rate, errors, order, v, s, reserve):
+    d, t = N//rate - 1, N-errors
+    delta = N - 1 - d if reserve else 0
+    w = order*t - delta
+    # Enumerate scalar powers individually in the local count.
+    rows = 0
+    for b in range(order):
+        for m in range(min(s, b+v)+1):
+            slots = len(range(max(0, m-b), min(v, m)+1))
+            rows += sum(min(order-b, slots) for _ in range(s-m+1))
+    cols = sum((s+1-j-k)*max(0, w-j*d-k*(d-1))
+               for k in range(v+1) for j in range(s-k+1))
+    if reserve:
+        assert delta >= t-(d-1)
+    return cols - N*rows, (w+v-1)//d
+
+
+def local_control():
+    # Each block is a consecutive Pascal minor; compare with its ground-field rank.
+    p = 101
+    for r in range(1, 9):
+        for b in range(r):
+            for v in range(7):
+                for m in range(b+v+1):
+                    ks = range(max(0, m-b), min(v, m)+1)
+                    matrix = [[comb(k, h) % p for k in ks] for h in range(r-b)]
+                    rank = 0
+                    for c in range(len(ks)):
+                        q = next((j for j in range(rank, len(matrix)) if matrix[j][c]), None)
+                        if q is None:
+                            continue
+                        matrix[rank], matrix[q] = matrix[q], matrix[rank]
+                        inv = pow(matrix[rank][c], -1, p)
+                        for j in range(rank+1, len(matrix)):
+                            scale = matrix[j][c]*inv % p
+                            matrix[j] = [(x-scale*y)%p for x, y in zip(matrix[j], matrix[rank])]
+                        rank += 1
+                    assert rank == min(len(ks), r-b)
+
+
+if __name__ == "__main__":
+    local_control()
+    for rate, errors, order, v, s, reserve, expected in BOARDS:
+        actual, m = board(rate, errors, order, v, s, reserve)
+        assert actual == expected
+        print(f"1/{rate}, {errors:,} errors, (r,v,s)=({order},{v},{s}), "
+              f"reserved={reserve}, surplus={actual:,}.")
+        if s in (359, 269):
+            retained = 2*N+1-s**3
+            curves = (2*s*v-v*v)//4
+            assert (retained, curves) == ((2_101_215_370, 4164) if rate == 2
+                                          else (2_128_018_540, 3328))
+            print(f"  At least {retained:,} bad labels on scalar-varying singular components "
+                  "if the pair exceeds budget.")
+            low_s, low_v = (99, 6) if rate == 2 else (63, 5)
+            mixed = low_s*v+s*low_v-low_v*v
+            exceptional = low_s*s*s+mixed*mixed+low_s*s
+            concentrated = 2*N+1-exceptional
+            assert (mixed, concentrated) == ((4386, 2_115_451_893) if rate == 2
+                                             else (2853, 2_134_768_350))
+            print(f"  At least {concentrated:,} labels on fixed surfaces of derivative "
+                  f"degree at most two or on differential lifts of total plane degree ≤ {mixed:,}.")
+        if v == 2:
+            assert m == (21 if rate == 2 else 18)
+        if s in (453, 333):
+            plane, ordinate = (2*v-1)*s, (2*v-1)*m
+            cap = 2*plane*ordinate
+            assert cap == (60_193_734 if rate==2 else 61_648_290) < 2*N
+            print(f"  Coprime projected certificate: degrees ({plane},{ordinate}), "
+                  f"at most {cap:,} bad labels.")
