@@ -361,6 +361,7 @@ import ArkLib.Research.ProximityGap.Frontier.DyadicConicPairs
 import ArkLib.Research.ProximityGap.Frontier.DyadicCrossRatioParity
 import ArkLib.Research.ProximityGap.Frontier.DyadicDifferenceRoots
 import ArkLib.Research.ProximityGap.Frontier.DyadicExceptionalConic
+import ArkLib.Research.ProximityGap.Frontier.DyadicFiveCenterFourier
 import ArkLib.Research.ProximityGap.Frontier.DyadicFiveConicMatches
 import ArkLib.Research.ProximityGap.Frontier.DyadicFoldedNorm
 import ArkLib.Research.ProximityGap.Frontier.DyadicFourCycleCount
@@ -703,6 +704,7 @@ import ArkLib.Research.ProximityGap.Frontier.MomentMethodPrizeDepthNoGo
 import ArkLib.Research.ProximityGap.Frontier.MonicRawPolynomialQuotient
 import ArkLib.Research.ProximityGap.Frontier.MovingCubicVanishingBranch
 import ArkLib.Research.ProximityGap.Frontier.Mu128ExceptionalTriple
+import ArkLib.Research.ProximityGap.Frontier.Mu16CubicList
 import ArkLib.Research.ProximityGap.Frontier.Mu32CubicList
 import ArkLib.Research.ProximityGap.Frontier.MuNIteratedDoubling
 import ArkLib.Research.ProximityGap.Frontier.MultEmptyFiberBelowBand
@@ -847,6 +849,7 @@ import ArkLib.Research.ProximityGap.Frontier.PowMapFiberCard
 import ArkLib.Research.ProximityGap.Frontier.PowerFiberEndpoint
 import ArkLib.Research.ProximityGap.Frontier.PowerFiberProduction
 import ArkLib.Research.ProximityGap.Frontier.PowerPencilCurveCount
+import ArkLib.Research.ProximityGap.Frontier.PowerProjectivityMatches
 import ArkLib.Research.ProximityGap.Frontier.PowerSlopeCoincidences
 import ArkLib.Research.ProximityGap.Frontier.PowerSumLogConvexSpacing
 import ArkLib.Research.ProximityGap.Frontier.PowerSumMaxBracket
@@ -920,6 +923,7 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterBlowupGaussWindow
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetFourRates
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetTwoThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarterCollinearInterval
+import ArkLib.Research.ProximityGap.Frontier.QuarterCollinearOutsiderPacking
 import ArkLib.Research.ProximityGap.Frontier.QuarterCommonFactorDegrees
 import ArkLib.Research.ProximityGap.Frontier.QuarterComplementaryContactClosure
 import ArkLib.Research.ProximityGap.Frontier.QuarterCoreWeightedJets
