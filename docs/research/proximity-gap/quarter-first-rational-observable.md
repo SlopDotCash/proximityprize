@@ -82,6 +82,16 @@ $$
 $$
 vanishes through degree $2H$. Its degree is at most $2H$, so it is zero. The logarithmic derivative of $P_0/Q$ at $u=1$ gives $\operatorname{ord}_1(P_0/Q)=-\alpha$ in the coefficient field. The integer on the left has absolute value at most $H$. Thus its product with $\nu+1$, plus $h_0$, would be zero modulo the characteristic. That integer has absolute value smaller than the characteristic, and is nonzero since $0<h_0<\nu+1$. This proves nonsingularity.
 
+There is also a direct determinant certificate. For the matrix $M_{ij}=(\alpha)_{i+j+1}/(i+j+1)!$, extract $(\alpha)_{i+1}/(i+1)!$ from each row, then multiply that row by $(i+2)_H$. The resulting columns are the evaluations at $x=i$ of
+$$
+ P_j(x)=(x+\alpha+1)_j (x+j+2)_{H-j}.
+$$
+Evaluating instead at $x=-\alpha-1-i$ makes the matrix triangular, with diagonal $(-1)^i i!(1-\alpha)_{H-i}$. For polynomials of degree at most $H$ the change in the evaluation determinant is the ratio of the two Vandermonde determinants, here $(-1)^{H(H+1)/2}$. Thus
+$$
+ \det M=\prod_{i=0}^H \frac{(\alpha)_{i+1}\,i!\,(1-\alpha)_{H-i}}{(H+i+1)!}.
+$$
+Lean verifies nonvanishing of the shifted binomial determinant from the finite nonvanishing and separation conditions. The arithmetic program evaluates the product at the full $H=11322$ and the three possible exponents $1/2,2/3,1/4$ modulo the first prime, and compares it with independent elimination at smaller sizes. [Lean determinant theorem](../../../ArkLib/Research/ProximityGap/Frontier/RationalObservableHankel.lean)
+
 Finally set $L_0=B\partial_X-A\partial_Y$. Then $\delta^jW=P_j/B^{2j+1}$, with $P_0=B_{YY}^2$ in this recurrence and
 $$
  P_{j+1}=B L_0(P_j)-(2j+1)P_j L_0(B).

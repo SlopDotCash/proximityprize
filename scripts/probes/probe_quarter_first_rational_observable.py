@@ -26,12 +26,53 @@ def fast_slots(w,h,d):
     return total
 
 
-def verify():
+def shifted_hankel(height, alpha, prime):
+    """Evaluate the shifted binomial Hankel determinant as a product in the field."""
+    def rising_table(start, length):
+        values = [1]
+        for k in range(length):
+            values.append(values[-1] * (start + k) % prime)
+        return values
+
+    factorial = rising_table(1, 2*height+1)
+    first = rising_table(alpha, height+1)
+    second = rising_table(1-alpha, height)
+    numerator = denominator = 1
+    for i in range(height+1):
+        numerator = numerator * first[i+1] * factorial[i] * second[height-i] % prime
+        denominator = denominator * factorial[height+i+1] % prime
+    return numerator * pow(denominator, -1, prime) % prime
+
+
+def check_hankel(height, prime):
+    """Compare direct elimination with the product, then test all full-size exponents."""
+    small = 101
+    for h in range(6):
+        for alpha in (pow(2, -1, small), 2*pow(3, -1, small), pow(4, -1, small)):
+            moments = [1]
+            for j in range(2*h+1):
+                moments.append(moments[-1]*(alpha+j)*pow(j+1, -1, small) % small)
+            rows = [moments[i+1:i+h+2] for i in range(h+1)]
+            det = 1
+            for k in range(h+1):
+                pivot = rows[k][k]
+                require(pivot != 0, 'leading Hankel minor')
+                det = det * pivot % small
+                for i in range(k+1,h+1):
+                    scale = rows[i][k]*pow(pivot, -1, small)
+                    rows[i] = [(v-scale*w) % small for v,w in zip(rows[i],rows[k])]
+            require(det == shifted_hankel(h, alpha, small), 'direct Hankel determinant')
+    for num, den in ((1,2), (2,3), (1,4)):
+        residue = shifted_hankel(height, num*pow(den,-1,prime), prime)
+        require(residue != 0, 'full-size Hankel coefficient')
+
+
+def verify(extra, height_test, weightwise=False):
     d = N//4-1
-    t = 2*d-90
+    t = 2*d-extra
     P = 7*t
     primary_degree = (P-1)//(d-1)
-    stock = N//40
+    stock = 250_000 if weightwise else N//40
     group = N+1-stock-primary_degree
     s = F(t,N)
     require(fast_slots(P,2,d)>N*rank(7,2), 'primary')
@@ -103,7 +144,7 @@ def verify():
 
     r = 230_000_000
     h = r//3
-    high = 5*d+4000
+    high = 5*d+(4000 if height_test else 40*extra)
     require(group>(r*t-1)//d+5*h, 'mixed Bezout on the exceptional weights')
     H = exceptional = 0
     for low,stop in intervals(5*d-1,high):
@@ -119,7 +160,9 @@ def verify():
     prime = 365375409332725729550921208179070755120141565953
     require(prime > max(r*t+1, (2*H+2)*5+4), 'separable jets and Pade coefficients')
     require(F(N-d,t-d)<group, 'integral-family cap')
-    require((H+1)*(8*H+12)<group, 'Pade determinant root bound')
+    if height_test:
+        require((H+1)*(8*H+12)<group, 'Pade determinant root bound')
+        check_hankel(H, prime)
 
     for low,stop in intervals(high+1,P-1,[5*d+d//16,5*d+d//4]):
         a,b = (low-d+1)//d,low//d
@@ -128,10 +171,79 @@ def verify():
                     all(order_floor(1,rr,h,w)>mean_upper(w,a,b,j) for w in (low,stop-1))
                     for j in (2,3,4,5,6) for h in
                     (rr//5,rr//3,rr//2,2*rr//3,8*rr//10)), 'upper linear interval')
-    print(f'{N-t:,} safe errors; dominant population {group:,}; at most {nonrad:,} '
-          f'nonradial sites and {exceptional:,} exceptional contact orders in the resonant interval.')
-    print(f'Rational height {H:,} gives at most {(H+1)*(8*H+12):,} polynomial sections.')
+    if height_test:
+        print(f'{N-t:,} safe errors; dominant population {group:,}; at most {nonrad:,} '
+              f'nonradial sites and {exceptional:,} exceptional contact orders.')
+        print(f'Rational height {H:,} gives at most {(H+1)*(8*H+12):,} polynomial sections.')
+        return
+
+    if weightwise:
+        # For each weight, charge the discriminant and resultant simultaneously.
+        # The order-six bound follows from D < 6d-1 and o <= D/d+1.
+        require(high < 6*d-1, 'order and degree range of the harmonic quartic')
+        invariant_orders = [0, 0, 1, 1, 3, 4, 6]
+        for order, local in enumerate(invariant_orders):
+            plane = max(0, order**2-order-1)
+            charge = plane+local-int(order!=3 and plane+local>0)
+            require(local-int(order!=3)>=order-2, 'lower bound on good sites')
+            require(charge>=5*order-9, 'charge against logarithmic support')
+
+        worst_support = worst_symmetry = None
+        count = excluded = 0
+        for low,stop in intervals(5*d-1, high, [5*d+i*extra for i in range(2,41,2)]):
+            a,b = (low-d+1)//d,low//d
+            bounds = []
+            for w in (low, stop-1):
+                ell = w-5*d+1
+                z = order_floor(1,r,r//3,w)
+                different = intersection(w,a,b)+10*N-5*z
+                bounds.append((w,ell,z,different))
+            if (all(different<0 for _,_,_,different in bounds) or
+                    any(all(z>mean_upper(w,a,b,j) for w,_,z,_ in bounds) for j in (2,3,4))):
+                excluded += 1
+                continue
+            count += 1
+            for w,ell,z,different in bounds:
+                e = 4*d+ell
+                i_degree = 4*d+2*ell
+                bad = i_degree+2*N-z
+                good = N-bad
+                symmetry = 3*good+3*(t-bad)-w-12*d-6*ell
+                support = i_degree+ell+4*w+5*e-20*d+9*N-5*z
+                require(2*(N-different)>3*e-6*d, 'quartic invariant globally zero')
+                require(3*(t-different-ell)>e, 'split quartic')
+                require(6*(t-different)>2*e+d+ell, 'pure cubic')
+                require(2*(t-bad)>3*d+ell, 'cubic central root')
+                require(symmetry>0 and group>20, 'symmetry of the differential equation')
+                require(8*(support+1)<group-1 and prime>2*support+2,
+                        'finite support and numerator degree')
+                worst_support = support if worst_support is None else max(worst_support,support)
+                worst_symmetry = symmetry if worst_symmetry is None else min(symmetry,worst_symmetry)
+        print(f'{N-t:,} safe errors; at most {worst_support.__floor__():,} logarithmic poles; '
+              f'{group:,} required solutions.')
+        print(f'{count} weight intervals checked for symmetry and support, {excluded} '
+              f'excluded by the intersection bounds; symmetry surplus {worst_symmetry.__floor__():,}.')
+        return
+
+    slack = high-5*d+1
+    invariant_i_degree = 4*d+2*slack
+    bad = exceptional + invariant_i_degree - (N-exceptional)
+    rational_excess = slack + extra + bad
+    image_hits = N-bad-(2*d+slack)
+    require(2*(N-exceptional)>6*d+3*slack, 'cubic quartic invariant vanishes')
+    require(3*(t-exceptional-slack)>4*d+slack, 'quartic split into linear factors')
+    require(6*(t-exceptional)>2*(4*d+slack)+(d+slack),
+            'cubic pure power with content')
+    require(2*(t-bad)>3*d+slack, 'cubic rational central root')
+    require(3*image_hits>high+6*rational_excess, 'involuted rational sections')
+    require(group>20, 'rational vector field identity')
+    print(f'At {N-t:,} errors an over-budget list requires a squarefree harmonic quartic '
+          f'denominator. Exceptional sites: at most {exceptional:,}.')
+    print(f'At least {N-bad:,} sites have an ordinary triple root; involuted solutions '
+          f'have at least {image_hits:,} hits, with weighted excess at most {rational_excess:,}.')
 
 
 if __name__ == '__main__':
-    verify()
+    verify(90, True)
+    verify(100_000, False)
+    verify(1_450_000, False, weightwise=True)

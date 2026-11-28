@@ -976,6 +976,7 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterTransverseSurfaces
 import ArkLib.Research.ProximityGap.Frontier.QuarterTransverseTangentBudget
 import ArkLib.Research.ProximityGap.Frontier.QuarterTripleSheetRamification
 import ArkLib.Research.ProximityGap.Frontier.QuarticFieldProductionThreshold
+import ArkLib.Research.ProximityGap.Frontier.QuarticHarmonicInvariants
 import ArkLib.Research.ProximityGap.Frontier.QuarticIntrinsicAuxiliary
 import ArkLib.Research.ProximityGap.Frontier.QuotientAnchorAllocation
 import ArkLib.Research.ProximityGap.Frontier.QuotientMaskBudget
@@ -1017,6 +1018,7 @@ import ArkLib.Research.ProximityGap.Frontier.RatioProductNorm
 import ArkLib.Research.ProximityGap.Frontier.RatioProductNormSieve
 import ArkLib.Research.ProximityGap.Frontier.RatioProfileDegreeObstruction
 import ArkLib.Research.ProximityGap.Frontier.RationalFiberEndpoint
+import ArkLib.Research.ProximityGap.Frontier.RationalObservableHankel
 import ArkLib.Research.ProximityGap.Frontier.RationalTetrahedronLimits
 import ArkLib.Research.ProximityGap.Frontier.RawJacobianWindow
 import ArkLib.Research.ProximityGap.Frontier.RawMGFSaddleVacuity
