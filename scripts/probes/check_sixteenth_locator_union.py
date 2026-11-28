@@ -45,8 +45,8 @@ def multiset_orders(keys):
             yield (value,) + tail
 
 
-def write_pool(path, order, spare, degree, minimum):
-    """Emit all even signatures with strictly more than minimum unconditioned root sets."""
+def write_pool(path, order, spare, degree, minimum, parity=0):
+    """Emit signatures of the specified parity exceeding the unconditioned score threshold."""
     leaves = order // (2 * spare)
     trees = spare // 2
     local = set().union(*(shapes(leaves.bit_length()-1, d) for d in range(degree+1)))
@@ -65,7 +65,7 @@ def write_pool(path, order, spare, degree, minimum):
 
         def visit(start, remaining, chosen, polynomial, weight):
             if len(chosen) == trees:
-                if weight % 2 or len(polynomial) <= degree or polynomial[degree] <= minimum:
+                if weight % 2 != parity or len(polynomial) <= degree or polynomial[degree] <= minimum:
                     return
                 score = polynomial[degree]
                 for order_of_trees in multiset_orders(chosen):

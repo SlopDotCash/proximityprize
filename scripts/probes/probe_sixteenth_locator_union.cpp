@@ -117,7 +117,7 @@ struct Census {
         unsigned adjust = parity(sig & correction[u]) ^ (((u - 1) / 2 * degree) & 1);
         return ((u * e + order * adjust) / order) & 1;
     }
-    void read(const std::string &path) {
+    void read(const std::string &path, bool index_signatures = true) {
         std::ifstream f(path, std::ios::binary);
         require(bool(f), "cannot open signature pool");
         std::array<unsigned char, 20> record;
@@ -131,6 +131,7 @@ struct Census {
             labels.push_back({v, score});
         }
         require(f.eof() && !f.gcount(), "truncated signature pool");
+        if (!index_signatures) return;
         index.reserve(labels.size() * 2);
         for (unsigned id = 0; id < labels.size(); id++)
             require(index.emplace(labels[id].signature, id).second, "duplicate signature");
@@ -307,18 +308,18 @@ struct Census {
         return hits;
     }
     // The product-score pass counts the terminal lists without expanding their site masks.
-    template <class Visit> void enumerate(const Work &w, Visit visit) const {
-        const Mask v = labels[w.id].signature;
+    template <class Visit> void enumerate_at_sum(unsigned label, unsigned target, Visit visit) const {
+        const Mask v = labels[label].signature;
         std::array<const Local *, 8> choices{};
         unsigned mask = (1U << (4 * per_tree)) - 1;
         for (unsigned t = 0; t < trees; t++)
             choices[t] = &locals[t].at(unsigned(v >> (4 * per_tree * t)) & mask);
-        std::sort(choices.begin(), choices.begin() + trees,
-                  [](auto l, auto r) { return l->all.size() < r->all.size(); });
+        std::sort(choices.begin(), choices.end(), [](auto l, auto r) {
+            return l && (!r || l->all.size() < r->all.size());
+        });
         std::array<unsigned, 9> mins{};
         for (unsigned t = trees; t-- > 0;)
             mins[t] = mins[t + 1] + choices[t]->minimum;
-        const unsigned target = (order - w.anchor * degree % order) % order + w.mode * order;
         auto recur = [&](auto &self, unsigned t, unsigned remaining, unsigned residue,
                          Mask set) -> void {
             if (t + 1 == trees) {
@@ -333,6 +334,10 @@ struct Census {
                              (residue + lifts * order - o.sum) % (lifts * order), set | o.sites);
         };
         recur(recur, 0, degree, target, 0);
+    }
+    template <class Visit> void enumerate(const Work &w, Visit visit) const {
+        const unsigned target = (order - w.anchor * degree % order) % order + w.mode * order;
+        enumerate_at_sum(w.id, target, visit);
     }
     Population population(const Work &w, bool count_exclusive) const {
         Population result;
@@ -418,6 +423,7 @@ void gain_five_bound(const Census &c, const std::vector<Work> &work, unsigned wo
     std::cout << "single=" << single << " repeated=" << repeated
               << " upper=" << repeated + incidences / 5 << "\n";
 }
+#ifndef SIXTEENTH_LOCATOR_CENSUS_LIBRARY
 int main(int argc, char **argv) try {
     bool cover_bound = argc == 8 && std::string(argv[1]) == "--gain-five-cap";
     bool signed_modes = cover_bound || (argc == 10 && std::string(argv[1]) == "--signed-scores");
@@ -555,3 +561,4 @@ int main(int argc, char **argv) try {
     std::cerr << e.what() << "\n";
     return 1;
 }
+#endif
