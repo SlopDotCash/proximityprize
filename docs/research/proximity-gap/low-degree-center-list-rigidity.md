@@ -9,11 +9,11 @@ Write $n=2^{30}$, $q=n/4$, $H=\mu_n\subset\mathbb F_p$, and let $k$ be the messa
 | $1/2$ | first | 314,491,700 | 759,250,124 | 88,161,484 | 3 |
 | $1/2$ | second | 314,491,713 | 759,250,111 | 88,161,471 | 3 |
 | $1/4$ | first | 536,870,914 | 536,870,910 | 134,217,726 | 3 |
-| $1/4$ | second | 536,870,934 | 536,870,890 | 134,217,706 | 3 |
+| $1/4$ | second | 537,870,915 | 535,870,909 | 133,217,725 | 3 |
 | $1/8$ | first | 695,116,764 | 378,625,060 | 110,189,604 | 3 |
 | $1/8$ | second | 695,116,764 | 378,625,060 | 110,189,604 | 3 |
 | $1/16$ | first | 806,056,372 | 267,685,452 | 66,358,860 | 1 |
-| $1/16$ | second | 810,406,369 | 263,335,455 | 62,008,863 | 1 |
+| $1/16$ | second | 818,306,369 | 255,435,455 | 54,108,863 | 1 |
 
 The first unresolved errors and the unrestricted failure brackets come from the [prize review](full-prize-review.md). The determinant method below specializes the [integer norm bound](../../../ArkLib/Research/ProximityGap/Frontier/DyadicFoldedNorm.lean) already used for [small quotient locator families](dyadic-locator-degree-caps.md). The additional point at full length is to descend after each lift. The shorter vector still has entries in $\{-1,0,1\}$. Its energy bound decreases at each step.
 
