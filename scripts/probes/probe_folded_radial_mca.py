@@ -57,8 +57,30 @@ def local_control():
                     assert rank == min(len(ks), r-b)
 
 
+def half_integral_families():
+    d, errors, plane, cutoff = N//2-1, 314_491_699, 4386, 30_000
+    t = N-errors
+    core = t-errors//cutoff
+    assert 3*core > N+2*d
+    nonlinear = (plane*(N-d)+t-d-1)//(t-d)
+    charges = []
+    for heads in range(plane+1):
+        rich = heads*(errors+1)
+        if heads >= 3:
+            denominator = core+(heads-1)*d
+            union = (heads*core*core+denominator-1)//denominator
+            rich = min(rich, heads*N-(heads-1)*union)
+        charges.append(rich+(plane-heads)*cutoff+nonlinear)
+    maximum = max(charges)
+    assert (maximum, charges.index(maximum)) == (1_649_087_237, 1323)
+    assert 2_115_451_893-maximum == 466_364_656
+    print("Half rate: at least 466,364,656 labels on fixed surfaces or regular "
+          "nonintegrable differential curves in any overrun.")
+
+
 if __name__ == "__main__":
     local_control()
+    half_integral_families()
     for rate, errors, order, v, s, reserve, expected in BOARDS:
         actual, m = board(rate, errors, order, v, s, reserve)
         assert actual == expected

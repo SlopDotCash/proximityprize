@@ -14,8 +14,8 @@ The table gives **first failing integer error counts** at length $2^{30}$ and to
 |---|---:|---:|---:|---:|
 | $1/2$ | 268,435,457–313,174,699 | 313,250,001–380,283,564 | 314,491,700–500,520,279 | 314,491,713–502,025,926 |
 | $1/4$ | 447,392,428–480,946,859 | 534,425,001–553,648,129 | 536,870,914–771,728,668 | 536,870,934–771,741,388 |
-| $1/8$ | **536,870,912** | 671,088,640–679,477,248 | 694,116,763–921,069,147 | 694,116,792–921,883,348 |
-| $1/16$ | **536,870,912** | **715,827,882** | 805,306,371–989,855,734 | 810,406,369–989,855,741 |
+| $1/8$ | **536,870,912** | 671,088,640–679,477,248 | 695,116,764–921,069,147 | 695,116,764–921,883,348 |
+| $1/16$ | **536,870,912** | **715,827,882** | 806,056,372–989,855,734 | 810,406,369–989,855,741 |
 
 The three exact MCA counts execute in Lean. The other three safety endpoints on the second prime use written geometry alongside Lean interpolation, determinant and counting results. Scalar and positive-width list budget tests coincide at these parameters. The list lower bounds use the all-center Johnson, puncturing and fourth-moment proofs, while the upper bounds use explicit centers. [Named MCA evaluator](../../../ArkLib/Research/ProximityGap/SmoothProductionMcaExecutable.lean) · [Second-prime safety proofs](tangent-polar-windows.md) · [Received-line multiplicities](core-multiplicity-mca.md) · [List safety](../../../ArkLib/Research/ProximityGap/Frontier/InterleavedListJohnsonPuncture.lean) · [Second-prime fourth-moment bounds](spectral-deficit-list.md) · [Half-rate lists](oriented-fiber-list-bounds.md) · [Quarter- and eighth-rate lists](rotated-locator-union.md) · [Sixteenth-rate lists](sixteenth-locator-union.md)
 
@@ -57,6 +57,8 @@ At arbitrary tolerance, the exact thresholds for **one code to have both cutoffs
 | $1/16$ | 16 | $2^{256}-2063$ | $120/p$ |
 
 For dimension-one lists alone, distinct constant symbols use disjoint agreements. At $t>0$ required agreements the largest list has $\min(q^m,\lfloor n/t\rfloor)$ words. At zero required agreements every constant is present. Disjoint blocks of $t$ sites attain the bound. The executable returns the first failure $n-\lfloor n/(B+1)\rfloor$ for $B<q^m$ and an all-safe answer for $B\ge q^m$. It also uses numerical incidence and interpolation checks at individual search counts for higher dimensions before invoking Gaussian elimination. [Exact list function](../../../ArkLib/Research/ProximityGap/DimensionOneList.lean) · [Per-count tests](../../../ArkLib/Research/ProximityGap/ListCountCertificates.lean)
+
+Plane intersection multiplicities now give all-center safety through **806,056,371 errors** at rate $1/16$ on the first prime and **695,116,763 errors** at rate $1/8$ on both primes. The eighth-rate proof bounds the entire list by fewer than $n$ words on either field. [Proof and exact certificate](linear-contact-quotient.md)
 
 At rate $1/16$ on the second named prime, every center has at most $2n$ words through **810,406,368 errors**. A second interpolation on each candidate differential equation first gives 805,531,368. Assigning multiplicities from agreement counts at each site gives the stronger bound. On the first named prime at rate $1/8$, an explicit center exceeds its budget at **921,069,147 errors**. [Uniform proof](sixteenth-list-quotient-jets.md) · [Adaptive proof and certificate](sixteenth-list-adaptive-quotient.md) · [Explicit eighth-rate witness](antipodal-locator-backup.md)
 
