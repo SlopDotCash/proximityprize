@@ -54,3 +54,23 @@ $$
        \mathbb E\big[(b/2)h+o I_L\big]\le D+b(e/2-2R).
 $$
 The comparison with this row passes on **226** linear-factor intervals, with minimum normalized gap above **0.00117**. It also verifies the earlier 88/125 claim in 204 intervals with minimum gap above 0.005. [Both normalized certificates](../../../scripts/probes/probe_half_cubic_uniform.py)
+
+## A half-rate bound at 4391/6250 agreement
+
+Put $s=4391/6250$ and keep $L=600000$. At this agreement threshold the list has at most **1,800,021** words. The hypotheses on length, grid, width and characteristic are the same as above. The first named field is therefore safe through **319,373,768 errors**. The order-fifteen cubic primary has generic degree bound 21. Taking 120 equal variance intervals in the adaptive comparison for derivative degrees two and three gives surpluses above 782 and 81,375, respectively.
+
+For linear equations with the quartic denominator $B=C L_1^2 Q$, extend $I_L$ to include content sites with
+$$o\ge h+3+\mathbf1_{\rm radial}.$$
+At these sites $h$ equals the true content order. Indeed the clipping cap $\max(1,\Phi_0)$ exceeds $h$ under the displayed inequality. The ordinary multiplicity of $B$ is at least $o-\mathbf1_{\rm radial}$. The factor $Q$ has ordinary multiplicity at most two because its specialization is a nonzero polynomial of degree at most two. Removing $C$ and $Q$ therefore leaves a zero of $L_1$. Every earlier bound using $I_L$ still applies, including the order of the numerator resultant.
+
+Evaluation of $Q_Y$ on the retained solutions gives $\mathbb E[p_x I_Q]\le q-R$. The numerator resultant gives $\mathbb E[o I_L]\le D+b(\ell-R)$, and $2\ell+c+q\le e$. Combining them with $\mathbb E h\le c$ gives the additional joint bound
+$$
+ \mathbb E\big[(b/2)h+o I_L+(b/2)p_x I_Q\big]\le D+b(e/2-3R/2).
+$$
+
+Finally use the exact integer order of the local quotient. At interpolation order $r=20000$ and derivative cap $H=10100$, the local cost as a function of the integer order $o$ is bounded by $T(o)=C(r,H)-C(r-o,H-v)$. The increments of $C$ are nondecreasing, so $T$ is concave on the integers. For every possible integer order, $T(o)\le T(4)+(o-4)(T(5)-T(4))$. The increment in this inequality is positive. Alongside the previous mean-order comparisons, one may consequently use the additional threshold
+$$
+4+\frac{S(rs,H)-S(rs-D,H-v)-C(r,H)+C(r-4,H-v)}
+         {C(r-4,H-v)-C(r-5,H-v)} .
+$$
+It is concave in $D$, so the same endpoint checks against affine upper bounds apply on every test interval. The exact verifier obtains a positive gap on 272 linear intervals, the smallest above $0.00000676$. The generic intersection bound $21\lfloor rs/R\rfloor<L$ excludes each large linear group. The three derivative-dependent groups and at most 21 remaining words give the asserted cap. [Exact arithmetic for all three agreement thresholds](../../../scripts/probes/probe_half_cubic_uniform.py)

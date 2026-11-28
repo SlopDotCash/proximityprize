@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check two cubic-primary half-rate list bounds at arbitrary positive lengths."""
+"""Check cubic-primary half-rate list bounds at arbitrary positive lengths."""
 
 from fractions import Fraction as F
 from functools import lru_cache
@@ -35,9 +35,10 @@ def adaptive(board,v,h,lam,b2,j2):
     eligible = 2*population*s/(3*s+lam*variance)
     require(eligible>v*int(max_weight/RATE)+h*board.degree,'generic mixed resultant')
     surpluses = []
-    for i in range(12):
-        weight = (r-3)*s+lam*variance*i/12
-        z = variance*(i+1)/12
+    steps = 120 if board.refined else 12
+    for i in range(steps):
+        weight = (r-3)*s+lam*variance*i/steps
+        z = variance*(i+1)/steps
         for D in (v*RATE,board.primary):
             cost = (base(r)+F(r,2)+b2*r*r*z+coefficient*(s+D-RATE)
                     +(F(r,2)+j2*r*r*z)*(D/RATE+v))
@@ -60,6 +61,8 @@ def quartic_sites(board,b,common_root):
                 if radial and (o<2 or (h==0 and o not in allowed)):
                     continue
                 linear_hit = h==0 and (o>=3 or (radial and common_root))
+                if board.refined and h>0 and o>=h+3+int(radial):
+                    linear_hit = True
                 derivative_hit = h==0 and radial
                 slope = 0 if radial else F(1,o+1)
                 plane = max(0,o*o-o-1) if radial else o*o
@@ -69,6 +72,8 @@ def quartic_sites(board,b,common_root):
                               (h,2*linear_hit,0)])
                 # The numerator A cannot vanish identically on a pole factor of B.
                 costs.append((F(b*h,2)+o*int(linear_hit),0,0))
+                if board.refined:
+                    costs.append((F(b*h,2)+o*int(linear_hit),F(b,2)*int(derivative_hit),0))
                 if not common_root:
                     costs.append((h+int(linear_hit and derivative_hit),0,0))
                 sites.append((o,costs))
@@ -80,6 +85,7 @@ def quartic_interval(board,b,common_root,left,right,depth=0):
         e = w-RATE
         ordinary = [board.agreement,1-board.agreement,board.variance,4*w+b*e-4*b*RATE]
         return (ordinary+[e-j*RATE for j in range(5)]+[e,e-RATE,e-2*RATE,w+b*(e/2-2*RATE)]
+                +([w+b*(e/2-3*RATE/2)] if board.refined else [])
                 +([] if common_root else [e-3*RATE]))
     mid = (left+right)/2
     upper = site_order_bound(quartic_sites(board,b,common_root),40,bounds,mid)
@@ -121,3 +127,4 @@ def verify(board):
 if __name__=='__main__':
     verify(Board(F(88,125),13,600_000,quartic=True))
     verify(Board(F(703,1000),14,600_000,quartic=True))
+    verify(Board(F(4391,6250),15,600_000,quartic=True,refined=True))

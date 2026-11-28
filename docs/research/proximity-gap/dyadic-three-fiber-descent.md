@@ -41,7 +41,7 @@ At even \(k\) both transforms vanish by antiperiodicity. For odd \(k\), the five
 \[
              bZ^4+aZ^3-hZ^2+\overline a Z+\overline b .
 \]
-A quartic with five distinct roots vanishes identically. Thus \(b=a=0\) at every odd frequency as well. Fourier inversion gives \(v=w=0\). In particular
+A quartic with five distinct roots vanishes identically. [Lean five-root lemma](../../../ArkLib/Research/ProximityGap/Frontier/DyadicFiveCenterFourier.lean) Thus \(b=a=0\) at every odd frequency as well. Fourier inversion gives \(v=w=0\). In particular
 \[
                       q(a)=q(a+M/2)\qquad(a\ {\rm odd}).
 \]

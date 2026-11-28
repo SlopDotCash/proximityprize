@@ -24,6 +24,7 @@ class Board:
     primary_order: int
     group: int
     quartic: bool = False
+    refined: bool = False
 
     @cached_property
     def primary(self):
@@ -45,9 +46,18 @@ class Board:
 
 @lru_cache(None)
 def order_floors(board,w,v):
-    return tuple((source(ORDER*board.agreement,h)-source(ORDER*board.agreement-w,h-v)
+    floors = tuple((source(ORDER*board.agreement,h)-source(ORDER*board.agreement-w,h-v)
                   -rank(ORDER,h)+rank(ORDER,h-v))/(rank(ORDER,h-v)-rank(ORDER-1,h-v))
                  for h in CAPS)
+    if not board.refined:
+        return floors
+    # The concave local cost on integer orders lies below its chord at 4,5.
+    h = ORDER*505//1000
+    increment = rank(ORDER-4,h-v)-rank(ORDER-5,h-v)
+    require(increment>0, 'strict local rank increment')
+    floor = 4+(source(ORDER*board.agreement,h)-source(ORDER*board.agreement-w,h-v)
+               -rank(ORDER,h)+rank(ORDER-4,h-v))/increment
+    return floors+(floor,)
 
 
 def vertical_order(o,j,v):
