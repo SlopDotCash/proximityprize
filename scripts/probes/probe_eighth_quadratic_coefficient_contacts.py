@@ -37,7 +37,7 @@ def dual_bias(a,max_order,s,u):
     return highest
 
 
-def middle_weights(d,t,stock,degree):
+def middle_weights(d,t,stock,degree,rows_by_degree=ROWS):
     r = 6000
     s,rate = F(t,N),F(d,N)
     retained = stock-2*degree**2
@@ -57,8 +57,8 @@ def middle_weights(d,t,stock,degree):
 
     worst = None
     hi = 6*d-2
-    require((hi-2*(d-1))//d==len(ROWS)-1, 'complete leading degrees')
-    for a,rows in enumerate(ROWS):
+    require((hi-2*(d-1))//d==len(rows_by_degree)-1, 'complete leading degrees')
+    for a,rows in enumerate(rows_by_degree):
         lo = max(4*(d-1),(a+2)*d-2)
         ends = [lo+(hi-lo)*i//32 for i in range(33)]
         for left,right in zip(ends,ends[1:]):

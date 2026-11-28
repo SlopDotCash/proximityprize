@@ -380,6 +380,7 @@ import ArkLib.Research.ProximityGap.Frontier.DyadicLocatorSumBarrier
 import ArkLib.Research.ProximityGap.Frontier.DyadicLogWitness237
 import ArkLib.Research.ProximityGap.Frontier.DyadicMeanPairThreshold
 import ArkLib.Research.ProximityGap.Frontier.DyadicMeanPairTransfer
+import ArkLib.Research.ProximityGap.Frontier.DyadicMomentSupport
 import ArkLib.Research.ProximityGap.Frontier.DyadicOddPencilCount
 import ArkLib.Research.ProximityGap.Frontier.DyadicOddPencilExclusion
 import ArkLib.Research.ProximityGap.Frontier.DyadicOrbitIndependence

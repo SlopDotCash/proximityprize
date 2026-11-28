@@ -12,8 +12,8 @@ Write $n=2^{30}$, $q=n/4$, $H=\mu_n\subset\mathbb F_p$, and let $k$ be the messa
 | $1/4$ | second | 549,755,814 | 523,986,010 | 121,332,826 | 3 |
 | $1/8$ | first | 707,327,427 | 366,414,397 | 97,978,941 | 3 |
 | $1/8$ | second | 709,206,475 | 364,535,349 | 96,099,893 | 3 |
-| $1/16$ | first | 818,728,141 | 255,013,683 | 53,687,091 | 1 |
-| $1/16$ | second | 819,265,012 | 254,476,812 | 53,150,220 | 1 |
+| $1/16$ | first | 819,801,883 | 253,939,941 | 52,613,349 | 1 |
+| $1/16$ | second | 819,801,883 | 253,939,941 | 52,613,349 | 1 |
 
 The first unresolved errors and the unrestricted failure brackets come from the [prize review](full-prize-review.md). The determinant method below specializes the [integer norm bound](../../../ArkLib/Research/ProximityGap/Frontier/DyadicFoldedNorm.lean) already used for [small quotient locator families](dyadic-locator-degree-caps.md). The additional point at full length is to descend after each lift. The shorter vector still has entries in $\{-1,0,1\}$. Its energy bound decreases at each step.
 
