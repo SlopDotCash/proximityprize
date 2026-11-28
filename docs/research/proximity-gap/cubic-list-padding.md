@@ -1,6 +1,6 @@
 # Exact small lists from cubic witnesses
 
-On the smooth order-64 subgroup of the 130-bit prime field of order \(p=(3\cdot2^{48}+69)2^{80}+1\), the first list failure at rate \(1/16\) and tolerance \(2^{-128}\) is **44 errors**. The integer budget is three. At length \(2^{30}\) and rate \(1/16\), the worst closed list has **exactly three** words throughout **654,311,425 to 704,643,073 errors** on each designated field. Both assertions hold at every positive interleaving width. [Direct checks and named-field witness evaluations](../../../scripts/probes/probe_cubic_list_padding.py)
+On the smooth order-64 subgroup of the 130-bit prime field of order \(p=(3\cdot2^{48}+69)2^{80}+1\), the first list failure at rate \(1/16\) and tolerance \(2^{-128}\) is **44 errors**. The integer budget is three. The MCA first failure on this same length-64 input is **3 errors**. At length \(2^{30}\) and rate \(1/16\), the worst closed list has **exactly three** words throughout **654,311,425 to 704,643,073 errors** on each designated field. Both assertions hold at every positive interleaving width. [Direct checks and named-field witness evaluations](../../../scripts/probes/probe_cubic_list_padding.py)
 
 ## Length 64 and a budget of three
 
@@ -13,7 +13,7 @@ Indeed choose the four cubics and their center on the 32 cyclic sites supplying 
 \]
 Their integral identities specialize in every field containing the subgroup. Rescaling the variable transports them to any coset. Partition the \(n-32\) other sites into four equal sets and receive the corresponding word on each. All four attain \(12+(n-32)/4=n/4+4\) hits. [Kernel-checked cubic witness](../../../ArkLib/Research/ProximityGap/Frontier/Mu32CubicList.lean) · [Polynomial formulas and sites](mu32-list-threshold-large-characteristic.md#dimension-four-at-the-same-length)
 
-For the converse let \(m_x\) count matches to the center among four distinct words. Then \(m_x\le1+\binom{m_x}{2}\), and each pair has at most three common hits. This uses any row where the vector polynomials differ. Thus \(\sum_xm_x\le n+18<4(n/4+5)\). Replicating the scalar lower example in every row gives the result at all widths. Taking \(n=64\) gives first failure \(64-20=44\), last safety at 43 and operational supremum \(11/16\). The chosen prime has \(64\mid p-1\), \(\lfloor p/2^{128}\rfloor=3\), and an existing primality certificate. [Concrete budget-three field](mu32-list-threshold-large-characteristic.md)
+For the converse let \(m_x\) count matches to the center among four distinct words. Then \(m_x\le1+\binom{m_x}{2}\), and each pair has at most three common hits. This uses any row where the vector polynomials differ. Thus \(\sum_xm_x\le n+18<4(n/4+5)\). Replicating the scalar lower example in every row gives the result at all widths. Taking \(n=64\) gives first failure \(64-20=44\), last safety at 43 and operational supremum \(11/16\). The staircase and spike theorem also gives first MCA failure \(B=3\) since \(4+3(B-1)\le64\) and \(4+B+1\le64\). Its operational supremum is \(3/64\). [General MCA theorem](../../../ArkLib/Research/ProximityGap/RankExecutable.lean#L302) The chosen prime has \(64\mid p-1\), \(\lfloor p/2^{128}\rfloor=3\), and an existing primality certificate. [Concrete budget-three field](mu32-list-threshold-large-characteristic.md)
 
 ## The two named length-\(2^{30}\) domains
 

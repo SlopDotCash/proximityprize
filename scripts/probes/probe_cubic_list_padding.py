@@ -88,6 +88,7 @@ def verify():
     require(7**32<min(first,second), 'norm transfer')
     for residue in range(4):
         require(any(j%4==residue for j in (0,1,6,7)), 'cyclic difference forces a missing coefficient')
+    require(4+3*(3-1)<=64 and 4+3+1<=64,'length-64 MCA first failure at three')
     print('First failure 44 at length 64, dimension four, budget three.')
     print('Exact list size three at 654,311,425 through 704,643,073 errors on both named sixteenth-rate domains.')
     print('At the second-prime MCA first failure of 715,827,882 errors, the list size is three or four.')
