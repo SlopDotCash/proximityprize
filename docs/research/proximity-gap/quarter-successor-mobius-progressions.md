@@ -1,6 +1,6 @@
 # Three complete quarter-rate fibers cannot form a Möbius progression
 
-At the first designated prime, put $n=2^{30}$, $H=\mu_n$ and $D=n/4-2=268435454$. An MCA counterexample at 447,392,428 errors requires a degree-$D$ map $R$ with three complete simple fibers of size $D$ in $H$. **No projective linear transformation of the source, even over the algebraic closure, can send the first of these sets to the second and the second to the third.** Their order can be chosen arbitrarily. The criterion leaves triples without this progression open. [Endpoint equivalence](quarter-successor-split-pencil.md)
+At the first designated prime, put $n=2^{30}$, $H=\mu_n$ and $D=n/4-2=268435454$. An MCA counterexample at 447,392,428 errors requires a degree-$D$ map $R$ with three complete simple fibers of size $D$ in $H$. **No projective linear transformation of the source, even over the algebraic closure, can send the first of these sets to the second and the second to the third.** Their order can be chosen arbitrarily. Arbitrary triples also obey a quantitative lower bound for the number of sites lost under two successive rotations. Their existence remains open. [Rotation-distance proof](successor-fiber-rotation-distance.md) [Endpoint equivalence](quarter-successor-split-pencil.md)
 
 ## A differential constraint for complete fibers
 
