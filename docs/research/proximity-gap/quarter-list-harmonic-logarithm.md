@@ -1,6 +1,6 @@
 # Quarter-rate safety from a logarithmic derivative
 
-On the first named prime, every closed ball through **536,970,914 errors** at rate $1/4$ and length $n=2^{30}$ contains at most $n$ words. The first failing count is at least **536,970,915**. The result holds on every injective evaluation grid at every positive interleaving width. The previous safe count was 536,871,004. This is a written proof with an executable certificate for the finite comparisons. [Harmonic involution reduction](quarter-list-harmonic-involution.md) · [Exact checker](../../../scripts/probes/probe_quarter_harmonic_logarithm.py)
+On the first named prime, every closed ball through **536,970,914 errors** at rate $1/4$ and length $n=2^{30}$ contains at most $n$ words. The first failing count is at least **536,970,915**. The result holds on every injective evaluation grid at every positive interleaving width. The previous safe count was 536,871,004. This is a written proof with an executable certificate for the finite comparisons. [Harmonic involution reduction](quarter-list-harmonic-involution.md) · [Exact checker](../../../scripts/probes/probe_quarter_harmonic_logarithm.py) A direct interpolation of the rational midpoint subsequently gives safety through **538,870,914 errors**. [Two-million extension](quarter-list-rational-midpoint.md)
 
 ## Two horizontal sections
 

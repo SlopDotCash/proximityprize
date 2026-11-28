@@ -67,15 +67,21 @@ def check_hankel(height, prime):
         require(residue != 0, 'full-size Hankel coefficient')
 
 
-def verify(extra, height_test, weightwise=False):
+def verify(extra, height_test, weightwise=False, *, rational_midpoint=False):
+    """Check the quotient inequalities for one parameter choice."""
+    if rational_midpoint:
+        require(weightwise and not height_test, 'midpoint uses the per-weight logarithmic test')
     d = N//4-1
     t = 2*d-extra
-    P = 7*t
+    primary_order = 8 if rational_midpoint else 7
+    P = primary_order*t
     primary_degree = (P-1)//(d-1)
     stock = 250_000 if weightwise else N//40
+    if rational_midpoint:
+        stock = 2_000_000
     group = N+1-stock-primary_degree
     s = F(t,N)
-    require(fast_slots(P,2,d)>N*rank(7,2), 'primary')
+    require(fast_slots(P,2,d)>N*rank(primary_order,2), 'primary')
     for small_degree in (2,7,15):
         for w in range(-3,80):
             for h in (0,1,5,13,45):
@@ -95,12 +101,17 @@ def verify(extra, height_test, weightwise=False):
         return F(source-N*(rank(r,h)-rank(r,h-v)),rank(r,h-v)-rank(r-1,h-v))
 
     sigma = upper_sqrt(F(d,N)-s*s+(s-F(d,N))/(stock-primary_degree**2))
-    for low,stop in intervals(2*(d-1),P-1):
+    quadratic_order = 50_000 if rational_midpoint else 6_000
+    quadratic_caps = range(300, quadratic_order-299, 300)
+    quadratic_cuts = [k*d//16 for k in range(32, 256)] if rational_midpoint else []
+    for low,stop in intervals(2*(d-1),P-1,quadratic_cuts):
         def quadratic(w):
-            return N*(1+F(w-d+1,t)+(F(w,d)+2)*sigma/(2*s))
-        require(any(all(order_floor(2,6000,h,w)>quadratic(w) for w in (low,stop-1))
-                    for h in range(300,5701,300)), 'quadratic product')
-    require(stock-primary_degree**2 > primary_degree*((6000*t-1)//(d-1)), 'quadratic Bezout')
+            variance_width = F(w+2,d) if rational_midpoint else F(w,d)+2
+            return N*(1+F(w-d+1,t)+variance_width*sigma/(2*s))
+        require(any(all(order_floor(2,quadratic_order,h,w)>quadratic(w) for w in (low,stop-1))
+                    for h in quadratic_caps), 'quadratic product')
+    require(stock-primary_degree**2 > primary_degree*((quadratic_order*t-1)//(d-1)),
+            'quadratic Bezout')
 
     nonrad = (N*(primary_degree+2)*(1-s*s/(F(d,N)+(2*s-F(d,N))/group))).__floor__()
     low_weight = t+2*d-1-nonrad
@@ -114,6 +125,8 @@ def verify(extra, height_test, weightwise=False):
     def mean_upper(w,a,b,j):
         return F(N*(j*(j+1)+1)+intersection(w,a,b),2*j)
 
+    if rational_midpoint:
+        require(N-nonrad>2*d, 'repeated quadratic content bound')
     for a in range(4):
         for low,stop in intervals(low_weight,5*d-2,[4*d+d//4,4*d+d//2]):
             if low-d+1<a*d or (a==0 and low<4*d-1):
@@ -136,21 +149,26 @@ def verify(extra, height_test, weightwise=False):
                 if a==1:
                     require(o<=1+2*phi, 'linear coefficient charge')
             ends = low,stop-1
+            comparisons = (0,2,3,4,5)
+            if rational_midpoint and a == 2:
+                comparisons += (-1,)
             def upper(w,j):
+                if j == -1:
+                    return N+2*(w-d+1)-2*d
                 return special(w) if j==0 else mean_upper(w,a,b,j)
             require(any(all(order_floor(1,6000,h,w)>upper(w,j) for w in ends)
-                        for j in (0,2,3,4,5) for h in range(300,5800,300)),
+                        for j in comparisons for h in range(300,5800,300)),
                     f'lower linear interval at {low} for Y-degree {a}')
 
-    r = 230_000_000
-    h = r//3
+    r = 180_000_000 if rational_midpoint else 230_000_000
+    exceptional_cap = r//2 if rational_midpoint else r//3
     high = 5*d+(4000 if height_test else 40*extra)
-    require(group>(r*t-1)//d+5*h, 'mixed Bezout on the exceptional weights')
+    require(group>(r*t-1)//d+5*exceptional_cap, 'mixed Bezout on the exceptional weights')
     H = exceptional = 0
     for low,stop in intervals(5*d-1,high):
         a,b = (low-d+1)//d,low//d
         for w in (low,stop-1):
-            count = intersection(w,a,b)+10*N-5*order_floor(1,r,h,w)
+            count = intersection(w,a,b)+10*N-5*order_floor(1,r,exceptional_cap,w)
             height = max(2*(w-3*d+1),w-d+1)-2*t+2*count
             H = max(H,height.__floor__())
             exceptional = max(exceptional,count.__floor__())
@@ -188,14 +206,19 @@ def verify(extra, height_test, weightwise=False):
             require(local-int(order!=3)>=order-2, 'lower bound on good sites')
             require(charge>=5*order-9, 'charge against logarithmic support')
 
+            if rational_midpoint:
+                midpoint_contact = min(order,3)-int(order==1)
+                require(2*midpoint_contact >= 6*order-7-plane, 'midpoint contact with Hessian content')
         worst_support = worst_symmetry = None
         count = excluded = 0
-        for low,stop in intervals(5*d-1, high, [5*d+i*extra for i in range(2,41,2)]):
+        offsets = ([i*extra//8 for i in range(1,321)] if rational_midpoint else
+                   [i*extra for i in range(2,41,2)])
+        for low,stop in intervals(5*d-1, high, [5*d+x for x in offsets]):
             a,b = (low-d+1)//d,low//d
             bounds = []
             for w in (low, stop-1):
                 ell = w-5*d+1
-                z = order_floor(1,r,r//3,w)
+                z = order_floor(1,r,exceptional_cap,w)
                 different = intersection(w,a,b)+10*N-5*z
                 bounds.append((w,ell,z,different))
             if (all(different<0 for _,_,_,different in bounds) or
@@ -210,19 +233,23 @@ def verify(extra, height_test, weightwise=False):
                 good = N-bad
                 symmetry = 3*good+3*(t-bad)-w-12*d-6*ell
                 support = i_degree+ell+4*w+5*e-20*d+9*N-5*z
+                if rational_midpoint:
+                    symmetry = 3*z-F(7*N+intersection(w,a,b),2)-w-6*(d+ell)
+                    support -= ell
                 require(2*(N-different)>3*e-6*d, 'quartic invariant globally zero')
                 require(3*(t-different-ell)>e, 'split quartic')
                 require(6*(t-different)>2*e+d+ell, 'pure cubic')
                 require(2*(t-bad)>3*d+ell, 'cubic central root')
-                require(symmetry>0 and group>20, 'symmetry of the differential equation')
+                require(symmetry>0 and group>20, 'rational-section differential identity')
                 require(8*(support+1)<group-1 and prime>2*support+2,
                         'finite support and numerator degree')
                 worst_support = support if worst_support is None else max(worst_support,support)
                 worst_symmetry = symmetry if worst_symmetry is None else min(symmetry,worst_symmetry)
         print(f'{N-t:,} safe errors; at most {worst_support.__floor__():,} logarithmic poles; '
               f'{group:,} required solutions.')
-        print(f'{count} weight intervals checked for symmetry and support, {excluded} '
-              f'excluded by the intersection bounds; symmetry surplus {worst_symmetry.__floor__():,}.')
+        identity = 'midpoint' if rational_midpoint else 'symmetry'
+        print(f'{count} weight intervals checked for {identity} and support, {excluded} '
+              f'excluded by the intersection bounds; {identity} surplus {worst_symmetry.__floor__():,}.')
         return
 
     slack = high-5*d+1
@@ -243,7 +270,13 @@ def verify(extra, height_test, weightwise=False):
           f'have at least {image_hits:,} hits, with weighted excess at most {rational_excess:,}.')
 
 
+def verify_two_million():
+    """Verify the midpoint/logarithmic certificate at two million beyond 2d."""
+    verify(2_000_000, False, weightwise=True, rational_midpoint=True)
+
+
 if __name__ == '__main__':
     verify(90, True)
     verify(100_000, False)
     verify(1_450_000, False, weightwise=True)
+    verify_two_million()
