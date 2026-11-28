@@ -67,8 +67,10 @@ def check_hankel(height, prime):
         require(residue != 0, 'full-size Hankel coefficient')
 
 
-def verify(extra, height_test, weightwise=False, *, rational_midpoint=False):
+def verify(extra, height_test, weightwise=False, *, rational_midpoint=False, four_term=False):
     """Check the quotient inequalities for one parameter choice."""
+    if four_term:
+        require(rational_midpoint, 'the four-term estimate uses the rational midpoint')
     if rational_midpoint:
         require(weightwise and not height_test, 'midpoint uses the per-weight logarithmic test')
     d = N//4-1
@@ -79,7 +81,12 @@ def verify(extra, height_test, weightwise=False, *, rational_midpoint=False):
     stock = 250_000 if weightwise else N//40
     if rational_midpoint:
         stock = 2_000_000
-    group = N+1-stock-primary_degree
+    if four_term:
+        stock = 250_000
+        group = 260_000
+        require(group >= stock and primary_degree == 15, 'dominant group and residual factors')
+    else:
+        group = N+1-stock-primary_degree
     s = F(t,N)
     require(fast_slots(P,2,d)>N*rank(primary_order,2), 'primary')
     for small_degree in (2,7,15):
@@ -102,6 +109,8 @@ def verify(extra, height_test, weightwise=False, *, rational_midpoint=False):
 
     sigma = upper_sqrt(F(d,N)-s*s+(s-F(d,N))/(stock-primary_degree**2))
     quadratic_order = 50_000 if rational_midpoint else 6_000
+    if four_term:
+        quadratic_order = 6_000
     quadratic_caps = range(300, quadratic_order-299, 300)
     quadratic_cuts = [k*d//16 for k in range(32, 256)] if rational_midpoint else []
     for low,stop in intervals(2*(d-1),P-1,quadratic_cuts):
@@ -115,8 +124,11 @@ def verify(extra, height_test, weightwise=False, *, rational_midpoint=False):
 
     nonrad = (N*(primary_degree+2)*(1-s*s/(F(d,N)+(2*s-F(d,N))/group))).__floor__()
     low_weight = t+2*d-1-nonrad
-    require(3+2*d+stock+primary_degree<=N, 'polynomial right hand side of degree at most three')
-    require(2+2*d+stock+primary_degree<=N, 'total degree at most two')
+    if four_term:
+        require(N-nonrad > 3*d, 'low-weight univariate denominator')
+    else:
+        require(3+2*d+stock+primary_degree<=N, 'polynomial right hand side of degree at most three')
+        require(2+2*d+stock+primary_degree<=N, 'total degree at most two')
     require(group > primary_degree*((6000*t-1)//(d-1)), 'linear Bezout on lower weights')
 
     def intersection(w,a,b):
@@ -161,6 +173,8 @@ def verify(extra, height_test, weightwise=False, *, rational_midpoint=False):
                     f'lower linear interval at {low} for Y-degree {a}')
 
     r = 180_000_000 if rational_midpoint else 230_000_000
+    if four_term:
+        r = 50_000
     exceptional_cap = r//2 if rational_midpoint else r//3
     high = 5*d+(4000 if height_test else 40*extra)
     require(group>(r*t-1)//d+5*exceptional_cap, 'mixed Bezout on the exceptional weights')
@@ -176,6 +190,8 @@ def verify(extra, height_test, weightwise=False, *, rational_midpoint=False):
     require(high-2*d+1<N-exceptional, 'denominator of degree one or two')
     require(4*(t-exceptional-(high-5*d+1))>high-d+1, 'fourth power of a linear polynomial')
     prime = 365375409332725729550921208179070755120141565953
+    if four_term:
+        require(r*t+1 > max(1000*N,(2*H+2)*5+4), 'sufficient characteristic for the four-term case')
     require(prime > max(r*t+1, (2*H+2)*5+4), 'separable jets and Pade coefficients')
     require(F(N-d,t-d)<group, 'integral-family cap')
     if height_test:
@@ -209,7 +225,7 @@ def verify(extra, height_test, weightwise=False, *, rational_midpoint=False):
             if rational_midpoint:
                 midpoint_contact = min(order,3)-int(order==1)
                 require(2*midpoint_contact >= 6*order-7-plane, 'midpoint contact with Hessian content')
-        worst_support = worst_symmetry = None
+        worst_support = worst_symmetry = worst_branch = worst_involution = None
         count = excluded = 0
         offsets = ([i*extra//8 for i in range(1,321)] if rational_midpoint else
                    [i*extra for i in range(2,41,2)])
@@ -241,12 +257,25 @@ def verify(extra, height_test, weightwise=False, *, rational_midpoint=False):
                 require(6*(t-different)>2*e+d+ell, 'pure cubic')
                 require(2*(t-bad)>3*d+ell, 'cubic central root')
                 require(symmetry>0 and group>20, 'rational-section differential identity')
-                require(8*(support+1)<group-1 and prime>2*support+2,
-                        'finite support and numerator degree')
+                if four_term:
+                    involution = 3*good+3*(t-bad)-w-12*d-6*ell
+                    branch = good-8*support
+                    require(involution>0 and branch>0, 'involution and branch discriminant')
+                    worst_branch = branch if worst_branch is None else min(worst_branch, branch)
+                    worst_involution = (involution if worst_involution is None else
+                                        min(worst_involution, involution))
+                else:
+                    require(8*(support+1)<group-1 and prime>2*support+2,
+                            'finite support and numerator degree')
                 worst_support = support if worst_support is None else max(worst_support,support)
                 worst_symmetry = symmetry if worst_symmetry is None else min(symmetry,worst_symmetry)
         print(f'{N-t:,} safe errors; at most {worst_support.__floor__():,} logarithmic poles; '
               f'{group:,} required solutions.')
+        if four_term:
+            cap = group+stock+primary_degree-1
+            require(cap == 510_014, 'total list bound')
+            print(f'At most {cap:,} words through {N-t:,} errors; branch surplus '
+                  f'{worst_branch.__floor__():,}, involution surplus {worst_involution.__floor__():,}.')
         identity = 'midpoint' if rational_midpoint else 'symmetry'
         print(f'{count} weight intervals checked for {identity} and support, {excluded} '
               f'excluded by the intersection bounds; {identity} surplus {worst_symmetry.__floor__():,}.')
