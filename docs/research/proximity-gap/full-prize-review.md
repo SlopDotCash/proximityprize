@@ -12,8 +12,8 @@ The table gives **first failing integer error counts** at length $2^{30}$ and to
 
 | Rate | First prime MCA | Second prime MCA | First prime list | Second prime list |
 |---|---:|---:|---:|---:|
-| $1/2$ | 268,435,457–313,174,699 | 313,250,001–380,283,564 | 316,216,968–500,520,279 | 316,216,968–502,025,926 |
-| $1/4$ | 447,392,428–480,946,859 | 534,425,001–553,648,129 | 539,340,519–771,728,657 | 547,807,173–771,741,384 |
+| $1/2$ | 268,435,457–313,174,699 | 313,250,001–380,283,564 | 317,827,580–500,520,279 | 317,827,580–502,025,926 |
+| $1/4$ | 447,392,428–480,946,859 | 534,425,001–553,648,129 | 539,340,519–771,728,657 | 549,755,814–771,741,384 |
 | $1/8$ | **536,870,912** | 671,088,640–679,477,248 | 704,116,764–920,811,049 | 705,616,764–921,826,181 |
 | $1/16$ | **536,870,912** | **715,827,882** | 816,806,372–989,855,734 | 818,306,369–989,855,741 |
 
@@ -26,11 +26,18 @@ All four prize rates have length-independent list bounds at fixed relative error
 | $1/2$ | $181/256$ | 19,999 | $p>425$ |
 | $1/2$ | $353/500$ | 1,000,016 | $p>20000$ |
 | $1/2$ | $1411/2000$ | 1,200,018 | $p>20000$ |
+| $1/2$ | $88/125$ | 1,800,018 | $p>20000$ |
 | $1/4$ | $249/500$ | 510,014 | $p>\max(50000,1000n)$ |
 | $1/8$ | $3533/10000$ | 50,000 | $p>425$ |
 | $1/16$ | $2499/10000$ | 79,999 | $p>425$ |
 
+On the 16-site half-rate subgroup in characteristic zero or above $2^{109}$, the exact worst list at five errors is **three**. On eligible fields of budget three in this characteristic range, MCA first fails at **three** errors and list decoding at **six**. The proof transfers the complete five-site support census using determinant norms. [Proof, census and witnesses](mu16-septic-list-large-characteristic.md)
+
+At half rate, agreement on $88n/125$ sites leaves at most **1,800,018** words for every length and every injective grid in characteristic zero or above 20,000. Both designated half-rate codes are safe through **317,827,579 errors**. At quarter rate the second designated code is safe through **549,755,813 errors**. A quartic primary and a pole count prove the second bound. [Half-rate proof](half-list-cubic-primary.md) · [Quarter-rate proof](quarter-list-second-quartic-darboux.md)
+
 On both designated domains at rate $1/16$, the exact worst-case list size is three for every closed error count from **654,311,425 through 704,643,073**. A scaled cubic witness attains three and pair counting excludes four. At the second prime's MCA first failure of 715,827,882 errors, the same list count is either three or four. At length 64 on a 130-bit field with budget three, the first failures are **3 errors for MCA and 44 for list decoding**. [Constructions, upper bounds and finite checks](cubic-list-padding.md)
+
+At the second named sixteenth-rate MCA boundary, a four-word list built from a common multiplier and a power quotient would require a quotient of at least 256 sites. The 128-site exclusion enumerates 48,446 test orbits and verifies the surviving locator ratios at both primes. At 86 errors on those 128 sites the worst list is exactly three. [Septic pencil proof and verifier](mu128-septic-six-site-fibers.md)
 
 On the 8,192-site subgroup of $\mathbb F_{8191^{10}}$ at rate $1/16$ and 128-bit tolerance, the first failures are **3 errors for MCA and 5,378 for list decoding**. Four explicit degree-at-most-511 words attain 2,815, 2,815, 2,814 and 2,814 agreements with one center. The pair-root bound excludes four words at 5,377 errors. On the 16,384-site subgroup in the same field, the sixteenth-rate first failures are **3 and 10,754**, respectively. A second quartet has six disjoint 1,023-site sets of pairwise agreements. All four cutoffs hold at every positive width. [Length 8,192 proof and all-site verifier](norm-one-elliptic-list.md) · [Length 16,384 proof and all-site verifier](two-norm-cosets-list.md)
 

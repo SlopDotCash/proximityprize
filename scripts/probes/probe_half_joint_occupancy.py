@@ -116,6 +116,13 @@ def limits(board,a,b,w,v,kind):
 
 def joint_bound(board,a,b,mid,v,mesh,kind):
     polynomials = costs(board,a,b,v,kind)
+    return site_order_bound(tuple(enumerate(polynomials)),mesh,
+                            lambda w: limits(board,a,b,w,v,kind),mid)
+
+
+def site_order_bound(sites,mesh,bounds,mid):
+    """Certify the proposed bound for every real occupancy at every allowed site."""
+    orders,polynomials = zip(*sites)
     rows = []
     points = [i/mesh for i in range(mesh+1)]
     for j in range(len(polynomials[0])):
@@ -124,17 +131,17 @@ def joint_bound(board,a,b,mid,v,mesh,kind):
             c,l,q = map(float,local[j])
             row.extend(c+p*(l+p*q) for p in points)
         rows.append(row)
-    scores = [o for o in range(len(polynomials)) for _ in points]
-    weights = dual_weights(rows,limits(board,a,b,mid,v,kind),scores,max_steps=200)
+    scores = [o for o in orders for _ in points]
+    weights = dual_weights(rows,bounds(mid),scores,max_steps=200)
     require(all(x>=0 for x in weights),'dual signs')
     bias = F(0)
-    for o,local in enumerate(polynomials):
+    for o,local in sites:
         c,l,q = [-sum(x*y[j] for x,y in zip(weights,local)) for j in range(3)]
         c += o
         bias = max(bias,c,c+l+q)
         if q<0 and 0 < -l/(2*q) < 1:
             bias = max(bias,c-l*l/(4*q))
-    return lambda w: bias+sum(x*y for x,y in zip(weights,limits(board,a,b,w,v,kind)))
+    return lambda w: bias+sum(x*y for x,y in zip(weights,bounds(w)))
 
 
 def preliminary_bound(board,a,b,mid,v):

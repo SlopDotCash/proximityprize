@@ -17,7 +17,12 @@ BOARDS = [
 
 
 def adaptive(v,h,lam,b2,j2,cutoff,d,t,primary,base_degree,stock):
-    r = 2000
+    return adaptive_interval(v,h,lam,b2,j2,d,t,base_degree,stock,2000,12,
+                             (cutoff*(d-1),primary-1))
+
+
+def adaptive_interval(v,h,lam,b2,j2,d,t,base_degree,stock,r,bins,weights):
+    """Certify the product on one closed weight interval with a common board."""
     s = F(t,N)
     m0 = stock-base_degree**2
     variance = F(d,N)-s*s+(s-F(d,N))/m0
@@ -39,10 +44,10 @@ def adaptive(v,h,lam,b2,j2,cutoff,d,t,primary,base_degree,stock):
     eligible = 2*m0*t/(3*t+1+lam*N*variance)
     require(eligible>v*((cap_weight-1)//d)+h*base_degree, 'mixed Bezout, every group')
     least = None
-    for i in range(12):
-        w = ((r-3)*t+lam*N*variance*i/12).__floor__()
-        z = variance*(i+1)/12
-        for D in (cutoff*(d-1),primary-1):
+    for i in range(bins):
+        w = ((r-3)*t+lam*N*variance*i/bins).__floor__()
+        z = variance*(i+1)/bins
+        for D in weights:
             cost = (base(r)+F(r,2)+b2*r*r*z+coef*(s+F(D-d+1,N))
                     +(F(r,2)+j2*r*r*z)*(F(D,d)+v))
             surplus = slots(w,h,d)-slots(w-D,h-v,d)-N*cost
