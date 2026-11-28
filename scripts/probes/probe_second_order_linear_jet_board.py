@@ -82,6 +82,31 @@ def boards():
               f'b={b}, L={L:,}, bound {budget}n².')
 
 
+def literal_fields():
+    n = 2**30
+    for budget,offset,witness in [(2810,53,3),(2289,24,7),(1889,43,5),(1657,30,3)]:
+        prime = budget*2**188+offset*2**110+1
+        require(prime//2**128 == budget*n**2, 'literal field budget')
+        require((prime-1) % 2**110 == 0 and (2**110+1)**2 > prime, 'prime divisor floor')
+        require(pow(witness,(prime-1)//2,prime)==prime-1, 'primality certificate')
+        require(pow(pow(witness,(prime-1)//n,prime),n//2,prime)==prime-1, 'order-n grid')
+
+    for q,r,ha,hb,errors,expected in [(2,16,5,2,324_179_110,234),
+            (4,17,8,6,561_917_629,2199),(8,19,11,8,724_787_769,12524),
+            (16,20,14,11,834_849_894,31168)]:
+        d,t = n//q-1,n-errors
+        cost = n*second_rank(r,ha,hb)
+        def surplus(t):
+            return source(r*t,ha,d)+source(r*t-d+2,hb,d)-cost
+        require(surplus(t)==expected and surplus(t-1)<=0, 'common field primary')
+        b = (r*t-1)//(d-2)
+        degree = (2*d-3)*(b-1)+1
+        ratio = Fraction(n-d,t-d)
+        bound = degree**2*ratio**2+b*b+2*b*ha-ha*ha+b+d*(4*b*ha-2*b-2*ha*ha)+ha*ratio
+        require(bound <=2810*n**2, 'common field list budget')
+        print(f'1/{q}: {errors:,} safe errors on the same prime grid at the 128-bit budget.')
+
+
 if __name__=='__main__':
     checks = 0
     for r in range(1,9):
@@ -92,3 +117,4 @@ if __name__=='__main__':
                     checks += 1
     print(f'{checks} independently reduced finite-field jet matrices passed.')
     boards()
+    literal_fields()

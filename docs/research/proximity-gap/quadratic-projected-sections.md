@@ -19,6 +19,8 @@ Suppose $a=\deg_X P>0$ and put $h=\deg_Z P$. Over $k(Z)$ the polynomial $P$ is s
 
 At any remaining scalar with a polynomial solution, $\Delta(X,\gamma)=(2A(X,\gamma)f_\gamma+B(X,\gamma))^2$. Thus $P(X,\gamma)$, of full $X$-degree $a$, is a square in $k[X]$. Its gcd with its $X$-derivative has degree at least $a/2$. The specialized Sylvester matrix consequently has corank at least $a/2$. Over the discrete valuation ring at $Z=\gamma$ its determinant vanishes to at least this order, by diagonal reduction. Comparing with $(2a-1)h$ gives at most $4h$ remaining scalars. Including the exclusions, the count is at most $\deg L+\deg_Z W+5h\le5\deg_Z\Delta\le10m$.
 
+The determinant multiplicity and the four-times-parameter-degree bound are available as Lean theorems. [Regular square specializations](../../../ArkLib/Research/ProximityGap/Frontier/SquareSpecialization.lean) · [Total branch collision charge](../../../ArkLib/Research/ProximityGap/Frontier/ActualCubicBranchCollisions.lean)
+
 ## A discriminant depending only on the scalar modulo squares
 
 If $P=1$, the squarefree $L$ is nonconstant, since otherwise $G$ would split over $k(X,Z)$. Use the smooth curve with function field $k(Z,S)$, $S^2=L(Z)$. At points above $Z=\infty$ both $Z$ and $S$ can have poles, with the pole order of $S$ equal to $\deg L/2$ times that of $Z$. At finite places both are regular.

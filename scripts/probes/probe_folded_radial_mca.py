@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Verify folded first-derivative interpolation and its two-polar degree prices."""
+from itertools import combinations
 from math import comb
 
 
@@ -112,10 +113,33 @@ def quadratic_branch_control():
                 assert 7-rank >= 2
 
 
+def cubic_resolvent_control():
+    prime = 31
+    cubes = {pow(a,3,prime) for a in range(prime)}
+    radical = next(a for a in range(prime) if a*a % prime == prime-3)
+    for roots in combinations(range(prime),3):
+        first, second, third = roots
+        b = -sum(roots)
+        c = first*second+first*third+second*third
+        d = -first*second*third
+        u = b*b-3*c
+        v = 2*b**3-9*b*c+27*d
+        sqrt_discriminant = (first-second)*(first-third)*(second-third)
+        for sign in (-1,1):
+            radicand = ((-v+sign*3*radical*sqrt_discriminant)
+                        *pow(2,-1,prime)) % prime
+            assert radicand in cubes
+            if radicand:
+                j = next(a for a in range(1,prime) if pow(a,3,prime)==radicand)
+                value = (j+u*pow(j,-1,prime)) % prime
+                assert (value**3-3*u*value+v)%prime == 0
+
+
 if __name__ == "__main__":
     local_control()
     half_integral_families()
     quadratic_branch_control()
+    cubic_resolvent_control()
     for rate, errors, order, v, s, reserve, expected in BOARDS:
         actual, m = board(rate, errors, order, v, s, reserve)
         assert actual == expected
