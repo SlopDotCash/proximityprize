@@ -10,7 +10,7 @@ Lean proves exact finite rank tests for the first failing MCA and list error cou
 
 At all four prize rates, written proofs give length-independent worst-case list bounds strictly beyond the asymptotic Johnson radius on every injective grid, at every positive width. At quarter rate, agreement on $249n/500$ sites leaves at most 510,014 words in characteristic zero or $p>\max(50000,1000n)$. The numerical first-failure intervals for both designated primes remain in the review table. [All four bounds and characteristic hypotheses](full-prize-review.md) · [Quarter-rate four-term proof](quarter-list-four-term-uniform.md) · [Independent Riccati proof](quarter-list-uniform-length.md)
 
-Two sixteenth-rate instances with budget three have exact numerical answers for both challenges. On the 8,192-site subgroup of $\mathbb F_{8191^{10}}$ the MCA and list first failures are 3 and 5,378. On the length-64 subgroup of the 130-bit prime specified in the second proof they are 3 and 44. [Length 8,192 proof](norm-one-elliptic-list.md) · [Length 64 proof](cubic-list-padding.md)
+Three sixteenth-rate instances with budget three have exact numerical answers for both challenges. On the 8,192-site subgroup of $\mathbb F_{8191^{10}}$ the MCA and list first failures are 3 and 5,378. On the length-64 subgroup of the 130-bit prime specified in the second proof they are 3 and 44. On the 16,384-site subgroup of the first field they are 3 and 10,754. [Length 16,384 proof](two-norm-cosets-list.md) · [Length 8,192 proof](norm-one-elliptic-list.md) · [Length 64 proof](cubic-list-padding.md)
 
 The historical graph dictionary in §2.1 conflates two conjectures. For the generalized
 Paley graph with connection set a multiplicative subgroup of size $n$, the eigenvalues

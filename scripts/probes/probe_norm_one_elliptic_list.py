@@ -131,14 +131,15 @@ def power_ext(x,n):
     return result
 
 
-def physical_coefficients(coefficients):
-    """Expand (1-U)^511 times the polynomial at i(1+U)/(1-U)."""
-    padded = coefficients+[0]*(DEGREE+1-len(coefficients))
+def physical_coefficients(coefficients,degree=DEGREE,shift=0,scale=1):
+    """Homogenize to the given degree and substitute shift+scale*i*(1+U)/(1-U)."""
+    padded = coefficients+[0]*(degree+1-len(coefficients))
     result = [(padded[-1],0)]
     denominator = [1]
     for coefficient in reversed(padded[:-1]):
         denominator = [(a-b)%P for a,b in zip(denominator+[0],[0]+denominator)]
-        result = [((coefficient*d-y-v)%P,(x+u)%P)
+        result = [((coefficient*d+shift*(x-u)-scale*(y+v))%P,
+                   (shift*(y-v)+scale*(x+u))%P)
                   for (x,y),(u,v),d in zip(result+[(0,0)],[(0,0)]+result,denominator)]
     return result
 
