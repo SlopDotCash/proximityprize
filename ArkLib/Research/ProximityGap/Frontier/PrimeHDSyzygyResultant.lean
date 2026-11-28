@@ -989,6 +989,30 @@ theorem natDegree_discr_le_of_biWeightedDeg {R : Type*} [CommRing R]
 
 end ReducedDiscMatrix
 
+/-- The two lowest homogeneous jet identities give a quadratic relation
+between the top coefficient and any linear combination of the other two. -/
+theorem quadratic_initial_syzygy {R : Type*} [CommRing R]
+    (u z a b c t : R) (hval : u^2*a + u*z*b + z^2*c = 0)
+    (hslope : u*b + 2*z*c = 0) :
+    u^2*(a+t*b) = (z^2-2*t*u*z)*c := by
+  linear_combination hval + (t*u-z)*hslope
+
+/-- In successive homogeneous degrees the top coefficient has two, then
+one, powers of the local abscissa factor. -/
+theorem quadratic_initial_top_divisibility {R : Type*} [CommRing R] [IsDomain R]
+    {u z : R} (hu : Prime u) (hz : ¬ u ∣ z) (a b c a' b' c' : R)
+    (hval : u^2*a + u*z*b + z^2*c = 0) (hslope : u*b + 2*z*c = 0)
+    (hnext : u^2*a' + u*z*b' + z^2*c' = 0) :
+    u^2 ∣ c ∧ u ∣ c' := by
+  have hcop : ¬ u ∣ z^2 := fun h => hz (hu.dvd_of_dvd_pow h)
+  constructor
+  · apply hu.pow_dvd_of_dvd_mul_left 2 hcop
+    exact ⟨a, by linear_combination -hval + z*hslope⟩
+  · apply (hu.dvd_or_dvd (show u ∣ z^2*c' from
+      ⟨-(u*a'+z*b'), by linear_combination hnext⟩)).resolve_left hcop
+
+#print axioms quadratic_initial_syzygy
+#print axioms quadratic_initial_top_divisibility
 #print axioms pow_dvd_det_of_potential
 #print axioms resultant_syzygy_eq
 #print axioms resultant_syzygy_eq_of_dvd

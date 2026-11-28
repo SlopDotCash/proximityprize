@@ -65,7 +65,7 @@ def limits(weight,a,b,maximum):
     return values
 
 
-def dual_proposal(rows, bounds):
+def dual_weights(rows, bounds, scores, max_steps=100):
     # Floating point only proposes nonnegative rational multipliers. The exact
     # pointwise inequality and both interval surpluses are rechecked below.
     matrix = [[1]*len(rows[0])]+list(rows)
@@ -74,8 +74,8 @@ def dual_proposal(rows, bounds):
     source = len(rows[0])
     tab = [[float(x) for x in row]+[float(i==j) for j in range(size)]+[rhs[i]]
            for i,row in enumerate(matrix)]
-    objective = [-float(o) for o in range(1,source+1)]+[0.]*(size+1)
-    for _ in range(100):
+    objective = [-float(o) for o in scores]+[0.]*(size+1)
+    for _ in range(max_steps):
         k = min(range(len(objective)-1),key=objective.__getitem__)
         if objective[k]>=-1e-8:
             break
@@ -86,7 +86,12 @@ def dual_proposal(rows, bounds):
                 tab[i] = [x-row[k]*y for x,y in zip(row,new)]
         objective = [x-objective[k]*y for x,y in zip(objective,new)]
         tab[pivot] = new
-    coeff = [F(max(0.,x)).limit_denominator(10000) for x in objective[source+1:-1]]
+    return [F(max(0.,x)).limit_denominator(10000) for x in objective[source+1:-1]]
+
+
+def dual_proposal(rows, bounds):
+    source = len(rows[0])
+    coeff = dual_weights(rows, bounds, range(1,source+1))
     # Include order zero, which can have all its probability in a slack variable.
     intercept = max([F(0)]+[i+1-sum(c*row[i] for c,row in zip(coeff,rows))
                               for i in range(source)])
