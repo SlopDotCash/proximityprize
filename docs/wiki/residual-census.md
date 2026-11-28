@@ -72,16 +72,16 @@ summary, which follows the addenda.
 ## Summary
 
 - **Total strict production residuals (`ArkLib/`):** 90
-- **Open:** 42
+- **Open:** 40
 - **Instance-only:** 9
 - **Discharged (syntactic candidates):** 25
-- **Refuted:** 14
+- **Refuted:** 16
 - **Residual-like near misses:** 54 (listed below and in `scripts/residual_census.json`)
 
 | top-level directory | total | open | instance-only | discharged | refuted |
 |---|---:|---:|---:|---:|---:|
 | `(root)` | 2 | 1 | 0 | 1 | 0 |
-| `Data` | 24 | 6 | 3 | 2 | 13 |
+| `Data` | 24 | 4 | 3 | 2 | 15 |
 | `OracleReduction` | 39 | 25 | 3 | 11 | 0 |
 | `ProofSystem` | 14 | 10 | 2 | 2 | 0 |
 | `ToMathlib` | 11 | 0 | 1 | 9 | 1 |
@@ -91,8 +91,6 @@ summary, which follows the addenda.
 - `AGL24.SymbolicFullRankResidual` — `ArkLib/Data/CodingTheory/AGL24SymbolicRank.lean:45` — conditional providers only (residual deps: `FrankOrientationResidual`, `GMMDSResidual`, `SymbolicFullRankResidual`; extra assumptions: `h`, `h'`, `hdual`, `hfield`, `hfrank`, `hgm`, `hgmmds`, `hk`, `hminor`, `hnonempty`, `hrc`, `hwitness`; instance assumptions: `[Algebra F F']`, `[Field F']`, `[Finite F]`, `[Fintype F]`, `[Nonempty ι]`)
 - `AGL24.RIMFullRankFailureProbResidual` — `ArkLib/Data/CodingTheory/AGL24UnionBound.lean:100` — conditional providers only (residual deps: `SymbolicFullRankResidual`; extra assumptions: `hfrank`, `hgm`, `hsym`, `ht`, `hwpc`; instance assumptions: `[Nonempty ι]`)
 - `CodingTheory.randomLinearLambdaLowerFirstMomentResidual` — `ArkLib/Data/CodingTheory/ListDecoding/Bounds/RandomAndReedSolomon.lean:143` — conditional providers only (extra assumptions: `h`, `hG`)
-- `BCIKS20.HenselNumerator.βHenselSuccTermWeightResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean:1665` — conditional providers only (residual deps: `βHenselSuccTermStructuredWeightResidual`; extra assumptions: `hStructured`, `hterm`)
-- `BCIKS20.HenselNumerator.βHenselSuccTermStructuredWeightResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean:1746` — conditional providers only (extra assumptions: `hDRx0`, `hRgraded`, `hW`, `hdHd`)
 - `ProximityGap.Ownership.SubJohnsonListResidual` — `ArkLib/Data/CodingTheory/ProximityGap/SubJohnsonListSupply.lean:68`
 - `Reduction.reductionAppendCompletenessResidual` — `ArkLib/Extensions/OracleReduction/Composition/Sequential/Append.lean:363` — conditional providers only (extra assumptions: `hDir`, `hDir₂`, `hInit`, `himplNF`, `himplSP`, `himplVB`, `hn`; instance assumptions: `[∀ i, SampleableType (pSpec₂'.Challenge i)]`, `[∀ q, Fintype (oSpec.Range q)]`, `[∀ q, Inhabited (oSpec.Range q)]`)
 - `Reduction.reductionAppendPerfectCompletenessResidual` — `ArkLib/Extensions/OracleReduction/Composition/Sequential/Append.lean:382` — conditional providers only (extra assumptions: `hDir`, `hDir₂`, `hImplSupp`, `hInit`, `himplNF`, `himplSP`, `hn`; instance assumptions: `[∀ q, Fintype (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).…]`, `[∀ q, Fintype (((oSpec + [pSpec₁.Challenge]ₒ)).Range q)]`, `[∀ q, Fintype (((oSpec + [pSpec₂.Challenge]ₒ)).Range q)]`, `[∀ q, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Ra…]`, `[∀ q, Fintype ((oSpec + [pSpec₁.Challenge]ₒ).Range q)]`, `[∀ q, Fintype ((oSpec + [pSpec₂.Challenge]ₒ).Range q)]` and 10 more)
@@ -210,6 +208,8 @@ drift.
 - `AGL24.GMMDSResidual` — `ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean:54` — refuted by `not_gmmdsResidual_fin3_zmod2` (ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean:97) at `ι := (Fin 3)`, `F := (ZMod 2)`
 - `ProximityGap.CurveCommonAgreementResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/CoeffExtractionResidual.lean:43` — refuted by `ProximityGap.StrictCanonicalCoeffPolysRefutation.not_curveCommonAgreementResidual` (ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/CanonicalCoeffExtractionRefutation.lean:530) at `k := 1`, `deg := 2`, `domain := domain7`, `δ := (3 / 7 : ℝ≥0)`
 - `ProximityGap.RSCurveListSizeResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/ListSizeResidual.lean:50` — refuted by `ProximityGap.RSCurveListSizeRefutation.not_rsCurveListSizeResidual` (ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/ListSizeResidualRefutation.lean:154) at `k := 1`, `deg := 1`, `domain := domain`, `δ := (1 : ℝ≥0) / 2`, `e := 2`
+- `BCIKS20.HenselNumerator.βHenselSuccTermWeightResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean:1665` — refuted by `BCIKS20.HenselNumerator.SuccTermWitness.βHenselSuccTermWeightResidual_refuted_two` (ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselSuccTermWeightRefutation.lean:165) at `H := myH`, `x₀ := 0`, `R := (myRN 13)`, `hHyp := (myHypN 13)`, `D := 2`, `hDH := myH_totalDegree_le`, `hdR2 := (myRN_two_le 13)`, `k := 0`, `hIH := (loose_ih_zero 13 2 hH)`, `i1 := 1`, `_hi1 := (by simp)`, `_hlam := (by simp)`
+- `BCIKS20.HenselNumerator.βHenselSuccTermStructuredWeightResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean:1746` — refuted by `BCIKS20.HenselNumerator.SuccTermWitness.βHenselSuccTermStructuredWeightResidual_refuted` (ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselSuccTermWeightRefutation.lean:175) at `H := myH`, `x₀ := 0`, `R := (myRN 13)`, `hHyp := (myHypN 13)`, `D := 2`, `hDH := myH_totalDegree_le`, `hdR2 := (myRN_two_le 13)`, `k := 0`, `hStructured := (structured_ih_zero 13 hH)`, `i1 := 1`, `_hi1 := (by simp)`, `_hlam := (by simp)`
 - `BCIKS20.HenselNumerator.FaaDiBrunoSuccSumZeroResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean:2542` — refuted by `BCIKS20.HenselNumerator.Witness.faaDiBrunoSuccSumZeroResidual_false` (ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2OrderZeroRefutationWitness.lean:175) at `H := myH`, `x₀ := (0 : ℚ)`, `R := myR`, `hHyp := myHyp`
 - `BCIKS20.HenselNumerator.RestrictedFaaDiBrunoMatchResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2MatchProof.lean:42` — refuted by `BCIKS20.HenselNumerator.Witness.restrictedFaaDiBrunoMatchResidual_false` (ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2OrderZeroRefutationWitness.lean:149) at `H := myH`, `x₀ := (0 : ℚ)`, `R := myR`, `hHyp := myHyp`
 - `ProximityGap.StrictCoeffPolysLargeResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffLargeReduction.lean:103` — refuted by `ProximityGap.StrictCanonicalCoeffPolysRefutation.not_strictCoeffPolysLargeResidual` (ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/CanonicalCoeffExtractionRefutation.lean:511) at `k := 1`, `deg := 2`, `domain := domain7`, `δ := (3 / 7 : ℝ≥0)`

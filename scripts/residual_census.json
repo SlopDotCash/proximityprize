@@ -27,10 +27,10 @@
  },
  "summary": {
   "total": 90,
-  "open": 42,
+  "open": 40,
   "instance_only": 9,
   "discharged": 25,
-  "refuted": 14,
+  "refuted": 16,
   "by_top_dir": {
    "(root)": {
     "total": 2,
@@ -41,10 +41,10 @@
    },
    "Data": {
     "total": 24,
-    "open": 6,
+    "open": 4,
     "instance_only": 3,
     "discharged": 2,
-    "refuted": 13
+    "refuted": 15
    },
    "OracleReduction": {
     "total": 39,
@@ -974,7 +974,64 @@
      "verdict": "conditional"
     }
    ],
-   "status": "open"
+   "refutations": [
+    {
+     "name": "BCIKS20.HenselNumerator.SuccTermWitness.βHenselSuccTermWeightResidual_refuted",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselSuccTermWeightRefutation.lean",
+     "line": 152,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hN"
+     ],
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [
+      "H := myH",
+      "x₀ := 0",
+      "R := (myRN N)",
+      "hHyp := (myHypN N)",
+      "hDH := (le_trans myH_totalDegree_le hD)",
+      "hdR2 := (myRN_two_le N)",
+      "k := 0",
+      "hIH := (loose_ih_zero N D hH)",
+      "i1 := 1",
+      "_hi1 := (by simp)",
+      "_hlam := (by simp)"
+     ],
+     "verdict": "conditional"
+    },
+    {
+     "name": "BCIKS20.HenselNumerator.SuccTermWitness.βHenselSuccTermWeightResidual_refuted_two",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselSuccTermWeightRefutation.lean",
+     "line": 165,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [],
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [
+      "H := myH",
+      "x₀ := 0",
+      "R := (myRN 13)",
+      "hHyp := (myHypN 13)",
+      "D := 2",
+      "hDH := myH_totalDegree_le",
+      "hdR2 := (myRN_two_le 13)",
+      "k := 0",
+      "hIH := (loose_ih_zero 13 2 hH)",
+      "i1 := 1",
+      "_hi1 := (by simp)",
+      "_hlam := (by simp)"
+     ],
+     "verdict": "unconditional"
+    }
+   ],
+   "status": "refuted"
   },
   {
    "name": "βHenselSuccTermStructuredWeightResidual",
@@ -1005,7 +1062,36 @@
      "verdict": "conditional"
     }
    ],
-   "status": "open"
+   "refutations": [
+    {
+     "name": "BCIKS20.HenselNumerator.SuccTermWitness.βHenselSuccTermStructuredWeightResidual_refuted",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselSuccTermWeightRefutation.lean",
+     "line": 175,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [],
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [
+      "H := myH",
+      "x₀ := 0",
+      "R := (myRN 13)",
+      "hHyp := (myHypN 13)",
+      "D := 2",
+      "hDH := myH_totalDegree_le",
+      "hdR2 := (myRN_two_le 13)",
+      "k := 0",
+      "hStructured := (structured_ih_zero 13 hH)",
+      "i1 := 1",
+      "_hi1 := (by simp)",
+      "_hlam := (by simp)"
+     ],
+     "verdict": "unconditional"
+    }
+   ],
+   "status": "refuted"
   },
   {
    "name": "FaaDiBrunoSuccSumZeroResidual",

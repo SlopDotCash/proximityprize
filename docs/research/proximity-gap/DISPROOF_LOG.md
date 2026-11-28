@@ -1,5 +1,38 @@
 # Disproof Log — ABF26 Proximity Prize Grand Challenge 1 (Issue #232)
 
+## [164-hensel-succ-term-weight-residuals-false] 2026-11-27
+
+Both `(A.1)` per-term weight residuals of the BCIKS20 Hensel numerator are false as stated:
+`βHenselSuccTermWeightResidual` (the loose wall that the O154 audit names as the last residual
+of the Johnson programme) and the narrowed `βHenselSuccTermStructuredWeightResidual`. Their
+target `(2(k+1)+1)·d_R·D` depends only on `d_R = natDegreeY R` and `D`, and
+`ClaimA2.Hypotheses` (`dvd_evalX` + `separable_evalX`) does not bound the ground-`X` degree of
+`R`. This is the gap behind `P1MonicWeightRefutation.weight_refuted`, now shown to break the
+per-term wall itself, before any induction hypothesis is used.
+
+The witness reuses the monic, irreducible, separable `H = Y² − 2` over `ZMod 3` with `x₀ = 0`
+and takes `R = Y² − 2 + u·s^N`. At `k = 0`, `i1 = 1` and the empty partition, the `W`- and
+`ξ`-exponents vanish and the prefactor is `1`; the term is `mk(C (s^N))`, of `Λ`-weight exactly
+`N`, against the target `6D`.
+
+* `βHenselSuccTermWeightResidual_refuted`: for every `D ≥ 2` and `N > 6D`, the loose induction
+  hypothesis holds (`Λ(β₀) = D − 1 ≤ 2D`) and the residual fails;
+  `βHenselSuccTermWeightResidual_refuted_two` is the `D = 2`, `N = 13` instance.
+* `βHenselSuccTermStructuredWeightResidual_refuted`: at the tight anchor `D = 2` the structured
+  invariant holds (`Λ(β₀) = 1 ≤ 1`) and the residual fails (`13 > 12`).
+
+Scope: this refutes the two residuals as stated only. The degree-bounded route already in tree,
+`βHenselSuccTermStructuredWeightResidual_holds` and `βHensel_weight_bound_of_structured_invariant`
+(premise `hRgraded : ∀ j, degreeX (R.coeff j) ≤ D − j`), is untouched, and the witness violates
+`hRgraded`, so that premise is necessary. It does not refute BCIKS20 Claim A.2 or change the
+production verdict (OPEN / ON-BGK). The three printed declarations use only `propext`,
+`Classical.choice` and `Quot.sound`.
+[Lean refutation](../../../ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselSuccTermWeightRefutation.lean)
+
+```
+./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselSuccTermWeightRefutation.lean
+```
+
 ## [164-syz-f2-census-refutation-and-four-coset-imbalance] 2026-11-27
 
 Transporting `FirstPrimeSepticCores.over_budget` at $313{,}174{,}699 / 2^{30}$ via `epsMCA_mono` to the rate-$1/2$ SYZ strip predecessor $357{,}913{,}940 / 2^{30} < 1/3$ on `ZMod PrizeShapePrimeP30.P` unconditionally refutes `SYZ66.StripSyzygyControlledCeiling` (`DOSSIER.md` §3.2 F2) and the `SYZ46`–`SYZ66` census chain (`exists_stripPredecessor_overBudget_syzygy_stack`). Lean also proves `Ucard = n` vacuity of `SYZ40.StripMasterHypothesis` (`'`/`''`), refutes literal `SYZ40.UniformSylvesterInjective`, and constructs a floor-attained constant-syzygy $4$-coset witness ($\delta_1 = d = \max(d,d,d)$, leaving `SYZ59.middleBand` untouched) in `RegionSyzygyRealizable` $\cap$ `StrictBandCores` at $n = 2^{30}$ on both $P_1$ and $P_2$ with $\iota = 2^{27}$ and $\neg$ `SylvesterInjective`. [Master audit note](carbon-syz-master-audit-and-f2-refutation.md) · [Lean refutation](../../../ArkLib/Research/ProximityGap/Frontier/CarbonSYZMasterAuditAndF2Refutation.lean) · [Probe](../../../scripts/probes/probe_carbon_syz_master_audit.py)
