@@ -2,6 +2,8 @@
 
 Let $F$ have characteristic $p>2^{128}$ and contain a subgroup $H$ of order 32. For the dimension-16 Reed–Solomon code on $H$, the largest list in a closed ball of nine Hamming errors is **three**, and some ball of ten errors contains **at least four** codewords. Both statements hold for every positive finite interleaving width. Consequently every such finite field with $\lfloor |F|/2^{128}\rfloor=3$ has last good integer radius 9, first bad integer radius 10 and operational supremum $5/16$. The prime $p=(3\cdot2^{48}+69)2^{80}+1$ gives a concrete instance. The nine-error list size also holds on the order-32 subgroups of the two named production fields. This argument uses length 32 throughout.
 
+A [real-subfield norm estimate](mu32-quadratic-list-threshold.md) extends the nine- and ten-error conclusions to every characteristic above $2^{58}$, including all quadratic fields of budget three that contain this subgroup.
+
 ## Lifting a constant ratio of vanishers
 
 Write $\zeta$ for a complex primitive 32nd root, $K=\mathbb Q(\zeta)$ and $L_A(X)=\prod_{a\in A}(X-\zeta^a)$ for a set of exponents. Let $A,B$ be disjoint with $|A|=|B|=d$. At two distinct sites $x,y$ outside them (writing the exponents for their corresponding roots), put
