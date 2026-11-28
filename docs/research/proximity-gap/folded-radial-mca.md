@@ -89,6 +89,8 @@ There are at most $D=4386$ affine heads among these projected components. Call o
 
 For $0\le j\le4386$ the verifier maximizes the combined affine and nonlinear-family charge at $j=1323$. Even rounding the nonlinear contribution up gives at most $1,649,087,237$ labels. Subtracting from $2,115,451,893$ gives the stated half-rate concentration. The three-core collinearity inequality used here fails at the quarter-rate pivot. [Finite allocation](../../../scripts/probes/probe_folded_radial_mca.py)
 
+At the half-rate pivot, bounding polynomial sections of quadratic projected equations leaves at least **466,186,464** labels on the fixed surfaces or on regular nonintegrable projected equations of ordinate degree at least three. [Quadratic section proof and higher-degree discriminant test](quadratic-projected-sections.md)
+
 ## Projecting to the value and scalar
 
 Treat $X$ as a coefficient by working over the algebraic closure of the coordinate function field. For a singular contact interpolant $F$, factor out its entire content $E(Y,Z)$ in $V$ and call its remaining primitive part $B(Y,Z,V)$. Suppose $B$ is squarefree as a polynomial in $V$ over $\overline{\mathbb F_p(X)}(Y,Z)$. Form the nonzero polynomial

@@ -13,9 +13,9 @@ The table gives **first failing integer error counts** at length $2^{30}$ and to
 | Rate | First prime MCA | Second prime MCA | First prime list | Second prime list |
 |---|---:|---:|---:|---:|
 | $1/2$ | 268,435,457–313,174,699 | 313,250,001–380,283,564 | 314,491,700–500,520,279 | 314,491,713–502,025,926 |
-| $1/4$ | 447,392,428–480,946,859 | 534,425,001–553,648,129 | 536,870,914–771,728,668 | 537,870,915–771,741,388 |
-| $1/8$ | **536,870,912** | 671,088,640–679,477,248 | 695,116,764–920,811,049 | 695,116,764–921,826,181 |
-| $1/16$ | **536,870,912** | **715,827,882** | 806,056,372–989,855,734 | 818,306,369–989,855,741 |
+| $1/4$ | 447,392,428–480,946,859 | 534,425,001–553,648,129 | 536,870,914–771,728,668 | 543,870,915–771,741,388 |
+| $1/8$ | **536,870,912** | 671,088,640–679,477,248 | 697,616,764–920,811,049 | 705,616,764–921,826,181 |
+| $1/16$ | **536,870,912** | **715,827,882** | 816,806,372–989,855,734 | 818,306,369–989,855,741 |
 
 The three exact MCA counts execute in Lean. The other three safety endpoints on the second prime use written geometry alongside Lean interpolation, determinant and counting results. Scalar and positive-width list budget tests coincide at these parameters. The list lower bounds use the all-center Johnson, puncturing and fourth-moment proofs, while the upper bounds use explicit centers. [Named MCA evaluator](../../../ArkLib/Research/ProximityGap/SmoothProductionMcaExecutable.lean) · [Second-prime safety proofs](tangent-polar-windows.md) · [Received-line multiplicities](core-multiplicity-mca.md) · [List safety](../../../ArkLib/Research/ProximityGap/Frontier/InterleavedListJohnsonPuncture.lean) · [Second-prime fourth-moment bounds](spectral-deficit-list.md) · [Half-rate lists](oriented-fiber-list-bounds.md) · [Quarter- and eighth-rate lists](rotated-locator-union.md) · [Sixteenth-rate lists](sixteenth-locator-union.md)
 
@@ -57,6 +57,10 @@ At arbitrary tolerance, the exact thresholds for **one code to have both cutoffs
 | $1/16$ | 16 | $2^{256}-2063$ | $120/p$ |
 
 For dimension-one lists alone, distinct constant symbols use disjoint agreements. At $t>0$ required agreements the largest list has $\min(q^m,\lfloor n/t\rfloor)$ words. At zero required agreements every constant is present. Disjoint blocks of $t$ sites attain the bound. The executable returns the first failure $n-\lfloor n/(B+1)\rfloor$ for $B<q^m$ and an all-safe answer for $B\ge q^m$. It also uses numerical incidence and interpolation checks at individual search counts for higher dimensions before invoking Gaussian elimination. [Exact list function](../../../ArkLib/Research/ProximityGap/DimensionOneList.lean) · [Per-count tests](../../../ArkLib/Research/ProximityGap/ListCountCertificates.lean)
+
+The cubic primary interpolation gives all-center list safety through **816,806,371** and **697,616,763** errors at rates $1/16$ and $1/8$ on the first prime. On the second prime it gives **705,616,763** and **543,870,914** at rates $1/8$ and $1/4$. [Four proofs and exact comparisons](joint-list-contact-boards.md)
+
+At the second-prime half-rate MCA pivot of **314,491,699 errors**, an overrun would place at least **466,186,464 bad fold scalars** on the fixed surfaces of derivative degree at most two or on regular nonintegrable projected equations of ordinate degree at least three. The scalar count for every irreducible quadratic projected equation is independent of its degree in the evaluation variable. [MCA reduction](folded-radial-mca.md) · [Quadratic section bound](quadratic-projected-sections.md)
 
 On the second prime, the all-center first-failure floors at rates $1/4$ and $1/16$ are now **537,870,915** and **818,306,369**. At eighth rate explicit centers exceed the first and second prime budgets at **920,811,049** and **921,826,181 errors**. Their certified list sizes are 1,078,794,742 and 2,158,985,328 respectively. [Quarter-rate exterior-word proof](quarter-list-exterior-contact.md) · [Sixteenth-rate joint proof](sixteenth-list-joint-quotient.md) · [Eighth-rate construction](staggered-locator-anchors.md)
 

@@ -2,6 +2,10 @@
 
 The universal rank formula now determines the operational MCA and list cutoffs on every supplied smooth prize code. Evaluating it at large dimensions can be impractical. The table records numerical values and bounds with their verification status. Dated entries preserve intermediate results. [Current reviewer guide](full-prize-review.md) · [November 21 integration assessment](integration-assessment-2026-11-21.md)
 
+The cubic primary interpolation gives all-center list safety through **816,806,371** and **697,616,763** errors at rates $1/16$ and $1/8$ on the first prime. On the second prime it gives **705,616,763** and **543,870,914** at rates $1/8$ and $1/4$. [Four proofs and exact comparisons](joint-list-contact-boards.md)
+
+At the second-prime half-rate MCA pivot of **314,491,699 errors**, an overrun would place at least **466,186,464 bad fold scalars** on the fixed surfaces of derivative degree at most two or on regular nonintegrable projected equations of ordinate degree at least three. The scalar count for every irreducible quadratic projected equation is independent of its degree in the evaluation variable. [MCA reduction](folded-radial-mca.md) · [Quadratic section bound](quadratic-projected-sections.md)
+
 On the second prime, the all-center first-failure floors at rates $1/4$ and $1/16$ are now **537,870,915** and **818,306,369**. At eighth rate explicit centers exceed the first and second prime budgets at **920,811,049** and **921,826,181 errors**. Their certified list sizes are 1,078,794,742 and 2,158,985,328 respectively. [Quarter-rate exterior-word proof](quarter-list-exterior-contact.md) · [Sixteenth-rate joint proof](sixteenth-list-joint-quotient.md) · [Eighth-rate construction](staggered-locator-anchors.md)
 
 Plane intersection multiplicities now give all-center safety through **806,056,371 errors** at rate $1/16$ on the first prime and **695,116,763 errors** at rate $1/8$ on both primes. The eighth-rate proof bounds the entire list by fewer than $n$ words on either field. [Proof and exact certificate](linear-contact-quotient.md)

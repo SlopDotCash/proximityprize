@@ -74,13 +74,48 @@ def half_integral_families():
     maximum = max(charges)
     assert (maximum, charges.index(maximum)) == (1_649_087_237, 1323)
     assert 2_115_451_893-maximum == 466_364_656
-    print("Half rate: at least 466,364,656 labels on fixed surfaces or regular "
-          "nonintegrable differential curves in any overrun.")
+    quadratic = 2*plane+(8*N*plane+t-d-1)//(t-d)
+    assert (quadratic, 466_364_656-quadratic) == (178_192, 466_186_464)
+    print("Half rate: at least 466,186,464 labels on fixed surfaces or regular "
+          "nonintegrable projected curves of ordinate degree at least three in any overrun.")
+
+
+def quadratic_branch_control():
+    # The quartics P(X,Z)=(X²+Z+h)²+Z(Z−1) are squares at Z=0,1.
+    # Directly compute their Sylvester rank and compare determinants with
+    # 256(u²+v)v², u=Z+h and v=Z(Z−1), on the full small field.
+    prime = 101
+    for shift in (0, 2):
+        for z in range(prime):
+            u, v = z+shift, z*(z-1)
+            f = [1, 0, 2*u, 0, u*u+v]
+            derivative = [4, 0, 4*u, 0]
+            rows = [[0]*i+f+[0]*(2-i) for i in range(3)]
+            rows += [[0]*i+derivative+[0]*(3-i) for i in range(4)]
+            rank, leading = 0, 1
+            for col in range(7):
+                pivot = next((i for i in range(rank, 7) if rows[i][col] % prime), None)
+                if pivot is None:
+                    continue
+                if pivot != rank:
+                    leading = -leading
+                    rows[rank], rows[pivot] = rows[pivot], rows[rank]
+                entry = rows[rank][col] % prime
+                leading = leading*entry % prime
+                for i in range(rank+1,7):
+                    scale = rows[i][col]*pow(entry,-1,prime) % prime
+                    rows[i] = [(a-scale*b)%prime for a,b in zip(rows[i],rows[rank])]
+                rank += 1
+            determinant = leading if rank == 7 else 0
+            assert (determinant-256*(u*u+v)*v*v) % prime == 0
+            if z in (0,1):
+                assert 7-rank >= 2
 
 
 if __name__ == "__main__":
     local_control()
     half_integral_families()
+    quadratic_branch_control()
     for rate, errors, order, v, s, reserve, expected in BOARDS:
         actual, m = board(rate, errors, order, v, s, reserve)
         assert actual == expected
