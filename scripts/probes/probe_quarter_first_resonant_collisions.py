@@ -15,20 +15,20 @@ PRELIMINARY = N-4*STOCK-B
 GROUP = N-1000
 
 
-def order_floor(w, order, cap):
-    gain = source(order*S,cap)-source(order*S-w,cap-1)
+def order_floor(w, order, cap, agreement=S):
+    gain = source(order*agreement,cap)-source(order*agreement-w,cap-1)
     return (gain-rank(order,cap)+rank(order,cap-1))/(rank(order,cap-1)-rank(order-1,cap-1))
 
 
-def initial_band():
+def initial_band(agreement=S):
     products()
     require(STOCK>B*((3000*T-1)//(D-1)) and linear(D,T,P,B,6,False)>0,
             'positive derivative product and upper linear weight')
-    nonradial = 7*(1-S*S/(R+(2*S-R)/PRELIMINARY))
-    require(1-nonradial>3*R and PRELIMINARY>5*int(6000*S/R), 'low-degree prerequisites')
+    nonradial = 7*(1-agreement*agreement/(R+(2*agreement-R)/PRELIMINARY))
+    require(1-nonradial>3*R and PRELIMINARY>5*int(6000*agreement/R), 'low-degree prerequisites')
     for b in range(1,5):
         for a in range(b):
-            lo = max(S+2*R-nonradial,b*R,4*R if a==0 else 0)
+            lo = max(agreement+2*R-nonradial,b*R,4*R if a==0 else 0)
             for x,y in intervals(lo,(b+1)*R,[4*R+R/4,4*R+R/2]):
                 if a in (2,3):
                     require(y-R-a*R<1-nonradial, 'repeated denominator content')
@@ -44,7 +44,7 @@ def initial_band():
                         return 2+(e-2*R)/3+(intersection(w,a,b)-1)/6
                     return 1+2*(e-R) if a==1 else 1+e
                 tests = (-1,0,2,3,4,5) if a==2 else (0,2,3,4,5)
-                require(any(all(order_floor(w,6000,h)>upper(w,j) for w in (x,y))
+                require(any(all(order_floor(w,6000,h,agreement)>upper(w,j) for w in (x,y))
                             for j in tests for h in range(300,6000,300)), 'lower linear weights')
 
 
