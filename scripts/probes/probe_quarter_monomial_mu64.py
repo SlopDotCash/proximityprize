@@ -12,7 +12,6 @@ from probe_rate_half_eight_fibers import G, N, P
 
 GRID = 64
 ROOTS = [pow(G, j * (N // GRID), P) for j in range(GRID)]
-ROOT_SET = set(ROOTS)
 POLY = fmpz_mod_poly_ctx(P)
 X = POLY([0, 1])
 ONE = POLY([1])
@@ -56,13 +55,15 @@ def nullspace(basis, width):
     return columns
 
 
-def spectrum_requires_grid_triple(groups):
-    """All permissible 12-root polynomials found must have 16 or more roots."""
+def spectrum_requires_grid_triple(groups, roots=ROOTS, threshold=12):
+    """Test that sufficiently rich target equations force a base point on the grid."""
+    grid = len(roots)
+    degree_bound = grid//4
     frequencies = sorted(set(sum(groups, ())))
     assert len(frequencies) in (5, 6)
     indices = [(frequencies.index(i), frequencies.index(j)) for i, j in groups]
     required = {k for i, j in indices if i != j for k in (i, j)}
-    rows = [[ROOTS[h*f % GRID] for f in frequencies] for h in range(GRID)]
+    rows = [[roots[h*f % grid] for f in frequencies] for h in range(grid)]
     visited = set()
     needs_triple = False
 
@@ -77,7 +78,7 @@ def spectrum_requires_grid_triple(groups):
     def record(vector, roots):
         nonlocal needs_triple
         if allowed(vector):
-            assert roots >= 16, (groups, vector, roots)
+            assert roots >= degree_bound, (groups, vector, roots)
             needs_triple = True
 
     def explore(basis):
@@ -91,21 +92,30 @@ def spectrum_requires_grid_triple(groups):
         if common in visited:
             return
         visited.add(common)
-        if len(common) >= 12:
+        if len(common) >= threshold:
             if len(columns) == 1:
                 record(columns[0], len(common))
             else:
-                assert len(common) >= 16, (groups, common)
+                assert len(common) >= degree_bound, (groups, common)
                 needs_triple = True
             return
         if len(columns) == 2:
             classes = Counter()
+            prefix_product = 1
+            nonzero = []
             for a, b in evaluations:
-                if a or b:
-                    classes[a*pow(b, -1, P) % P if b else None] += 1
+                if b:
+                    nonzero.append((prefix_product, a, b))
+                    prefix_product = prefix_product*b % P
+                elif a:
+                    classes[None] += 1
+            inverse = pow(prefix_product, -1, P)
+            for previous, a, b in reversed(nonzero):
+                classes[a*((inverse*previous) % P) % P] += 1
+                inverse = inverse*b % P
             left, right = columns
             for value, count in classes.items():
-                if count+len(common) >= 12:
+                if count+len(common) >= threshold:
                     vector = right if value is None else [x-value*y for x, y in zip(left, right)]
                     record(vector, count+len(common))
         elif len(columns) > 2:
@@ -113,7 +123,7 @@ def spectrum_requires_grid_triple(groups):
                 if i not in common:
                     explore(add_row(row, basis))
 
-    for other in combinations(range(1, 17), 3):
+    for other in combinations(range(1, 3*grid//threshold+1), 3):
         basis = ()
         for i in (0, *other):
             basis = add_row(rows[i], basis)
@@ -136,9 +146,9 @@ def degree_function(a, free):
     return degree, {k for _, k in conditions} | {base_gcd}
 
 
-def site_map(a, free, h, parameter):
+def site_map(a, free, h, parameter, roots=ROOTS):
     """Return homogeneous affine forms in the one unknown, or a specialized constant."""
-    values = [ROOTS[h*j % GRID] for j in a]
+    values = [roots[h*j % len(roots)] for j in a]
     if parameter is not None:
         values[free] = values[free]*parameter % P
     products = []
@@ -167,50 +177,57 @@ def top_three(groups):
     return sum(sorted(groups.values(), reverse=True)[:3])
 
 
-def check_one_parameter(a, free):
+def check_one_parameter(a, free, roots=ROOTS):
+    grid = len(roots)
+    score = 9*grid//16
+    min_degree = score//3+1
+    max_degree = grid//4-1
+    min_sites = (score+3*min_degree)//2+1
+    grid_parameters = set(roots) | {0}
     degree, orders = degree_function(a, free)
-    for j, param in enumerate(ROOTS):
-        m = degree(lambda k: j*k % GRID == 0)
-        if 13 <= m <= 15:
-            fibers = Counter(site_map(a, free, i, param) for i in range(GRID))
-            assert 2*top_three(fibers)-3*m <= 36
+    for j, param in enumerate(roots):
+        m = degree(lambda k: j*k % grid == 0)
+        if min_degree <= m <= max_degree:
+            fibers = Counter(site_map(a, free, i, param, roots) for i in range(grid))
+            assert 2*top_three(fibers)-3*m <= score
 
-    generic = Counter(site_map(a, free, i, None) for i in range(GRID))
+    generic = Counter(site_map(a, free, i, None, roots) for i in range(grid))
     generic_count = top_three(generic)
     generic_degree = degree(lambda _: False)
-    if 13 <= generic_degree <= 15:
-        assert 2*generic_count-3*generic_degree <= 36
-    # Collect event roots with enough pair coincidences to reach 38 actual sites.
-    weights = Counter()
-    for (lhs, left_count), (rhs, right_count) in combinations(generic.items(), 2):
-        p, q, c, d = lhs
-        f, g, h, i = rhs
-        terms = [(p*h-f*c) % P, (p*i+q*h-f*d-g*c) % P, (q*i-g*d) % P]
-        while terms and not terms[-1]:
-            terms.pop()
-        if len(terms) > 1:
-            weights[normalize(terms)] += left_count*right_count
-    events = ONE
-    for coefficients, weight in weights.items():
-        events *= POLY(list(coefficients))**weight
+    if min_degree <= generic_degree <= max_degree:
+        assert 2*generic_count-3*generic_degree <= score
+    # Collect event roots with enough pair coincidences to improve the score.
     factors = []
-    for group, multiple in events.factor_squarefree()[1]:
-        if multiple >= max(1, 38-generic_count):
-            factors.extend(f for f, _ in group.factor()[1])
+    if min_degree <= generic_degree <= max_degree:
+        weights = Counter()
+        for (lhs, left_count), (rhs, right_count) in combinations(generic.items(), 2):
+            p, q, c, d = lhs
+            f, g, h, i = rhs
+            terms = [(p*h-f*c) % P, (p*i+q*h-f*d-g*c) % P, (q*i-g*d) % P]
+            while terms and not terms[-1]:
+                terms.pop()
+            if len(terms) > 1:
+                weights[normalize(terms)] += left_count*right_count
+        events = ONE
+        for coefficients, weight in weights.items():
+            events *= POLY(list(coefficients))**weight
+        for group, multiple in events.factor_squarefree()[1]:
+            if multiple >= max(1, min_sites-generic_count):
+                factors.extend(f for f, _ in group.factor()[1])
     for k in orders:
         factors.extend(f for f, _ in (X**k-1).factor()[1])
     for f in factors:
-        if f.degree() == 1 and (-int(f[0])) % P in ROOT_SET | {0}:
+        if f.degree() == 1 and (-int(f[0])) % P in grid_parameters:
             continue
         m = degree(lambda k: X.pow_mod(k, f) == ONE)
-        if not 13 <= m <= 15:
+        if not min_degree <= m <= max_degree:
             continue
         fibers = Counter()
         for (pa, pb, qa, qb), count in generic.items():
             up, down = POLY([pa, pb]) % f, POLY([qa, qb]) % f
             key = tuple(map(int, (up*down.inverse_mod(f) % f).coeffs())) if down else None
             fibers[key] += count
-        assert 2*top_three(fibers)-3*m <= 36
+        assert 2*top_three(fibers)-3*m <= score
 
 
 def repeated_exponents():
