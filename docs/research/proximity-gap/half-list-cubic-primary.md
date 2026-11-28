@@ -44,3 +44,13 @@ $$
 In the distinct-root case the resultant also gives $\mathbb E[h+I_L I_Q]\le e-3R$.
 
 For both cases the verifier enumerates the integer order, clipped content order and radial flag. For each site type its costs have degree at most two in $p_x$. Nonnegative rational dual weights give a pointwise upper bound on the order, checking the endpoints and interior maximum throughout $0\le p_x\le1$. The resulting mean upper bound is affine in $D$ and lies strictly below the concave quotient threshold on each closed test interval. The other linear factors use the same exact comparison as the previous half-rate proof. Across all **208** intervals the least normalized gap exceeds **0.00291**. Thus each positive-derivative factor accounts for fewer than $L$ words. Summing over at most three factors and the at most eighteen derivative-independent words proves the claim.
+
+## An additional resultant gives 703/1000 agreement
+
+At **703/1000** agreement the same hypotheses give at most **1,800,019** words, hence safety on both designated half-rate codes through **318,901,321 errors**. Use primary order fourteen and derivative cap three, giving $b_0=19$, and keep $L=600000$. The same adaptive comparisons exclude derivative degrees two and three with normalized surpluses exceeding **2,954** and **84,751**.
+
+In the quartic case $B=C L_1^2 Q$, the numerator $A$ is coprime to the linear pole factor $L_1$. The nonzero resultant of $L_1$ and $A$ has normalized degree at most $D+b(\ell-R)$. Indeed $\deg_Y A\le b$ and evaluating $A$ on the rational root of $L_1$ and clearing its denominator gives this weighted bound. Wherever $I_L=1$, the ordinate coefficient of $L_1$ is a unit, by primitivity. Its rational root $z(X)$ is regular there and hits the received ordinate. Along this graph $g(X,z,z')=A(X,z)$ because $B(X,z)=0$. The defining radial substitution gives order at least $o$ on every regular graph through the received point. In particular the resultant has order at least $o$ at each such site. Since $\ell\le(e-c-2R)/2$, this gives the additional inequality
+$$
+       \mathbb E\big[(b/2)h+o I_L\big]\le D+b(e/2-2R).
+$$
+The comparison with this row passes on **226** linear-factor intervals, with minimum normalized gap above **0.00117**. It also verifies the earlier 88/125 claim in 204 intervals with minimum gap above 0.005. [Both normalized certificates](../../../scripts/probes/probe_half_cubic_uniform.py)

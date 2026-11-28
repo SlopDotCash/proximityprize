@@ -46,6 +46,7 @@ Row balance;
 std::array<int, 2> orbit_counts{};
 int survivors = 0;
 bool reverse_pivots = false;
+int support_size = 7;
 
 int phi(int r, int t) {
     int count = 0;
@@ -133,9 +134,9 @@ void visit(Mask even_sites, bool odd_pair) {
     auto search = [&](auto &self, int i, Row partial) -> void {
         Wide fixed = ~remaining[i];
         int a = weight(partial.positive & fixed), b = weight(partial.negative & fixed);
-        if (a > 7 || b > 7) return;
+        if (a > support_size || b > support_size) return;
         if (i == dim) {
-            if (a == 7 && b == 7) {
+            if (a == support_size && b == support_size) {
                 ++survivors;
                 std::cout << odd_pair << ' ' << even_sites << ' '
                           << static_cast<Mask>(partial.positive) << ' '
@@ -154,8 +155,12 @@ void visit(Mask even_sites, bool odd_pair) {
 } // namespace
 
 int main(int argc, char **argv) {
-    if (argc == 2 && std::string_view(argv[1]) == "--reverse-pivots") reverse_pivots = true;
-    else if (argc != 1) return 2;
+    for (int i = 1; i < argc; ++i) {
+        std::string_view option(argv[i]);
+        if (option == "--reverse-pivots") reverse_pivots = true;
+        else if (option == "--six-roots") support_size = 6;
+        else return 2;
+    }
     for (int j = 0; j < 96; ++j) {
         insert(balance, j, j < 64 ? 1 : 2);
         int exponent = j < 64 ? 2 * j : 2 * (j - 64) + 1;

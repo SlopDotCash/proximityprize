@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check the half-rate list at 88/125 agreement at arbitrary positive lengths."""
+"""Check two cubic-primary half-rate list bounds at arbitrary positive lengths."""
 
 from fractions import Fraction as F
 from functools import lru_cache
@@ -67,6 +67,8 @@ def quartic_sites(board,b,common_root):
                 costs.extend((h,max(x-h,0),0) for x in phi)
                 costs.extend([(0,max(o-1,0),0),(h,2*linear_hit+int(derivative_hit),0),
                               (h,2*linear_hit,0)])
+                # The numerator A cannot vanish identically on a pole factor of B.
+                costs.append((F(b*h,2)+o*int(linear_hit),0,0))
                 if not common_root:
                     costs.append((h+int(linear_hit and derivative_hit),0,0))
                 sites.append((o,costs))
@@ -77,7 +79,7 @@ def quartic_interval(board,b,common_root,left,right,depth=0):
     def bounds(w):
         e = w-RATE
         ordinary = [board.agreement,1-board.agreement,board.variance,4*w+b*e-4*b*RATE]
-        return (ordinary+[e-j*RATE for j in range(5)]+[e,e-RATE,e-2*RATE]
+        return (ordinary+[e-j*RATE for j in range(5)]+[e,e-RATE,e-2*RATE,w+b*(e/2-2*RATE)]
                 +([] if common_root else [e-3*RATE]))
     mid = (left+right)/2
     upper = site_order_bound(quartic_sites(board,b,common_root),40,bounds,mid)
@@ -118,3 +120,4 @@ def verify(board):
 
 if __name__=='__main__':
     verify(Board(F(88,125),13,600_000,quartic=True))
+    verify(Board(F(703,1000),14,600_000,quartic=True))

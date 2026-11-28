@@ -2,9 +2,13 @@
 
 The universal rank formula now determines the operational MCA and list cutoffs on every supplied smooth prize code. Evaluating it at large dimensions can be impractical. The table records numerical values and bounds with their verification status. Dated entries preserve intermediate results. [Current reviewer guide](full-prize-review.md) · [November 21 integration assessment](integration-assessment-2026-11-21.md)
 
+At half rate, **703/1000 agreement** gives a uniform list cap of **1,800,019** in characteristic zero or above 20,000. The first designated field is safe through **318,901,321 errors**. On the second field a separate proof gives safety through **321,048,805 errors**. It bounds completely split fibers of a degree-two first integral by comparing square classes at its two branch values. [Uniform proof](half-list-cubic-primary.md#an-additional-resultant-gives-7031000-agreement) · [Second-prime proof](half-list-second-darboux.md)
+
 At half rate, agreement on $88n/125$ sites leaves at most **1,800,018** words for every length and every injective grid in characteristic zero or above 20,000. Both designated half-rate codes are safe through **317,827,579 errors**. At quarter rate the second designated code is safe through **549,755,813 errors**. A quartic primary and a pole count prove the second bound. [Half-rate proof](half-list-cubic-primary.md) · [Quarter-rate proof](quarter-list-second-quartic-darboux.md)
 
 On the 16-site half-rate subgroup in characteristic zero or above $2^{109}$, the exact worst list at five errors is **three**. On eligible fields of budget three in this characteristic range, MCA first fails at **three** errors and list decoding at **six**. The proof transfers the complete five-site support census using determinant norms. [Proof, census and witnesses](mu16-septic-list-large-characteristic.md)
+
+On the 64-site subgroups of both designated primes, the maximum number of useful pair coincidences among four cubic words is exactly **16**. On 128 sites, three disjoint six-site fibers of a sextic pencil force all three supports to be antipodal. The resulting four-word bounds are 34 useful coincidences in degree six and 38 in degree seven. [Proof and independent prime-field evaluations](mu128-split-sextics.md)
 
 At the second named sixteenth-rate MCA boundary, a four-word list built from a common multiplier and a power quotient would require a quotient of at least 256 sites. The 128-site exclusion enumerates 48,446 test orbits and verifies the surviving locator ratios at both primes. At 86 errors on those 128 sites the worst list is exactly three. [Septic pencil proof and verifier](mu128-septic-six-site-fibers.md)
 
