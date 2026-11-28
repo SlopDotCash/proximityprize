@@ -34,8 +34,9 @@ def smooth_slots(w,h,d):
     return F(count*(w*w+d*w)-sum_k*step*(2*w+d)+sum_k2*step**2,2*d)
 
 
-def contact_intervals(v,lo,hi,t,d,b,stock):
-    r = 3000
+def contact_intervals(v,lo,hi,t,d,b,stock,*,r=3000,boards=None):
+    if boards is None:
+        boards = BOARDS[v]
     max_order = hi//d+v
     retained = stock-b*b
     def cost(h,lam):
@@ -44,7 +45,7 @@ def contact_intervals(v,lo,hi,t,d,b,stock):
             return rank(q,h)-rank(q-o,h-v)
         return N*max(local(o) for o in range(max_order+1))
 
-    candidates = [(h,lam,cost(h,lam)) for h,lam in BOARDS[v]]
+    candidates = [(h,lam,cost(h,lam)) for h,lam in boards]
     def on_piece(left,right,h,lam,price,gap):
         def cutoff(w):
             return (r-gap)*t-lam*(t+w-d+1)
