@@ -425,6 +425,7 @@ globs = [
   "ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.HasseEvalConnectives",
   "ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.HasseIndexShift",
   "ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.HenselNumerator",
+  "ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.HenselSuccTermWeightRefutation",
   "ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Kill",
   "ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Agreement",
   "ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.CloseInterpolantsCount",
